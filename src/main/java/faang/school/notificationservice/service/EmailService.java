@@ -13,7 +13,7 @@ public class EmailService {
 
     public void sendEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("faang-notif@gmail.com");
+        message.setFrom("whatever@gmail.com");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);

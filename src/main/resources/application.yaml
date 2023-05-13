@@ -27,8 +27,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: whatever
-    password: whatever
+    username: your_email@gmail.com #https://www.baeldung.com/spring-email
+    password: whatever #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
     properties:
       mail:
         smtp:
