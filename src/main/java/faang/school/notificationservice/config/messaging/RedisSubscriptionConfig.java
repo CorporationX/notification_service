@@ -12,7 +12,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 @Configuration
 public class RedisSubscriptionConfig {
 
-    @Value("${spring.data.redis.channel.follower}")
+    @Value("${spring.data.redis.channels.follower_channel.name}")
     private String channel;
 
     @Bean
