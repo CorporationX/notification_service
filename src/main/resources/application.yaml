@@ -23,6 +23,7 @@ spring:
       host: localhost
       channel:
         follower: follower_channel
+        achievement: achievement_channel
 
   mail:
     host: smtp.gmail.com
@@ -51,3 +52,10 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+
+project-service:
+    host: localhost
+    port: 8082
+user-service:
+    host: localhost
+    port: 8080
