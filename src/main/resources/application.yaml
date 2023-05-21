@@ -40,6 +40,9 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
+  messages:
+    basename: messages
+
 server:
   port: 8083
 
