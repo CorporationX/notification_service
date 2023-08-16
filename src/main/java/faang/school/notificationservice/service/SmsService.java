@@ -18,6 +18,10 @@ public class SmsService implements NotificationService {
     private String apiKey;
     @Value("${vonage.api.secret}")
     private String apiSecret;
+    @Value("${vonage.from}")
+    private String from;
+    @Value("${vonage.phone}")
+    private String phone;
 
     @PostConstruct
     public void init() {
@@ -28,16 +32,12 @@ public class SmsService implements NotificationService {
     }
 
     @Override
-    public void send() {
-        String from = "CorporationX";
-        String phone = "31687519767";
-        String msg = "Java Bootcamp 2023";
-        TextMessage message = new TextMessage(from, phone,msg);
-
+    public void send(String msg) {
+        TextMessage message = new TextMessage(from, phone, msg);
         SmsSubmissionResponse response = client.getSmsClient().submitMessage(message);
 
         if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
-            log.warn("Message sent successfully. {}", message);
+            log.info("Message sent successfully. {}", message);
         } else {
             String errorMsg = response.getMessages().get(0).getErrorText();
             log.error("Message sending failed: {}", errorMsg);
