@@ -4,29 +4,44 @@ import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
-import lombok.RequiredArgsConstructor;
+import faang.school.notificationservice.exception.MessageSendingException;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SmsService {
+@Slf4j
+public class SmsService implements NotificationService {
+    private VonageClient client;
+    @Value("${vonage.api.key}")
+    private String apiKey;
+    @Value("${vonage.api.secret}")
+    private String apiSecret;
 
-    VonageClient client;
-
-    public SmsService() {
-        client = VonageClient.builder().apiKey("54dc6c7b").apiSecret("Ib1jPHqLrt39YSXJ").build();
+    @PostConstruct
+    public void init() {
+        client = VonageClient.builder()
+                .apiKey(apiKey)
+                .apiSecret(apiSecret)
+                .build();
     }
+
+    @Override
     public void send() {
-        TextMessage message = new TextMessage("Vonage APIs",
-                "7074787636",
-                "A text message sent using the Vonage SMS API"
-        );
+        String from = "CorporationX";
+        String phone = "31687519767";
+        String msg = "Java Bootcamp 2023";
+        TextMessage message = new TextMessage(from, phone,msg);
 
         SmsSubmissionResponse response = client.getSmsClient().submitMessage(message);
 
         if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
-            System.out.println("Message sent successfully.");
+            log.warn("Message sent successfully. {}", message);
         } else {
-            System.out.println("Message failed with error: " + response.getMessages().get(0).getErrorText());
+            String errorMsg = response.getMessages().get(0).getErrorText();
+            log.error("Message sending failed: {}", errorMsg);
+            throw new MessageSendingException("Message sending failed: " + errorMsg);
         }
     }
 }

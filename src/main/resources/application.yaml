@@ -35,8 +35,8 @@ logging:
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: whatever
-    secret: whatever
+    key: # указываем свой API key по зареганному аккаунту
+    secret: # указываем свой API secret
 
 project-service:
     host: localhost
