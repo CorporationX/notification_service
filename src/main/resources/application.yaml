@@ -39,8 +39,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   #Install the library
   implementation: com.vonage:client:[6.1.0,7.0.0)
   api:
-    key: whatever
-    secret: whatever
+    key: ec1a2ee7
+    secret: HPRDmtd9nEOsdhqh
 
 project-service:
     host: localhost
@@ -48,5 +48,7 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+
 
 

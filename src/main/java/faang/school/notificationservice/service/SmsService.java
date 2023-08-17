@@ -4,8 +4,9 @@ import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
-import faang.school.notificationservice.client.VonageInitializer;
+import faang.school.notificationservice.config.context.VonageConfig;
 import faang.school.notificationservice.dto.UserDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,6 +34,13 @@ public class SmsService implements NotificationService {
 //
 //    4. Написаны unit-тесты.
 
+
+    private VonageConfig vonageConfig;
+
+    @Autowired
+    public SmsService(VonageConfig vonageConfig) {
+        this.vonageConfig = vonageConfig;
+    }
     @Override
     public void send(UserDto user, String message) {
 
@@ -44,7 +52,7 @@ public class SmsService implements NotificationService {
     }
 
     public static void main(String[] args) {
-        VonageClient vonageClient = VonageInitializer.createVonageClient();
+        VonageClient vonageClient = VonageConfig.createVonageClient();
         TextMessage message = new TextMessage("Vonage APIs",
                 "79168822014", "A text message sent using the Vonage SMS API");
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(message);
