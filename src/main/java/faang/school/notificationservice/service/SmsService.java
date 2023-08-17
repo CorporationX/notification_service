@@ -4,10 +4,12 @@ import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
+import faang.school.notificationservice.client.VonageInitializer;
+import faang.school.notificationservice.dto.UserDto;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SmsService {
+public class SmsService implements NotificationService {
     // Задание
 //    Создать Spring-компонент SmsService, который будет использоваться для отправки
 //    SMS нотификаций пользователю на его номер телефона. Отправка SMS будет происходить через Vonage.
@@ -31,11 +33,21 @@ public class SmsService {
 //
 //    4. Написаны unit-тесты.
 
+    @Override
+    public void send(UserDto user, String message) {
+
+    }
+
+    @Override
+    public UserDto.PreferredContact getPreferredContact() {
+        return null;
+    }
+
     public static void main(String[] args) {
-        VonageClient vonageClient = VonageIbnitializer.createVonageClient();
+        VonageClient vonageClient = VonageInitializer.createVonageClient();
         TextMessage message = new TextMessage("Vonage APIs",
                 "79168822014", "A text message sent using the Vonage SMS API");
-        SmsSubmissionResponse response = client.getSmsClient().submitMessage(message);
+        SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(message);
         if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
             System.out.println("Message sent successfully.");
         } else {
