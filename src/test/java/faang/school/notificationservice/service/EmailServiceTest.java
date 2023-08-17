@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service;
 
+import faang.school.notificationservice.dto.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,15 +21,15 @@ class EmailServiceTest {
 
     @Test
     void testSendMail() {
-        String recipient = "test@mail.com";
-        String subject = "subject";
-        String text = "text";
+        UserDto user = UserDto.builder()
+                .email("email@.com")
+                .build();
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(recipient);
-        message.setSubject(subject);
-        message.setText(text);
+        message.setTo(user.getEmail());
+            message.setSubject("subject");
+        message.setText("text");
 
-        emailService.sendMail(recipient, subject, text);
+        emailService.send(user, "text");
 
         verify(mailSender, times(1)).send(message);
     }
