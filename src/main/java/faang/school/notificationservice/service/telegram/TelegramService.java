@@ -1,18 +1,33 @@
 package faang.school.notificationservice.service.telegram;
 
+import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TelegramService implements NotificationService {
-    private TelegramBot telegramBot;
+    private final TelegramBot telegramBot;
 
     @Override
-    public void send(String msg) {
+    public void send(UserDto user, String message) {
+        SendMessage messageToTelegram = new SendMessage();
+        messageToTelegram.setChatId(user.getId());
+        messageToTelegram.setText(message);
 
+        try {
+            telegramBot.execute(messageToTelegram);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public UserDto.PreferredContact getPreferredContact() {
+        return UserDto.PreferredContact.TELEGRAM;
     }
 }
