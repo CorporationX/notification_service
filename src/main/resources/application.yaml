@@ -44,3 +44,6 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+bot:
+  name: "corporationx_bot"
+  token: "6495995387:AAFFBCZAGbNmX-Opv3VxMOboneKhR4kxc5c"
