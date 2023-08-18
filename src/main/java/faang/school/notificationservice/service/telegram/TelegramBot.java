@@ -17,16 +17,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig config;
 
     @Override
-    public String getBotUsername() {
-        return config.getName();
-    }
-
-    @Override
-    public String getBotToken() {
-        return config.getToken();
-    }
-
-    @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
@@ -56,5 +46,19 @@ public class TelegramBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
+    }
+
+    @Override
+    public String getBotUsername() {
+        return config.getName();
+    }
+
+    @Override
+    public String getBotToken() {
+        return config.getToken();
+    }
+
+    public long getChatId() {
+        return config.getChatId();
     }
 }
