@@ -4,6 +4,7 @@ import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
+import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.MessageSendingException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +21,6 @@ public class SmsService implements NotificationService {
     private String apiSecret;
     @Value("${vonage.from}")
     private String from;
-    @Value("${vonage.phone}")
-    private String phone;
 
     @PostConstruct
     public void init() {
@@ -32,8 +31,13 @@ public class SmsService implements NotificationService {
     }
 
     @Override
-    public void send(String msg) {
-        TextMessage message = new TextMessage(from, phone, msg);
+    public UserDto.PreferredContact getPreferredContact() {
+        return UserDto.PreferredContact.SMS;
+    }
+
+    @Override
+    public void send(UserDto user, String msg) {
+        TextMessage message = new TextMessage(from, user.getPhone(), msg);
         SmsSubmissionResponse response = client.getSmsClient().submitMessage(message);
 
         if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
