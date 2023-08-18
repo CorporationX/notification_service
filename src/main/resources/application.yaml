@@ -38,7 +38,6 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: # указываем свой API key по зареганному аккаунту
     secret: # указываем свой API secret
   from: CorporationX
-  phone: 31687519767
 
 project-service:
     host: localhost
