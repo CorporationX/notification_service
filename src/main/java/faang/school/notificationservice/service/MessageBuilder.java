@@ -1,4 +1,4 @@
-package faang.school.notificationservice.notification;
+package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
 

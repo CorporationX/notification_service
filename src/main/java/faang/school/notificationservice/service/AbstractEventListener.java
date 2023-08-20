@@ -1,24 +1,39 @@
-package faang.school.notificationservice.notification;
+package faang.school.notificationservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public abstract class AbstractEventListener {
     private final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
-    private final List<NotificationService> notificationServiceList;
+    private final List<NotificationService> notificationServices;
     private final List<MessageBuilder> messageBuilders;
+
+    protected String getMessage(Class<?> eventType, Locale locale, String... args) {
+        return messageBuilders.stream()
+                .filter(messageBuilder -> messageBuilder.supportsEventType(eventType))
+                .findFirst()
+                .map(messageBuilder -> messageBuilder.buildMessage(eventType, locale,args))
+                .orElseThrow(() -> new IllegalArgumentException("No message builder found for the given event type: " + eventType.getName()));
+    }
+
+    protected void sendNotification(Long id, String message) {
+        UserDto user = userServiceClient.getUser(id);
+
+        notificationServices.stream()
+                .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No notification service found for the user's preferred communication method."))
+                .send(user, message);
+    }
 
 
 //getMessage — получает в качестве параметров тип эвента (Class<?>),
