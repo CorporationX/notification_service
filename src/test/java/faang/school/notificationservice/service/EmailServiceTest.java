@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,12 +19,11 @@ class EmailServiceTest {
     private EmailService emailService;
     @Mock
     private JavaMailSender mailSender;
-    @Mock
-    private Environment env;
+    @Value("${spring.mail.sender.email}")
+    private String senderMail;
 
     @Test
     void testSendMail() {
-        String senderMail = env.getProperty("spring.mail.sender.email");
         String recipient = "test@mail.com";
         String subject = "subject";
         String text = "text";
