@@ -2,13 +2,14 @@ package faang.school.notificationservice.notification;
 
 import faang.school.notificationservice.dto.UserDto;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
 
 public interface MessageBuilder {
 
-    boolean isApplicable(UserDto userDto);
-
-    Stream<String> apply(Stream<String> stream, UserDto userDto);
+    String buildMessage(Class<?> eventType, Locale locale, String... args);
     String buildMessage(Map<String, Object> subscriberEvent,Class<?> eventType);
+
+    boolean supportsEventType(Class<?> eventType);
 }
