@@ -1,7 +1,8 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.NotificationTelegramBot;
+import faang.school.notificationservice.telegram.NotificationTelegramBot;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.ExtendedContactDto;
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,12 @@ private final UserServiceClient userServiceClient;
     @Override
     public void send(UserDto user, String message) {
         SendMessage notificationMessage = new SendMessage();
-//        notificationMessage.setChatId(userServiceClient.getUser();
+        ExtendedContactDto tgContact = userServiceClient.getUserContact(user.getId());
+        if (tgContact == null || tgContact.getTgChatId() == null){
+            throw new RuntimeException("User's chatId is not verify in TG-notification system");
+        }
+        notificationMessage.setChatId(tgContact.getTgChatId());
 //        прикрутить эндпойнт и брать айди юзера через кнопку или как
-
         notificationMessage.setText(message);
 
         try {

@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config.bot;
 
-import faang.school.notificationservice.NotificationTelegramBot;
+import faang.school.notificationservice.telegram.NotificationTelegramBot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
