@@ -12,6 +12,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @Configuration
@@ -21,12 +22,6 @@ public class RedisConfig {
     private String host;
     @Value("${spring.data.redis.port}")
     private int port;
-
-//    private final ProfileViewEventListener profileViewEventListener;
-//
-//    public RedisConfig(ProfileViewEventListener profileViewEventListener) {
-//        this.profileViewEventListener = profileViewEventListener;
-//    }
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -49,6 +44,7 @@ public class RedisConfig {
     RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory, MessageListenerAdapter messageListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
+        container.setTopicSerializer(new StringRedisSerializer());
         container.addMessageListener(messageListenerAdapter, viewProfileTopic());
         return container;
     }

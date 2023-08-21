@@ -24,7 +24,6 @@ public class ProfileViewEventListener implements MessageListener {
 
     private final List<NotificationService> notificationServices;
     private final ViewProfileMessageBuilder viewProfileMessageBuilder;
-    private final UserServiceClient userServiceClient;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -35,7 +34,7 @@ public class ProfileViewEventListener implements MessageListener {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        UserDto currentUserDto = UserDto.builder().id(profileViewEvent.getIdVisited()).preference(profileViewEvent.getPreferredContact()).build();
+        UserDto currentUserDto = UserDto.builder().id(profileViewEvent.getIdVisited()).preference(UserDto.PreferredContact.EMAIL).build();
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact().equals(currentUserDto.preference()))
                 .forEach(service -> service.send(currentUserDto,
