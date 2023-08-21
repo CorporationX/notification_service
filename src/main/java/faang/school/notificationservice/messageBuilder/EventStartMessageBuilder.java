@@ -1,8 +1,6 @@
 package faang.school.notificationservice.messageBuilder;
 
 import faang.school.notificationservice.dto.event.EventDto;
-import faang.school.notificationservice.util.MessageBuilder;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
