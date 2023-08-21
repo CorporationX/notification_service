@@ -31,6 +31,11 @@ public class EventStartMessageBuilder implements MessageBuilder<EventDto, String
 
     }
 
+    @Override
+    public Class<EventDto> getEventType() {
+        return EventDto.class;
+    }
+
     private String beautify(String locale) {
         long millis = Long.parseLong(locale);
 
