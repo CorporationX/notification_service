@@ -6,6 +6,8 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+      topic:
+        mentorshipOffered: mentorshipOffered
 
   mail:
     host: smtp.gmail.com
