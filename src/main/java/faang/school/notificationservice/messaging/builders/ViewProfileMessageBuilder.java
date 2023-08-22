@@ -1,5 +1,6 @@
 package faang.school.notificationservice.messaging.builders;
 
+import faang.school.notificationservice.massages.MessageBuilder;
 import faang.school.notificationservice.messaging.events.ProfileViewEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -9,14 +10,19 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
-public class ViewProfileMessageBuilder implements MessageBuilder<ProfileViewEvent> {
+public class ViewProfileMessageBuilder<T> implements MessageBuilder<ProfileViewEvent> {
 
     private final MessageSource messageSource;
 
     @Override
-    public String buildMessage(Locale local, ProfileViewEvent event) {
+    public String buildMessage(ProfileViewEvent event, Locale locale) {
         return messageSource.getMessage("visitor.new",
-                new Object[]{event.getIdVisitor(), event.getIdVisited()}, local);
+                new Object[]{event.getIdVisitor(), event.getIdVisited()}, locale);
+    }
+
+    @Override
+    public boolean supportsEventType(Object eventType) {
+        return eventType instanceof ProfileViewEvent;
     }
 
 }

@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface UserServiceClient {
 
     @GetMapping("/api/v1/users/{userId}/internal")
-    UserDto getUserInternal(@RequestHeader("x-user-id")Long currentUserId , @PathVariable long userId);
+    UserDto getUserInternal(@PathVariable long userId);
 }
