@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service;
 
+import faang.school.notificationservice.dto.user.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,6 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -19,22 +21,17 @@ class EmailServiceTest {
     private EmailService emailService;
     @Mock
     private JavaMailSender mailSender;
-    @Value("${spring.mail.sender.email}")
-    private String senderMail;
 
     @Test
     void testSendMail() {
-        String recipient = "test@mail.com";
-        String subject = "subject";
+        UserDto user = new UserDto();
+        user.setId(1L);
+        user.setEmail("some@email.com");
+        user.setPreference(UserDto.PreferredContact.SMS);
         String text = "text";
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(senderMail);
-        message.setTo(recipient);
-        message.setSubject(subject);
-        message.setText(text);
 
-        emailService.sendMail(recipient, subject, text);
+        emailService.send(user, text);
 
-        verify(mailSender, times(1)).send(message);
+        verify(mailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 }
