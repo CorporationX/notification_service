@@ -1,7 +1,6 @@
 package faang.school.notificationservice.dto;
 
 import lombok.Builder;
-
 import java.util.List;
 
 @Builder
