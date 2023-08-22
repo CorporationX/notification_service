@@ -31,23 +31,6 @@ public class EventStartService {
 
     @Async
     public void scheduleNotifications(EventStartDto eventStartDto) {
-//        EventDto event = new EventDto();
-//        event.setDescription("SomeDescription");
-//        event.setId(0L);
-//        event.setTitle("SomeTitle");
-//        event.setStartDate(LocalDateTime.now().plusMinutes(11));
-//
-//        UserDto user = new UserDto();
-//        user.setId(1L);
-//        user.setEmail("some@email.com");
-//        user.setPreference(UserDto.PreferredContact.SMS);
-//
-//        List<UserDto> users = new ArrayList<>();
-//        users.add(user);
-//        users.add(user);
-//        users.add(user);
-//        users.add(user);
-//        users.add(user);
         EventDto event = userServiceClient.getEvent(eventStartDto.getEventId());
         List<UserDto> users = userServiceClient.getUsersByIds(eventStartDto.getUserIds());
 
