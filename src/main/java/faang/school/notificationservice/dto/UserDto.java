@@ -1,10 +1,8 @@
 package faang.school.notificationservice.dto;
 
 import lombok.Builder;
-import lombok.Data;
 
 import java.util.List;
-import java.util.Locale;
 
 @Builder
 public record UserDto(Long id,

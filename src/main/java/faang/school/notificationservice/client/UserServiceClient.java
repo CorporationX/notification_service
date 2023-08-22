@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}")
 public interface UserServiceClient {
 
-    @GetMapping("/api/v1/users/{userId}")
-    UserDto getUser(@RequestHeader("x-user-id")Long currentUserId , @PathVariable long userId);
+    @GetMapping("/api/v1/users/{userId}/internal")
+    UserDto getUserInternal(@RequestHeader("x-user-id")Long currentUserId , @PathVariable long userId);
 }
