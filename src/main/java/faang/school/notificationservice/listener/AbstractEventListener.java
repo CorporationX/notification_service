@@ -5,13 +5,11 @@ import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.messageBuilder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 @RequiredArgsConstructor
-public class AbstractEventListener<T, V>{
+public abstract class AbstractEventListener<T, V>{
     private final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationServices;
     private final List<MessageBuilder<T, V>> messageBuilders;
@@ -25,7 +23,11 @@ public class AbstractEventListener<T, V>{
     }
 
     public void sendNotification(long userId, String message) {
-        UserDto userDto = userServiceClient.getUser(userId);
+//        UserDto userDto = userServiceClient.getUser(userId);
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        userDto.setEmail("some@email.com");
+        userDto.setPreference(UserDto.PreferredContact.SMS);
 
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreference()))
