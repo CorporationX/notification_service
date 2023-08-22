@@ -1,19 +1,17 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.user.UserDto;
-import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.messageBuilder.MessageBuilder;
+import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 @RequiredArgsConstructor
-public abstract class AbstractEventListener<T, V>{
-    private final ObjectMapper objectMapper;
+public class AbstractEventListener<T, V>{
     private final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationServices;
     private final List<MessageBuilder<T, V>> messageBuilders;
