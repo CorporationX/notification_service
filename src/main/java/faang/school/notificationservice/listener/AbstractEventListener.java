@@ -23,11 +23,7 @@ public abstract class AbstractEventListener<T, V>{
     }
 
     public void sendNotification(long userId, String message) {
-//        UserDto userDto = userServiceClient.getUser(userId);
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setEmail("some@email.com");
-        userDto.setPreference(UserDto.PreferredContact.SMS);
+        UserDto userDto = userServiceClient.getUser(userId);
 
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreference()))
