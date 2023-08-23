@@ -10,6 +10,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,10 +27,12 @@ class ViewProfileMessageBuilderTest {
     private final Long idVisited = 20L;
     private final Locale locale = Locale.ENGLISH;
     private ProfileViewEvent profileViewEvent;
+    private LocalDateTime dateTime;
 
     @BeforeEach
     public void setUp(){
-        profileViewEvent = new ProfileViewEvent(idVisitor, idVisited);
+        dateTime = LocalDateTime.now();
+        profileViewEvent = new ProfileViewEvent(idVisitor, idVisited, dateTime);
     }
 
     @Test

@@ -31,7 +31,7 @@ class AbstractEventListenerTest {
     private UserDto userDto;
 
     private Locale usLocale;
-    private Class<?> postLike;
+    private Object postLike;
 
     private AbstractEventListener eventListener;
 
@@ -44,7 +44,7 @@ class AbstractEventListenerTest {
                 .build();
 
         usLocale = Locale.US;
-        postLike = Optional.empty().getClass();
+        postLike = new Object();
 
         eventListener = new AbstractEventListener(null, userServiceClient, List.of(notificationService), List.of(messageBuilder)) {
         };
@@ -69,7 +69,7 @@ class AbstractEventListenerTest {
 
     @Test
     void testSendNotificationDataValidationException() {
-        when(userServiceClient.getUser(userDto.getId())).thenReturn(userDto);
+        when(userServiceClient.getUserInternal(userDto.id())).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS);
 
         assertThrows(DataValidationException.class,
@@ -78,10 +78,10 @@ class AbstractEventListenerTest {
 
     @Test
     void testSendNotification() {
-        when(userServiceClient.getUser(userDto.getId())).thenReturn(userDto);
+        when(userServiceClient.getUserInternal(userDto.id())).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
 
-        eventListener.sendNotification(userDto.getId(), "Test");
+        eventListener.sendNotification(userDto.id(), "Test");
         verify(notificationService).send(userDto, "Test");
     }
 }
