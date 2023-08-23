@@ -1,5 +1,6 @@
-package faang.school.notificationservice.client.config;
+package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.FollowerEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -43,8 +44,8 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter followerListener() {
-        return new MessageListenerAdapter(new FollowerEventListener());
+    MessageListenerAdapter followerListener(FollowerEventListener followerEventListener) {
+        return new MessageListenerAdapter(followerEventListener);
     }
 
     @Bean
@@ -53,10 +54,10 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer() {
+    RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
-        container.addMessageListener(followerListener(), followerChannel());
+        container.addMessageListener(followerListener, followerChannel());
         return container;
     }
 }
