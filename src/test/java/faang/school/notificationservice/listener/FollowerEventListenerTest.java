@@ -1,6 +1,5 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.builder.FollowerMessageBuilder;
 import faang.school.notificationservice.client.UserServiceClient;
@@ -22,7 +21,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +38,6 @@ class FollowerEventListenerTest {
     Message message;
     @Mock
     NotificationService notificationService;
-
     @Mock
     List<NotificationService> notificationServices;
 
@@ -54,7 +51,6 @@ class FollowerEventListenerTest {
         when(objectMapper.readValue(message.getBody(), FollowerEvent.class)).thenReturn(event);
         when(messageBuilder.getText(event)).thenReturn(text);
         when(userServiceClient.getUser(any(Long.class))).thenReturn(user);
-
         when(notificationServices.stream()).thenReturn(Stream.of(notificationService));
 
         followerEventListener.onMessage(message, new byte[0]);
