@@ -16,6 +16,7 @@ import java.util.Locale;
 public class MentorshipOfferedEventDto {
     private Long receiverId;
     private Long requesterId;
+    private String email;
     private LocalDateTime timestamp;
     private PreferredContact preferredContact;
     private Locale locale = null;
