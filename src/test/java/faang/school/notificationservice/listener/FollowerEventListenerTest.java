@@ -40,7 +40,6 @@ class FollowerEventListenerTest {
     Message message;
     @Mock
     NotificationService notificationService;
-
     @Mock
     List<NotificationService> notificationServices;
 
@@ -54,7 +53,6 @@ class FollowerEventListenerTest {
         when(objectMapper.readValue(message.getBody(), FollowerEvent.class)).thenReturn(event);
         when(messageBuilder.getText(event)).thenReturn(text);
         when(userServiceClient.getUser(any(Long.class))).thenReturn(user);
-
         when(notificationServices.stream()).thenReturn(Stream.of(notificationService));
 
         followerEventListener.onMessage(message, new byte[0]);
