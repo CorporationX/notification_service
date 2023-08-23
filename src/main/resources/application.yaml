@@ -44,3 +44,7 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+telegram:
+  bot:
+    token: "6436403091:AAFdLcAUzM4WTwV3MS65-J03LpkBmOEkmPc" // Вообще такое фу-фу-фу хранить в кинфиге, но для учебного проекта пойдёт.
+    name: "NotifyX bot"
