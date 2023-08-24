@@ -1,11 +1,11 @@
 package faang.school.notificationservice.service;
 
-import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
-import faang.school.notificationservice.config.context.VonageConfig;
+import faang.school.notificationservice.client.VonageClient;
 import faang.school.notificationservice.dto.UserDto;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,25 +35,47 @@ public class SmsService implements NotificationService {
 //    4. Написаны unit-тесты.
 
 
-    private VonageConfig vonageConfig;
+    private VonageClient vonageClient;
+    private com.vonage.client.VonageClient client;
+
+    @PostConstruct
+    public void initializationCreatingVonageClient() {
+        client = VonageClient.builder()
+                .apiKey("ec1a2ee7")
+                .apiSecret("HPRDmtd9nEOsdhqh")
+                .build();
+    }
 
     @Autowired
-    public SmsService(VonageConfig vonageConfig) {
-        this.vonageConfig = vonageConfig;
-    }
-    @Override
-    public void send(UserDto user, String message) {
+    public SmsService(VonageClient vonageClient) {
 
+        this.vonageClient = vonageClient;
     }
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {
-        return null;
+        return UserDto.PreferredContact.SMS;
     }
 
-    public static void main(String[] args) {
-        VonageClient vonageClient = VonageConfig.createVonageClient();
-        TextMessage message = new TextMessage("Vonage APIs",
+    /*    public static void main(String[] args) {
+            VonageClient vonageClient = VonageConfig.createVonageClient();
+            TextMessage message = new TextMessage("Vonage APIs",
+                    "79168822014", "A text message sent using the Vonage SMS API");
+            SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(message);
+            if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
+                System.out.println("Message sent successfully.");
+            } else {
+                System.out.println("Message failed with error: " + response.getMessages().get(0).getErrorText());
+            }
+        }*/
+    @Override
+    //SmsService, который будет использоваться для отправки
+    //SMS нотификаций пользователю на его номер телефона
+    public void send(UserDto user, String message) {
+        //com.vonage.client.VonageClient vonageClient = VonageClient.initializationCreatingVonageClient();
+        /*TextMessage message = new TextMessage("Vonage APIs",
+                "79168822014", "A text message sent using the Vonage SMS API");*/
+        TextMessage message = new TextMessage(VonageClient.from,
                 "79168822014", "A text message sent using the Vonage SMS API");
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(message);
         if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
@@ -63,3 +85,21 @@ public class SmsService implements NotificationService {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

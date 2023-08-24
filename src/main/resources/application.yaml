@@ -37,10 +37,14 @@ logging:
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   #Install the library
-  implementation: com.vonage:client:[6.1.0,7.0.0)
-  api:
+    implementation: com.vonage:client:[6.1.0,7.0.0)
     key: ec1a2ee7
+#whatever key
     secret: HPRDmtd9nEOsdhqh
+#whatever secret
+
+#указываем свои API key и  API secret по зарегистрированному аккаунту
+    from: CorporationX
 
 project-service:
     host: localhost
