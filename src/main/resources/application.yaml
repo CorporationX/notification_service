@@ -29,6 +29,12 @@ spring:
   messages:
     basename: messages
 
+  async:
+    scheduled:
+      thread-pool:
+        core_pool_size: 2
+        max_pool_size: 2
+
 server:
   port: 8083
 
@@ -38,9 +44,16 @@ logging:
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
+  from: Vonage APIs
   api:
     key: whatever
     secret: whatever
+
+telegram:
+  webhook: whatever
+  token: whatever
+  name: whatever
+
 
 project-service:
     host: localhost

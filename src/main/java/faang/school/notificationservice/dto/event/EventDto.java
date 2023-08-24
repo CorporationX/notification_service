@@ -1,6 +1,8 @@
 package faang.school.notificationservice.dto.event;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import faang.school.notificationservice.dto.SkillDto;
+import faang.school.notificationservice.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,4 +25,8 @@ public class EventDto {
     private List<SkillDto> relatedSkills;
     private String location;
     private int maxAttendees;
+    @JsonIgnore
+    private UserDto attendee;
+    @JsonIgnore
+    private long timeTillStart;
 }

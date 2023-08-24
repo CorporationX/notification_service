@@ -6,5 +6,5 @@ public interface NotificationService {
 
     UserDto.PreferredContact getPreferredContact();
 
-    void sendNotification(UserDto user, String text);
+    void send(UserDto user, String text);
 }

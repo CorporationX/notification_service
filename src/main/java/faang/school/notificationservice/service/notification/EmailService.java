@@ -20,12 +20,12 @@ public class EmailService implements NotificationService {
     }
 
     @Override
-    public void sendNotification(UserDto user, String text) {
+    public void send(UserDto user, String text) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(user.getEmail());
         simpleMailMessage.setText(text);
         simpleMailMessage.setSubject("Corporation-X notification");
         mailSender.send(simpleMailMessage);
-        log.info("Email sent to " + user.getEmail());
+        log.info("Email sent successfully to " + user.getEmail());
     }
 }
