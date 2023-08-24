@@ -22,7 +22,6 @@ private final UserServiceClient userServiceClient;
             throw new RuntimeException("User's chatId is not verify in TG-notification system");
         }
         notificationMessage.setChatId(tgContact.getTgChatId());
-//        прикрутить эндпойнт и брать айди юзера через кнопку или как
         notificationMessage.setText(message);
 
         try {

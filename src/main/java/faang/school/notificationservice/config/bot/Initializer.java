@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.bot;
 
+import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.telegram.NotificationTelegramBot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,12 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class Initializer {
     @Autowired
     BotConfig config;
+    @Autowired
+    UserServiceClient userServiceClient;
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() {
-        NotificationTelegramBot bot = new NotificationTelegramBot(config.token, config);
+        NotificationTelegramBot bot = new NotificationTelegramBot(config, userServiceClient);
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             telegramBotsApi.registerBot((LongPollingBot) bot);

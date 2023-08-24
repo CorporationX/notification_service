@@ -4,19 +4,21 @@ import faang.school.notificationservice.dto.ExtendedContactDto;
 import faang.school.notificationservice.dto.TgContactDto;
 import faang.school.notificationservice.dto.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}")
+@FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}/api/v1/users/")
 public interface UserServiceClient {
 
-    @GetMapping("/users/{id}")
-    UserDto getUser(@PathVariable long id);
+    @GetMapping("/{id}")
+    UserDto getUser(@PathVariable("id") long userId);
 
-    @PostMapping("/{userId}/contacts")
-    void updateUserContact(TgContactDto tgContactDto);
+    @PostMapping("/contacts")
+    void updateUserContact(@RequestBody TgContactDto tgContactDto);
 
-    @GetMapping("/{userId}/contacts")
-    ExtendedContactDto getUserContact(@PathVariable Long userId);
+    @GetMapping("/{id}/contacts")
+    ExtendedContactDto getUserContact(@PathVariable("id") Long userId);
+
+    @GetMapping("/get-by-phone")
+    Long findUserIdByPhoneNumber(@RequestParam(name = "phone") String phoneNumber);
+
 }
