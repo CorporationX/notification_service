@@ -2,9 +2,9 @@ package faang.school.notificationservice.massages;
 
 import java.util.Locale;
 
-public interface MessageBuilder <T>{
+public interface MessageBuilder<T> {
 
     String buildMessage(T event, Locale locale);
 
-    boolean supportsEventType(Class<?> eventType);
+    boolean supportsEventType(Object eventType);
 }

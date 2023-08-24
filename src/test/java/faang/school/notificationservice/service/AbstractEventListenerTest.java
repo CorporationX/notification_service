@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.PreferredContact;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.massages.MessageBuilder;
@@ -31,7 +32,7 @@ class AbstractEventListenerTest {
     private UserDto userDto;
 
     private Locale usLocale;
-    private Class<?> postLike;
+    private Object postLike;
 
     private AbstractEventListener eventListener;
 
@@ -40,11 +41,11 @@ class AbstractEventListenerTest {
         userDto = UserDto.builder()
                 .id(1L)
                 .email("M@A")
-                .preference(UserDto.PreferredContact.EMAIL)
+                .preference(PreferredContact.EMAIL)
                 .build();
 
         usLocale = Locale.US;
-        postLike = Optional.empty().getClass();
+        postLike = new Object();
 
         eventListener = new AbstractEventListener(null, userServiceClient, List.of(notificationService), List.of(messageBuilder)) {
         };
@@ -69,8 +70,8 @@ class AbstractEventListenerTest {
 
     @Test
     void testSendNotificationDataValidationException() {
-        when(userServiceClient.getUser(userDto.getId())).thenReturn(userDto);
-        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS);
+        when(userServiceClient.getUserInternal(userDto.id())).thenReturn(userDto);
+        when(notificationService.getPreferredContact()).thenReturn(PreferredContact.SMS);
 
         assertThrows(DataValidationException.class,
                 () -> eventListener.sendNotification(1L, "Test"));
@@ -78,10 +79,10 @@ class AbstractEventListenerTest {
 
     @Test
     void testSendNotification() {
-        when(userServiceClient.getUser(userDto.getId())).thenReturn(userDto);
-        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
+        when(userServiceClient.getUserInternal(userDto.id())).thenReturn(userDto);
+        when(notificationService.getPreferredContact()).thenReturn(PreferredContact.EMAIL);
 
-        eventListener.sendNotification(userDto.getId(), "Test");
+        eventListener.sendNotification(userDto.id(), "Test");
         verify(notificationService).send(userDto, "Test");
     }
 }
