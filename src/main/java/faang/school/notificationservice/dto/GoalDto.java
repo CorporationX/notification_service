@@ -25,8 +25,4 @@ public class GoalDto {
     private List<Long> userIds;
     private List<String> skills;
 
-    public enum GoalStatus {
-        ACTIVE,
-        COMPLETED
-    }
 }

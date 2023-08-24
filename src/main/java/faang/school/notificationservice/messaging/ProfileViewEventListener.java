@@ -19,7 +19,6 @@ import java.util.Locale;
 @Service
 public class ProfileViewEventListener<T> extends AbstractEventListener implements MessageListener {
 
-    @Autowired
     public ProfileViewEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
                                     List<NotificationService> notificationServices,
                                     List<MessageBuilder<T>> messageBuilders) {

@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.PreferredContact;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.massages.MessageBuilder;
@@ -40,7 +41,7 @@ class AbstractEventListenerTest {
         userDto = UserDto.builder()
                 .id(1L)
                 .email("M@A")
-                .preference(UserDto.PreferredContact.EMAIL)
+                .preference(PreferredContact.EMAIL)
                 .build();
 
         usLocale = Locale.US;
@@ -70,7 +71,7 @@ class AbstractEventListenerTest {
     @Test
     void testSendNotificationDataValidationException() {
         when(userServiceClient.getUserInternal(userDto.id())).thenReturn(userDto);
-        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS);
+        when(notificationService.getPreferredContact()).thenReturn(PreferredContact.SMS);
 
         assertThrows(DataValidationException.class,
                 () -> eventListener.sendNotification(1L, "Test"));
@@ -79,7 +80,7 @@ class AbstractEventListenerTest {
     @Test
     void testSendNotification() {
         when(userServiceClient.getUserInternal(userDto.id())).thenReturn(userDto);
-        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
+        when(notificationService.getPreferredContact()).thenReturn(PreferredContact.EMAIL);
 
         eventListener.sendNotification(userDto.id(), "Test");
         verify(notificationService).send(userDto, "Test");

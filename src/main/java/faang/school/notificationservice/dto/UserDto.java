@@ -20,7 +20,4 @@ public record UserDto(Long id,
                       List<GoalDto> goals,
                       List<SkillDto> skills,
                       PreferredContact preference) {
-    public enum PreferredContact {
-        EMAIL, SMS, TELEGRAM
-    }
 }
