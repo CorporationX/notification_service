@@ -43,14 +43,4 @@ public class RedisConfig {
     public ChannelTopic achievementChannelTopic() {
         return new ChannelTopic(achievementTopicName);
     }
-
-//    @Bean
-//    public MessageSource messageSource() {
-//        ReloadableResourceBundleMessageSource messageSource
-//                = new ReloadableResourceBundleMessageSource();
-//
-//        messageSource.setBasename("classpath:messages");
-//        messageSource.setDefaultEncoding("UTF-8");
-//        return messageSource;
-//    }
 }
