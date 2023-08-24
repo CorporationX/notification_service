@@ -1,4 +1,4 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.event_listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.builder.FollowerMessageBuilder;
@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -43,7 +43,7 @@ class FollowerEventListenerTest {
 
     @Test
     public void testOnMessage() throws IOException {
-        FollowerEvent event = new FollowerEvent(EventType.FOLLOWER, new Date(), 1L, 2L);
+        FollowerEvent event = new FollowerEvent(EventType.FOLLOWER, LocalDateTime.now(), 1L, 2L);
         String text = "test";
         UserDto user = UserDto.builder().id(1L).build();
 

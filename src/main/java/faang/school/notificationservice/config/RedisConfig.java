@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config;
 
-import faang.school.notificationservice.listener.FollowerEventListener;
+import faang.school.notificationservice.event_listener.FollowerEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +29,6 @@ public class RedisConfig {
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
-        System.out.println(port);
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
         return new JedisConnectionFactory(config);
     }

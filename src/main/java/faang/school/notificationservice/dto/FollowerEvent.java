@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -15,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class FollowerEvent implements Serializable {
     private EventType eventType;
-    private Date receivedAt;
+    private LocalDateTime receivedAt;
     private Long followerId;
     private Long followeeId;
 }
