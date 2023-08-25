@@ -38,7 +38,7 @@ class EventStartListenerTest {
     }
 
     @Test
-    void onMessage() {
+    void onMessage_shouldInvokeScheduleNotificationsMethod() {
         eventStartListener.onMessage(message, new byte[0]);
         verify(eventStartService).scheduleNotifications(any());
     }
