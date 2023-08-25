@@ -1,6 +1,5 @@
 package faang.school.notificationservice.builder;
 
-import faang.school.notificationservice.builder.MessageBuilder;
 import faang.school.notificationservice.dto.ProfileViewEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -18,7 +17,7 @@ public class ProfileViewMessageBuilder implements MessageBuilder<ProfileViewEven
     }
 
     @Override
-    public boolean supportsEventType(Object eventType) {
-        return eventType instanceof ProfileViewEvent;
+    public boolean supportsEventType(ProfileViewEvent eventType) {
+        return eventType != null;
     }
 }

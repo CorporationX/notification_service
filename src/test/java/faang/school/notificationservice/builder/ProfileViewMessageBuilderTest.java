@@ -12,7 +12,8 @@ import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static reactor.core.publisher.Mono.when;
+import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(value = {MockitoExtension.class})
 public class ProfileViewMessageBuilderTest {
@@ -27,7 +28,13 @@ public class ProfileViewMessageBuilderTest {
                 .profileViewedId(2L)
                 .date(LocalDateTime.now())
                 .build();
-//        when(messageSource.getMessage(eq("profile_view.new"), any(), eq(Loca)))
+        Locale locale = Locale.ENGLISH;
+        String msg = "Your profile has been viewed by a user by id 1";
+        when(messageSource.getMessage(eq("profile_view.new"), any(), eq(locale)))
+                .thenReturn(msg);
+        ProfileViewMessageBuilder profileViewMessageBuilder = new ProfileViewMessageBuilder(messageSource);
+        String result = profileViewMessageBuilder.buildMessage(event, locale);
+        assertEquals(msg, result);
     }
 
 }
