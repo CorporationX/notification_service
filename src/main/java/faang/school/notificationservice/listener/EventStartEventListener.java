@@ -3,6 +3,7 @@ package faang.school.notificationservice.listener;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.EventStartEventDto;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.mapper.JsonObjectMapper;
 import faang.school.notificationservice.messageBuilder.EventStartEventMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +27,14 @@ public class EventStartEventListener extends AbstractEventListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         EventStartEventDto event = jsonObjectMapper.readValue(message.getBody(), EventStartEventDto.class);
-        List<UserDto> userDtos = event.getUserIds().stream()
-                .map(userServiceClient::getUser)
-                .toList();
+        String eventTitle = event.getTitle();
+        List<UserDto> userDtos = fetchUserDtosByIds(event.getUserIds());
+        sendEventNotifications(userDtos, eventTitle);
+    }
 
+    private void sendEventNotifications(List<UserDto> userDtos, String eventName) {
         for (UserDto user : userDtos) {
             Locale userLocale = user.getLocale();
-            String eventName = event.getTitle();
 
             String messageToSend = messageBuilder.buildMessage(userLocale, eventName);
             for (NotificationService service : notificationServices) {
@@ -41,5 +43,11 @@ public class EventStartEventListener extends AbstractEventListener {
                 }
             }
         }
+    }
+
+    private List<UserDto> fetchUserDtosByIds(List<Long> userIds) {
+        return userIds.stream()
+                .map(userServiceClient::getUser)
+                .toList();
     }
 }

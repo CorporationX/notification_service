@@ -1,11 +1,13 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
+import org.springframework.stereotype.Component;
 
-public class SmsService implements NotificationService{
+@Component
+public class EmailNotificationService implements NotificationService{
     @Override
     public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.SMS;
+        return UserDto.PreferredContact.EMAIL;
     }
 
     @Override
