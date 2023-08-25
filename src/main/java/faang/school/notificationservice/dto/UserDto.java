@@ -18,7 +18,7 @@ public class UserDto {
     private String email;
     private String phone;
     private Locale locale;
-    private PreferredContact preferredContact;
+    private PreferredContact preference;
 
     public enum PreferredContact {
         EMAIL, PHONE, TELEGRAM;
