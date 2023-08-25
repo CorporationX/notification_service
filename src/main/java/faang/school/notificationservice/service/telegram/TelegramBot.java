@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service.telegram;
 
 import faang.school.notificationservice.config.BotConfig;
+import faang.school.notificationservice.service.telegram.command.Command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.PropertySource;
@@ -10,6 +11,8 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.util.List;
 
 @Slf4j
 @Component
@@ -21,6 +24,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final BotConfig config;
     private final Environment environment;
+    private final List<Command> commands;
 
     @Override
     public void onUpdateReceived(Update update) {
