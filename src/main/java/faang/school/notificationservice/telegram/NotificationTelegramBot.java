@@ -49,29 +49,13 @@ public class NotificationTelegramBot extends TelegramLongPollingBot {
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
-        }
-        if (update.hasMessage() && update.getMessage().hasContact()) {
+        } else if (update.hasMessage() && update.getMessage().hasContact()) {
             Message message = update.getMessage();
             Contact contact = message.getContact();
             Long chatId = message.getChatId();
             String phoneNumber = contact.getPhoneNumber();
             Long userId = userServiceClient.findUserIdByPhoneNumber(phoneNumber);
             initRegistration(userId, chatId, phoneNumber);
-        } else if (update.hasMessage() && update.getMessage().hasText()) {
-            String text = update.getMessage().getText();
-            long chatId = update.getMessage().getChatId();
-
-            if (text.equals("Send you phone")) {
-                SendMessage message = new SendMessage();
-                message.setChatId(chatId);
-                message.setText("Push the button for send you phone");
-                setPhoneButton(message);
-                try {
-                    execute(message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
