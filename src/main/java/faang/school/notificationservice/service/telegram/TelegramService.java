@@ -23,7 +23,8 @@ public class TelegramService implements NotificationService {
         try {
             telegramBot.execute(messageToTelegram);
         } catch (TelegramApiException e) {
-            log.info("Failed to send notification");
+            log.error("Failed to send notification", e);
+            throw new IllegalArgumentException(e);
         }
     }
     @Override
