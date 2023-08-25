@@ -1,11 +1,11 @@
 package faang.school.notificationservice.listener;
 
-import org.springframework.data.redis.connection.Message;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.stereotype.Component;
 
-public class AbstractEventListener implements MessageListener {
-    @Override
-    public void onMessage(Message message, byte[] pattern) {
+@Component
+@RequiredArgsConstructor
+public abstract class AbstractEventListener implements MessageListener {
 
-    }
 }
