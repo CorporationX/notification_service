@@ -30,7 +30,7 @@ public class FollowerMessageBuilder implements MessageBuilder {
         return getPredefinedMessage(locale, userName);
     }
 
-    public String getPredefinedMessage(Locale locale, String userName) {
+    private String getPredefinedMessage(Locale locale, String userName) {
         return messageSource.getMessage("follower.new", new String[]{userName}, locale);
     }
 
