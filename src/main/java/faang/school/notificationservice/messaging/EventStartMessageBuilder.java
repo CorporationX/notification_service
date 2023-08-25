@@ -32,7 +32,7 @@ public class EventStartMessageBuilder implements MessageBuilder<EventDto, Locale
         } else if (delay >= TimeUnit.MINUTES.toMillis(10)) {
             return " in ten minutes!";
         } else {
-            return " right now!";
+            return " now!";
         }
     }
 }

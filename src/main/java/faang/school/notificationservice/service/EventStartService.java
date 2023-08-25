@@ -37,7 +37,7 @@ public class EventStartService {
 
         long eventStart = event.getStartDate().toInstant(ZoneOffset.UTC).toEpochMilli();
         long now = LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli();
-        long beforeStart = eventStart - now;
+        long tillStart = eventStart - now;
 
         long oneDay = Math.max(0, eventStart - now - TimeUnit.DAYS.toMillis(1));
         long fiveHours = Math.max(0, eventStart - now - TimeUnit.HOURS.toMillis(5));
@@ -45,23 +45,23 @@ public class EventStartService {
         long tenMinutes = Math.max(0, eventStart - now - TimeUnit.MINUTES.toMillis(10));
         long oneMinute = Math.max(0, eventStart - now - TimeUnit.MINUTES.toMillis(1));
 
-        scheduledExecutor.schedule(() -> notify(attendees, event, oneDay, beforeStart),
+        scheduledExecutor.schedule(() -> notify(attendees, event, oneDay, tillStart),
                 oneDay, TimeUnit.MILLISECONDS);
-        scheduledExecutor.schedule(() -> notify(attendees, event, fiveHours, beforeStart),
+        scheduledExecutor.schedule(() -> notify(attendees, event, fiveHours, tillStart),
                 fiveHours, TimeUnit.MILLISECONDS);
-        scheduledExecutor.schedule(() -> notify(attendees, event, oneHour, beforeStart),
+        scheduledExecutor.schedule(() -> notify(attendees, event, oneHour, tillStart),
                 oneHour, TimeUnit.MILLISECONDS);
-        scheduledExecutor.schedule(() -> notify(attendees, event, tenMinutes, beforeStart),
+        scheduledExecutor.schedule(() -> notify(attendees, event, tenMinutes, tillStart),
                 tenMinutes, TimeUnit.MILLISECONDS);
-        scheduledExecutor.schedule(() -> notify(attendees, event, oneMinute, beforeStart),
-                beforeStart, TimeUnit.MILLISECONDS);
+        scheduledExecutor.schedule(() -> notify(attendees, event, oneMinute, tillStart),
+                tillStart, TimeUnit.MILLISECONDS);
     }
 
-    private void notify(List<UserDto> users, EventDto event, long delay, long timeToWait) {
+    private void notify(List<UserDto> users, EventDto event, long delay, long tillStart) {
         if (delay > 0) {
             users.forEach(user -> {
                 event.setAttendee(user);
-                event.setTimeTillStart(timeToWait);
+                event.setTimeTillStart(tillStart);
                 String message = messageBuilder.buildMessage(event, Locale.getDefault());
                 sendNotification(user, message);
             });
