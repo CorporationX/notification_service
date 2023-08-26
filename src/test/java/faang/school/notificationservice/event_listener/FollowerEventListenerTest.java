@@ -6,21 +6,20 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.FollowerEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.model.EventType;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.EmailService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Locale;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,32 +28,41 @@ class FollowerEventListenerTest {
     @InjectMocks
     FollowerEventListener followerEventListener;
     @Mock
-    ObjectMapper objectMapper;
-    @Mock
-    FollowerMessageBuilder messageBuilder;
+    FollowerMessageBuilder followerMessageBuilder;
     @Mock
     UserServiceClient userServiceClient;
     @Mock
+    MessageSource messageSource;
+    @Mock
     Message message;
     @Mock
-    NotificationService notificationService;
+    ObjectMapper objectMapper;
     @Mock
-    List<NotificationService> notificationServices;
+    EmailService emailService;
 
     @Test
     public void testOnMessage() throws IOException {
-        FollowerEvent event = new FollowerEvent(EventType.FOLLOWER, LocalDateTime.now(), 1L, 2L);
-        String text = "test";
-        UserDto user = UserDto.builder().id(1L).build();
+        FollowerEvent event = FollowerEvent.builder()
+                .eventType(EventType.FOLLOWER)
+                .followerId(1L)
+                .followeeId(2L)
+                .build();
+        followerMessageBuilder = new FollowerMessageBuilder(userServiceClient, messageSource);
+        Locale locale = Locale.getDefault();
+        String notificationText = "test";
+        UserDto user = UserDto.builder()
+                .preference(UserDto.PreferredContact.EMAIL)
+                .build();
+        followerEventListener = new FollowerEventListener(objectMapper, userServiceClient, List.of(followerMessageBuilder), List.of(emailService));
 
-        when(message.getBody()).thenReturn(new byte[0]);
         when(objectMapper.readValue(message.getBody(), FollowerEvent.class)).thenReturn(event);
-        when(messageBuilder.getText(event)).thenReturn(text);
-        when(userServiceClient.getUser(any(Long.class))).thenReturn(user);
-        when(notificationServices.stream()).thenReturn(Stream.of(notificationService));
+        when(userServiceClient.getUser(event.getFollowerId())).thenReturn(user);
+        when(followerMessageBuilder.buildMessage(event, locale)).thenReturn(notificationText);
+        when(userServiceClient.getUser(event.getFolloweeId())).thenReturn(user);
+        when(emailService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
 
         followerEventListener.onMessage(message, new byte[0]);
 
-        verify(notificationService, Mockito.times(1)).send(Mockito.eq(user), Mockito.eq(text));
+        verify(emailService, Mockito.times(1)).send(user, notificationText);
     }
 }
