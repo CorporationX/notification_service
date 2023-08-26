@@ -1,5 +1,6 @@
 package faang.school.notificationservice.messageBuilder;
 
+import faang.school.notificationservice.dto.EventCountdown;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,11 @@ public class EventStartEventMessageBuilder implements MessageBuilder {
 
     @Override
     public String buildMessage(Locale locale, String eventName) {
-        return messageSource.getMessage("event.start", new Object[]{eventName}, locale);
+        return null;
+    }
+
+    public String buildCustomMessage(Locale locale, EventCountdown eventCountdown, String eventTitle) {
+        String message = "event.countdown." + eventCountdown;
+        return messageSource.getMessage(message, new Object[]{eventTitle}, locale);
     }
 }

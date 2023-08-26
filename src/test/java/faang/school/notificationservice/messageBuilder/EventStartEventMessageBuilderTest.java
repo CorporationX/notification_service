@@ -1,5 +1,6 @@
 package faang.school.notificationservice.messageBuilder;
 
+import faang.school.notificationservice.dto.EventCountdown;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,9 +23,10 @@ class EventStartEventMessageBuilderTest {
 
     @Test
     void buildMessageTest() {
+        String message = "event.countdown." + EventCountdown.DAY;
 
-        eventStartEventMessageBuilder.buildMessage(Locale.CHINA, "Halloween");
+        eventStartEventMessageBuilder.buildCustomMessage(Locale.CHINA, EventCountdown.DAY, "Halloween");
 
-        verify(messageSource).getMessage("event.start", new Object[]{"Halloween"}, Locale.CHINA);
+        verify(messageSource).getMessage(message, new Object[]{"Halloween"}, Locale.CHINA);
     }
 }

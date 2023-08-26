@@ -1,6 +1,7 @@
 package faang.school.notificationservice.listener;
 
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.EventCountdown;
 import faang.school.notificationservice.dto.EventStartEventDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.mapper.JsonObjectMapper;
@@ -82,9 +83,10 @@ class EventStartEventListenerTest {
                 .id(1)
                 .title("Halloween")
                 .userIds(List.of(1L, 2L))
+                .eventCountdown(EventCountdown.DAY)
                 .build();
 
-        String json = "{\"id\": 1, \"title\": \"Halloween\", \"userIds\": [1, 2]}";
+        String json = "{\"id\": 1, \"title\": \"Halloween\", \"userIds\": [1, 2], \"eventCountdown\": \"DAY\"}";
 
         byte[] jsonBytes = json.getBytes();
 
@@ -93,13 +95,14 @@ class EventStartEventListenerTest {
         when(userServiceClient.getUser(Mockito.anyLong()))
                 .thenReturn(first)
                 .thenReturn(second);
-        when(messageBuilder.buildMessage(any(Locale.class), Mockito.anyString()))
+        when(messageBuilder.buildCustomMessage(any(Locale.class), any(EventCountdown.class), Mockito.anyString()))
                 .thenReturn("Hooray, our event \"Halloween\" has just started, join us soon!");
 
         eventStartEventListener.onMessage(message, new byte[0]);
 
         verify(jsonObjectMapper).readValue(message.getBody(), EventStartEventDto.class);
         verify(userServiceClient, Mockito.times(2)).getUser(Mockito.anyLong());
-        verify(messageBuilder, Mockito.times(2)).buildMessage(any(Locale.class), Mockito.anyString());
+        verify(messageBuilder, Mockito.times(2))
+                .buildCustomMessage(any(Locale.class), any(EventCountdown.class), Mockito.anyString());
     }
 }

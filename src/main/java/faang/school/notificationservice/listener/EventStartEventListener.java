@@ -1,6 +1,7 @@
 package faang.school.notificationservice.listener;
 
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.EventCountdown;
 import faang.school.notificationservice.dto.EventStartEventDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.mapper.JsonObjectMapper;
@@ -27,16 +28,19 @@ public class EventStartEventListener extends AbstractEventListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         EventStartEventDto event = jsonObjectMapper.readValue(message.getBody(), EventStartEventDto.class);
+
         String eventTitle = event.getTitle();
+        EventCountdown countdown = event.getEventCountdown();
+
         List<UserDto> userDtos = fetchUserDtosByIds(event.getUserIds());
-        sendEventNotifications(userDtos, eventTitle);
+        sendEventNotifications(userDtos, countdown, eventTitle);
     }
 
-    private void sendEventNotifications(List<UserDto> userDtos, String eventName) {
+    private void sendEventNotifications(List<UserDto> userDtos, EventCountdown eventCountdown, String eventName) {
         for (UserDto user : userDtos) {
             Locale userLocale = user.getLocale();
 
-            String messageToSend = messageBuilder.buildMessage(userLocale, eventName);
+            String messageToSend = messageBuilder.buildCustomMessage(userLocale, eventCountdown, eventName);
             for (NotificationService service : notificationServices) {
                 if (user.getPreference() == service.getPreferredContact()) {
                     service.send(user, messageToSend);
