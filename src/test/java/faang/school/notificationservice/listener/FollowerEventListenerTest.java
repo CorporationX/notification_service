@@ -1,4 +1,4 @@
-package faang.school.notificationservice.event_listener;
+package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.builder.FollowerMessageBuilder;
