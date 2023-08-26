@@ -27,7 +27,7 @@ public class FollowerEventListener extends AbstractEventListener {
         UserDto user = userServiceClient.getUser(followerEventDto.getFollowerId());
         String notificationText = followEventMessageBuilder.buildMessage(user.getLocale(), user.getUsername());
         notificationServiceList.stream()
-                .filter((service) -> service.getPreferredContact() == user.getPreferredContact())
+                .filter((service) -> service.getPreferredContact() == user.getPreference())
                 .forEach(notificationService -> notificationService.send(user, notificationText));
     }
 }

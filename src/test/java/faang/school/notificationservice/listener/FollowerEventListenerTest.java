@@ -20,8 +20,6 @@ import org.springframework.data.redis.connection.Message;
 import java.util.List;
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(MockitoExtension.class)
 class FollowerEventListenerTest {
 
@@ -52,7 +50,7 @@ class FollowerEventListenerTest {
         FollowerEventDto followerEventDto = FollowerEventDto.builder().followerId(1L).build();
         Locale locale = new Locale("ENGLISH");
         UserDto userDto = UserDto.builder()
-                .preferredContact(UserDto.PreferredContact.TELEGRAM)
+                .preference(UserDto.PreferredContact.TELEGRAM)
                 .locale(locale)
                 .username("User")
                 .build();

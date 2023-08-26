@@ -38,7 +38,7 @@ public class EventStartEventListener extends AbstractEventListener {
 
             String messageToSend = messageBuilder.buildMessage(userLocale, eventName);
             for (NotificationService service : notificationServices) {
-                if (user.getPreferredContact() == service.getPreferredContact()) {
+                if (user.getPreference() == service.getPreferredContact()) {
                     service.send(user, messageToSend);
                 }
             }

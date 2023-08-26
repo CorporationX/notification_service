@@ -68,7 +68,7 @@ class EventStartEventListenerTest {
                 .email("kiril.sonyashnikov.77@gmail.com")
                 .phone("+74232497777")
                 .locale(Locale.GERMANY)
-                .preferredContact(UserDto.PreferredContact.TELEGRAM)
+                .preference(UserDto.PreferredContact.TELEGRAM)
                 .build();
         UserDto second = UserDto.builder()
                 .id(2L)
@@ -76,7 +76,7 @@ class EventStartEventListenerTest {
                 .email("David.kolesnikov.93@gmail.com")
                 .phone("+748995412")
                 .locale(Locale.CANADA)
-                .preferredContact(UserDto.PreferredContact.EMAIL)
+                .preference(UserDto.PreferredContact.EMAIL)
                 .build();
         EventStartEventDto eventStartEventDto = EventStartEventDto.builder()
                 .id(1)
@@ -87,8 +87,6 @@ class EventStartEventListenerTest {
         String json = "{\"id\": 1, \"title\": \"Halloween\", \"userIds\": [1, 2]}";
 
         byte[] jsonBytes = json.getBytes();
-
-        String test = "halloween";
 
         when(message.getBody()).thenReturn(jsonBytes);
         when(jsonObjectMapper.readValue(jsonBytes, EventStartEventDto.class)).thenReturn(eventStartEventDto);
