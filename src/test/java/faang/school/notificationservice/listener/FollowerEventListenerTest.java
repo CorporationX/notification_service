@@ -4,7 +4,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.FollowerEventDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.mapper.JsonObjectMapper;
-import faang.school.notificationservice.messageBuilder.FollowEventMessageBuilder;
+import faang.school.notificationservice.message.FollowEventMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.TelegramNotificationService;
 import org.junit.jupiter.api.BeforeEach;

@@ -4,7 +4,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.EventStartEventDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.mapper.JsonObjectMapper;
-import faang.school.notificationservice.messageBuilder.EventStartEventMessageBuilder;
+import faang.school.notificationservice.message.EventStartEventMessageBuilder;
 import faang.school.notificationservice.service.EmailNotificationService;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.SmsNotificationService;

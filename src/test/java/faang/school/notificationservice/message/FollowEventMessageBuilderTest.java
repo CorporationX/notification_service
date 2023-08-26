@@ -1,4 +1,4 @@
-package faang.school.notificationservice.messageBuilder;
+package faang.school.notificationservice.message;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,8 +9,6 @@ import org.springframework.context.MessageSource;
 import org.mockito.Mockito;
 
 import java.util.Locale;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class FollowEventMessageBuilderTest {

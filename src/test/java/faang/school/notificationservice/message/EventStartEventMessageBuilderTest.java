@@ -1,4 +1,4 @@
-package faang.school.notificationservice.messageBuilder;
+package faang.school.notificationservice.message;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

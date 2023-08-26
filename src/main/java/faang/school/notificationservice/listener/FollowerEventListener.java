@@ -4,22 +4,23 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.FollowerEventDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.mapper.JsonObjectMapper;
-import faang.school.notificationservice.messageBuilder.FollowEventMessageBuilder;
+import faang.school.notificationservice.message.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
-public class FollowerEventListener extends AbstractEventListener {
+public class FollowerEventListener extends AbstractEventListener<FollowerEventListener> implements MessageListener {
 
-    private final JsonObjectMapper jsonObjectMapper;
-    private final List<NotificationService> notificationServiceList;
-    private final UserServiceClient userServiceClient;
-    private final FollowEventMessageBuilder followEventMessageBuilder;
+    public FollowerEventListener(JsonObjectMapper jsonObjectMapper,
+                                 UserServiceClient userServiceClient,
+                                 List<MessageBuilder<FollowerEventListener>> followEventMessageBuilder,
+                                 List<NotificationService> notificationServiceList) {
+        super(jsonObjectMapper, userServiceClient, followEventMessageBuilder, notificationServiceList);
+    }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
