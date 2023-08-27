@@ -6,7 +6,7 @@ import faang.school.notificationservice.builder.ProfileViewMessageBuilder;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.ProfileViewEvent;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.SmsService;
+import faang.school.notificationservice.service.sms.SmsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
