@@ -5,6 +5,7 @@ spring:
       host: localhost
       channels:
         follower: follower_channel
+        mentorship: mentorship_channel
 
   mail:
     host: smtp.gmail.com
