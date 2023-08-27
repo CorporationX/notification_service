@@ -1,13 +1,11 @@
 package faang.school.notificationservice.config;
 
-import faang.school.notificationservice.listener.FollowerEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
@@ -16,28 +14,22 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 @RequiredArgsConstructor
 public class RedisConfig {
 
-    private final FollowerEventListener followerEventListener;
-
-    @Value("${spring.data.redis.host}")
-    private String host;
-    @Value("${spring.data.redis.port}")
-    private int port;
-    @Value("${spring.data.redis.channels.follower}")
+    private final MessageListener achievementEventListener;
+    private final MessageListener followerEventListener;
+    @Value("${spring.data.redis.channel.follower}")
     private String followerTopicName;
+    @Value("${spring.data.redis.channel.achievement}")
+    private String achievementTopicName;
 
     @Bean
-    public JedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
-        return new JedisConnectionFactory(config);
-    }
-
-    @Bean
-    public RedisMessageListenerContainer likePostMessageConsumerContainer(RedisConnectionFactory redisConnectionFactory) {
+    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConnectionFactory);
+        container.setConnectionFactory(connectionFactory);
 
-        MessageListenerAdapter followerEventMessageListenerAdapter = new MessageListenerAdapter(followerEventListener);
-        container.addMessageListener(followerEventMessageListenerAdapter, new ChannelTopic(followerTopicName));
+        MessageListenerAdapter followerListenerAdapter = new MessageListenerAdapter(followerEventListener);
+        MessageListenerAdapter achievementListenerAdapter = new MessageListenerAdapter(achievementEventListener);
+        container.addMessageListener(followerListenerAdapter, new ChannelTopic(followerTopicName));
+        container.addMessageListener(achievementListenerAdapter, new ChannelTopic(achievementTopicName));
 
         return container;
     }
