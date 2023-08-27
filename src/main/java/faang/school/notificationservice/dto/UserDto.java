@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import java.util.Locale;
 
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class UserDto {
 
     private Long id;
@@ -18,9 +18,9 @@ public class UserDto {
     private String email;
     private String phone;
     private Locale locale;
-    private PreferredContact preferredContact;
+    private PreferredContact preference;
 
     public enum PreferredContact {
-        EMAIL, SMS, TELEGRAM
+        EMAIL, PHONE, TELEGRAM;
     }
 }

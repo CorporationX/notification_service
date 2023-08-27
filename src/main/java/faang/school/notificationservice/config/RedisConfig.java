@@ -6,9 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
@@ -19,6 +18,7 @@ public class RedisConfig {
 
     private final FollowerEventListener followerEventListener;
     private final MentorshipEventListener mentorshipEventListener;
+    private final MessageListener achievementEventListener;
 
     @Value("${spring.data.redis.host}")
     private String host;
@@ -28,6 +28,8 @@ public class RedisConfig {
     private String followerTopicName;
     @Value("${spring.data.redis.channels.mentorship}")
     private String mentorshipTopicName;
+    @Value("${spring.data.redis.channel.achievement}")
+    private String achievementTopicName;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -40,8 +42,10 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
 
-        MessageListenerAdapter followerEventMessageListenerAdapter = new MessageListenerAdapter(followerEventListener);
-        container.addMessageListener(followerEventMessageListenerAdapter, new ChannelTopic(followerTopicName));
+        MessageListenerAdapter followerListenerAdapter = new MessageListenerAdapter(followerEventListener);
+        MessageListenerAdapter achievementListenerAdapter = new MessageListenerAdapter(achievementEventListener);
+        container.addMessageListener(followerListenerAdapter, new ChannelTopic(followerTopicName));
+        container.addMessageListener(achievementListenerAdapter, new ChannelTopic(achievementTopicName));
 
         MessageListenerAdapter mentorshipEventMessageListenerAdapter = new MessageListenerAdapter(mentorshipEventListener);
         container.addMessageListener(mentorshipEventMessageListenerAdapter, new ChannelTopic(mentorshipTopicName));
