@@ -1,10 +1,10 @@
 package faang.school.notificationservice.messageBuilder;
 
-import java.util.Locale;
+import faang.school.notificationservice.dto.UserDto;
 
 public interface MessageBuilder<T> {
 
-    String buildMessage(T event, Locale locale);
+    String buildMessage(T event, UserDto userDto);
 
     Class<?> supportsEventType();
 }

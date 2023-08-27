@@ -26,7 +26,7 @@ public class MentorshipEventListener extends AbstractEventListener<MentorshipEve
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, MentorshipEventDto.class, event -> {
             UserDto requester = userServiceClient.getUser(event.getRequesterId());
-            String text = getMessage(event, requester.getLocale());
+            String text = getMessage(event, requester);
             sendNotification(event.getRequesterId(), text);
         });
 

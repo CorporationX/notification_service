@@ -10,7 +10,6 @@ import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Consumer;
 
 @RequiredArgsConstructor
@@ -30,11 +29,11 @@ public abstract class AbstractEventListener<T> {
 
     }
 
-    protected String getMessage(T event, Locale locale) {
+    protected String getMessage(T event, UserDto userDto) {
         return messageBuilders.stream()
                 .filter(messageBuilder -> messageBuilder.supportsEventType() == event.getClass())
                 .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event, locale))
+                .map(messageBuilder -> messageBuilder.buildMessage(event, userDto))
                 .orElseThrow(() -> new IllegalArgumentException("No message builder found for the given event: " + event.getClass().getName()));
     }
 
