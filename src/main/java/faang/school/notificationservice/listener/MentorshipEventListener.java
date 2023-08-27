@@ -1,9 +1,9 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.MentorshipEventDto;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.mapper.JsonObjectMapper;
 import faang.school.notificationservice.messageBuilder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.data.redis.connection.Message;
@@ -15,19 +15,19 @@ import java.util.List;
 @Component
 public class MentorshipEventListener extends AbstractEventListener<MentorshipEventDto> implements MessageListener {
 
-    public MentorshipEventListener(ObjectMapper objectMapper,
-                                   UserServiceClient userServiceClient,
-                                   List<MessageBuilder<MentorshipEventDto>> messageBuilders,
-                                   List<NotificationService> notificationServices) {
-        super(objectMapper, userServiceClient, messageBuilders, notificationServices);
+
+    public MentorshipEventListener(List<NotificationService> services,
+                                   List<MessageBuilder> messageBuilders,
+                                   UserServiceClient userService,
+                                   JsonObjectMapper jsonObjectMapper) {
+        super(services, messageBuilders, userService, jsonObjectMapper);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, MentorshipEventDto.class, event -> {
-            UserDto requester = userServiceClient.getUser(event.getRequesterId());
-            String text = getMessage(event, requester);
-            sendNotification(event.getRequesterId(), text);
+            UserDto requester = userService.getUser(event.getRequesterId());
+            sendMessage(event, requester.getId());
         });
 
     }

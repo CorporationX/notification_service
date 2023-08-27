@@ -3,46 +3,39 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.mapper.JsonObjectMapper;
 import faang.school.notificationservice.messageBuilder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
-    protected final ObjectMapper objectMapper;
-    protected final UserServiceClient userServiceClient;
-    protected final List<MessageBuilder<T>> messageBuilders;
-    private final List<NotificationService> notificationServices;
+    protected final List<NotificationService> services;
+    protected final List<MessageBuilder> messageBuilders;
+    protected final UserServiceClient userService;
+    protected final JsonObjectMapper jsonObjectMapper;
 
     protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
-        try {
-            T event = objectMapper.readValue(message.getBody(), type);
-            consumer.accept(event);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        T event = jsonObjectMapper.readValue(message.getBody(), type);
+        consumer.accept(event);
     }
 
-    protected String getMessage(T event, UserDto userDto) {
-        return messageBuilders.stream()
-                .filter(messageBuilder -> messageBuilder.supportsEventType() == event.getClass())
-                .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event, userDto))
-                .orElseThrow(() -> new IllegalArgumentException("No message builder found for the given event: " + event.getClass().getName()));
-    }
+    protected void sendMessage(T eventDto, long userId) {
+        UserDto userDto = userService.getUser(userId);
 
-    protected void sendNotification(Long id, String message) {
-        UserDto user = userServiceClient.getUser(id);
-        notificationServices.stream()
-                .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreferredContact()))
+        String message = messageBuilders.stream()
+                .filter(messageBuilder -> messageBuilder.getEventType() == eventDto.getClass())
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No notification service found for the given user: " + user.getUsername()))
-                .send(user, message);
+                .map(messageBuilder -> messageBuilder.buildMessage(eventDto, userDto))
+                .get();
+
+        services.stream()
+                .filter(service -> service.getPreferredContact() == userDto.getPreference())
+                .findFirst()
+                .ifPresent(service -> service.sendNotification(message, userDto));
     }
 }

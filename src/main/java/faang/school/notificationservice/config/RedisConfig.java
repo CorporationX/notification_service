@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
@@ -28,7 +30,7 @@ public class RedisConfig {
     private String followerTopicName;
     @Value("${spring.data.redis.channels.mentorship}")
     private String mentorshipTopicName;
-    @Value("${spring.data.redis.channel.achievement}")
+    @Value("${spring.data.redis.channels.achievement}")
     private String achievementTopicName;
 
     @Bean
@@ -43,8 +45,9 @@ public class RedisConfig {
         container.setConnectionFactory(redisConnectionFactory);
 
         MessageListenerAdapter followerListenerAdapter = new MessageListenerAdapter(followerEventListener);
-        MessageListenerAdapter achievementListenerAdapter = new MessageListenerAdapter(achievementEventListener);
         container.addMessageListener(followerListenerAdapter, new ChannelTopic(followerTopicName));
+
+        MessageListenerAdapter achievementListenerAdapter = new MessageListenerAdapter(achievementEventListener);
         container.addMessageListener(achievementListenerAdapter, new ChannelTopic(achievementTopicName));
 
         MessageListenerAdapter mentorshipEventMessageListenerAdapter = new MessageListenerAdapter(mentorshipEventListener);

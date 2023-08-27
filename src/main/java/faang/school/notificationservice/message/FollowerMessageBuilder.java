@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class FollowerMessageBuilder implements MessageBuilder {
+public class FollowerMessageBuilder implements MessageBuilder<T> {
 
     private final MessageSource messageSource;
 

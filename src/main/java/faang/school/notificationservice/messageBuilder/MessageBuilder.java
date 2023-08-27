@@ -6,5 +6,5 @@ public interface MessageBuilder<T> {
 
     String buildMessage(T event, UserDto userDto);
 
-    Class<?> supportsEventType();
+    Class<?> getEventType();
 }
