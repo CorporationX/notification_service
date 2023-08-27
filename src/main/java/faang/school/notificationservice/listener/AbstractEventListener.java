@@ -2,25 +2,33 @@ package faang.school.notificationservice.listener;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.dto.event.EventDto;
+import faang.school.notificationservice.mapper.JsonObjectMapper;
 import faang.school.notificationservice.message.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.connection.Message;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @RequiredArgsConstructor
-public abstract class AbstractEventListener {
+public abstract class AbstractEventListener<T> {
 
-    private final List<NotificationService> services;
-    private final List<MessageBuilder> messageBuilders;
-    private final UserServiceClient userService;
+    protected final List<NotificationService> services;
+    protected final List<MessageBuilder> messageBuilders;
+    protected final UserServiceClient userService;
+    protected final JsonObjectMapper jsonObjectMapper;
 
-    public void sendMessage(EventDto eventDto) {
-        UserDto userDto = userService.getUser(eventDto.getUserId());
+    protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
+        T event = jsonObjectMapper.readValue(message.getBody(), type);
+        consumer.accept(event);
+    }
+
+    protected void sendMessage(T eventDto, long userId) {
+        UserDto userDto = userService.getUser(userId);
 
         String message = messageBuilders.stream()
-                .filter(messageBuilder -> messageBuilder.getEventType() == eventDto.getEventType())
+                .filter(messageBuilder -> messageBuilder.getEventType() == eventDto.getClass())
                 .findFirst()
                 .map(messageBuilder -> messageBuilder.buildMessage(userDto, eventDto))
                 .get();
