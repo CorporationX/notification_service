@@ -47,11 +47,11 @@ public class RedisConfig {
         MessageListenerAdapter followerListenerAdapter = new MessageListenerAdapter(followerEventListener);
         container.addMessageListener(followerListenerAdapter, new ChannelTopic(followerTopicName));
 
+        MessageListenerAdapter mentorshipEventListenerAdapter = new MessageListenerAdapter(mentorshipEventListener);
+        container.addMessageListener(mentorshipEventListenerAdapter, new ChannelTopic(mentorshipTopicName));
+
         MessageListenerAdapter achievementListenerAdapter = new MessageListenerAdapter(achievementEventListener);
         container.addMessageListener(achievementListenerAdapter, new ChannelTopic(achievementTopicName));
-
-        MessageListenerAdapter mentorshipEventMessageListenerAdapter = new MessageListenerAdapter(mentorshipEventListener);
-        container.addMessageListener(mentorshipEventMessageListenerAdapter, new ChannelTopic(mentorshipTopicName));
 
         return container;
     }

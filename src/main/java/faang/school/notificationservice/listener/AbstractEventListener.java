@@ -1,12 +1,9 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.mapper.JsonObjectMapper;
-import faang.school.notificationservice.messageBuilder.MessageBuilder;
-import faang.school.notificationservice.mapper.JsonObjectMapper;
-import faang.school.notificationservice.message.MessageBuilder;
+import faang.school.notificationservice.builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;

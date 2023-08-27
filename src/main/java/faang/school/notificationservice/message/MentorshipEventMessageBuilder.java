@@ -1,7 +1,8 @@
-package faang.school.notificationservice.messageBuilder;
+package faang.school.notificationservice.message;
 
-import faang.school.notificationservice.dto.MentorshipEventDto;
+import faang.school.notificationservice.dto.event.MentorshipEventDto;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.builder.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ public class MentorshipEventMessageBuilder implements MessageBuilder<MentorshipE
     }
 
     @Override
-    public Class<MentorshipEventDto> supportsEventType() {
+    public Class<MentorshipEventDto> getEventType() {
         return MentorshipEventDto.class;
     }
 }
