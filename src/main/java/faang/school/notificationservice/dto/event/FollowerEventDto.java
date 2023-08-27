@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FollowerEventDto extends EventDto {
+public class FollowerEventDto implements EventDto {
 
     @JsonIgnore
     private final EventType eventType = EventType.FOLLOWER_EVENT;
@@ -24,4 +24,14 @@ public class FollowerEventDto extends EventDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("subscriptionTime")
     private LocalDateTime eventTime;
+
+    @Override
+    public long getUserId() {
+        return userId;
+    }
+
+    @Override
+    public EventType getEventType() {
+        return eventType;
+    }
 }

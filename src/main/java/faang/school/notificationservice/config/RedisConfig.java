@@ -28,19 +28,9 @@ public class RedisConfig {
 
         MessageListenerAdapter followerListenerAdapter = new MessageListenerAdapter(followerEventListener);
         MessageListenerAdapter achievementListenerAdapter = new MessageListenerAdapter(achievementEventListener);
-        container.addMessageListener(followerListenerAdapter, followerChannelTopic());
-        container.addMessageListener(achievementListenerAdapter, achievementChannelTopic());
+        container.addMessageListener(followerListenerAdapter, new ChannelTopic(followerTopicName));
+        container.addMessageListener(achievementListenerAdapter, new ChannelTopic(achievementTopicName));
 
         return container;
-    }
-
-    @Bean
-    public ChannelTopic followerChannelTopic() {
-        return new ChannelTopic(followerTopicName);
-    }
-
-    @Bean
-    public ChannelTopic achievementChannelTopic() {
-        return new ChannelTopic(achievementTopicName);
     }
 }

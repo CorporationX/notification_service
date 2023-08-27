@@ -1,5 +1,6 @@
 package faang.school.notificationservice.message;
 
+import faang.school.notificationservice.dto.event.AchievementEventDto;
 import faang.school.notificationservice.dto.event.EventDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.event.EventType;
@@ -17,7 +18,9 @@ public class AchievementMessageBuilder implements MessageBuilder {
 
     @Override
     public String buildMessage(UserDto userDto, EventDto eventDto) {
-        String message = messageSource.getMessage("achievement.new", new String[]{userDto.getUsername()}, userDto.getLocale());
+        AchievementEventDto achievementEventDto = (AchievementEventDto) eventDto;
+        String message = messageSource.getMessage("achievement.new",
+                new String[]{userDto.getUsername(), achievementEventDto.getAchievementTitle()}, userDto.getLocale());
         log.info("Message for achievement notification for user:{} has built successfully", userDto.getUsername());
         return message;
     }

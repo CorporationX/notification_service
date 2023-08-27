@@ -3,6 +3,7 @@ package faang.school.notificationservice.service;
 import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
+import com.vonage.client.sms.SmsSubmissionResponseMessage;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.MessageSendingException;
@@ -37,11 +38,12 @@ public class SmsService implements NotificationService {
         TextMessage textMessage = new TextMessage(from, userDto.getPhone(), message);
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(textMessage);
 
-        if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
+        MessageStatus messageStatus = response.getMessages().get(0).getStatus();
+        if (messageStatus == MessageStatus.OK) {
             log.info("Message sent successfully to user, phone: {}", userDto.getPhone());
         } else {
-            log.error("Message failed with error: "+ response.getMessages().get(0).getErrorText());
-            throw new MessageSendingException("MessageSendingException");
+            log.error("Message failed, status:{}, error:{}", messageStatus, response.getMessages().get(0).getErrorText());
+            throw new MessageSendingException("MessageSendingException", messageStatus);
         }
     }
 

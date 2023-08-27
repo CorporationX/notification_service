@@ -13,11 +13,22 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AchievementEventDto extends EventDto {
+public class AchievementEventDto implements EventDto {
 
     @JsonIgnore
     private final EventType eventType = EventType.ACHIEVEMENT_EVENT;
     private Long userId;
+    private String achievementTitle;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventTime;
+
+    @Override
+    public long getUserId() {
+        return userId;
+    }
+
+    @Override
+    public EventType getEventType() {
+        return eventType;
+    }
 }

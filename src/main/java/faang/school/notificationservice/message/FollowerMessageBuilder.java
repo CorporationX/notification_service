@@ -18,7 +18,7 @@ public class FollowerMessageBuilder implements MessageBuilder {
     @Override
     public String buildMessage(UserDto userDto, EventDto eventDto) {
         String message = messageSource.getMessage("follower.new", new String[]{userDto.getUsername()}, userDto.getLocale());
-        log.info("Message for follower notification for user:{} has built successfully", userDto.getUsername());
+        log.trace("Message for follower notification for user:{} has built successfully", userDto.getUsername());
         return message;
     }
 
