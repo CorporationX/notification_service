@@ -1,4 +1,4 @@
-package faang.school.notificationservice.messageBuilder;
+package faang.school.notificationservice.message.telegram;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -8,11 +8,11 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class FollowEventMessageBuilder implements MessageBuilder {
+public class TelegramWelcomeMessageBuilder {
 
     private final MessageSource messageSource;
-    @Override
+
     public String buildMessage(Locale locale, String userName) {
-        return messageSource.getMessage("follower.new", new Object[] {userName}, locale);
+        return messageSource.getMessage("telegramWelcome.new", new Object[]{userName}, locale);
     }
 }
