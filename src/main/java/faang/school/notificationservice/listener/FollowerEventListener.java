@@ -14,20 +14,16 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class FollowerEventListener extends AbstractEventListener implements MessageListener {
-
-    private final JsonObjectMapper jsonObjectMapper;
+public class FollowerEventListener extends AbstractEventListener<FollowerEventDto> implements MessageListener {
 
     public FollowerEventListener(List<NotificationService> services, List<MessageBuilder> messageBuilders,
                                  UserServiceClient userService, JsonObjectMapper jsonObjectMapper) {
-        super(services, messageBuilders, userService);
-        this.jsonObjectMapper = jsonObjectMapper;
+        super(services, messageBuilders, userService, jsonObjectMapper);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         log.info("FollowerEventListener has received a new message");
-        FollowerEventDto followerEventDto = jsonObjectMapper.readValue(message.getBody(), FollowerEventDto.class);
-        sendMessage(followerEventDto);
+        handleEvent(message, FollowerEventDto.class, event -> sendMessage(event, event.getUserId()));
     }
 }
