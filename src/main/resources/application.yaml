@@ -49,3 +49,7 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+telegram:
+  bot:
+    token: "6436403091:AAFdLcAUzM4WTwV3MS65-J03LpkBmOEkmPc"
+    name: "NotifyX bot"
