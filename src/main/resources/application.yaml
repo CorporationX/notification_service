@@ -7,6 +7,11 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: group
+
   mail:
     host: smtp.gmail.com
     port: 587
