@@ -64,6 +64,12 @@ dependencies {
      * Telegram
      */
     implementation(group = "org.telegram", name = "telegrambots", version = "6.5.0")
+
+    /**
+     *  Google SMTP
+     */
+    implementation("org.springframework:spring-context-support")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
 }
 
 tasks.withType<Test> {
