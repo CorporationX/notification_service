@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.MessageBuilder;
+import faang.school.notificationservice.dto.notification.NotificationData;
+import faang.school.notificationservice.message_builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,11 +41,11 @@ public class AbstractEventListener<T> {
         }
     }
 
-    protected String getMessage(T event, Locale userLocale) {
+    protected String getMessage(T event, Locale userLocale, NotificationData data) {
         return messageBuilders.stream()
                 .filter(messageBuilder -> messageBuilder.supportsEventType(event))
                 .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event, userLocale))
+                .map(messageBuilder -> messageBuilder.buildMessage(data, userLocale))
                 .orElseThrow(() -> new IllegalArgumentException("No message builder for: " + event.getClass().getName()));
     }
 
@@ -54,5 +55,6 @@ public class AbstractEventListener<T> {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No notification service for user preference. Id: " + user.getId()))
                 .send(user, message);
+        log.info("Message sent to user Id: {}, by {}", user.getId(), user.getPreference());
     }
 }
