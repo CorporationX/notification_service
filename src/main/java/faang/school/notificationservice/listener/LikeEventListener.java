@@ -17,7 +17,6 @@ import java.util.List;
 
 public class LikeEventListener extends AbstractEventListener<LikeEventDto> implements MessageListener {
 
-
     public LikeEventListener(ObjectMapper objectMapper,
                              List<NotificationService> notificationServices,
                              UserServiceClient userServiceClient,
