@@ -17,13 +17,14 @@ public class TelegramService implements NotificationService {
     @Override
     public void send(UserDto user, String message) {
         SendMessage messageToTelegram = new SendMessage();
-        messageToTelegram.setChatId(user.getChatId());
+        messageToTelegram.setChatId(user.getTelegramChatId());
         messageToTelegram.setText(message);
 
         try {
             telegramBot.execute(messageToTelegram);
+            log.info("Notification successfully sent to chat = {}", user.getTelegramChatId());
         } catch (TelegramApiException e) {
-            log.error("Failed to send notification", e);
+            log.error("Failed to send notification to chat = {}", user.getTelegramChatId(), e);
             throw new IllegalArgumentException(e);
         }
     }
