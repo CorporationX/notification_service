@@ -6,10 +6,14 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.connection.Message;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+@Slf4j
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
 
@@ -17,6 +21,15 @@ public abstract class AbstractEventListener<T> {
     protected final UserServiceClient userServiceClient;
     private final List<MessageBuilder<T>> messageBuilders;
     private final List<NotificationService> notificationServices;
+
+    protected T eventMapper(Message message, Class<T> eventType) {
+        try {
+            return objectMapper.readValue(message.getBody(), eventType);
+        } catch (IOException e) {
+            log.error("Error reading event from message body: {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
 
     protected String getMessage(T event, Locale userLocale) {
         return messageBuilders.stream()
