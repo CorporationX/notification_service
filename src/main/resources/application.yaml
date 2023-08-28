@@ -6,6 +6,8 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        skill-event:
+          skill-offered-channel: skill_offered_channel
 
   mail:
     host: smtp.gmail.com
