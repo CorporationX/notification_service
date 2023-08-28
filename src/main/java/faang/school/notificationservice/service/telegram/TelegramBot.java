@@ -49,8 +49,4 @@ public class TelegramBot extends TelegramLongPollingBot {
     public String getBotToken() {
         return config.getToken();
     }
-
-    public long getChatId() {
-        return config.getChatId();
-    }
 }

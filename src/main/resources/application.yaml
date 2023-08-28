@@ -51,4 +51,3 @@ user-service:
 bot:
   name: "corporationx_bot"
   token: "6495995387:AAFFBCZAGbNmX-Opv3VxMOboneKhR4kxc5c"
-  chat-id: "0000000000"

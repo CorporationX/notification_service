@@ -17,7 +17,7 @@ public class TelegramService implements NotificationService {
     @Override
     public void send(UserDto user, String message) {
         SendMessage messageToTelegram = new SendMessage();
-        messageToTelegram.setChatId(telegramBot.getChatId());
+        messageToTelegram.setChatId(user.getChatId());
         messageToTelegram.setText(message);
 
         try {
