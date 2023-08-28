@@ -28,7 +28,7 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.follower}")
     private String followerChannelName;
 
-    @Value("{spring.data.redis.channel.profile_view}")
+    @Value("${spring.data.redis.channel.profile_view}")
     private String channelName;
 
     @Bean
