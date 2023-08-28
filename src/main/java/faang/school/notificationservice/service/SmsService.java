@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.notification;
+package faang.school.notificationservice.service;
 
 import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
@@ -40,6 +40,7 @@ public class SmsService implements NotificationService {
     public void send(UserDto user, String text) {
         TextMessage message = new TextMessage(from, user.getPhone(), text);
         SmsSubmissionResponse response = client.getSmsClient().submitMessage(message);
+        log.info("Sending message: {}, to phone number: {}", text, user.getPhone());
 
         if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
             log.info("Message sent successfully. {}", message.getMessageBody());

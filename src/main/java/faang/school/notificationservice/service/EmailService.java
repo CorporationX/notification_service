@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.notification;
+package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +25,7 @@ public class EmailService implements NotificationService {
         simpleMailMessage.setTo(user.getEmail());
         simpleMailMessage.setText(text);
         simpleMailMessage.setSubject("Corporation-X notification");
+        log.info("Sending email: " + text + " to " + user.getEmail());
         mailSender.send(simpleMailMessage);
         log.info("Email sent successfully to " + user.getEmail());
     }

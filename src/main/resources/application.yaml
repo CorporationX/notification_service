@@ -4,10 +4,10 @@ spring:
       port: 6379
       host: localhost
       channels:
-        follower: follower_channel
-        achievement: achievement_channel
+        follower: follower-channel
+        achievement: achievement-channel
         event_channel:
-          name: event_start_channel
+          name: event-start-channel
 
   mail:
     host: smtp.gmail.com

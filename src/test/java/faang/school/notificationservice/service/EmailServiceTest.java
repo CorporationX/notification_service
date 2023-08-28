@@ -1,6 +1,7 @@
-package faang.school.notificationservice.service.notification;
+package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

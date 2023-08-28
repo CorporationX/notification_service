@@ -15,7 +15,6 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 @RequiredArgsConstructor
 @Slf4j
 public class RedisConfig {
-
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")

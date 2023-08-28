@@ -1,7 +1,7 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.dto.event.EventDto;
+import faang.school.notificationservice.dto.event.EventStartDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,22 +23,23 @@ class EventStartMessageBuilderTest {
     private EventStartMessageBuilder eventStartMessageBuilder;
     @Mock
     private MessageSource messageSource;
-    private EventDto event;
+    private EventStartDto event;
     private LocalDateTime eventDate;
 
     @BeforeEach
     void setUp() {
-        event = EventDto.builder()
+        event = EventStartDto.builder()
                 .title("title")
-                .attendee(UserDto.builder()
+                .notifiedAttendee(UserDto.builder()
                         .username("username")
                         .build())
                 .build();
-        String text = "Hi, " + event.getAttendee().getUsername() + "!" + " Event: " + event.getTitle() + " is starting";
+        String text = "Hi, " + event.getNotifiedAttendee().getUsername() + "!" +
+                " Event: " + event.getTitle() + " is starting";
 
         when(messageSource.getMessage(
                 "event.start",
-                new Object[]{event.getAttendee().getUsername(), event.getTitle()},
+                new Object[]{event.getNotifiedAttendee().getUsername(), event.getTitle()},
                 Locale.getDefault()))
                 .thenReturn(text);
 
