@@ -1,9 +1,10 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.messaging.listener;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.messaging.listener.AbstractEventListener;
+import faang.school.notificationservice.messaging.message_builder.MessageBuilder;
 import faang.school.notificationservice.model.EventType;
-import faang.school.notificationservice.service.message_builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,9 +1,9 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.messaging.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.ProfileViewEvent;
-import faang.school.notificationservice.service.message_builder.MessageBuilder;
+import faang.school.notificationservice.dto.EventStartEvent;
+import faang.school.notificationservice.messaging.message_builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
@@ -13,22 +13,27 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Component
-public class ProfileViewEventListener extends AbstractEventListener<ProfileViewEvent> implements MessageListener {
+public class EventStartEventListener extends AbstractEventListener<EventStartEvent> implements MessageListener {
+
     @Autowired
-    public ProfileViewEventListener(ObjectMapper objectMapper,
+    public EventStartEventListener(ObjectMapper objectMapper,
                                     UserServiceClient userServiceClient,
-                                    List<MessageBuilder<ProfileViewEvent>> messageBuilders,
+                                    List<MessageBuilder<EventStartEvent>> messageBuilders,
                                     List<NotificationService> notificationServices) {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
+        ExecutorService service = Executors.newFixedThreadPool(4);
         try {
-            ProfileViewEvent event = objectMapper.readValue(message.getBody(), ProfileViewEvent.class);
-            sendNotification(event.getProfileViewedId(), getMessage(event, Locale.ENGLISH));
+            EventStartEvent event = objectMapper.readValue(message.getBody(), EventStartEvent.class);
+            List<Long> attendees = event.getAttendeesIds();
+            attendees.forEach(attendee -> service.submit(() -> sendNotification(attendee, getMessage(event, Locale.US))));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
