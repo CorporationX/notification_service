@@ -3,15 +3,19 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
+      channels:
+        follower: follower-channel
+        achievement: achievement-channel
+        event_channel:
+          name: event-start-channel
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
+    username: team.mad.cerberus@gmail.com
+    #https://www.baeldung.com/spring-email
+    password: Cerberus2023
+    #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
     properties:
       mail:
         smtp:
@@ -25,6 +29,12 @@ spring:
   messages:
     basename: messages
 
+  async:
+    scheduled:
+      thread-pool:
+        core_pool_size: 2
+        max_pool_size: 2
+
 server:
   port: 8083
 
@@ -34,9 +44,16 @@ logging:
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
+  from: Vonage APIs
   api:
     key: whatever
     secret: whatever
+
+telegram:
+  webhook: whatever
+  token: whatever
+  name: whatever
+
 
 project-service:
     host: localhost
