@@ -4,7 +4,8 @@ import faang.school.notificationservice.dto.UserDto;
 
 public interface MessageBuilder<T> {
 
-    public String buildMessage(UserDto userDto, T eventDto);
+    String buildMessage(UserDto userDto, T event);
 
-    public Class<T> getEventType();
+    Class<?> getEventType();
 }
+

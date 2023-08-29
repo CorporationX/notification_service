@@ -16,14 +16,16 @@ import java.util.List;
 @Slf4j
 public class FollowerEventListener extends AbstractEventListener<FollowerEventDto> implements MessageListener {
 
-    public FollowerEventListener(List<NotificationService> services, List<MessageBuilder> messageBuilders,
-                                 UserServiceClient userService, JsonObjectMapper jsonObjectMapper) {
-        super(services, messageBuilders, userService, jsonObjectMapper);
+    public FollowerEventListener(UserServiceClient userService,
+                                 JsonObjectMapper jsonObjectMapper,
+                                 List<NotificationService> services,
+                                 List<MessageBuilder<FollowerEventDto>> messageBuilders) {
+        super(userService, jsonObjectMapper, services, messageBuilders);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         log.info("FollowerEventListener has received a new message");
-        handleEvent(message, FollowerEventDto.class, event -> sendMessage(event, event.getUserId()));
+        handleEvent(message, FollowerEventDto.class, event -> sendMessage(event, event.getFolloweeId(), event.getFollowerId()));
     }
 }
