@@ -50,7 +50,6 @@ public class AbstractEventListenerTest {
 
     @Test
     void getMessageTest() {
-        Mockito.when(messageBuilder.getEventType()).thenReturn(Object.class);
         abstractEventListener.getMessage(event, Locale.UK);
         Mockito.verify(messageBuilder).buildMessage(event, Locale.UK);
     }
