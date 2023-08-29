@@ -45,4 +45,5 @@ public abstract class AbstractEventListener<T> {
                 .findFirst()
                 .ifPresent(service -> service.sendNotification(message, receiverDto));
     }
+
 }

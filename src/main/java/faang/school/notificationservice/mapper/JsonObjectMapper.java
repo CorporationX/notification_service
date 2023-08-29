@@ -8,10 +8,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class JsonObjectMapper {
-
     private final ObjectMapper objectMapper;
 
     public <T> T readValue(byte[] src, Class<T> valueType) {
