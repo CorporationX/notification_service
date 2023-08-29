@@ -1,9 +1,9 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.messaging.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.builder.MessageBuilder;
+import faang.school.notificationservice.messaging.message_builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 
@@ -28,11 +28,11 @@ public abstract class AbstractEventListener<T> {
 
     protected void sendNotification(Long id, String message) {
         UserDto user = userServiceClient.getUser(id);
+
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No notification service found for the user's preferred communication method."))
                 .send(user, message);
     }
-
 }

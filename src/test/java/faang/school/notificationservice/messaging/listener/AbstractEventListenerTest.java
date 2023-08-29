@@ -1,9 +1,10 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.messaging.listener;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.messaging.listener.AbstractEventListener;
+import faang.school.notificationservice.messaging.message_builder.MessageBuilder;
 import faang.school.notificationservice.model.EventType;
-import faang.school.notificationservice.service.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.verify;
 public class AbstractEventListenerTest {
 
     @Mock
-    private MessageBuilder messageBuilder;
+    private MessageBuilder<EventType> messageBuilder;
     @Mock
     private UserServiceClient userServiceClient;
     @Mock
@@ -35,14 +36,12 @@ public class AbstractEventListenerTest {
     private UserDto userDto;
 
     private Locale usLocale;
-    private Class<?> postLike;
+    private EventType postLike;
 
-    private String[] messageArgs;
+    private AbstractEventListener<EventType> eventListener;
+    private AbstractEventListener<EventType> badEventListener;
 
-    private AbstractEventListener eventListener;
-    private AbstractEventListener badEventListener;
-
-    private List<MessageBuilder> messageBuilders;
+    private List<MessageBuilder<EventType>> messageBuilders;
     private List<NotificationService> notificationServices;
 
     @BeforeEach
@@ -57,15 +56,15 @@ public class AbstractEventListenerTest {
                 .build();
 
         usLocale = Locale.US;
-        postLike = EventType.class;
-
-        messageArgs = new String[]{"Test", "message"};
+        postLike = EventType.POST_LIKE;
 
         messageBuilders = List.of(messageBuilder);
         notificationServices = List.of(notificationService);
 
-        badEventListener = new AbstractEventListener(null, userServiceClient, List.of(), List.of()) {};
-        eventListener = new AbstractEventListener(null, userServiceClient, messageBuilders, notificationServices) {};
+        badEventListener = new AbstractEventListener<>(null, userServiceClient, List.of(), List.of()) {
+        };
+        eventListener = new AbstractEventListener<>(null, userServiceClient, messageBuilders, notificationServices) {
+        };
 
     }
 
@@ -73,9 +72,9 @@ public class AbstractEventListenerTest {
     @DisplayName("Get message: Positive scenario")
     void testGetMessage_IsOk() {
         when(messageBuilder.supportsEventType(postLike)).thenReturn(true);
-        when(messageBuilder.buildMessage(postLike, usLocale, messageArgs)).thenReturn(message);
+        when(messageBuilder.buildMessage(postLike, usLocale)).thenReturn(message);
 
-        String message = eventListener.getMessage(postLike, usLocale, messageArgs);
+        String message = eventListener.getMessage(postLike, usLocale);
 
         Assertions.assertEquals("Test message", message);
     }
@@ -83,7 +82,7 @@ public class AbstractEventListenerTest {
     @Test
     @DisplayName("Get message: No message builder found")
     void testGetMessage_NoMessageBuilder() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> badEventListener.getMessage(postLike, usLocale, messageArgs));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> badEventListener.getMessage(postLike, usLocale));
     }
 
     @Test
