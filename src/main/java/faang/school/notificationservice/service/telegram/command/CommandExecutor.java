@@ -4,6 +4,7 @@ import faang.school.notificationservice.dto.CommandDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.Map;
 
@@ -13,14 +14,13 @@ import java.util.Map;
 public class CommandExecutor {
     private final Map<String, Command> commands;
 
-    public void executeCommand(long chatId, String firstName, String textCommand) {
+    public SendMessage executeCommand(long chatId, String firstName, String textCommand) {
         CommandDto commandDto = new CommandDto(chatId, firstName, textCommand);
         if (commands.containsKey(textCommand)) {
-            commands.get(textCommand).execute(commandDto);
-            log.info("The command {} from chat {} was executed.", textCommand, chatId);
+            return commands.get(textCommand).execute(commandDto);
         } else {
-            commands.get("/error").execute(commandDto);
             log.warn("Passed a non-existent command from chat = {}", chatId);
+            return commands.get("/error").execute(commandDto);
         }
     }
 }
