@@ -1,13 +1,12 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.messaging.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.builder.MessageBuilder;
-import faang.school.notificationservice.builder.ProfileViewMessageBuilder;
+import faang.school.notificationservice.messaging.listener.ProfileViewEventListener;
+import faang.school.notificationservice.messaging.message_builder.ProfileViewMessageBuilder;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.ProfileViewEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.sms.SmsService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

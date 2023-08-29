@@ -1,7 +1,8 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.messaging.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.builder.FollowerMessageBuilder;
+import faang.school.notificationservice.messaging.listener.FollowerEventListener;
+import faang.school.notificationservice.messaging.message_builder.FollowerMessageBuilder;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.FollowerEvent;
 import faang.school.notificationservice.dto.UserDto;

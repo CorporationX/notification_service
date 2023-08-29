@@ -1,4 +1,4 @@
-package faang.school.notificationservice.builder;
+package faang.school.notificationservice.messaging.message_builder;
 
 import java.util.Locale;
 
