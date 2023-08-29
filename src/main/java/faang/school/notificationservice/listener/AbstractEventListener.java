@@ -6,25 +6,37 @@ import faang.school.notificationservice.mapper.JsonObjectMapper;
 import faang.school.notificationservice.message.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.data.redis.connection.Message;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-@Component
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
 
+    protected final List<NotificationService> services;
+    protected final List<MessageBuilder> messageBuilders;
+    protected final UserServiceClient userService;
     protected final JsonObjectMapper jsonObjectMapper;
-    protected final UserServiceClient userServiceClient;
-    protected final List<MessageBuilder<T>> messageBuilders;
-    private final List<NotificationService> notificationServiceList;
 
-    protected String getMessage(T event, UserDto userDto){
-        return messageBuilders.stream()
-                .filter(builder -> builder.getEventType() == event.getClass())
+    protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
+        T event = jsonObjectMapper.readValue(message.getBody(), type);
+        consumer.accept(event);
+    }
+
+    protected void sendMessage(T eventDto, long userId) {
+        UserDto userDto = userService.getUser(userId);
+
+        String message = messageBuilders.stream()
+                .filter(messageBuilder -> messageBuilder.getEventType() == eventDto.getClass())
                 .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event, userDto))
-                .orElseThrow(()-> new IllegalArgumentException("No message builder was found for event type: " + event.getClass().getName()));
+                .map(messageBuilder -> messageBuilder.buildMessage(userDto, eventDto))
+                .get();
+
+        services.stream()
+                .filter(service -> service.getPreferredContact() == userDto.getPreference())
+                .findFirst()
+                .ifPresent(service -> service.sendNotification(message, userDto));
     }
 
 }
