@@ -3,7 +3,6 @@ package faang.school.notificationservice.config;
 import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.FollowerEventListener;
 import faang.school.notificationservice.listener.EventStartEventListener;
-import faang.school.notificationservice.listener.FollowerEventListener;
 import faang.school.notificationservice.listener.MentorshipEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +22,7 @@ public class RedisConfig {
     private final FollowerEventListener followerEventListener;
     private final EventStartEventListener eventStartEventListener;
     private final AchievementEventListener achievementEventListener;
+    private final MentorshipEventListener mentorshipEventListener;
 
     @Value("${spring.data.redis.host}")
     private String host;
