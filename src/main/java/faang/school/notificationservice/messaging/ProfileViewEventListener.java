@@ -1,9 +1,9 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.ProfileViewEvent;
-import faang.school.notificationservice.builder.MessageBuilder;
+import faang.school.notificationservice.service.message_builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
