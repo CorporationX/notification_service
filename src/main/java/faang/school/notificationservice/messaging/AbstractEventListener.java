@@ -21,7 +21,6 @@ public class AbstractEventListener<T> {
 
     protected String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
-                .filter(messageBuilder -> messageBuilder.getEventType() == event.getClass())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No message builder for " + event.getClass().getName()))
                 .buildMessage(event, locale);

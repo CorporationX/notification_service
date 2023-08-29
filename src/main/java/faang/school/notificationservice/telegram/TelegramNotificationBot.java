@@ -1,6 +1,9 @@
 package faang.school.notificationservice.telegram;
 
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.ContactDto;
+import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.service.NotificationService;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +17,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 @Slf4j
-public class TelegramNotificationBot extends TelegramLongPollingBot {
+public class TelegramNotificationBot extends TelegramLongPollingBot implements NotificationService {
     @Value("${telegram.bot.name}")
     private String name;
     private final UserServiceClient userServiceClient;
@@ -50,7 +53,7 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
     }
 
     @Retryable(maxAttempts = 5, backoff = @Backoff(delay = 1000, multiplier = 2))
-    public void sendMessage(long chat_id, String rowMessage) throws TelegramApiException {
+    private void sendMessage(long chat_id, String rowMessage) throws TelegramApiException {
         SendMessage message = SendMessage.builder()
                 .chatId(chat_id)
                 .text(rowMessage)
@@ -62,10 +65,29 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
     public void processUserResponse(long chatId, String response) {
         try {
             long userId = Long.parseLong(response);
-            userServiceClient.sendTelegramId(userId,chatId);
+            userServiceClient.sendTelegramId(userId, chatId);
         } catch (NumberFormatException | FeignException.FeignClientException e) {
             log.error(e.getMessage());
         }
+    }
+
+    @Override
+    public void send(UserDto user, String message) {
+        var telegramContact = user.getContacts().stream().filter(contact -> contact.getType() == ContactDto.ContactType.TELEGRAM).findFirst();
+        telegramContact.ifPresent(
+                contact -> {
+                    try {
+                        sendMessage(Integer.parseInt(contact.getContact()), message);
+                    } catch (TelegramApiException e) {
+                        log.error("Error with sending notification to " + user, e);
+                    }
+                }
+        );
+    }
+
+    @Override
+    public UserDto.PreferredContact getPreferredContact() {
+        return UserDto.PreferredContact.TELEGRAM;
     }
 }
 
