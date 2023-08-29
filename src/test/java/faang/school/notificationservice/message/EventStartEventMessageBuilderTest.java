@@ -1,5 +1,7 @@
 package faang.school.notificationservice.message;
 
+import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.event.EventStartEventDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,9 +24,16 @@ class EventStartEventMessageBuilderTest {
 
     @Test
     void buildMessageTest() {
+        UserDto userDto = UserDto.builder()
+                .username("Hooks")
+                .locale(Locale.CHINA)
+                .build();
+        EventStartEventDto eventDto = EventStartEventDto.builder().
+                title("Halloween").
+                build();
 
-        eventStartEventMessageBuilder.buildMessage(Locale.CHINA, "Halloween");
+        eventStartEventMessageBuilder.buildMessage(userDto, eventDto);
 
-        verify(messageSource).getMessage("event.start", new Object[]{"Halloween"}, Locale.CHINA);
+        verify(messageSource).getMessage("event.start", new Object[]{"Hooks", "Halloween"}, userDto.getLocale());
     }
 }

@@ -1,13 +1,15 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.FollowerEventListener;
 import faang.school.notificationservice.listener.EventStartEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
@@ -18,7 +20,7 @@ public class RedisConfig {
 
     private final FollowerEventListener followerEventListener;
     private final EventStartEventListener eventStartEventListener;
-    private final MessageListener achievementEventListener;
+    private final AchievementEventListener achievementEventListener;
 
     @Value("${spring.data.redis.host}")
     private String host;
