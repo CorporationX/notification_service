@@ -1,11 +1,10 @@
 package faang.school.notificationservice.message;
 
 import faang.school.notificationservice.dto.FollowerEventDto;
+import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
-
-import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
@@ -14,12 +13,12 @@ public class FollowEventMessageBuilder implements MessageBuilder<FollowerEventDt
     private final MessageSource messageSource;
 
     @Override
-    public String buildMessage(FollowerEventDto event, Locale locale) {
-        return messageSource.getMessage("follower.new", new Object[] {userName}, locale);
+    public String buildMessage(FollowerEventDto event, UserDto userDto) {
+        return messageSource.getMessage("follower.new", new Object[] {userDto.getUsername()}, userDto.getLocale());
     }
 
     @Override
-    public Class<?> supportsEventType() {
+    public Class<?> getEventType() {
         return null;
     }
 }
