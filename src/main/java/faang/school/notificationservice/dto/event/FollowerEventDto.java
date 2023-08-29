@@ -1,7 +1,6 @@
 package faang.school.notificationservice.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,9 +15,9 @@ import java.time.LocalDateTime;
 @Builder
 public class FollowerEventDto {
 
-    private Long followerId;
+    private Long followeeId;
     @JsonProperty("followeeId")
-    private Long userId;
+    private Long followerId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("subscriptionTime")
     private LocalDateTime eventTime;
