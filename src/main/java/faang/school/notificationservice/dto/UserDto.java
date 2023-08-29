@@ -20,4 +20,3 @@ public class UserDto {
         EMAIL, SMS, TELEGRAM
     }
 }
-
