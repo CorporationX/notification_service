@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.message;
+package faang.school.notificationservice.message;
 
 import faang.school.notificationservice.dto.SkillOfferEventDto;
 import lombok.RequiredArgsConstructor;

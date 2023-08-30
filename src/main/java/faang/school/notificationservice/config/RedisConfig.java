@@ -19,20 +19,11 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.host}")
     private String host;
-
     @Value("${spring.data.redis.port}")
     private int port;
-
     @Value("${spring.data.redis.channels.skill_offer_channel}")
     private String skillOfferChannelName;
-
     private final SkillOfferListener skillOfferListener;
-
-    @Bean
-    public JedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
-        return new JedisConnectionFactory(config);
-    }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
@@ -51,8 +42,12 @@ public class RedisConfig {
         return container;
     }
 
-    @Bean
-    ChannelTopic topicInviteEvent() {
+    private JedisConnectionFactory redisConnectionFactory() {
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
+        return new JedisConnectionFactory(config);
+    }
+
+    private ChannelTopic topicInviteEvent() {
         return new ChannelTopic(skillOfferChannelName);
     }
 }

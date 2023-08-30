@@ -5,7 +5,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.DeserializeJsonException;
 import faang.school.notificationservice.exception.NotFoundException;
-import faang.school.notificationservice.service.message.MessageBuilder;
+import faang.school.notificationservice.message.MessageBuilder;
 import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
@@ -17,7 +17,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
 
-    protected final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationServices;
     private final List<MessageBuilder<T>> messageBuilders;
