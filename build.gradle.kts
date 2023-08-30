@@ -24,6 +24,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail:3.0.6")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    implementation ("org.springframework.kafka:spring-kafka")
+
     implementation("org.springframework.retry:spring-retry:2.0.2")
 
     /**
@@ -62,6 +64,12 @@ dependencies {
      * Telegram
      */
     implementation(group = "org.telegram", name = "telegrambots", version = "6.5.0")
+
+    /**
+     *  Google SMTP
+     */
+    implementation("org.springframework:spring-context-support")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
 }
 
 tasks.withType<Test> {
