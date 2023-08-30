@@ -73,7 +73,7 @@ public class MentorshipAcceptedEventListenerIT {
 
     @BeforeEach
     void setUp() {
-        Mockito.when(userServiceClient.getUser(2L)).thenReturn(mockUserDto());
+        Mockito.when(userServiceClient.getUserDtoForNotification(2L)).thenReturn(mockUserDto());
     }
 
     @AfterAll
