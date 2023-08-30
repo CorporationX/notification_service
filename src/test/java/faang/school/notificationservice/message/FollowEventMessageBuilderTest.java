@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
-import org.mockito.Mockito;
 
 import java.util.Locale;
 
@@ -22,10 +22,14 @@ class FollowEventMessageBuilderTest {
 
     @Test
     void testBuildMessage() {
-        String userName = "User";
-        UserDto userDto = UserDto.builder().username(userName).build();
-        FollowerEventDto followerEventDto = FollowerEventDto.builder().build();
-        followEventMessageBuilder.buildMessage(userDto, followerEventDto);
-        Mockito.verify(messageSource).getMessage("follower.new", new Object[]{userName}, null);
+        UserDto userDto = UserDto.builder()
+                .username("User")
+                .locale(Locale.CANADA)
+                .build();
+        FollowerEventDto eventDto = FollowerEventDto.builder().build();
+
+        followEventMessageBuilder.buildMessage(userDto, eventDto);
+
+        Mockito.verify(messageSource).getMessage("follower.new", new Object[]{userDto.getUsername()}, userDto.getLocale());
     }
 }

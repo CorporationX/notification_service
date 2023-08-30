@@ -14,10 +14,10 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
 
-    protected final List<NotificationService> services;
-    protected final List<MessageBuilder> messageBuilders;
     protected final UserServiceClient userService;
     protected final JsonObjectMapper jsonObjectMapper;
+    protected final List<NotificationService> services;
+    protected final List<MessageBuilder<T>> messageBuilders;
 
     protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
         T event = jsonObjectMapper.readValue(message.getBody(), type);
@@ -26,7 +26,13 @@ public abstract class AbstractEventListener<T> {
 
     protected void sendMessage(T eventDto, long receiverId, long actorId) {
         UserDto receiverDto = userService.getUser(receiverId);
-        UserDto actorDto = userService.getUser(actorId);
+        UserDto actorDto;
+
+        if (actorId == receiverId) {
+            actorDto = receiverDto;
+        } else {
+            actorDto = userService.getUser(actorId);
+        }
 
         String message = messageBuilders.stream()
                 .filter(messageBuilder -> messageBuilder.getEventType() == eventDto.getClass())
@@ -39,4 +45,5 @@ public abstract class AbstractEventListener<T> {
                 .findFirst()
                 .ifPresent(service -> service.sendNotification(message, receiverDto));
     }
+
 }

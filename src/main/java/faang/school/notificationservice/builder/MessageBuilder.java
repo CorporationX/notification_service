@@ -1,11 +1,10 @@
-package faang.school.notificationservice.message;
+package faang.school.notificationservice.builder;
 
 import faang.school.notificationservice.dto.UserDto;
 
 public interface MessageBuilder<T> {
 
-    String buildMessage(UserDto userDto, T event);
+    String buildMessage(T event, UserDto userDto);
 
     Class<?> getEventType();
 }
-

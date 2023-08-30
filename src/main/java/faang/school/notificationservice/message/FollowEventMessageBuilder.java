@@ -13,7 +13,7 @@ public class FollowEventMessageBuilder implements MessageBuilder<FollowerEventDt
     private final MessageSource messageSource;
 
     @Override
-    public String buildMessage(UserDto userDto, FollowerEventDto followerEventDto) {
+    public String buildMessage(UserDto userDto, FollowerEventDto eventDto) {
         return messageSource.getMessage("follower.new", new Object[]{userDto.getUsername()}, userDto.getLocale());
     }
 
