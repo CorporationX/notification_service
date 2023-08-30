@@ -22,7 +22,7 @@ public abstract class AbstractEventListener<T> {
     private final List<NotificationService> notificationServices;
     private final List<MessageBuilder<T>> messageBuilders;
 
-    public String getMessage(Class<?> clazz, T event) {
+    protected String getMessage(Class<?> clazz, T event) {
         return messageBuilders.stream()
                 .filter(builder -> builder.supports(clazz))
                 .findFirst()
@@ -30,7 +30,7 @@ public abstract class AbstractEventListener<T> {
                 .buildMessage(event, Locale.ENGLISH);
     }
 
-    public void sendNotification(long userId, String message) {
+    protected void sendNotification(long userId, String message) {
         UserDto user = userServiceClient.getUser(userId);
 
         notificationServices.stream()
@@ -38,7 +38,7 @@ public abstract class AbstractEventListener<T> {
                 .forEach(service -> service.sendNotification(message));
     }
 
-    public T deserializeJson(Message message, Class<T> clazz) {
+    protected T deserializeJson(Message message, Class<T> clazz) {
         try {
             return objectMapper.readValue(message.getBody(), clazz);
         } catch (IOException e) {
