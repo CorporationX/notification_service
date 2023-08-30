@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
-import faang.school.notificationservice.event_listener.RecommendationReceivedEventListener;
+import faang.school.notificationservice.messaging.listener.ProfileViewEventListener;
+import faang.school.notificationservice.messaging.listener.RecommendationReceivedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,12 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int port;
 
+    @Value("${spring.data.redis.channel.follower}")
+    private String followerChannelName;
+
+    @Value("${spring.data.redis.channel.profile_view}")
+    private String channelName;
+
     @Value("${spring.data.redis.channel.recommendation}")
     private String recommendationChannelName;
 
@@ -43,8 +50,23 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListenerAdapter profileViewListener(ProfileViewEventListener profileViewEventListener) {
+        return new MessageListenerAdapter(profileViewEventListener);
+    }
+
+    @Bean
     MessageListenerAdapter recommendationListener(RecommendationReceivedEventListener recommendationReceivedEventListener) {
         return new MessageListenerAdapter(recommendationReceivedEventListener);
+    }
+
+    @Bean
+    ChannelTopic followerChannel() {
+        return new ChannelTopic(followerChannelName);
+    }
+
+    @Bean
+    ChannelTopic profileViewTopic() {
+        return new ChannelTopic(channelName);
     }
 
     @Bean
@@ -53,10 +75,13 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationListener) {
+    RedisMessageListenerContainer redisContainer(MessageListenerAdapter profileViewListener,
+                                                 MessageListenerAdapter recommendationListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
+        container.addMessageListener(profileViewListener, profileViewTopic());
         container.addMessageListener(recommendationListener, recommendationChannel());
+
         return container;
     }
 }

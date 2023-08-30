@@ -1,9 +1,10 @@
-package faang.school.notificationservice.event_listener;
+package faang.school.notificationservice.messaging.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.RecommendationReceivedEvent;
-import faang.school.notificationservice.service.MessageBuilder;
+import faang.school.notificationservice.event_listener.AbstractEventListener;
+import faang.school.notificationservice.messaging.message_builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,13 +26,8 @@ public class RecommendationReceivedEventListener extends AbstractEventListener<R
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        RecommendationReceivedEvent event;
-        try {
-            event = objectMapper.readValue(message.getBody(), RecommendationReceivedEvent.class);
-        } catch (IOException e) {
-            log.error("Error reading RecommendationReceivedEvent from message body: {}", e.getMessage());
-            throw new RuntimeException(e);
-        }
+        RecommendationReceivedEvent event = eventMapper(message, RecommendationReceivedEvent.class);
+
         String text = getMessage(event, Locale.getDefault());
 
         sendNotification(event.getRecipientId(), text);
