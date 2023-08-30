@@ -4,9 +4,9 @@ spring:
       port: 6379
       host: localhost
       channels:
-        follower: follower_channel
-        achievement: achievement_channel
-        skill_offer_channel: skill_offer_channel
+        follower: follower-channel
+        achievement: achievement-channel
+        skill_offer_channel: skill-offer-channel
 
   mail:
     host: smtp.gmail.com
