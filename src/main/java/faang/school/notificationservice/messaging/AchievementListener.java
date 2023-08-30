@@ -15,7 +15,7 @@ import java.util.Locale;
 
 @Component
 @Slf4j
-public class AchievementListener extends AbstractEventListener<AchievementDto> implements MessageListener {
+public class AchievementListener extends EventListenerBase<AchievementDto> implements MessageListener {
 
     public AchievementListener(JsonMapper jsonMapper, UserServiceClient userServiceClient, List<MessageBuilder<AchievementDto>> messageBuilders, List<NotificationService> notificationServices) {
         super(jsonMapper, userServiceClient, messageBuilders, notificationServices);

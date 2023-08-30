@@ -13,7 +13,7 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class AbstractEventListener<T> {
+public class EventListenerBase<T> {
     protected final JsonMapper jsonMapper;
     protected final UserServiceClient userServiceClient;
     protected final List<MessageBuilder<T>> messageBuilders;
@@ -27,7 +27,7 @@ public class AbstractEventListener<T> {
     }
 
     protected void sendNotification(long userId, String message) {
-        UserDto userDto = userServiceClient.getUser(userId);
+        UserDto userDto = userServiceClient.getUserDtoForNotification(userId);
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact() == userDto.getPreference())
                 .findFirst()

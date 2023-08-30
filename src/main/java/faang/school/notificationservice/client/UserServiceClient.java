@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface UserServiceClient {
 
     @GetMapping("/users/notification/{id}")
-    UserDto getUser(@PathVariable long id);
+    UserDto getUserDtoForNotification(@PathVariable long id);
 
     @PostMapping("/users/{userId}/telegram/{telegramId}")
     UserDto sendTelegramId(@PathVariable long userId, @PathVariable long telegramId);

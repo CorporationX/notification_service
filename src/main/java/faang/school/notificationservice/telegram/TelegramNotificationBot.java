@@ -73,7 +73,10 @@ public class TelegramNotificationBot extends TelegramLongPollingBot implements N
 
     @Override
     public void send(UserDto user, String message) {
-        var telegramContact = user.getContacts().stream().filter(contact -> contact.getType() == ContactDto.ContactType.TELEGRAM).findFirst();
+        var telegramContact = user.getContacts()
+                .stream()
+                .filter(contact -> contact.getType() == ContactDto.ContactType.TELEGRAM)
+                .findFirst();
         telegramContact.ifPresent(
                 contact -> {
                     try {
