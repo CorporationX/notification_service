@@ -2,10 +2,11 @@ package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.dto.skill.SkillDto;
 import faang.school.notificationservice.dto.skill.SkillOfferEvent;
+import faang.school.notificationservice.notification.SkillOfferedNotificationSender;
 import faang.school.notificationservice.util.JsonMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
@@ -14,19 +15,18 @@ import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class SkillOfferedEventListener implements MessageListener {
     private final JsonMapper jsonMapper;
-    private final UserServiceClient client;
+    private final UserServiceClient userClient;
+    private final SkillOfferedNotificationSender sender;
     @Override
     public void onMessage(Message message, byte[] pattern) {
         SkillOfferEvent event = getEvent(message);
-        sendNotification(event);
-    }
+        log.info("Received event skill offer: {}", event);
 
-    private void sendNotification(SkillOfferEvent event) {
-        UserDto sender = client.getUser(event.getSenderId());
-        UserDto receiver = client.getUser(event.getReceiverId());
-        SkillDto skill = client.getSkillById(event.getSkillId());
+        UserDto receiver = userClient.getUser(event.getReceiverId());
+        sender.send(event, receiver);
     }
 
     private SkillOfferEvent getEvent(Message message) {
