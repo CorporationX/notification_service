@@ -13,7 +13,7 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class AbstractEventListener<T> {
+public class EventListenerBase<T> {
     protected final JsonMapper jsonMapper;
     protected final UserServiceClient userServiceClient;
     protected final List<MessageBuilder<T>> messageBuilders;

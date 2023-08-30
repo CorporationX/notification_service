@@ -31,7 +31,7 @@ public class AbstractEventListenerTest {
     NotificationService notificationService;
     List<NotificationService> notificationServices = new ArrayList<>();
 
-    AbstractEventListener<Object> abstractEventListener;
+    EventListenerBase<Object> abstractEventListener;
 
     private UserDto userDto;
     Object event = new Object();
@@ -40,7 +40,7 @@ public class AbstractEventListenerTest {
     void setUp() {
         messageBuilders = new ArrayList<>(Arrays.asList(messageBuilder));
         notificationServices = new ArrayList<>(Arrays.asList(notificationService));
-        abstractEventListener = new AbstractEventListener<>(jsonMapper, userServiceClient, messageBuilders, notificationServices);
+        abstractEventListener = new EventListenerBase<>(jsonMapper, userServiceClient, messageBuilders, notificationServices);
         userDto = UserDto.builder()
                 .id(1)
                 .email("test@yandex.ru")
