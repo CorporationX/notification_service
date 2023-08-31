@@ -21,7 +21,7 @@ public class UserDto {
     private String city;
     private Integer experience;
     private Locale locale;
-    private String telegramChatId;
+    private Long telegramChatId;
     private PreferredContact preference;
 
     public enum PreferredContact {

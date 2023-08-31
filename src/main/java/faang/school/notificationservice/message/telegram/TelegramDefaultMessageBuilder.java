@@ -13,6 +13,6 @@ public class TelegramDefaultMessageBuilder {
     private final MessageSource messageSource;
 
     public String buildMessage(Locale locale) {
-        return messageSource.getMessage("telegramDefault.new",null, locale);
+        return messageSource.getMessage("telegramDefault.new", null, locale);
     }
 }
