@@ -70,6 +70,11 @@ dependencies {
      */
     implementation("org.springframework:spring-context-support")
     implementation("org.springframework.boot:spring-boot-starter-mail")
+
+    /**
+     *  Vonage
+     */
+    implementation("com.vonage:client:7.7.0")
 }
 
 tasks.withType<Test> {
