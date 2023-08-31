@@ -42,8 +42,13 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     from: Vonage APIs
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
+
+telegram:
+  botUserName: CorpX_bot
+  botToken: 6465525589:AAG0RzvhuGF398lj793npi-le8arqZcTxJQ
+

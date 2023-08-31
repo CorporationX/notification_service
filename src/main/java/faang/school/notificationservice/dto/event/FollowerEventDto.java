@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 public class FollowerEventDto {
 
     private Long followeeId;
-    @JsonProperty("followeeId")
     private Long followerId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("subscriptionTime")
