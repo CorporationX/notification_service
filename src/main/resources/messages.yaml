@@ -1,0 +1,11 @@
+# Default locale
+follower:
+  new: "Congrats! You've got a new follower!"
+
+event:
+  start: |
+    Hello, %s. 
+    Event named "%s" %s
+    Location: %s
+    Description:
+    %s
