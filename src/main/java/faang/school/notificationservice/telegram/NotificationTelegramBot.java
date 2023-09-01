@@ -40,32 +40,44 @@ public class NotificationTelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(@NotNull Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            SendMessage message = new SendMessage();
-            message.setChatId(update.getMessage().getChatId());
-            message.setText("Push the button for send you phone");
-            setPhoneButton(message);
-            try {
-                execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+            checkContactToRegister(update);
+
         } else if (update.hasMessage() && update.getMessage().hasContact()) {
-            Message message = update.getMessage();
-            Contact contact = message.getContact();
-            Long chatId = message.getChatId();
-            String phoneNumber = contact.getPhoneNumber();
-            Long userId = userServiceClient.findUserIdByPhoneNumber(phoneNumber);
-            initRegistration(userId, chatId, phoneNumber);
+            offerToSendContact(update);
         }
+    }
+
+    private void checkContactToRegister(Update update) {
+        SendMessage message = new SendMessage();
+        message.setChatId(update.getMessage().getChatId());
+        message.setText("Push the button for send you phone");
+        setPhoneButton(message);
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void offerToSendContact(Update update) {
+        Message message = update.getMessage();
+        Contact contact = message.getContact();
+        Long chatId = message.getChatId();
+        String phoneNumber = contact.getPhoneNumber();
+        Long userId = userServiceClient.findUserIdByPhoneNumber(phoneNumber);
+        initRegistration(userId, chatId, phoneNumber);
     }
 
     private void setPhoneButton(SendMessage message) {
         ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
         keyboard.setResizeKeyboard(true);
+
         List<KeyboardRow> keyboardRows = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
+
         KeyboardButton phoneButton = new KeyboardButton("Send you phone");
         phoneButton.setRequestContact(true);
+
         row.add(phoneButton);
         keyboardRows.add(row);
         keyboard.setKeyboard(keyboardRows);
@@ -78,6 +90,7 @@ public class NotificationTelegramBot extends TelegramLongPollingBot {
 
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
+
         if (phone.equals(currentContact.getPhone())) {
             if (chatId.toString().equals(currentContact.getTgChatId())) {
                 message.setText("You already registered");
@@ -90,6 +103,7 @@ public class NotificationTelegramBot extends TelegramLongPollingBot {
         } else {
             message.setText("Telegram account is not correct! Please, use you actual account for registration!");
         }
+
         try {
             execute(message);
             log.info("Reply sent");

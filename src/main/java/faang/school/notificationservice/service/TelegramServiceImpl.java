@@ -11,14 +11,15 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Service
 @RequiredArgsConstructor
-public class TelegramServiceImpl implements NotificationService{
-private final NotificationTelegramBot notificationTelegramBot;
-private final UserServiceClient userServiceClient;
+public class TelegramServiceImpl implements NotificationService {
+    private final NotificationTelegramBot notificationTelegramBot;
+    private final UserServiceClient userServiceClient;
+
     @Override
     public void send(UserDto user, String message) {
         SendMessage notificationMessage = new SendMessage();
         ExtendedContactDto tgContact = userServiceClient.getUserContact(user.getId());
-        if (tgContact == null || tgContact.getTgChatId() == null){
+        if (tgContact == null || tgContact.getTgChatId() == null) {
             throw new RuntimeException("User's chatId is not verify in TG-notification system");
         }
         notificationMessage.setChatId(tgContact.getTgChatId());
@@ -26,8 +27,8 @@ private final UserServiceClient userServiceClient;
 
         try {
             notificationTelegramBot.execute(notificationMessage);
-        } catch (TelegramApiException e){
-            throw  new RuntimeException(e);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
         }
     }
 

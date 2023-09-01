@@ -2,6 +2,9 @@ package faang.school.notificationservice.config.bot;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.telegram.NotificationTelegramBot;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -14,11 +17,10 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class Initializer {
-    @Autowired
-    BotConfig config;
-    @Autowired
-    UserServiceClient userServiceClient;
+    private final BotConfig config;
+    private final UserServiceClient userServiceClient;
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() {
