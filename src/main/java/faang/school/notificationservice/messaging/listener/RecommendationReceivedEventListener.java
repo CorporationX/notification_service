@@ -3,7 +3,7 @@ package faang.school.notificationservice.messaging.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.RecommendationReceivedEvent;
-import faang.school.notificationservice.event_listener.AbstractEventListener;
+import faang.school.notificationservice.messaging.listener.AbstractEventListener;
 import faang.school.notificationservice.messaging.message_builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
