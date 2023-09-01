@@ -23,8 +23,8 @@ public class SkillOfferedMessageBuilder implements MessageBuilder<SkillOfferEven
 
     private Object[] buildArgs(SkillOfferEvent event) {
         Object[] args = new Object[2];
-        args[0] = client.getUser(event.getSenderId());
-        args[1] = client.getSkillById(event.getSkillId());
+        args[0] = client.getUser(event.getSenderId()).getUsername();
+        args[1] = client.getSkillById(event.getSkillId()).getTitle();
         return args;
     }
 
