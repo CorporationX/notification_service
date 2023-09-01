@@ -27,7 +27,6 @@ public class EventStartListener implements MessageListener {
             throw new RuntimeException(e);
         }
 
-        System.out.println("Received message from channel '" + channel + "': " + messageBody);
         eventStartService.scheduleNotifications(eventStartDto);
     }
 }
