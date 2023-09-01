@@ -42,8 +42,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   from: CorporationX
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
+bot:
+  name: "corporationx_bot"
+  token: "6495995387:AAFFBCZAGbNmX-Opv3VxMOboneKhR4kxc5c"

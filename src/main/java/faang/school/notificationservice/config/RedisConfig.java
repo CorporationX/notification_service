@@ -2,6 +2,7 @@ package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.messaging.listener.ProfileViewEventListener;
 import faang.school.notificationservice.messaging.listener.RecommendationReceivedEventListener;
+import faang.school.notificationservice.messaging.listener.FollowerEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -57,6 +58,13 @@ public class RedisConfig {
     @Bean
     MessageListenerAdapter recommendationListener(RecommendationReceivedEventListener recommendationReceivedEventListener) {
         return new MessageListenerAdapter(recommendationReceivedEventListener);
+    MessageListenerAdapter followerListener(FollowerEventListener followerEventListener) {
+        return new MessageListenerAdapter(followerEventListener);
+    }
+
+    @Bean
+    MessageListenerAdapter profileViewListener(ProfileViewEventListener profileViewEventListener) {
+        return new MessageListenerAdapter(profileViewEventListener);
     }
 
     @Bean
@@ -76,12 +84,13 @@ public class RedisConfig {
 
     @Bean
     RedisMessageListenerContainer redisContainer(MessageListenerAdapter profileViewListener,
-                                                 MessageListenerAdapter recommendationListener) {
+                                                 MessageListenerAdapter recommendationListener,
+                                                 MessageListenerAdapter followerListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(profileViewListener, profileViewTopic());
         container.addMessageListener(recommendationListener, recommendationChannel());
-
+        container.addMessageListener(followerListener, followerChannel());
         return container;
     }
 }
