@@ -19,5 +19,5 @@ public class MentorshipOfferedEventDto {
     private String email;
     private LocalDateTime timestamp;
     private PreferredContact preferredContact;
-    private Locale locale = null;
+    private Locale locale;
 }

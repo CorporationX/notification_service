@@ -1,6 +1,5 @@
 package faang.school.notificationservice.message;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.MentorshipOfferedEventDto;
 import faang.school.notificationservice.messageBuilder.MentorshipOfferBuilder;
