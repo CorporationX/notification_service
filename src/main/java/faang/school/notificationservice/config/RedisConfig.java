@@ -53,12 +53,12 @@ public class RedisConfig {
 
     @Bean
     public RedisMessageListenerContainer redisContainer(
-            EventStartListener eventStartEventListener,
-            MentorshipRequestListener mentorshipRequestEventListener
+            MessageListenerAdapter eventMessageListener,
+            MessageListenerAdapter mentorshipRequestEventListener
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(eventStartEventListener, eventTopic());
+        container.addMessageListener(eventMessageListener, eventTopic());
         container.addMessageListener(mentorshipRequestEventListener, mentorshipRequestTopic());
         return container;
     }
