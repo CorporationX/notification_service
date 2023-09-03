@@ -8,4 +8,3 @@ public interface MessageBuilder<T> {
 
     Class<?> supportEventType();
 }
-
