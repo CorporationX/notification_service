@@ -3,11 +3,14 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
+      channels:
         follower: follower_channel
+
         achievement: achievement_channel
         mentorship_offered_event:
           name: mentorship_offered_event
+        achievement: achievement_topic
+
 
   kafka:
     bootstrap-servers: localhost:9092
@@ -18,7 +21,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: myservicemailsender@gmail.com #https://www.baeldung.com/spring-email
-    password: seelaixqqkujydyt #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
+    password: fsvkqgasvkhxuhdz #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
     properties:
       mail:
         smtp:
