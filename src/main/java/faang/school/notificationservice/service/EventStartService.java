@@ -59,7 +59,7 @@ public class EventStartService {
                 switch (user.getPreference()) {
                     case EMAIL -> emailService.sendMail(user.getEmail(), event.getTitle(), message);
                     //ToDo
-                    case SMS -> System.out.println("SMS: " + message);
+                    case PHONE -> System.out.println("SMS: " + message);
                     //ToDo
                     case TELEGRAM -> System.out.println("TELEGRAM: " + message);
                 }
