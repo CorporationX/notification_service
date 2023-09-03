@@ -7,6 +7,7 @@ import com.vonage.client.sms.messages.Message;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.notification.NotificationService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class SmsService implements NotificationService {
+    private VonageClient client;
     @Value("${vonage.api.key}")
     private String apiKey;
 
@@ -24,6 +26,14 @@ public class SmsService implements NotificationService {
 
     @Value("${organization.name}")
     private String organization;
+
+    @PostConstruct
+    private void getVonageClient() {
+        client = VonageClient.builder()
+                .apiKey(apiKey)
+                .apiSecret(apiSecret)
+                .build();
+    }
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {
@@ -38,7 +48,6 @@ public class SmsService implements NotificationService {
                 message
         );
 
-        VonageClient client = getVonageClient();
         SmsSubmissionResponse response = client.getSmsClient().submitMessage(sms);
         smsResponse(response);
     }
@@ -49,12 +58,5 @@ public class SmsService implements NotificationService {
         } else {
             log.info("Message failed with error: " + response.getMessages().get(0).getErrorText());
         }
-    }
-
-    private VonageClient getVonageClient() {
-        return VonageClient.builder()
-                .apiKey(apiKey)
-                .apiSecret(apiSecret)
-                .build();
     }
 }

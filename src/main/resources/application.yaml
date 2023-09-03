@@ -7,7 +7,7 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         mentorship_offered_event:
-         name: mentorship_offered_event
+          name: mentorship_offered_event
 
   kafka:
     bootstrap-servers: localhost:9092
@@ -49,11 +49,11 @@ organization:
   name: "Corporation X"
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
 telegram:
   bot:
     token: "6436403091:AAFdLcAUzM4WTwV3MS65-J03LpkBmOEkmPc"
