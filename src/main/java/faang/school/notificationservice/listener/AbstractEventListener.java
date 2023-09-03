@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.dto.notification.NotificationData;
 import faang.school.notificationservice.message_builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;

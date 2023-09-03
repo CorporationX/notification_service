@@ -10,7 +10,8 @@ spring:
           name: achievement_channel
         like_channel:
           name: like_channel
-        event_start_channel: event_start_channel
+        event_start_channel:
+          name: event_start_channel
 
   mail:
     host: smtp.gmail.com
@@ -51,8 +52,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     phone: 31687519767
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080

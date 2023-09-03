@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.user.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -27,6 +27,7 @@ public class EmailService implements NotificationService{
     public void send(UserDto user, String message) {
         sendMail(user.getEmail(), "Title", message);
     }
+
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {
