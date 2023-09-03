@@ -8,7 +8,6 @@ import org.springframework.validation.annotation.Validated;
 
 @Data
 @RequiredArgsConstructor
-@NoArgsConstructor
 @Validated
 public class MentorshipOfferRequestSentDto {
     @NotNull
