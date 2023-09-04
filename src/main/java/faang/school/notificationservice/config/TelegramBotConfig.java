@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config;
 
-import faang.school.notificationservice.telegram.TelegramNotificationBot;
+import faang.school.notificationservice.notification.TelegramNotificationBot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

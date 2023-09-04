@@ -2,8 +2,8 @@ package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.MentorshipOfferRequestSentDto;
-import faang.school.notificationservice.notification.MessageBuilder;
-import faang.school.notificationservice.notification.NotificationService;
+import faang.school.notificationservice.service.MessageBuilder;
+import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.util.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
@@ -15,7 +15,7 @@ import java.util.Locale;
 
 @Component
 @Slf4j
-public class MentorshipOfferedEventListener extends AbstractionEventListener<MentorshipOfferRequestSentDto> implements MessageListener {
+public class MentorshipOfferedEventListener extends EventListenerBase<MentorshipOfferRequestSentDto> implements MessageListener {
 
     public MentorshipOfferedEventListener(JsonMapper jsonMapper,
                                           UserServiceClient userServiceClient,

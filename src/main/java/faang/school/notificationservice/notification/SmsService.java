@@ -1,4 +1,4 @@
-package faang.school.notificationservice.notification.sms;
+package faang.school.notificationservice.notification;
 
 import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
@@ -6,7 +6,7 @@ import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.Message;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.notification.NotificationService;
+import faang.school.notificationservice.service.NotificationService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class SmsService implements NotificationService {
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.SMS;
+        return UserDto.PreferredContact.PHONE;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.achievement;
+package faang.school.notificationservice.service.massageBuilder;
 
 import faang.school.notificationservice.dto.AchievementDto;
 import faang.school.notificationservice.service.MessageBuilder;

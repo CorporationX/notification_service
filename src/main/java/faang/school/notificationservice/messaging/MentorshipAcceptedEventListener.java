@@ -14,7 +14,7 @@ import java.util.Locale;
 
 @Component
 @Slf4j
-public class MentorshipAcceptedEventListener extends AbstractEventListener<MentorshipAcceptedDto> {
+public class MentorshipAcceptedEventListener extends EventListenerBase<MentorshipAcceptedDto> {
 
     public MentorshipAcceptedEventListener(JsonMapper jsonMapper, UserServiceClient userServiceClient, List<MessageBuilder<MentorshipAcceptedDto>> messageBuilders, List<NotificationService> notificationServices) {
         super(jsonMapper, userServiceClient, messageBuilders, notificationServices);

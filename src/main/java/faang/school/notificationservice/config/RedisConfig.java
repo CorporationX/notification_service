@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.messaging.AchievementListener;
+import faang.school.notificationservice.messaging.MentorshipOfferedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,8 @@ public class RedisConfig {
     private int port;
     @Value("${spring.data.redis.channels.achievement}")
     private String achievementTopic;
+    @Value("${spring.data.redis.channels.mentorship_offered_event.name}")
+    private String mentorshipOfferedEvent;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -53,12 +56,25 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListenerAdapter mentorshipOfferedAdapter(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
+        return new MessageListenerAdapter(mentorshipOfferedEventListener);
+    }
+
+    @Bean
+    ChannelTopic mentorshipOfferedEvent() {
+        return new ChannelTopic(mentorshipOfferedEvent);
+    }
+
+
+    @Bean
     RedisMessageListenerContainer redisContainer(
-            MessageListenerAdapter achievementAdapter
+            MessageListenerAdapter achievementAdapter,
+            MessageListenerAdapter mentorshipOfferedAdapter
     ) {
         final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(achievementAdapter, achievementTopic());
+        container.addMessageListener(mentorshipOfferedAdapter, mentorshipOfferedEvent());
         return container;
     }
 }
