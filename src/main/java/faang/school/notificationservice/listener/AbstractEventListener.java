@@ -20,7 +20,7 @@ import java.util.Locale;
 public abstract class AbstractEventListener<T> implements MessageListener {
     private final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
-    private final List<MessageBuilder<T>> messageBuilder;
+    private final List<MessageBuilder<T>> messageBuilders;
     private final List<NotificationService> notificationServices;
 
     protected T readValue(byte[] json, Class<T> clazz) {
@@ -33,7 +33,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     }
 
     protected String getMessage(T event, Locale locale) {
-        return messageBuilder.stream()
+        return messageBuilders.stream()
                 .filter(builder -> builder.getInstance().equals(event.getClass()))
                 .findFirst()
                 .map(messageBuilder -> messageBuilder.buildMessage(event, locale))
