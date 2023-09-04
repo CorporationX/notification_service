@@ -5,7 +5,12 @@ spring:
       host: localhost
       channels:
         follower: follower_channel
+
+        achievement: achievement_channel
+        mentorship_offered_event:
+          name: mentorship_offered_event
         achievement: achievement_topic
+
 
   kafka:
     bootstrap-servers: localhost:9092
@@ -16,7 +21,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: myservicemailsender@gmail.com #https://www.baeldung.com/spring-email
-    password: seelaixqqkujydyt #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
+    password: fsvkqgasvkhxuhdz #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
     properties:
       mail:
         smtp:
@@ -40,15 +45,18 @@ logging:
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: whatever
-    secret: whatever
+    key: 805127ab
+    secret: x6pp3rXivL2QV75D
+
+organization:
+  name: "Corporation X"
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
 telegram:
   bot:
     token: "6436403091:AAFdLcAUzM4WTwV3MS65-J03LpkBmOEkmPc"
