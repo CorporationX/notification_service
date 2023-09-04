@@ -8,6 +8,8 @@ spring:
         achievement: achievement-channel
         event_channel:
           name: event-start-channel
+        comment_channels:
+          name: comments-channel
 
   mail:
     host: smtp.gmail.com
