@@ -16,14 +16,14 @@ public class SkillOfferedMessageBuilder implements MessageBuilder<SkillOfferEven
     private final UserServiceClient client;
 
     @Override
-    public String build(SkillOfferEvent event, Locale locale) {
+    public String buildMessage(SkillOfferEvent event, Locale locale) {
         Object[] args = buildArgs(event);
         return messageSource.getMessage("skill.offered", args, locale);
     }
 
     private Object[] buildArgs(SkillOfferEvent event) {
         Object[] args = new Object[2];
-        args[0] = client.getUser(event.getSenderId()).getUsername();
+        args[0] = client.getUserDtoForNotification(event.getSenderId()).getUsername();
         args[1] = client.getSkillById(event.getSkillId()).getTitle();
         return args;
     }

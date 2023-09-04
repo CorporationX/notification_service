@@ -2,6 +2,7 @@ package faang.school.notificationservice.notification;
 
 import faang.school.notificationservice.dto.skill.SkillOfferEvent;
 import faang.school.notificationservice.service.MessageBuilder;
+import faang.school.notificationservice.service.NotificationService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

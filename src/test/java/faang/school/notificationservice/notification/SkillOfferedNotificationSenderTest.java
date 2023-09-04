@@ -2,6 +2,7 @@ package faang.school.notificationservice.notification;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.skill.SkillOfferEvent;
+import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.SkillOfferedMessageBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,7 +45,7 @@ class SkillOfferedNotificationSenderTest {
                 .preference(preferredContact)
                 .build();
 
-        when(messageBuilder.build(event, Locale.UK))
+        when(messageBuilder.buildMessage(event, Locale.UK))
                 .thenReturn("User {0} offered you skill {1}");
         when(notificationServices.stream())
                 .thenReturn(Stream.of(service));
@@ -57,7 +58,7 @@ class SkillOfferedNotificationSenderTest {
     private static Stream<Arguments> getPreferredContacts() {
         return Stream.of(
                 Arguments.of(UserDto.PreferredContact.EMAIL),
-                Arguments.of(UserDto.PreferredContact.SMS),
+                Arguments.of(UserDto.PreferredContact.PHONE),
                 Arguments.of(UserDto.PreferredContact.TELEGRAM)
         );
     }

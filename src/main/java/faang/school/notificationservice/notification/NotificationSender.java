@@ -2,6 +2,7 @@ package faang.school.notificationservice.notification;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.MessageBuilder;
+import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,7 @@ public abstract class NotificationSender<T> {
     private final List<NotificationService> notificationServices;
 
     public void send(T event, UserDto receiver) {
-        String message = messageBuilder.build(event, Locale.UK);
+        String message = messageBuilder.buildMessage(event, Locale.UK);
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact().equals(receiver.getPreference()))
                 .findFirst()

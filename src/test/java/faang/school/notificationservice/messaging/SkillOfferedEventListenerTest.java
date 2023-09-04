@@ -17,13 +17,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.DefaultMessage;
 import org.springframework.data.redis.connection.Message;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SkillOfferedEventListenerTest {
@@ -49,7 +50,7 @@ class SkillOfferedEventListenerTest {
                 .skillId(11L)
                 .build();
 
-        when(userClient.getUser(21))
+        when(userClient.getUserDtoForNotification(21))
                 .thenReturn(receiver);
         when(jsonMapper.toObject(Arrays.toString(message.getBody()), SkillOfferEvent.class))
                 .thenReturn(Optional.of(event));

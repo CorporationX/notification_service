@@ -25,7 +25,7 @@ public class SkillOfferedEventListener implements MessageListener {
         SkillOfferEvent event = getEvent(message);
         log.info("Received event skill offer: {}", event);
 
-        UserDto receiver = userClient.getUser(event.getReceiverId());
+        UserDto receiver = userClient.getUserDtoForNotification(event.getReceiverId());
         sender.send(event, receiver);
     }
 

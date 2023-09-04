@@ -28,7 +28,7 @@ public class RedisConfig {
     private String achievementTopic;
     @Value("${spring.data.redis.channels.mentorship_offered_event.name}")
     private String mentorshipOfferedEvent;
-    @Value("${spring.data.redis.channel.skill-event.skill-offered-channel}")
+    @Value("${spring.data.redis.channels.skill-event.skill-offered-channel}")
     String skillOfferedChannel;
 
     @Bean
@@ -64,6 +64,11 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListenerAdapter skillOfferedAdapter(SkillOfferedEventListener skillOfferedEventListener) {
+        return new MessageListenerAdapter(skillOfferedEventListener);
+    }
+
+    @Bean
     ChannelTopic mentorshipOfferedEvent() {
         return new ChannelTopic(mentorshipOfferedEvent);
     }
@@ -72,24 +77,18 @@ public class RedisConfig {
     @Bean
     RedisMessageListenerContainer redisContainer(
             MessageListenerAdapter achievementAdapter,
-            MessageListenerAdapter mentorshipOfferedAdapter
+            MessageListenerAdapter mentorshipOfferedAdapter,
+            MessageListenerAdapter skillOfferedAdapter
     ) {
         final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(achievementAdapter, achievementTopic());
         container.addMessageListener(mentorshipOfferedAdapter, mentorshipOfferedEvent());
+        container.addMessageListener(skillOfferedAdapter, skillOfferedChannel());
         return container;
-    }
-}
-    ChannelTopic skillOfferedChannel() {
-        return new ChannelTopic(skillOfferedChannel);
     }
 
-    @Bean
-    RedisMessageListenerContainer redisContainer(SkillOfferedEventListener skillOfferedEventListener) {
-        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConnectionFactory());
-        container.addMessageListener(new MessageListenerAdapter(skillOfferedEventListener), skillOfferedChannel());
-        return container;
+    ChannelTopic skillOfferedChannel() {
+        return new ChannelTopic(skillOfferedChannel);
     }
 }
