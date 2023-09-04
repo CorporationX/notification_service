@@ -1,5 +1,8 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.messaging.AchievementListener;
+import faang.school.notificationservice.messaging.MentorshipOfferedEventListener;
+import lombok.RequiredArgsConstructor;
 import faang.school.notificationservice.messaging.SkillOfferedEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,13 +17,17 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
 
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
     private int port;
-
+    @Value("${spring.data.redis.channels.achievement}")
+    private String achievementTopic;
+    @Value("${spring.data.redis.channels.mentorship_offered_event.name}")
+    private String mentorshipOfferedEvent;
     @Value("${spring.data.redis.channel.skill-event.skill-offered-channel}")
     String skillOfferedChannel;
 
@@ -37,10 +44,43 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
+
         return redisTemplate;
     }
 
     @Bean
+    ChannelTopic achievementTopic() {
+        return new ChannelTopic(achievementTopic);
+    }
+
+    @Bean
+    public MessageListenerAdapter achievementAdapter(AchievementListener achievementListener) {
+        return new MessageListenerAdapter(achievementListener);
+    }
+
+    @Bean
+    MessageListenerAdapter mentorshipOfferedAdapter(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
+        return new MessageListenerAdapter(mentorshipOfferedEventListener);
+    }
+
+    @Bean
+    ChannelTopic mentorshipOfferedEvent() {
+        return new ChannelTopic(mentorshipOfferedEvent);
+    }
+
+
+    @Bean
+    RedisMessageListenerContainer redisContainer(
+            MessageListenerAdapter achievementAdapter,
+            MessageListenerAdapter mentorshipOfferedAdapter
+    ) {
+        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(redisConnectionFactory());
+        container.addMessageListener(achievementAdapter, achievementTopic());
+        container.addMessageListener(mentorshipOfferedAdapter, mentorshipOfferedEvent());
+        return container;
+    }
+}
     ChannelTopic skillOfferedChannel() {
         return new ChannelTopic(skillOfferedChannel);
     }

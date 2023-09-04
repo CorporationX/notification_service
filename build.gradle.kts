@@ -52,6 +52,8 @@ dependencies {
     implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:kafka:1.16.2")
+
 
     /**
      * Tests
@@ -70,6 +72,11 @@ dependencies {
      */
     implementation("org.springframework:spring-context-support")
     implementation("org.springframework.boot:spring-boot-starter-mail")
+
+    /**
+     *  Vonage
+     */
+    implementation("com.vonage:client:7.7.0")
 }
 
 tasks.withType<Test> {

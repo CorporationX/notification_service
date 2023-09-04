@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}")
 public interface UserServiceClient {
 
-    @GetMapping("/users/{id}")
-    UserDto getUser(@PathVariable long id);
+    @GetMapping("/users/notification/{id}")
+    UserDto getUserDtoForNotification(@PathVariable long id);
 
     @PostMapping("/users/{userId}/telegram/{telegramId}")
     UserDto sendTelegramId(@PathVariable long userId, @PathVariable long telegramId);
