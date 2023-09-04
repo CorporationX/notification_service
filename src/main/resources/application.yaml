@@ -46,3 +46,7 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+telegram-bot:
+    name: "CorpXtestBot"
+    token: "6606365809:AAEmjWeXZ4UfZdr6ETACVxVTGoTPTvERNoc"
