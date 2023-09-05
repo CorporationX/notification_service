@@ -10,6 +10,8 @@ spring:
           name: event-start-channel
         mentorship_requested_channel:
           name: mentorship-requested-channel
+        comment_channels:
+          name: comments-channel
 
   mail:
     host: smtp.gmail.com
@@ -18,6 +20,7 @@ spring:
     #https://www.baeldung.com/spring-email
     password: Cerberus2023
     #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
+    # Для отправки писем нееобходимо включить двухфакторную авторизацию в аккаунте и создать пароль приложений, заменить им текущий пароль
     properties:
       mail:
         smtp:
