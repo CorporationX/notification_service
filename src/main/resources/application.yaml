@@ -8,6 +8,8 @@ spring:
         achievement: achievement-channel
         event_channel:
           name: event-start-channel
+        mentorship_requested_channel:
+          name: mentorship-requested-channel
         comment_channels:
           name: comments-channel
 
