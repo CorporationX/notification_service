@@ -6,9 +6,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
@@ -22,12 +22,21 @@ public class RedisConfig {
     private String host;
     @Value("${spring.data.redis.port}")
     private int port;
+    private String channelName = "viewProfileTopic";
 
     @Bean
-    public JedisConnectionFactory redisConnectionFactory() {
-        System.out.println(port);
+    public JedisConnectionFactory JedisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
         return new JedisConnectionFactory(config);
+    }
+
+    @Bean
+    public RedisTemplate<String,Object> redisTemplate(){
+        RedisTemplate<String,Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(JedisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        return redisTemplate;
     }
 
     @Bean
@@ -37,13 +46,13 @@ public class RedisConfig {
 
     @Bean
     public ChannelTopic viewProfileTopic() {
-        return new ChannelTopic("viewProfileTopic");
+        return new ChannelTopic(channelName);
     }
 
     @Bean
     RedisMessageListenerContainer redisContainer(MessageListenerAdapter messageListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConnectionFactory());
+        container.setConnectionFactory(JedisConnectionFactory());
         container.setTopicSerializer(new StringRedisSerializer());
         container.addMessageListener(messageListenerAdapter, viewProfileTopic());
         return container;

@@ -4,6 +4,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.PreferredContact;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.DataValidationException;
+import faang.school.notificationservice.listener.AbstractEventListener;
 import faang.school.notificationservice.massages.MessageBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
