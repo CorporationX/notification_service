@@ -30,7 +30,7 @@ class TelegramServiceImplTest {
     TelegramServiceImpl telegramService;
 
     @Test
-    void testSend() {
+    void testSend_UserIsNotVerify() {
         UserDto user = new UserDto();
         user.setId(1L);
         ExtendedContactDto extendedContactDto = ExtendedContactDto
@@ -47,7 +47,7 @@ class TelegramServiceImplTest {
     }
 
     @Test
-    void testSend_1() throws TelegramApiException {
+    void testSend_UserVerify() throws TelegramApiException {
         UserDto user = new UserDto();
         user.setId(1L);
         ExtendedContactDto extendedContactDto = ExtendedContactDto

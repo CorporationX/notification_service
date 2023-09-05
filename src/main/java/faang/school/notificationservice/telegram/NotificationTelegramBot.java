@@ -40,14 +40,14 @@ public class NotificationTelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(@NotNull Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            checkContactToRegister(update);
+            offerToSendContact(update);
 
         } else if (update.hasMessage() && update.getMessage().hasContact()) {
-            offerToSendContact(update);
+            checkContactToRegister(update);
         }
     }
 
-    private void checkContactToRegister(Update update) {
+    private void offerToSendContact(Update update) {
         SendMessage message = new SendMessage();
         message.setChatId(update.getMessage().getChatId());
         message.setText("Push the button for send you phone");
@@ -59,7 +59,7 @@ public class NotificationTelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void offerToSendContact(Update update) {
+    private void checkContactToRegister(Update update) {
         Message message = update.getMessage();
         Contact contact = message.getContact();
         Long chatId = message.getChatId();
