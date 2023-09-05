@@ -1,8 +1,11 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.MentorshipRequestListener;
+import faang.school.notificationservice.listener.event.CommentEventListener;
 import faang.school.notificationservice.listener.event.EventStartListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,14 +28,14 @@ public class RedisConfig {
     private String mentorshipRequestChannel;
 
     @Value("${spring.data.redis.channels.comment_channels.name}")
-    private String CommentChannel;
+    private String commentChannel;
 
     @Bean(name = "eventMessageListenerAdapter")
     public MessageListenerAdapter eventMessageListener(EventStartListener eventStartListener) {
         return new MessageListenerAdapter(eventStartListener);
     }
 
-    @Bean
+    @Bean(name = "mentorshipRequestListenerAdapter")
     public MessageListenerAdapter mentorshipRequestEventListener(MentorshipRequestListener mentorshipRequestListener) {
         return new MessageListenerAdapter(mentorshipRequestListener);
     }
@@ -59,25 +62,20 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(
-            MessageListenerAdapter eventMessageListener,
-            MessageListenerAdapter mentorshipRequestEventListener
-    ) {
     ChannelTopic commentTopic() {
-        return new ChannelTopic(CommentChannel);
+        return new ChannelTopic(commentChannel);
     }
 
-    @Bean
-    public RedisMessageListenerContainer redisContainer(@Qualifier("eventMessageListenerAdapter")
-                                                            MessageListenerAdapter eventStartEventListener,
-                                                        @Qualifier("commentMessageListenerAdapter")
-                                                        MessageListenerAdapter commentEventListener) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(eventMessageListener, eventTopic());
-        container.addMessageListener(mentorshipRequestEventListener, mentorshipRequestTopic());
-        container.addMessageListener(eventStartEventListener, eventTopic());
-        container.addMessageListener(commentEventListener, commentTopic());
-        return container;
+        @Bean
+        public RedisMessageListenerContainer redisContainer(
+                @Qualifier("eventMessageListenerAdapter") MessageListenerAdapter eventMessageListener,
+                @Qualifier("commentMessageListenerAdapter") MessageListenerAdapter commentEventListener,
+                @Qualifier("mentorshipRequestListenerAdapter") MessageListenerAdapter mentorshipRequestEventListener) {
+            RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+            container.setConnectionFactory(jedisConnectionFactory());
+            container.addMessageListener(eventMessageListener, eventTopic());
+            container.addMessageListener(mentorshipRequestEventListener, mentorshipRequestTopic());
+            container.addMessageListener(commentEventListener, commentTopic());
+            return container;
+        }
     }
-}
