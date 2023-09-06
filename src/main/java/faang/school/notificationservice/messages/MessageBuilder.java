@@ -1,4 +1,4 @@
-package faang.school.notificationservice.massages;
+package faang.school.notificationservice.messages;
 
 import java.util.Locale;
 

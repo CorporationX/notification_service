@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.messaging.ProfileViewEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -23,9 +24,11 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int port;
     private String channelName = "viewProfileTopic";
+    @Value("${spring.data.redis.channel.likeTopic}")
+    private String likeChannelName;
 
     @Bean
-    public JedisConnectionFactory JedisConnectionFactory() {
+    public JedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
         return new JedisConnectionFactory(config);
     }
@@ -33,7 +36,7 @@ public class RedisConfig {
     @Bean
     public RedisTemplate<String,Object> redisTemplate(){
         RedisTemplate<String,Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(JedisConnectionFactory());
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         return redisTemplate;
@@ -50,11 +53,23 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter messageListenerAdapter) {
+    MessageListenerAdapter likeListener(LikeEventListener likeEventListener) {
+        return new MessageListenerAdapter(likeEventListener);
+    }
+
+    @Bean
+    public ChannelTopic likeTopic() {
+        return new ChannelTopic(likeChannelName);
+    }
+
+    @Bean
+    RedisMessageListenerContainer redisContainer(MessageListenerAdapter messageListenerAdapter,
+                                                 MessageListenerAdapter likeListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(JedisConnectionFactory());
+        container.setConnectionFactory(redisConnectionFactory());
         container.setTopicSerializer(new StringRedisSerializer());
         container.addMessageListener(messageListenerAdapter, viewProfileTopic());
+        container.addMessageListener(likeListener, likeTopic());
         return container;
     }
 

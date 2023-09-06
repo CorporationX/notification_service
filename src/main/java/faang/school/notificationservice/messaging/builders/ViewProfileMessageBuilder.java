@@ -1,6 +1,6 @@
 package faang.school.notificationservice.messaging.builders;
 
-import faang.school.notificationservice.massages.MessageBuilder;
+import faang.school.notificationservice.messages.MessageBuilder;
 import faang.school.notificationservice.messaging.events.ProfileViewEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
