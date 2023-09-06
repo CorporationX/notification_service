@@ -48,10 +48,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void startBot(long chatId, String userName) {
         if (telegramProfileRepository.existsByUserName(userName)) {
             return;
-        }else{
-
         }
-
 
         SendMessage message = new SendMessage();
         message.setChatId(chatId);

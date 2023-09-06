@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXSIT telegram_profile
+CREATE TABLE IF NOT EXISTS telegram_profile
 (
         id BIGSERIAL PRIMARY KEY,
         user_name VARCHAR(255),
