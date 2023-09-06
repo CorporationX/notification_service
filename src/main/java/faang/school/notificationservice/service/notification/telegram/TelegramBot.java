@@ -1,10 +1,12 @@
 package faang.school.notificationservice.service.notification.telegram;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.config.TelegramBotConfiguration;
+import faang.school.notificationservice.config.telegram.TelegramBotConfiguration;
 import faang.school.notificationservice.dto.ContactDto;
 import faang.school.notificationservice.dto.ContactType;
 import faang.school.notificationservice.entity.TelegramProfiles;
+import faang.school.notificationservice.exception.CustomTelegramApiException;
+import faang.school.notificationservice.service.TelegramProfilesService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +75,20 @@ public class TelegramBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
+    }
+
+    public void sendMessage(long userId, String message) {
+        TelegramProfiles telegramProfiles = telegramProfilesService.findByUserId(userId);
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(telegramProfiles.getChatId());
+        sendMessage.setText(message);
+
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            throw new CustomTelegramApiException("Don't send message");
+        }
+
     }
 
     @Override

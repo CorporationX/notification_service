@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config;
+package faang.school.notificationservice.config.telegram;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

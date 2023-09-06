@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.notification.telegram;
+package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.entity.TelegramProfiles;
 import faang.school.notificationservice.repository.TelegramProfilesRepository;
@@ -19,5 +19,9 @@ public class TelegramProfilesService {
     @Transactional
     public TelegramProfiles save(TelegramProfiles telegramProfiles) {
         return telegramProfilesRepository.save(telegramProfiles);
+    }
+
+    public TelegramProfiles findByUserId(Long userId) {
+        return telegramProfilesRepository.findByUserId(userId);
     }
 }

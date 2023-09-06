@@ -1,5 +1,6 @@
-package faang.school.notificationservice.service.notification.telegram;
+package faang.school.notificationservice.config.telegram;
 
+import faang.school.notificationservice.service.notification.telegram.TelegramBot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -12,15 +13,15 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class Initializer {
+public class TelegramBotInitializer {
 
-    private final TelegramBot TelegramBot;
+    private final TelegramBot telegramBot;
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() {
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(TelegramBot);
+            telegramBotsApi.registerBot(telegramBot);
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
