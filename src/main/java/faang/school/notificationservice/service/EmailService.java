@@ -15,7 +15,7 @@ public class EmailService implements NotificationService {
 
     private final JavaMailSender javaMailSender;
     @Value("${spring.mail.sender_email}")
-    private final String senderEMail = "noreply@faang-school.com";
+    private final String senderEMail;
     @Value("${spring.mail.default_subject}")
     private final String subject;
 

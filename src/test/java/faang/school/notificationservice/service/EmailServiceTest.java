@@ -18,14 +18,14 @@ class EmailServiceTest {
 
     @Mock
     private JavaMailSender javaMailSender;
-    @InjectMocks
     private EmailService service;
     private String subject = "FAANG school";
+    private String senderEMail = "noreply@faang-school.com";
     private UserDto userDto = UserDto.builder().email("user@gmail.com").build();
 
     @BeforeEach
     public void setUp() {
-        service.setSubject(subject);
+        service = new EmailService(javaMailSender, senderEMail, subject);
     }
 
     @Test
