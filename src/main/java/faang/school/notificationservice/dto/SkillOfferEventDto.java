@@ -13,4 +13,5 @@ public class SkillOfferEventDto {
     private long authorId;
     private long receiverId;
     private long skillOfferId;
+    private String skillName;
 }

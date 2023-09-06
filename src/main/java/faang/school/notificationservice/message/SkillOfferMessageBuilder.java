@@ -15,7 +15,7 @@ public class SkillOfferMessageBuilder implements MessageBuilder<SkillOfferEventD
 
     @Override
     public String buildMessage(SkillOfferEventDto event, Locale locale) {
-        return messageSource.getMessage("skill_offer.new", null, locale);
+        return messageSource.getMessage("skill_offer.new", new Object[]{event.getSkillName()}, locale);
     }
 
     @Override
