@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.config.telegram.TelegramBotConfig;
+import faang.school.notificationservice.repository.TelegramProfileRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,11 +14,14 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
+
+    private final TelegramProfileRepository telegramProfileRepository;
     private final TelegramBotConfig config;
 
     @Autowired
-    public TelegramBot(TelegramBotConfig config) {
+    public TelegramBot(TelegramProfileRepository telegramProfileRepository, TelegramBotConfig config) {
         super(config.getToken());
+        this.telegramProfileRepository = telegramProfileRepository;
         this.config = config;
     }
 
@@ -26,17 +30,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         return config.getName();
     }
 
-
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
-            String memberName = update.getMessage().getFrom().getFirstName();
             String userName = update.getMessage().getFrom().getUserName();
 
-            if (messageText.equals("/start") && userName.equals("zalupa")) {
-                startBot(chatId, memberName);
+            if (messageText.equals("/start")) {
+                startBot(chatId, userName);
             } else {
                 log.info("Unexpected message");
             }
@@ -44,9 +46,16 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void startBot(long chatId, String userName) {
+        if (telegramProfileRepository.existsByUserName(userName)) {
+            return;
+        }else{
+
+        }
+
+
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        message.setText("Hello, " + userName + "! I'm a Telegram bot.");
+        message.setText("Hello, " + userName + "! Now you are authorized.");
 
         try {
             execute(message);
