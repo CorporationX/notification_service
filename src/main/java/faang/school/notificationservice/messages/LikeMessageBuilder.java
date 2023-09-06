@@ -21,7 +21,7 @@ public class LikeMessageBuilder implements MessageBuilder<LikeEventDto> {
     }
 
     @Override
-    public boolean supportsEventType(Object eventType) {
-        return eventType instanceof LikeEventDto;
+    public boolean supportsEventType(Class<?> eventType) {
+        return eventType == LikeEventDto.class;
     }
 }

@@ -21,8 +21,7 @@ public class ViewProfileMessageBuilder<T> implements MessageBuilder<ProfileViewE
     }
 
     @Override
-    public boolean supportsEventType(Object eventType) {
-        return eventType instanceof ProfileViewEvent;
+    public boolean supportsEventType(Class<?> eventType) {
+        return eventType == ProfileViewEvent.class;
     }
-
 }

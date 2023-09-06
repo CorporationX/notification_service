@@ -33,9 +33,9 @@ class AbstractEventListenerTest {
     private UserDto userDto;
 
     private Locale usLocale;
-    private Object postLike;
+    private Class postLike;
 
-    private AbstractEventListener eventListener;
+    private AbstractEventListener<Class<?>> eventListener;
 
     @BeforeEach
     void setUp() {
@@ -46,7 +46,7 @@ class AbstractEventListenerTest {
                 .build();
 
         usLocale = Locale.US;
-        postLike = new Object();
+        postLike = Object.class;
 
         eventListener = new AbstractEventListener(null, userServiceClient, List.of(notificationService), List.of(messageBuilder)) {
             @Override
