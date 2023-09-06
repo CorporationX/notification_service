@@ -1,4 +1,22 @@
 spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
   data:
     redis:
       port: 6379
@@ -45,3 +63,8 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+telegram-bot:
+    token: 6380435511:AAEyzza7N9D8jxiZ6-Wm7nqCiZhhXHwrzAU
+    name: CorporationXWerewolfBot
+
