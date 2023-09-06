@@ -34,7 +34,7 @@ class EmailServiceTest {
 
         SimpleMailMessage message = new SimpleMailMessage();
 
-        message.setFrom("noreply@faang-school.com");
+        message.setFrom(senderEMail);
         message.setTo(userDto.getEmail());
         message.setSubject(subject);
         message.setText(messageText);
