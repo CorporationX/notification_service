@@ -4,8 +4,13 @@ follower:
 
 event:
   start: |
-    Hello, %s. 
+    Hello, %s.
     Event named "%s" %s
     Location: %s
-    Description:
-    %s
+    Description: %s
+
+achievement:
+  start: | 
+   Hello, %s you got an achievement: %s
+   description: %s
+   rarity: %s

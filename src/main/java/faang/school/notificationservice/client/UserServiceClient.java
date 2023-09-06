@@ -21,4 +21,7 @@ public interface UserServiceClient {
 
     @GetMapping("/events/{id}")
     EventDto getEvent(@PathVariable long id);
+
+    @GetMapping("/users/preference{id}")
+    List<Long> getPreference(@PathVariable long id);
 }

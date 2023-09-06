@@ -3,14 +3,11 @@ package faang.school.notificationservice.messageBuilder;
 
 import faang.school.notificationservice.dto.event.EventDto;
 import faang.school.notificationservice.dto.user.UserDto;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EventStartMessageBuilderTest {
     private final EventStartMessageBuilder eventStartMessageBuilder = new EventStartMessageBuilder();
@@ -29,15 +26,12 @@ class EventStartMessageBuilderTest {
         user.setEmail("some@email.com");
         user.setPhone("somePhone");
         user.setUsername("userName");
-        user.setPreference(UserDto.PreferredContact.SMS);
+        user.setPreference(UserDto.PreferredContact.PHONE);
         event.setUserDto(user);
 
         String result = eventStartMessageBuilder.buildMessage(event, String.valueOf(TimeUnit.MINUTES.toMinutes(10)));
-
-        assertEquals("Hello, userName. \n" +
-                "Event named \"SomeTitle\" is starting\n" +
-                "Location: SomeLocation\n" +
-                "Description:\n" +
-                "SomeDescription", result);
+        System.out.println(result);
+        String expected = "Hello, userName.\nEvent named \"SomeTitle\" is starting\nLocation: SomeLocation\nDescription: SomeDescription\n";
+        Assertions.assertEquals(expected, result);
     }
 }
