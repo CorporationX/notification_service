@@ -1,11 +1,9 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.config.telegram.TelegramBotConfig;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -35,8 +33,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             String messageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
             String memberName = update.getMessage().getFrom().getFirstName();
+            String userName = update.getMessage().getFrom().getUserName();
 
-            if (messageText.equals("/start")) {
+            if (messageText.equals("/start") && userName.equals("zalupa")) {
                 startBot(chatId, memberName);
             } else {
                 log.info("Unexpected message");
