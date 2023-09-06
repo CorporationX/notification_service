@@ -3,9 +3,8 @@ package faang.school.notificationservice.service.telegram;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.telegram.TelegramBotConfig;
 import faang.school.notificationservice.dto.ContactDto;
+import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.entity.TelegramProfile;
-import faang.school.notificationservice.repository.TelegramProfileRepository;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -49,6 +48,24 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
         }
     }
+
+    public void sendNotification(Long userId, String message) {
+        TelegramProfile profile = telegramProfileService.getByUserId(userId);
+
+        if(profile != null){
+            SendMessage notification = new SendMessage();
+            notification.setChatId(profile.getChatId());
+            notification.setText(message);
+
+            try {
+                execute(notification);
+                log.info("Reply sent");
+            } catch (TelegramApiException e) {
+                log.error(e.getMessage());
+            }
+        }
+    }
+
 
     private void startBot(long chatId, String userName) {
         if (telegramProfileService.existsByUserName(userName)) {

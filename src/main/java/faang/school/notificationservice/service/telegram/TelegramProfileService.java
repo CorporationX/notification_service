@@ -12,12 +12,16 @@ public class TelegramProfileService {
     private final TelegramProfileRepository telegramProfileRepository;
 
     @Transactional
-    public void save(TelegramProfile telegramProfile){
+    public void save(TelegramProfile telegramProfile) {
         telegramProfileRepository.save(telegramProfile);
     }
 
     @Transactional(readOnly = true)
-    public boolean existsByUserName(String userName){
-       return telegramProfileRepository.existsByUserName(userName);
+    public boolean existsByUserName(String userName) {
+        return telegramProfileRepository.existsByUserName(userName);
+    }
+
+    public TelegramProfile getByUserId(long userId){
+       return telegramProfileRepository.getByUserId(userId);
     }
 }

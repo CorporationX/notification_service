@@ -13,8 +13,7 @@ public class TelegramService implements NotificationService {
 
     @Override
     public void send(UserDto user, String message) {
-//        telegramBot.sendMessage(user.getId)
-
+        telegramBot.sendNotification(user.id(), message);
     }
 
     @Override
