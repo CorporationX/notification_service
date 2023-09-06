@@ -1,7 +1,11 @@
-package faang.school.notificationservice.service;
+package faang.school.notificationservice.service.telegram;
 
+import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.telegram.TelegramBotConfig;
+import faang.school.notificationservice.dto.ContactDto;
+import faang.school.notificationservice.entity.TelegramProfile;
 import faang.school.notificationservice.repository.TelegramProfileRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,18 +14,19 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-
 @Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
-    private final TelegramProfileRepository telegramProfileRepository;
+    private final TelegramProfileService telegramProfileService;
+    private final UserServiceClient userServiceClient;
     private final TelegramBotConfig config;
 
     @Autowired
-    public TelegramBot(TelegramProfileRepository telegramProfileRepository, TelegramBotConfig config) {
+    public TelegramBot(TelegramProfileService telegramProfileService, UserServiceClient userServiceClient, TelegramBotConfig config) {
         super(config.getToken());
-        this.telegramProfileRepository = telegramProfileRepository;
+        this.telegramProfileService = telegramProfileService;
+        this.userServiceClient = userServiceClient;
         this.config = config;
     }
 
@@ -31,6 +36,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     @Override
+    @Transactional
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
@@ -46,9 +52,29 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void startBot(long chatId, String userName) {
-        if (telegramProfileRepository.existsByUserName(userName)) {
+        if (telegramProfileService.existsByUserName(userName)) {
+            SendMessage message = new SendMessage();
+            message.setChatId(chatId);
+            message.setText("Пошел нахуй");
+
+            try {
+                execute(message);
+                log.info("Reply sent");
+            } catch (TelegramApiException e) {
+                log.error(e.getMessage());
+            }
             return;
         }
+
+        ContactDto contactDto = userServiceClient.getContactByContent(userName);
+
+        TelegramProfile telegramProfile = TelegramProfile.builder()
+                .chatId(chatId)
+                .userName(userName)
+                .userId(contactDto.getUserId())
+                .build();
+
+        telegramProfileService.save(telegramProfile);
 
         SendMessage message = new SendMessage();
         message.setChatId(chatId);

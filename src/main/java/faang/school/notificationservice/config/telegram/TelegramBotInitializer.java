@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config.telegram;
 
-import faang.school.notificationservice.service.TelegramBot;
+import faang.school.notificationservice.service.telegram.TelegramBot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
