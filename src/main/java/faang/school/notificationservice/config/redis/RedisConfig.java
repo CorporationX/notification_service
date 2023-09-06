@@ -1,7 +1,8 @@
-package faang.school.notificationservice.config;
+package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.AchievementMessageSubscriber;
 import faang.school.notificationservice.listener.EventStartListener;
+import faang.school.notificationservice.listener.LikeEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,10 +18,12 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
-    @Value("${spring.data.redis.channel.achievement}")
+    @Value("${spring.data.redis.channels.achievement.name}")
     private String userAchievementChannel;
     private final AchievementMessageSubscriber achievementSubscriber;
-    @Value("${spring.data.redis.channel.event_start_channel}")
+    @Value("${spring.data.redis.channels.like_channel.name}")
+    private String likeChannel;
+    @Value("${spring.data.redis.channels.event_start_channel.name}")
     private String eventStartChannel;
     @Value("${spring.data.redis.host}")
     private String host;
@@ -44,9 +47,11 @@ public class RedisConfig {
 
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
+                                                                       LikeEventListener likeEventListener,
                                                                        EventStartListener eventStartListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(likeEventListener, new ChannelTopic(likeChannel));
         container.addMessageListener(eventStartListener, new ChannelTopic(eventStartChannel));
         container.addMessageListener(achievementSubscriber, new ChannelTopic(userAchievementChannel));
         return container;

@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service;
 
+import faang.school.notificationservice.dto.user.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class EmailService {
+public class EmailService implements NotificationService{
     private final JavaMailSender javaMailSender;
     @Value("${spring.mail.sender.email}")
     private String senderMail;
@@ -20,5 +21,16 @@ public class EmailService {
         message.setSubject(subject);
         message.setText(text);
         javaMailSender.send(message);
+    }
+
+    @Override
+    public void send(UserDto user, String message) {
+        sendMail(user.getEmail(), "Title", message);
+    }
+
+
+    @Override
+    public UserDto.PreferredContact getPreferredContact() {
+        return UserDto.PreferredContact.EMAIL;
     }
 }
