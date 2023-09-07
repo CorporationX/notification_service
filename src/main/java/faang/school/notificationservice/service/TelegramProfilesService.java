@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.entity.TelegramProfiles;
+import faang.school.notificationservice.exception.EntityNotFoundException;
 import faang.school.notificationservice.repository.TelegramProfilesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class TelegramProfilesService {
     }
 
     public TelegramProfiles findByUserId(Long userId) {
-        return telegramProfilesRepository.findByUserId(userId);
+        return telegramProfilesRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Telegram profile not found"));
     }
 }

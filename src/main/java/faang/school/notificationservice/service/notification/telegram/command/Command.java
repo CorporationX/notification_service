@@ -2,13 +2,13 @@ package faang.school.notificationservice.service.notification.telegram.command;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.service.TelegramProfilesService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.Locale;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 public abstract class Command {
 
     protected final MessageSource messageSource;
