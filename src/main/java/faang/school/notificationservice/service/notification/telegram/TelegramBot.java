@@ -1,12 +1,10 @@
 package faang.school.notificationservice.service.notification.telegram;
 
-import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.telegram.TelegramBotConfiguration;
-import faang.school.notificationservice.dto.ContactDto;
-import faang.school.notificationservice.dto.ContactType;
 import faang.school.notificationservice.entity.TelegramProfiles;
 import faang.school.notificationservice.exception.CustomTelegramApiException;
 import faang.school.notificationservice.service.TelegramProfilesService;
+import faang.school.notificationservice.service.notification.telegram.command.CommandHistory;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,59 +19,28 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class TelegramBot extends TelegramLongPollingBot {
     private final TelegramProfilesService telegramProfilesService;
     private final TelegramBotConfiguration telegramBotConfiguration;
-    private final UserServiceClient userServiceClient;
+    private final CommandHistory commandHistory;
 
     @Autowired
-    public TelegramBot(TelegramBotConfiguration telegramBotConfiguration, UserServiceClient userServiceClient,
-                       TelegramProfilesService telegramProfilesService) {
+    public TelegramBot(TelegramBotConfiguration telegramBotConfiguration,
+                       TelegramProfilesService telegramProfilesService,
+                       CommandHistory commandHistory) {
         super(telegramBotConfiguration.getToken());
         this.telegramBotConfiguration = telegramBotConfiguration;
-        this.userServiceClient = userServiceClient;
         this.telegramProfilesService = telegramProfilesService;
+        this.commandHistory = commandHistory;
     }
 
     @Override
     public void onUpdateReceived(@NotNull Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            String messageText = update.getMessage().getText();
+            String command = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
-            String userName = update.getMessage().getFrom().getUserName();
+            String nickname = update.getMessage().getFrom().getUserName();
 
-            switch (messageText) {
-                case "/start" -> startBot(chatId, userName);
+            SendMessage execute = commandHistory.execute(command, chatId, nickname);
 
-                default -> log.info("Unexpected message");
-            }
-        }
-    }
-
-    private void startBot(long chatId, String userName) {
-        boolean existsByChatId = telegramProfilesService.existsByChatId(chatId);
-        SendMessage message = new SendMessage();
-        if (existsByChatId) {
-            message.setChatId(chatId);
-            message.setText("Вы уже зарегистрированы!!!");
-        } else {
-//            ContactDto contact = userServiceClient.getContact(userName);
-            ContactDto contact = new ContactDto(1L, 1L, "setooooon", ContactType.TELEGRAM);
-
-            TelegramProfiles telegramProfiles = TelegramProfiles.builder()
-                    .nickname(userName)
-                    .userId(contact.getUserId())
-                    .chatId(chatId)
-                    .build();
-
-            telegramProfilesService.save(telegramProfiles);
-
-            message.setChatId(chatId);
-            message.setText("Привет, " + userName + "! Я CorporationX werewolf Bot. Напишите /help для получения списка команд");
-        }
-
-        try {
-            execute(message);
-            log.info("Reply sent");
-        } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+            executeMessage(execute);
         }
     }
 
@@ -83,12 +50,16 @@ public class TelegramBot extends TelegramLongPollingBot {
         sendMessage.setChatId(telegramProfiles.getChatId());
         sendMessage.setText(message);
 
+        executeMessage(sendMessage);
+    }
+
+    private void executeMessage(SendMessage sendMessage) {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
+            log.error(e.getMessage());
             throw new CustomTelegramApiException("Don't send message");
         }
-
     }
 
     @Override
