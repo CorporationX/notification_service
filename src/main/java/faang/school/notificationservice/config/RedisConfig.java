@@ -1,7 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.LikeEventListener;
-import faang.school.notificationservice.messaging.ProfileViewEventListener;
+import faang.school.notificationservice.listener.ProfileViewEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

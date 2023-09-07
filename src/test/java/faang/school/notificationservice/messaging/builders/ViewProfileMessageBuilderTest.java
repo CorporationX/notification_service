@@ -1,6 +1,7 @@
 package faang.school.notificationservice.messaging.builders;
 
-import faang.school.notificationservice.messaging.events.ProfileViewEvent;
+import faang.school.notificationservice.messages.ViewProfileMessageBuilder;
+import faang.school.notificationservice.dto.ProfileViewEventDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,13 +27,13 @@ class ViewProfileMessageBuilderTest {
     private final Long idVisitor = 10L;
     private final Long idVisited = 20L;
     private final Locale locale = Locale.ENGLISH;
-    private ProfileViewEvent profileViewEvent;
+    private ProfileViewEventDto profileViewEvent;
     private LocalDateTime dateTime;
 
     @BeforeEach
     public void setUp(){
         dateTime = LocalDateTime.now();
-        profileViewEvent = new ProfileViewEvent(idVisitor, idVisited, dateTime);
+        profileViewEvent = new ProfileViewEventDto(idVisitor, idVisited, dateTime);
     }
 
     @Test

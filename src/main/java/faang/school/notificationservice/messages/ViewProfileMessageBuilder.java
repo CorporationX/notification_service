@@ -1,7 +1,6 @@
-package faang.school.notificationservice.messaging.builders;
+package faang.school.notificationservice.messages;
 
-import faang.school.notificationservice.messages.MessageBuilder;
-import faang.school.notificationservice.messaging.events.ProfileViewEvent;
+import faang.school.notificationservice.dto.ProfileViewEventDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -10,18 +9,18 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
-public class ViewProfileMessageBuilder<T> implements MessageBuilder<ProfileViewEvent> {
+public class ViewProfileMessageBuilder<T> implements MessageBuilder<ProfileViewEventDto> {
 
     private final MessageSource messageSource;
 
     @Override
-    public String buildMessage(ProfileViewEvent event, Locale locale) {
+    public String buildMessage(ProfileViewEventDto event, Locale locale) {
         return messageSource.getMessage("visitor.new",
                 new Object[]{event.getIdVisitor(), event.getIdVisited()}, locale);
     }
 
     @Override
     public boolean supportsEventType(Class<?> eventType) {
-        return eventType == ProfileViewEvent.class;
+        return eventType == ProfileViewEventDto.class;
     }
 }
