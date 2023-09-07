@@ -5,6 +5,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.AchievementEventDto;
 import faang.school.notificationservice.messages.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import lombok.NonNull;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,7 @@ public class AchievementEventListener extends AbstractEventListener<AchievementE
     }
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
+    public void onMessage(@NonNull Message message, byte[] pattern) {
         AchievementEventDto achievementEventDto = convertToJSON(message, AchievementEventDto.class);
         String message2 = getMessage(achievementEventDto.getClass(), Locale.ENGLISH);
         sendNotification(achievementEventDto.getReceiverId(), message2);

@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AchievementEventDto {
     private long receiverId;
-    private EventType eventType;
+    private String title;
+    private Rarity rarity;
 }

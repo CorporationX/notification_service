@@ -18,7 +18,7 @@ public class AchievementMessageBuilder<T> implements MessageBuilder<AchievementE
     @Override
     public String buildMessage(AchievementEventDto event, Locale locale) {
         String followerName = userServiceClient.getUserInternal(event.getReceiverId()).username();
-        return messageSource.getMessage("achievement.new", new Object[]{followerName, event.getEventType()}, locale);
+        return messageSource.getMessage("achievement.new", new Object[]{followerName,event.getTitle(), event.getRarity()}, locale);
     }
 
     @Override
