@@ -3,8 +3,8 @@ package faang.school.notificationservice.service.telegram;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.telegram.TelegramBotConfig;
 import faang.school.notificationservice.dto.ContactDto;
-import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.entity.TelegramProfile;
+import faang.school.notificationservice.messaging.command.Command;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,19 +13,26 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.Map;
+
 @Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final TelegramProfileService telegramProfileService;
     private final UserServiceClient userServiceClient;
+    private final Map<String, Command> commands;
     private final TelegramBotConfig config;
 
     @Autowired
-    public TelegramBot(TelegramProfileService telegramProfileService, UserServiceClient userServiceClient, TelegramBotConfig config) {
+    public TelegramBot(TelegramProfileService telegramProfileService,
+                       UserServiceClient userServiceClient,
+                       Map<String, Command> commands,
+                       TelegramBotConfig config) {
         super(config.getToken());
         this.telegramProfileService = telegramProfileService;
         this.userServiceClient = userServiceClient;
+        this.commands = commands;
         this.config = config;
     }
 
