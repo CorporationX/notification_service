@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service.telegram;
 
-import faang.school.notificationservice.command.telegram.CommandExecutor;
+import faang.school.notificationservice.service.telegram.command.CommandExecutor;
 import faang.school.notificationservice.config.telegram.TelegramBotConfig;
 import faang.school.notificationservice.entity.TelegramProfile;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                        CommandExecutor commandExecutor) {
         super(config.getToken());
         this.telegramProfileService = telegramProfileService;
-
         this.config = config;
         this.commandExecutor = commandExecutor;
     }
@@ -42,14 +41,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             long chatId = update.getMessage().getChatId();
             String userName = update.getMessage().getFrom().getUserName();
 
-            SendMessage sendMessage = commandExecutor.executeCommand(chatId, userName, messageText);
+            SendMessage message = commandExecutor.executeCommand(chatId, userName, messageText);
 
-            try {
-                execute(sendMessage);
-                log.info("Reply sent");
-            } catch (TelegramApiException e) {
-                log.error(e.getMessage());
-            }
+            sendMessage(message);
         }
     }
 
@@ -60,6 +54,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         notification.setChatId(profile.getChatId());
         notification.setText(message);
 
+        sendMessage(notification);
+    }
+
+    private void sendMessage(SendMessage notification) {
         try {
             execute(notification);
             log.info("Reply sent");

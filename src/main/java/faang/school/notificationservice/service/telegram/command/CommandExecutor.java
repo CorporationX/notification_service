@@ -1,4 +1,4 @@
-package faang.school.notificationservice.command.telegram;
+package faang.school.notificationservice.service.telegram.command;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ public class CommandExecutor {
     private final Map<String, Command> commands;
 
     public SendMessage executeCommand(long chatId, String userName, String textCommand) {
-        Command command = commands.getOrDefault(textCommand, commands.get("/error"));
+        Command command = commands.getOrDefault(textCommand, commands.get("/unknown"));
         return command.execute(chatId, userName);
     }
 }
