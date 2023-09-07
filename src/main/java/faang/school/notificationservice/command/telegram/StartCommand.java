@@ -2,6 +2,7 @@ package faang.school.notificationservice.command.telegram;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.ContactDto;
+import faang.school.notificationservice.dto.ContactType;
 import faang.school.notificationservice.entity.TelegramProfile;
 import faang.school.notificationservice.service.telegram.TelegramProfileService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,12 +28,17 @@ public class StartCommand extends Command {
     public SendMessage execute(long chatId, String userName) {
         String response;
 
-        if (telegramProfileService.existsByUserName(userName)) {
-            ContactDto contactDto = userServiceClient.getContactByContent(userName);
-            TelegramProfile telegramProfile = buildTelegramProfile(chatId, userName, contactDto);
-            telegramProfileService.save(telegramProfile);
+        if (!telegramProfileService.existsByUserName(userName)) {
+            try {
+                ContactDto contactDto = userServiceClient.getContactByContent(userName);
+                TelegramProfile telegramProfile = buildTelegramProfile(chatId, userName, contactDto);
+                telegramProfileService.save(telegramProfile);
 
-            response = messageSource.getMessage("telegram.start", new Object[]{userName}, LOCALE_DEFAULT);
+                response = messageSource.getMessage("telegram.start", new Object[]{userName}, LOCALE_DEFAULT);
+            } catch (Exception e) {
+                response = messageSource.getMessage("telegram.start", new Object[]{userName}, LOCALE_DEFAULT);
+            }
+
         } else {
             response = messageSource.getMessage("telegram.on_the_system", null, LOCALE_DEFAULT);
         }
