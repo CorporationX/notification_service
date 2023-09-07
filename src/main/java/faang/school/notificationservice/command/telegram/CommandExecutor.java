@@ -13,8 +13,6 @@ public class CommandExecutor {
 
     public SendMessage executeCommand(long chatId, String userName, String textCommand) {
         Command command = commands.getOrDefault(textCommand, commands.get("/error"));
-        return command.execute(chatId,userName,textCommand);
+        return command.execute(chatId, userName);
     }
 }
-
-

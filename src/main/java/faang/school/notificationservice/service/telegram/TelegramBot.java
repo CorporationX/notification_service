@@ -1,10 +1,8 @@
 package faang.school.notificationservice.service.telegram;
 
-import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.command.telegram.CommandExecutor;
 import faang.school.notificationservice.config.telegram.TelegramBotConfig;
-import faang.school.notificationservice.dto.ContactDto;
 import faang.school.notificationservice.entity.TelegramProfile;
-import faang.school.notificationservice.command.telegram.Command;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,27 +11,23 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.Map;
-
 @Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final TelegramProfileService telegramProfileService;
-    private final UserServiceClient userServiceClient;
-    private final Map<String, Command> commands;
     private final TelegramBotConfig config;
+    private final CommandExecutor commandExecutor;
 
     @Autowired
     public TelegramBot(TelegramProfileService telegramProfileService,
-                       UserServiceClient userServiceClient,
-                       Map<String, Command> commands,
-                       TelegramBotConfig config) {
+                       TelegramBotConfig config,
+                       CommandExecutor commandExecutor) {
         super(config.getToken());
         this.telegramProfileService = telegramProfileService;
-        this.userServiceClient = userServiceClient;
-        this.commands = commands;
+
         this.config = config;
+        this.commandExecutor = commandExecutor;
     }
 
     @Override
@@ -48,24 +42,10 @@ public class TelegramBot extends TelegramLongPollingBot {
             long chatId = update.getMessage().getChatId();
             String userName = update.getMessage().getFrom().getUserName();
 
-            if (messageText.equals("/start")) {
-                startBot(chatId, userName);
-            } else {
-                log.info("Unexpected message");
-            }
-        }
-    }
-
-    public void sendNotification(Long userId, String message) {
-        TelegramProfile profile = telegramProfileService.getByUserId(userId);
-
-        if(profile != null){
-            SendMessage notification = new SendMessage();
-            notification.setChatId(profile.getChatId());
-            notification.setText(message);
+            SendMessage sendMessage = commandExecutor.executeCommand(chatId, userName, messageText);
 
             try {
-                execute(notification);
+                execute(sendMessage);
                 log.info("Reply sent");
             } catch (TelegramApiException e) {
                 log.error(e.getMessage());
@@ -73,6 +53,18 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    public void sendNotification(Long userId, String message) {
+        TelegramProfile profile = telegramProfileService.getByUserId(userId);
 
+        SendMessage notification = new SendMessage();
+        notification.setChatId(profile.getChatId());
+        notification.setText(message);
 
+        try {
+            execute(notification);
+            log.info("Reply sent");
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+    }
 }

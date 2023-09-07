@@ -5,17 +5,18 @@ import faang.school.notificationservice.dto.ContactDto;
 import faang.school.notificationservice.entity.TelegramProfile;
 import faang.school.notificationservice.service.telegram.TelegramProfileService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-@Component
 @Slf4j
+@Component(value = "/start")
 public class StartCommand extends Command {
     private final TelegramProfileService telegramProfileService;
     private final UserServiceClient userServiceClient;
 
+    @Autowired
     public StartCommand(MessageSource messageSource, TelegramProfileService telegramProfileService, UserServiceClient userServiceClient) {
         super(messageSource);
         this.telegramProfileService = telegramProfileService;
@@ -24,42 +25,34 @@ public class StartCommand extends Command {
 
     @Override
     public SendMessage execute(long chatId, String userName) {
-        messageSource.getMessage("telegram.start");
-            if (telegramProfileService.existsByUserName(userName)) {
-                SendMessage message = new SendMessage();
-                message.setChatId(chatId);
-                message.setText("Пошел нахуй");
+        String response;
 
-                try {
-                    execute(message);
-                    log.info("Reply sent");
-                } catch (TelegramApiException e) {
-                    log.error(e.getMessage());
-                }
-                return;
-            }
-
+        if (telegramProfileService.existsByUserName(userName)) {
             ContactDto contactDto = userServiceClient.getContactByContent(userName);
-
-            TelegramProfile telegramProfile = TelegramProfile.builder()
-                    .chatId(chatId)
-                    .userName(userName)
-                    .userId(contactDto.getUserId())
-                    .build();
-
+            TelegramProfile telegramProfile = buildTelegramProfile(chatId, userName, contactDto);
             telegramProfileService.save(telegramProfile);
 
-            SendMessage message = new SendMessage();
-            message.setChatId(chatId);
-            message.setText("Hello, " + userName + "! Now you are authorized.");
+            response = messageSource.getMessage("telegram.start", new Object[]{userName}, LOCALE_DEFAULT);
+        } else {
+            response = messageSource.getMessage("telegram.on_the_system", null, LOCALE_DEFAULT);
+        }
 
-            try {
-                execute(message);
-                log.info("Reply sent");
-            } catch (TelegramApiException e) {
-                log.error(e.getMessage());
-            }
+        return buildMessage(chatId, response);
+    }
 
-        return null;
+    private SendMessage buildMessage(long chatId, String response) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText(response);
+
+        return message;
+    }
+
+    private TelegramProfile buildTelegramProfile(long chatId, String userName, ContactDto contactDto) {
+        return TelegramProfile.builder()
+                .chatId(chatId)
+                .userName(userName)
+                .userId(contactDto.getUserId())
+                .build();
     }
 }
