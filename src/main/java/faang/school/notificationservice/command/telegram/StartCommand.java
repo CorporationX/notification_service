@@ -24,6 +24,7 @@ public class StartCommand extends Command {
 
     @Override
     public SendMessage execute(long chatId, String userName) {
+        messageSource.getMessage("telegram.start");
             if (telegramProfileService.existsByUserName(userName)) {
                 SendMessage message = new SendMessage();
                 message.setChatId(chatId);
