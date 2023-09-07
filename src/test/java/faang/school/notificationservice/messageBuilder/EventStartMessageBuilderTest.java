@@ -29,7 +29,7 @@ class EventStartMessageBuilderTest {
         user.setEmail("some@email.com");
         user.setPhone("somePhone");
         user.setUsername("userName");
-        user.setPreference(UserDto.PreferredContact.SMS);
+        user.setPreference(UserDto.PreferredContact.PHONE);
         event.setUserDto(user);
 
         String result = eventStartMessageBuilder.buildMessage(event, String.valueOf(TimeUnit.MINUTES.toMinutes(10)));
@@ -38,6 +38,6 @@ class EventStartMessageBuilderTest {
                 "Event named \"SomeTitle\" is starting\n" +
                 "Location: SomeLocation\n" +
                 "Description:\n" +
-                "SomeDescription", result);
+                "SomeDescription", result.trim());
     }
 }

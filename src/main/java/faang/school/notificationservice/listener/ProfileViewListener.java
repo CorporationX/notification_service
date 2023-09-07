@@ -31,17 +31,16 @@ public class ProfileViewListener implements MessageListener {
         ProfileViewEventDto event;
         try {
             event = objectMapper.readValue(messageBody, ProfileViewEventDto.class);
+            String text = messageBuilder.buildMessage(event, "eng");
+            UserNameDto user = userServiceClient.getUserName(event.getProfileOwnerId());
+
+            switch (user.getPreference()) {
+                case EMAIL -> emailService.sendMail(user.getEmail(), "Profile View Notification", text);
+                case PHONE -> smsService.send(text);
+                case TELEGRAM -> System.out.println("TELEGRAM: " + text);
+            }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
-        }
-
-        String text = messageBuilder.buildMessage(event, "eng");
-        UserNameDto user = userServiceClient.getUserName(event.getProfileOwnerId());
-
-        switch (user.getPreference()) {
-            case EMAIL -> emailService.sendMail(user.getEmail(), "Profile View Notification", text);
-            case PHONE -> smsService.send(text);
-            case TELEGRAM -> System.out.println("TELEGRAM: " + text);
         }
     }
 }
