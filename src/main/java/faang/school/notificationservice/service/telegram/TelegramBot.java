@@ -74,40 +74,5 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
-    private void startBot(long chatId, String userName) {
-        if (telegramProfileService.existsByUserName(userName)) {
-            SendMessage message = new SendMessage();
-            message.setChatId(chatId);
-            message.setText("Пошел нахуй");
 
-            try {
-                execute(message);
-                log.info("Reply sent");
-            } catch (TelegramApiException e) {
-                log.error(e.getMessage());
-            }
-            return;
-        }
-
-        ContactDto contactDto = userServiceClient.getContactByContent(userName);
-
-        TelegramProfile telegramProfile = TelegramProfile.builder()
-                .chatId(chatId)
-                .userName(userName)
-                .userId(contactDto.getUserId())
-                .build();
-
-        telegramProfileService.save(telegramProfile);
-
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText("Hello, " + userName + "! Now you are authorized.");
-
-        try {
-            execute(message);
-            log.info("Reply sent");
-        } catch (TelegramApiException e) {
-            log.error(e.getMessage());
-        }
-    }
 }

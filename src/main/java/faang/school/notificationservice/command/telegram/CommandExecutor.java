@@ -10,6 +10,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CommandExecutor {
     private final Map<String, Command> commands;
+
     public SendMessage executeCommand(long chatId, String userName, String textCommand) {
         Command command = commands.getOrDefault(textCommand, commands.get("/error"));
         return command.execute(chatId,userName,textCommand);
