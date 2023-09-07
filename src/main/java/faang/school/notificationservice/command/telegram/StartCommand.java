@@ -5,11 +5,14 @@ import faang.school.notificationservice.dto.ContactDto;
 import faang.school.notificationservice.dto.ContactType;
 import faang.school.notificationservice.entity.TelegramProfile;
 import faang.school.notificationservice.service.telegram.TelegramProfileService;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+
+import java.net.ConnectException;
 
 @Slf4j
 @Component(value = "/start")
@@ -35,12 +38,12 @@ public class StartCommand extends Command {
                 telegramProfileService.save(telegramProfile);
 
                 response = messageSource.getMessage("telegram.start", new Object[]{userName}, LOCALE_DEFAULT);
-            } catch (Exception e) {
+            } catch (FeignException e) {
                 response = messageSource.getMessage("telegram.start", new Object[]{userName}, LOCALE_DEFAULT);
             }
 
         } else {
-            response = messageSource.getMessage("telegram.on_the_system", null, LOCALE_DEFAULT);
+            response = messageSource.getMessage("telegram.start.on_the_system", null, LOCALE_DEFAULT);
         }
 
         return buildMessage(chatId, response);
