@@ -14,7 +14,7 @@ public class UnknownCommand extends Command {
     }
 
     @Override
-    public SendMessage execute(long chatId, String userName) {
+    public SendMessage execute(long chatId, String nickname) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         String message = messageSource.getMessage("telegram.unknown", null, defaultLocale);
