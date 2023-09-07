@@ -4,7 +4,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.telegram.TelegramBotConfig;
 import faang.school.notificationservice.dto.ContactDto;
 import faang.school.notificationservice.entity.TelegramProfile;
-import faang.school.notificationservice.messaging.command.Command;
+import faang.school.notificationservice.command.telegram.Command;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
