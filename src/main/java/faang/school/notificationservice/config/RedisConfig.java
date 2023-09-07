@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.ProfileViewEventListener;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,14 +16,16 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
-
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
     private int port;
-    private String channelName = "viewProfileTopic";
+    @Value("${spring.data.redis.channel.viewProfileTopic}")
+    private String channelName;
     @Value("${spring.data.redis.channel.likeTopic}")
     private String likeChannelName;
+    @Value("${spring.data.redis.channel.achievementTopic}")
+    private String achievementChannelName;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -60,13 +63,25 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListenerAdapter achievementListener(AchievementEventListener achievementEventListener) {
+        return new MessageListenerAdapter(achievementEventListener);
+    }
+
+    @Bean
+    public ChannelTopic achievementTopic() {
+        return new ChannelTopic(achievementChannelName);
+    }
+
+    @Bean
     RedisMessageListenerContainer redisContainer(MessageListenerAdapter messageListenerAdapter,
-                                                 MessageListenerAdapter likeListener) {
+                                                 MessageListenerAdapter likeListener,
+                                                 MessageListenerAdapter achievementListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.setTopicSerializer(new StringRedisSerializer());
         container.addMessageListener(messageListenerAdapter, viewProfileTopic());
         container.addMessageListener(likeListener, likeTopic());
+        container.addMessageListener(achievementListener, achievementTopic());
         return container;
     }
 }

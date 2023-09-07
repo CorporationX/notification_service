@@ -5,8 +5,9 @@ spring:
       host: localhost
       channel:
         likeTopic: like-Topic
-        follower: follower_channel
-        achievement: achievement_channel
+        follower: follower-channel
+        achievementTopic: achievement-channel
+        viewProfileTopic: view-profile
 
   mail:
     host: smtp.gmail.com
