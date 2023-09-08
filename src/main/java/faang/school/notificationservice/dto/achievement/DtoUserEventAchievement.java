@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class DtoUserEventAchievement {
     private long userId;
-    private DtoAchievement achievement;
+    private AchievementDto achievement;
 }

@@ -1,7 +1,7 @@
 package faang.school.notificationservice.messageBuilder;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.achievement.DtoAchievement;
+import faang.school.notificationservice.dto.achievement.AchievementDto;
 import faang.school.notificationservice.dto.achievement.DtoUserEventAchievement;
 import faang.school.notificationservice.dto.achievement.Rarity;
 import faang.school.notificationservice.dto.user.UserDto;
@@ -27,13 +27,13 @@ public class AchievementMessageBuilderTest {
         userDto.setUsername("Pavel");
         userDto.setId(1L);
 
-        DtoAchievement dtoAchievement = new DtoAchievement();
-        dtoAchievement.setDescription("hello");
-        dtoAchievement.setTitle("Raceta");
-        dtoAchievement.setRarity(Rarity.EPIC);
+        AchievementDto achievementDto = new AchievementDto();
+        achievementDto.setDescription("hello");
+        achievementDto.setTitle("Raceta");
+        achievementDto.setRarity(Rarity.EPIC);
         DtoUserEventAchievement eventAchievement = new DtoUserEventAchievement();
         eventAchievement.setUserId(1L);
-        eventAchievement.setAchievement(dtoAchievement);
+        eventAchievement.setAchievement(achievementDto);
 
         when(userServiceClient.getUser(1L)).thenReturn(userDto);
         String expected = achievementMessageBuilder.buildMessage(eventAchievement, "ru");
