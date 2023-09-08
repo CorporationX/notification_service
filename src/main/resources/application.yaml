@@ -4,6 +4,7 @@ spring:
       port: 6379
       host: localhost
       channel:
+        likeTopic: like-Topic
         follower: follower_channel
         achievement: achievement_channel
 
