@@ -1,7 +1,7 @@
-package faang.school.notificationservice.message_builder;
+package faang.school.notificationservice.messages;
 
 import faang.school.notificationservice.dto.GoalCompletedEvent;
-import faang.school.notificationservice.messages.GoalAchievedMessageBuilder;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,8 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
 import java.util.Locale;
-
-import static org.junit.Assert.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class GoalAchievedMessageBuilderTest {
@@ -37,7 +35,7 @@ public class GoalAchievedMessageBuilderTest {
         Mockito.when(messageSource.getMessage(PROPERTIES_FILE_NAME, new Object[]{completedGoalId}, locale))
                 .thenReturn(String.format("Goal %d completed!", completedGoalId));
 
-        assertEquals(expectedMessage, goalAchievedMessageBuilder.getMessage(goalCompletedEvent, locale));
+        Assertions.assertEquals(expectedMessage, goalAchievedMessageBuilder.buildMessage(goalCompletedEvent, locale));
         Mockito.verify(messageSource, Mockito.times(1))
                 .getMessage(PROPERTIES_FILE_NAME, new Object[]{completedGoalId}, locale);
     }

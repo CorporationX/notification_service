@@ -1,6 +1,5 @@
-package faang.school.notificationservice.messaging.builders;
+package faang.school.notificationservice.messages;
 
-import faang.school.notificationservice.messages.ViewProfileMessageBuilder;
 import faang.school.notificationservice.dto.ProfileViewEventDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
