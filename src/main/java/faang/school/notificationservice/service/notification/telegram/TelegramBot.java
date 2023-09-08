@@ -2,7 +2,6 @@ package faang.school.notificationservice.service.notification.telegram;
 
 import faang.school.notificationservice.config.telegram.TelegramBotConfiguration;
 import faang.school.notificationservice.entity.TelegramProfiles;
-import faang.school.notificationservice.exception.CustomTelegramApiException;
 import faang.school.notificationservice.service.TelegramProfilesService;
 import faang.school.notificationservice.service.notification.telegram.command.CommandHistory;
 import jakarta.validation.constraints.NotNull;
@@ -58,7 +57,6 @@ public class TelegramBot extends TelegramLongPollingBot {
             execute(sendMessage);
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
-            throw new CustomTelegramApiException("Don't send message");
         }
     }
 

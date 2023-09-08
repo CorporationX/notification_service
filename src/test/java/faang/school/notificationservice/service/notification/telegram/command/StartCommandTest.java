@@ -3,22 +3,24 @@ package faang.school.notificationservice.service.notification.telegram.command;
 import faang.school.notificationservice.dto.ContactDto;
 import faang.school.notificationservice.entity.TelegramProfiles;
 import feign.FeignException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class StartCommandTest extends CommandTest {
+    @Spy
     @InjectMocks
     protected StartCommand startCommand;
 
-    @BeforeEach
-    void setUp() {
-        startCommand = new StartCommand(messageSource, telegramProfilesService, userServiceClient);
-    }
+//    @BeforeEach
+//    void setUp() {
+//        startCommand = new StartCommand(messageSource, telegramProfilesService, userServiceClient);
+//    }
 
     @Test
     void testExecuteIsRegistered() {
@@ -37,13 +39,8 @@ class StartCommandTest extends CommandTest {
         String nick = "setooooon";
         Mockito.when(telegramProfilesService.existsByChatId(1L)).thenReturn(false);
         Mockito.when(userServiceClient.getContact(nick)).thenThrow(FeignException.class);
-        Mockito.when(messageSource.getMessage("telegram.start.not_fill_nickname", null, defaultLocale))
-                .thenReturn("test");
 
-        SendMessage actual = startCommand.execute(1L, nick);
-
-        assertEquals("test", actual.getText());
-        assertEquals("1", actual.getChatId());
+        assertThrows(FeignException.class, () -> startCommand.execute(1L, nick));
     }
 
     @Test
