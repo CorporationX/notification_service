@@ -30,9 +30,10 @@ public class MentorshipAcceptedEventListener extends AbstractListener<Mentorship
         MentorshipAcceptedEventDto eventDto = readValue(message.getBody(), MentorshipAcceptedEventDto.class);
         UserDto author = userServiceClient.getUser(eventDto.getAuthorId());
         UserDto receiver = userServiceClient.getUser(eventDto.getReceiverId());
-        eventDto.setAuthorName(author.getName());
-        eventDto.setReceiverName(receiver.getName());
+        eventDto.setAuthorName(author.getUsername());
+        eventDto.setReceiverName(receiver.getUsername());
         String messageText = getMessage(eventDto, Locale.UK);
+        log.info("Sending messageText: {}", messageText);
         sendNotification(author, messageText);
         log.info("Sending notifications for event: {}", eventDto);
     }

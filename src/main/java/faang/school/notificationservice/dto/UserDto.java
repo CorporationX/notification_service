@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
-    private Long userId;
-    private String name;
+    private Long id;
+    private String username;
     private String email;
     private String phone;
-    private PreferredContact preferredContact;
+    private PreferredContact preference;
 
     public enum PreferredContact {
-        EMAIL, SMS, TELEGRAM;
+        EMAIL, SMS, TELEGRAM
     }
 }

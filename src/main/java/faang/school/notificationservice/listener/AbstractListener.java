@@ -41,7 +41,7 @@ public abstract class AbstractListener<T> implements MessageListener {
 
     public void sendNotification(UserDto user, String text) {
         notificationServices.stream()
-                .filter(service -> service.getPreferredContact().equals(user.getPreferredContact()))
+                .filter(service -> service.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
                 .ifPresent(service -> service.send(user, text));
     }
