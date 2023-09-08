@@ -26,12 +26,12 @@ public class StartCommand extends Command {
     @Override
     @Retryable(retryFor = FeignException.class)
     public SendMessage execute(long chatId, String nickname) {
+        log.info("Executing startCommand with chatId {} and nickname {}", chatId, nickname);
         String message;
         if (telegramProfilesService.existsByChatId(chatId)) {
             message = messageSource.getMessage("telegram.start.not_registered", null, defaultLocale);
         } else {
                 ContactDto contact = userServiceClient.getContact(nickname);
-//                ContactDto contact = new ContactDto(1L, 1L, "setooooon", ContactType.TELEGRAM);
                 TelegramProfiles telegramProfiles = createTelegramProfiles(chatId, nickname, contact);
                 telegramProfilesService.save(telegramProfiles);
                 message = messageSource.getMessage("telegram.start.registered", new String[]{nickname}, defaultLocale);
@@ -42,11 +42,13 @@ public class StartCommand extends Command {
 
     @Recover
     private SendMessage recover(FeignException e, long chatId, String nickname) {
+        log.info("Start command recover after throws FeignException");
         String message = messageSource.getMessage("telegram.start.not_registered_corporationX", null, defaultLocale);
         return buildSendMessage(chatId, message);
     }
 
     private SendMessage buildSendMessage(long chatId, String message) {
+        log.info("Build message {} for chatId {}", message, chatId);
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(message);
@@ -54,6 +56,7 @@ public class StartCommand extends Command {
     }
 
     private TelegramProfiles createTelegramProfiles(long chatId, String nickname, ContactDto contact) {
+        log.info("Create TelegramProfiles for chatId {} and nickname {}", chatId, nickname);
         return TelegramProfiles.builder()
                 .nickname(nickname)
                 .userId(contact.getUserId())

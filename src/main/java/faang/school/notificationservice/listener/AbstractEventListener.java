@@ -34,7 +34,6 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     protected void sendNotification(long userId, String message) {
         UserDto user = userServiceClient.getUser(userId);
 
-//        UserDto user = UserDto.builder().id(userId).preferredContact(PreferredContact.TELEGRAM).build();
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact() == user.getPreferredContact())
                 .forEach(service -> service.sendNotification(user.getId(), message));
