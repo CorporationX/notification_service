@@ -2,31 +2,30 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.event.EventStartDto;
+import faang.school.notificationservice.messageBuilder.MessageBuilder;
+import faang.school.notificationservice.sender.NotificationService;
 import faang.school.notificationservice.service.EventStartService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
-@RequiredArgsConstructor
-public class EventStartListener implements MessageListener {
+public class EventStartListener extends AbstractEventListener<EventStartDto, String> implements MessageListener {
     private final EventStartService eventStartService;
-    private final ObjectMapper objectMapper;
+
+    public EventStartListener(ObjectMapper objectMapper, List<NotificationService> notificationServices, UserServiceClient userServiceClient, List<MessageBuilder<EventStartDto, String>> messageBuilders, EventStartService eventStartService) {
+        super(objectMapper, notificationServices, userServiceClient, messageBuilders);
+        this.eventStartService = eventStartService;
+    }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        String channel = new String(message.getChannel());
-        String messageBody = new String(message.getBody());
-        EventStartDto eventStartDto;
-
-        try {
-            eventStartDto = objectMapper.readValue(messageBody, EventStartDto.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
+        String messageBody = getMessageBody(message);
+        EventStartDto eventStartDto = getEvent(messageBody, EventStartDto.class);
         eventStartService.scheduleNotifications(eventStartDto);
     }
 }
