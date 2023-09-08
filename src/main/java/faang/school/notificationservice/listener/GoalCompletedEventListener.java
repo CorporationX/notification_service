@@ -1,8 +1,8 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.GoalCompletedEvent;
-import faang.school.notificationservice.message_builder.GoalAchievedMessageBuilder;
+import faang.school.notificationservice.messages.GoalAchievedMessageBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
@@ -28,7 +28,7 @@ public class GoalCompletedEventListener implements MessageListener {
         GoalCompletedEvent goalCompletedEvent;
         try {
              goalCompletedEvent = objectMapper.readValue(messageBody, GoalCompletedEvent.class);
-            String text = goalAchievedMessageBuilder.getMessage(goalCompletedEvent, locale);
+            String text = goalAchievedMessageBuilder.buildMessage(goalCompletedEvent, locale);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

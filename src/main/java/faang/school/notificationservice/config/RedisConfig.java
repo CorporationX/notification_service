@@ -2,6 +2,7 @@ package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.ProfileViewEventListener;
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,8 @@ public class RedisConfig {
     private String channelName = "viewProfileTopic";
     @Value("${spring.data.redis.channel.likeTopic}")
     private String likeChannelName;
+    @Value("${spring.data.redis.channel.completed_goal}")
+    private String goalCompletedTopic;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -43,10 +46,9 @@ public class RedisConfig {
     MessageListenerAdapter messageListenerAdapter(ProfileViewEventListener profileViewEventListener) {
         return new MessageListenerAdapter(profileViewEventListener);
     }
-
     @Bean
-    public ChannelTopic viewProfileTopic() {
-        return new ChannelTopic(channelName);
+    MessageListenerAdapter goalCompletedListener(GoalCompletedEventListener goalCompletedEventListener){
+        return new MessageListenerAdapter(goalCompletedEventListener);
     }
 
     @Bean
@@ -55,8 +57,17 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic viewProfileTopic() {
+        return new ChannelTopic(channelName);
+    }
+
+    @Bean
     public ChannelTopic likeTopic() {
         return new ChannelTopic(likeChannelName);
+    }
+    @Bean
+    public ChannelTopic goalCompletedTopic() {
+        return new ChannelTopic(goalCompletedTopic);
     }
 
     @Bean

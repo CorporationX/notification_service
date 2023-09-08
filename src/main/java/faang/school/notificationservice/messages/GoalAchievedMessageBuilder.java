@@ -1,4 +1,4 @@
-package faang.school.notificationservice.message_builder;
+package faang.school.notificationservice.messages;
 
 import faang.school.notificationservice.dto.GoalCompletedEvent;
 import lombok.AllArgsConstructor;
@@ -9,13 +9,18 @@ import java.util.Locale;
 
 @AllArgsConstructor
 @Component
-public class GoalAchievedMessageBuilder implements MessageBuilder<GoalCompletedEvent>{
+public class GoalAchievedMessageBuilder implements MessageBuilder<GoalCompletedEvent> {
 
 private final MessageSource messageSource;
 
     @Override
-    public String getMessage(GoalCompletedEvent goalCompletedEvent, Locale locale) {
+    public String buildMessage(GoalCompletedEvent goalCompletedEvent, Locale locale) {
         return messageSource.getMessage("goal.completed",
                 new Object[]{goalCompletedEvent.getCompletedGoalId()}, locale);
+    }
+
+    @Override
+    public boolean supportsEventType(Class<?> eventType) {
+        return false;
     }
 }
