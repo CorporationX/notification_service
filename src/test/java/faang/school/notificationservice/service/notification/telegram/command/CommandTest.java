@@ -10,7 +10,7 @@ import org.springframework.context.MessageSource;
 import java.util.Locale;
 
 @ExtendWith(MockitoExtension.class)
-public class CommandTest {
+public abstract class CommandTest {
 
     @Mock
     protected MessageSource messageSource;
