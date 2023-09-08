@@ -7,12 +7,13 @@ spring:
         likeTopic: like-Topic
         follower: follower_channel
         achievement: achievement_channel
+        completed_goal: goal_completed_topic
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ami5@tpu.ru #https://www.baeldung.com/spring-email
-    password: hqxxqevqgeqhakew #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: your_email@gmail.com #https://www.baeldung.com/spring-email
+    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
         smtp:
@@ -22,8 +23,6 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-    sender:
-      email: XCorporation@gmail.com
 
   messages:
     basename: messages
