@@ -6,6 +6,7 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.listener.AbstractEventListener;
 import faang.school.notificationservice.messages.MessageBuilder;
+import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +30,7 @@ class AbstractEventListenerTest {
     @Mock
     private NotificationService notificationService;
     @Mock
-    private MessageBuilder messageBuilder;
+    private MessageBuilder<Class<?>> messageBuilder;
     private UserDto userDto;
 
     private Locale usLocale;
@@ -50,7 +51,7 @@ class AbstractEventListenerTest {
 
         eventListener = new AbstractEventListener(null, userServiceClient, List.of(notificationService), List.of(messageBuilder)) {
             @Override
-            public void onMessage(Message message, byte[] pattern) {
+            public void onMessage(@NonNull Message message, byte[] pattern) {
 
             }
         };
