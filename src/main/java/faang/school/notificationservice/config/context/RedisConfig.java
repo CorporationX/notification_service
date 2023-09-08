@@ -22,11 +22,14 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
+    @Value("${spring.data.redis.channel.completed_goal}")
+    private String goalCompletedTopic;
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
 
-        jedisConnectionFactory.setHostName("redisHost");
+        jedisConnectionFactory.setHostName(redisHost);
         jedisConnectionFactory.setPort(redisPort);
 
         return jedisConnectionFactory;
@@ -56,6 +59,6 @@ public class RedisConfig {
 
     @Bean
     ChannelTopic goalCompletedTopic() {
-        return new ChannelTopic("goal_completed_topic");
+        return new ChannelTopic(goalCompletedTopic);
     }
 }
