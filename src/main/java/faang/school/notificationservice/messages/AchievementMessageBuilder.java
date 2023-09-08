@@ -1,7 +1,7 @@
 package faang.school.notificationservice.messages;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.AchievementEventDto;
+import faang.school.notificationservice.dto.UserAchievementEventDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -10,19 +10,19 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class AchievementMessageBuilder<T> implements MessageBuilder<AchievementEventDto> {
+public class AchievementMessageBuilder<T> implements MessageBuilder<UserAchievementEventDto> {
 
     private final UserServiceClient userServiceClient;
     private final MessageSource messageSource;
 
     @Override
-    public String buildMessage(AchievementEventDto event, Locale locale) {
-        String followerName = userServiceClient.getUserInternal(event.getReceiverId()).username();
-        return messageSource.getMessage("achievement.new", new Object[]{followerName,event.getTitle(), event.getRarity()}, locale);
+    public String buildMessage(UserAchievementEventDto event, Locale locale) {
+        String followerName = userServiceClient.getUserInternal(event.getUserId()).username();
+        return messageSource.getMessage("achievement.new", new Object[]{followerName,event.getAchievementName()}, locale);
     }
 
     @Override
     public boolean supportsEventType(Class<?> eventType) {
-        return eventType == AchievementEventDto.class;
+        return eventType == UserAchievementEventDto.class;
     }
 }

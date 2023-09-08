@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AchievementEventDto {
-    private long receiverId;
-    private String title;
-    private Rarity rarity;
+public class UserAchievementEventDto {
+    private String achievementName;
+    private long userId;
 }
