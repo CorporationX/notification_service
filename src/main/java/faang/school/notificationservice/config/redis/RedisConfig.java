@@ -1,7 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.AchievementMessageSubscriber;
-import faang.school.notificationservice.listener.EventStartListener;
+//import faang.school.notificationservice.listener.EventStartListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -43,13 +43,13 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         return redisTemplate;
     }
-
+//,
+//    EventStartListener eventStartListener
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
-                                                                       EventStartListener eventStartListener) {
+    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(eventStartListener, new ChannelTopic(eventStartChannel));
+      //  container.addMessageListener(eventStartListener, new ChannelTopic(eventStartChannel));
         container.addMessageListener(achievementSubscriber, new ChannelTopic(userAchievementChannel));
         return container;
     }

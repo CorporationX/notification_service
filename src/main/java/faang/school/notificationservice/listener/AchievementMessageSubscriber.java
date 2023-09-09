@@ -1,36 +1,27 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.achievement.DtoUserEventAchievement;
-import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.messageBuilder.AchievementMessageBuilder;
-import faang.school.notificationservice.sender.NotificationService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
-public class AchievementMessageSubscriber implements MessageListener {
-    private final AchievementMessageBuilder achievementMessageBuilder;
-    private final ObjectMapper objectMapper;
-    private DtoUserEventAchievement dtoUserEventAchievement;
-    private final Map<UserDto.PreferredContact, NotificationService> notifications;
+public class AchievementMessageSubscriber extends AbstractEventListener<DtoUserEventAchievement, String> implements MessageListener {
+
+    public AchievementMessageSubscriber(ObjectMapper objectMapper, Map notifications, Map messageBuilders, UserServiceClient userServiceClient) {
+        super(objectMapper, notifications, messageBuilders, userServiceClient);
+    }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-
-        try {
-            dtoUserEventAchievement = objectMapper.readValue(message.getBody(), DtoUserEventAchievement.class);
-        } catch (IOException ignored) {
-        }
-        String messageText = achievementMessageBuilder.buildMessage(dtoUserEventAchievement, new Locale("ru"), "ru");
-        UserDto userDto = achievementMessageBuilder.getUserDto();
-        notifications.get(userDto.getPreference()).send(userDto, messageText);
+        DtoUserEventAchievement dtoUserEventAchievement = getEvent(getMessageBody(message), DtoUserEventAchievement.class);
+        sendNotification(dtoUserEventAchievement.getUserId(), getMessage(AchievementMessageBuilder.class, new Locale("ru")
+                , dtoUserEventAchievement, ""));
     }
 }

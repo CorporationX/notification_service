@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.user.UserDto;
-import faang.school.notificationservice.dto.notification.NotificationData;
 import faang.school.notificationservice.messageBuilder.MessageBuilder;
 import faang.school.notificationservice.sender.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -12,34 +11,28 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public abstract class AbstractEventListener<T, V> {
     protected final ObjectMapper objectMapper;
-    protected final List<NotificationService> notificationServices;
+    private final Map<UserDto.PreferredContact, NotificationService> notifications;
+    private final Map<Class<?>, MessageBuilder> messageBuilders;
     protected final UserServiceClient userServiceClient;
-    protected final List<MessageBuilder<T, V>> messageBuilders;
 
-    public String getMessage(Class<?> eventType, Locale locale, T event, V argument) {
-        return messageBuilders.stream()
-                .filter(messageBuilder -> messageBuilder.getEventType().equals(eventType))
-                .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event, locale, argument))
-                .orElseThrow(IllegalArgumentException::new);
+    public String getMessage(Class<?> build, Locale locale, T event, V argument) {
+        return messageBuilders.get(build).buildMessage(event, locale, argument);
     }
 
-    public void sendNotification(long userId, String message) {
-        UserDto userDto = userServiceClient.getUser(userId);
-
-        notificationServices.stream()
-                .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreference()))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new)
-                .send(userDto, message);
+    public void sendNotification(long id, String message) {
+        UserDto userDto = userServiceClient.getUser(id);
+        if (userDto.getPreference() == null) {
+            return;
+        }
+        notifications.get(userDto.getPreference()).send(userDto, message);
     }
 
     public String getMessageBody(Message message) {
