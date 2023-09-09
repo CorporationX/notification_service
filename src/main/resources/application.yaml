@@ -3,11 +3,15 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
-        event_start_channel: event_start_channel
-        profile_view_channel: profile_view_channel
+      channels:
+        follower:
+          name: follower_channel
+        achievement:
+          name: achievement_channel
+        like_channel:
+          name: like_channel
+        event_start_channel:
+          name: event_start_channel
 
   mail:
     host: smtp.gmail.com
@@ -36,6 +40,9 @@ logging:
   level:
     root: info
 
+messages:
+  basename: messages
+
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
@@ -45,8 +52,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     phone: 31687519767
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
