@@ -3,6 +3,7 @@ package faang.school.notificationservice.config;
 import faang.school.notificationservice.listener.MentorshipRequestListener;
 import faang.school.notificationservice.listener.event.CommentEventListener;
 import faang.school.notificationservice.listener.event.EventStartListener;
+import faang.school.notificationservice.listener.mentorship_event.MentorshipAcceptedEventListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,6 +31,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.channels.comment_channels.name}")
     private String commentChannel;
 
+    @Value("${spring.data.redis.channels.mentorship}")
+    private String channel;
+
     @Bean(name = "eventMessageListenerAdapter")
     public MessageListenerAdapter eventMessageListener(EventStartListener eventStartListener) {
         return new MessageListenerAdapter(eventStartListener);
@@ -45,6 +49,11 @@ public class RedisConfig {
         return new MessageListenerAdapter(commentEventListener);
     }
 
+    @Bean(name="mentorshipAcceptedListenerAdapter")
+    public MessageListenerAdapter mentorshipAcceptedListenerAdapter(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
+        return new MessageListenerAdapter(mentorshipAcceptedEventListener);
+    }
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         log.info("Crated redis connection factory with host: {}, port: {}", host, port);
@@ -52,30 +61,37 @@ public class RedisConfig {
     }
 
     @Bean
-    ChannelTopic eventTopic() {
+    public ChannelTopic mentorshipAcceptedTopic() {
+        return new ChannelTopic(channel);
+    }
+
+    @Bean
+    public ChannelTopic eventTopic() {
         return new ChannelTopic(eventChannel);
     }
 
     @Bean
-    ChannelTopic mentorshipRequestTopic() {
+    public ChannelTopic mentorshipRequestTopic() {
         return new ChannelTopic(mentorshipRequestChannel);
     }
 
     @Bean
-    ChannelTopic commentTopic() {
+    public ChannelTopic commentTopic() {
         return new ChannelTopic(commentChannel);
     }
 
-        @Bean
-        public RedisMessageListenerContainer redisContainer(
-                @Qualifier("eventMessageListenerAdapter") MessageListenerAdapter eventMessageListener,
-                @Qualifier("commentMessageListenerAdapter") MessageListenerAdapter commentEventListener,
-                @Qualifier("mentorshipRequestListenerAdapter") MessageListenerAdapter mentorshipRequestEventListener) {
-            RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-            container.setConnectionFactory(jedisConnectionFactory());
-            container.addMessageListener(eventMessageListener, eventTopic());
-            container.addMessageListener(mentorshipRequestEventListener, mentorshipRequestTopic());
-            container.addMessageListener(commentEventListener, commentTopic());
-            return container;
-        }
+    @Bean
+    public RedisMessageListenerContainer redisContainer(
+            @Qualifier("eventMessageListenerAdapter") MessageListenerAdapter eventMessageListener,
+            @Qualifier("commentMessageListenerAdapter") MessageListenerAdapter commentEventListener,
+            @Qualifier("mentorshipRequestListenerAdapter") MessageListenerAdapter mentorshipRequestEventListener,
+            @Qualifier("mentorshipAcceptedListenerAdapter") MessageListenerAdapter mentorshipAcceptedEventListener) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(jedisConnectionFactory());
+        container.addMessageListener(eventMessageListener, eventTopic());
+        container.addMessageListener(mentorshipRequestEventListener, mentorshipRequestTopic());
+        container.addMessageListener(commentEventListener, commentTopic());
+        container.addMessageListener(mentorshipAcceptedEventListener, mentorshipAcceptedTopic());
+        return container;
     }
+}
