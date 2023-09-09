@@ -12,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Locale;
+
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +38,7 @@ public class AchievementMessageBuilderTest {
         eventAchievement.setAchievement(achievementDto);
 
         when(userServiceClient.getUser(1L)).thenReturn(userDto);
-        String expected = achievementMessageBuilder.buildMessage(eventAchievement, "ru");
+        String expected = achievementMessageBuilder.buildMessage(eventAchievement,new Locale("ru"), "ru");
         String actual = "Hello, Pavel you got an achievement: Raceta\ndescription: hello\nrarity: EPIC";
         Assertions.assertEquals(expected, actual);
     }

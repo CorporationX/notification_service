@@ -51,12 +51,6 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     from: BasiliskTeam
     phone: 31687519767
 
-Twilio:
-  twilio_number: 3454564563546
-  user_name: Jon Doe
-  account_sid: 3453453455
-  password: sdfgljsdflgj
-
 project-service:
   host: localhost
   port: 8082

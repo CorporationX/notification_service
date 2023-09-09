@@ -1,6 +1,6 @@
 package faang.school.notificationservice.controller;
 
-import faang.school.notificationservice.service.EmailService;
+import faang.school.notificationservice.sender.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

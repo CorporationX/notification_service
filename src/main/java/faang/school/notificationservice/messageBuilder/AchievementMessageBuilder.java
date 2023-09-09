@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class AchievementMessageBuilder implements MessageBuilder<DtoUserEventAch
     private UserDto userDto;
 
     @Override
-    public String buildMessage(DtoUserEventAchievement event, String locale) {
+    public String buildMessage(DtoUserEventAchievement event, Locale locale, String argument) {
         userDto = userServiceClient.getUser(event.getUserId());
         try {
             map = mapper.readValue(new File("src/main/resources/messages.yaml"), Map.class);
@@ -32,5 +33,10 @@ public class AchievementMessageBuilder implements MessageBuilder<DtoUserEventAch
 
         return String.format(map.get("achievement").get("start"), userDto.getUsername(), event.getAchievement().getTitle()
                 , event.getAchievement().getDescription(), event.getAchievement().getRarity());
+    }
+
+    @Override
+    public Class<?> getEventType() {
+        return null;
     }
 }

@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service;
+package faang.school.notificationservice.sender;
 
 import faang.school.notificationservice.dto.user.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class EmailService implements NotificationService{
 
     @Override
     public void send(UserDto user, String message) {
-        sendMail(user.getEmail(), "Title", message);
+        sendMail(user.getEmail(), "title", message);
     }
 
 
