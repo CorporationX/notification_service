@@ -3,9 +3,10 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
+      channels:
+        follower: follower-channel
+        achievement: achievement-channel
+        mentorship: mentorship-accepted-channel
 
   mail:
     host: smtp.gmail.com
@@ -34,6 +35,7 @@ logging:
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
+  from: Vonage APIs
   api:
     key: whatever
     secret: whatever
