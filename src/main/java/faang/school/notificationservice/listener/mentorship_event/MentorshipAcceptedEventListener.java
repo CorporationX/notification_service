@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.MentorshipAcceptedEventDto;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.listener.AbstractListener;
-import faang.school.notificationservice.message_builder.MessageBuilder;
+import faang.school.notificationservice.listener.AbstractEventListener;
+import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
@@ -16,7 +16,7 @@ import java.util.Locale;
 
 @Component
 @Slf4j
-public class MentorshipAcceptedEventListener extends AbstractListener<MentorshipAcceptedEventDto> {
+public class MentorshipAcceptedEventListener extends AbstractEventListener<MentorshipAcceptedEventDto> {
 
     public MentorshipAcceptedEventListener(ObjectMapper objectMapper,
                                            UserServiceClient userServiceClient,

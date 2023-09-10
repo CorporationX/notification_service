@@ -1,7 +1,6 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.dto.MentorshipAcceptedEventDto;
-import faang.school.notificationservice.message_builder.MentorshipMessageBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +17,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MentorshipAcceptedMessageBuilderTest {
     @InjectMocks
-    private MentorshipMessageBuilder mentorshipMessageBuilder;
+    private MentorshipAcceptedMessageBuilder mentorshipAcceptedMessageBuilder;
     @Mock
     private MessageSource messageSource;
     private MentorshipAcceptedEventDto mentorshipAcceptedEventDto;
@@ -44,7 +43,7 @@ class MentorshipAcceptedMessageBuilderTest {
 
     @Test
     void buildMessage() {
-        String actual = mentorshipMessageBuilder.buildMessage(mentorshipAcceptedEventDto, Locale.UK);
+        String actual = mentorshipAcceptedMessageBuilder.buildMessage(mentorshipAcceptedEventDto, Locale.UK);
         String expected = "Congrats, author! receiver accepted your mentorship request";
         assertEquals(expected, actual);
     }

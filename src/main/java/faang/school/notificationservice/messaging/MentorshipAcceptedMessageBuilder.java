@@ -1,4 +1,4 @@
-package faang.school.notificationservice.message_builder;
+package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.dto.MentorshipAcceptedEventDto;
 import lombok.RequiredArgsConstructor;
@@ -9,11 +9,11 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class MentorshipMessageBuilder implements MessageBuilder<MentorshipAcceptedEventDto> {
+public class MentorshipAcceptedMessageBuilder implements MessageBuilder<MentorshipAcceptedEventDto> {
     private final MessageSource messageSource;
 
     @Override
-    public Class<MentorshipAcceptedEventDto> getInstanceClass() {
+    public Class<MentorshipAcceptedEventDto> getInstance() {
         return MentorshipAcceptedEventDto.class;
     }
 
