@@ -6,8 +6,7 @@ import faang.school.notificationservice.dto.user.UserDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,7 +31,7 @@ class EventStartMessageBuilderTest {
         user.setPreference(UserDto.PreferredContact.SMS);
         event.setUserDto(user);
 
-        String result = eventStartMessageBuilder.buildMessage(event, String.valueOf(TimeUnit.MINUTES.toMinutes(10)));
+        String result = eventStartMessageBuilder.buildMessage(event, Locale.UK, String.valueOf(TimeUnit.MINUTES.toMinutes(10)));
 
         assertEquals("Hello, userName. \n" +
                 "Event named \"SomeTitle\" is starting\n" +

@@ -5,6 +5,7 @@ import faang.school.notificationservice.dto.event.EventDto;
 import faang.school.notificationservice.dto.event.EventStartDto;
 import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.messageBuilder.EventStartMessageBuilder;
+import faang.school.notificationservice.sender.NotificationService;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class EventStartService {
     private final EventStartMessageBuilder eventStartMessageBuilder;
     private final UserServiceClient userServiceClient;
-    private final EmailService emailService;
+    private final List<NotificationService> notificationServices;
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5);
 
     @PreDestroy
@@ -54,15 +56,10 @@ public class EventStartService {
         if (delay > 0) {
             for (UserDto user : users) {
                 event.setUserDto(user);
-                String message = String.format(eventStartMessageBuilder.buildMessage(event, String.valueOf(timeTillStart)));
-
-                switch (user.getPreference()) {
-                    case EMAIL -> emailService.sendMail(user.getEmail(), event.getTitle(), message);
-                    //ToDo
-                    case SMS -> System.out.println("SMS: " + message);
-                    //ToDo
-                    case TELEGRAM -> System.out.println("TELEGRAM: " + message);
-                }
+                String message = String.format(eventStartMessageBuilder.buildMessage(event, Locale.UK, String.valueOf(timeTillStart)));
+				notificationServices.stream()
+                        .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
+                        .forEach(service -> service.send(user, message));
             }
         }
     }

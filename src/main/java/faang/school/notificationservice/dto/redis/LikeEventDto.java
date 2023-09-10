@@ -14,6 +14,7 @@ public class LikeEventDto {
     private long postAuthor;
     private long commentId;
     private long commentAuthor;
-    private long likeAuthor;
+    private long likeAuthorId;
+    private String likeAuthorName;
     private LocalDateTime dateTime;
 }
