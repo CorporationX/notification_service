@@ -2,7 +2,6 @@ package faang.school.notificationservice.messageBuilder;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.event.ProfileViewEventDto;
-import faang.school.notificationservice.dto.user.UserNameDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

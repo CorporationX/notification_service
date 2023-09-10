@@ -1,11 +1,8 @@
 package faang.school.notificationservice.messageBuilder;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.event.EventDto;
 import faang.school.notificationservice.dto.event.ProfileViewEventDto;
 import faang.school.notificationservice.dto.user.UserDto;
-import faang.school.notificationservice.dto.user.UserNameDto;
-import faang.school.notificationservice.listener.ProfileViewListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -29,8 +26,8 @@ public class ProfileViewMessageBuilder implements MessageBuilder<ProfileViewEven
             Map<String, Map<String, String>> messagesConfig = yaml.load(inputStream);
             String eventMessagePattern = messagesConfig.get("profile").get("view");
 
-            UserNameDto userOwner = userServiceClient.getUserName(event.getProfileOwnerId());
-            UserNameDto userViewer = userServiceClient.getUserName(event.getViewerId());
+            UserDto userOwner = userServiceClient.getUserNoPublish(event.getProfileOwnerId());
+            UserDto userViewer = userServiceClient.getUserNoPublish(event.getViewerId());
 
             return String.format(eventMessagePattern, userOwner.getUsername(), userViewer.getUsername());
         } catch (IOException e) {

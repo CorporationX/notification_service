@@ -2,7 +2,6 @@ package faang.school.notificationservice.client;
 
 import faang.school.notificationservice.dto.event.EventDto;
 import faang.school.notificationservice.dto.user.UserDto;
-import faang.school.notificationservice.dto.user.UserNameDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,8 +16,8 @@ public interface UserServiceClient {
     @GetMapping("api/v1/users/{id}")
     UserDto getUser(@PathVariable long id);
 
-    @GetMapping("/users/username/{id}")
-    UserNameDto getUserName(@PathVariable long id);
+    @GetMapping("/users/user/{id}")
+    UserDto getUserNoPublish(@PathVariable long id);
 
     @PostMapping("users/get-by-ids")
     List<UserDto> getUsersByIds(@RequestBody List<Long> ids);

@@ -20,7 +20,7 @@ public class RedisConfig {
     private String likeChannel;
     @Value("${spring.data.redis.channels.event_start_channel.name}")
     private String eventStartChannel;
-    @Value("${spring.data.redis.channel.profile_view_channel}")
+    @Value("${spring.data.redis.channels.profile_view_channel.name}")
     private String profileViewEventChannel;
     @Value("${spring.data.redis.host}")
     private String host;
@@ -43,8 +43,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
-                                                                       EventStartListener eventStartListener) {
+    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory, LikeEventListener likeEventListener,
+                                                                       EventStartListener eventStartListener, ProfileViewListener profileViewListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(likeEventListener, new ChannelTopic(likeChannel));

@@ -12,6 +12,8 @@ spring:
           name: like_channel
         event_start_channel:
           name: event_start_channel
+        profile_view_channel:
+          name: profile_view_channel
 
   mail:
     host: smtp.gmail.com
