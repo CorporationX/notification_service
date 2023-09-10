@@ -32,7 +32,6 @@ public class RedisConfig {
     private String commentChannel;
     @Value("${spring.data.redis.channels.skill_channel.name}")
     private String skillOfferedChannel;
-
     @Value("${spring.data.redis.channels.mentorship}")
     private String channel;
 
@@ -56,7 +55,7 @@ public class RedisConfig {
         return new MessageListenerAdapter(skillOfferedEventListener);
     }
 
-    @Bean(name="mentorshipAcceptedListenerAdapter")
+    @Bean(name = "mentorshipAcceptedListenerAdapter")
     public MessageListenerAdapter mentorshipAcceptedListenerAdapter(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
         return new MessageListenerAdapter(mentorshipAcceptedEventListener);
     }
@@ -92,34 +91,20 @@ public class RedisConfig {
         return new ChannelTopic(skillOfferedChannel);
     }
 
-        @Bean
-        public RedisMessageListenerContainer redisContainer(
-                @Qualifier("eventMessageListenerAdapter") MessageListenerAdapter eventMessageListener,
-                @Qualifier("commentMessageListenerAdapter") MessageListenerAdapter commentEventListener,
-                @Qualifier("mentorshipRequestListenerAdapter") MessageListenerAdapter mentorshipRequestEventListener,
-                @Qualifier("skillOfferedListenerAdapter") MessageListenerAdapter skillOfferedEventListener) {
-            RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-            container.setConnectionFactory(jedisConnectionFactory());
-            container.addMessageListener(eventMessageListener, eventTopic());
-            container.addMessageListener(mentorshipRequestEventListener, mentorshipRequestTopic());
-            container.addMessageListener(commentEventListener, commentTopic());
-            container.addMessageListener(skillOfferedEventListener, skillOfferedTopic());
-            return container;
-        }
-    }
-
     @Bean
     public RedisMessageListenerContainer redisContainer(
             @Qualifier("eventMessageListenerAdapter") MessageListenerAdapter eventMessageListener,
             @Qualifier("commentMessageListenerAdapter") MessageListenerAdapter commentEventListener,
             @Qualifier("mentorshipRequestListenerAdapter") MessageListenerAdapter mentorshipRequestEventListener,
-            @Qualifier("mentorshipAcceptedListenerAdapter") MessageListenerAdapter mentorshipAcceptedEventListener) {
+            @Qualifier("mentorshipAcceptedListenerAdapter") MessageListenerAdapter mentorshipAcceptedEventListener,
+            @Qualifier("skillOfferedListenerAdapter") MessageListenerAdapter skillOfferedEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(eventMessageListener, eventTopic());
         container.addMessageListener(mentorshipRequestEventListener, mentorshipRequestTopic());
         container.addMessageListener(commentEventListener, commentTopic());
         container.addMessageListener(mentorshipAcceptedEventListener, mentorshipAcceptedTopic());
+        container.addMessageListener(skillOfferedEventListener, skillOfferedTopic());
         return container;
     }
 }
