@@ -2,6 +2,7 @@ package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.EventStartListener;
 import faang.school.notificationservice.listener.LikeEventListener;
+import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,8 @@ public class RedisConfig {
     private String likeChannel;
     @Value("${spring.data.redis.channels.event_start_channel.name}")
     private String eventStartChannel;
+    @Value("${spring.data.redis.channels.mentorship_accepted_channel.name}")
+    private String mentorshipAcceptedChannel;
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
@@ -42,11 +45,13 @@ public class RedisConfig {
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
                                                                        LikeEventListener likeEventListener,
-                                                                       EventStartListener eventStartListener) {
+                                                                       EventStartListener eventStartListener,
+                                                                       MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(likeEventListener, new ChannelTopic(likeChannel));
         container.addMessageListener(eventStartListener, new ChannelTopic(eventStartChannel));
+        container.addMessageListener(mentorshipAcceptedEventListener, new ChannelTopic(mentorshipAcceptedChannel));
         return container;
     }
 }

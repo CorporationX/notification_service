@@ -12,7 +12,8 @@ spring:
           name: like_channel
         event_start_channel:
           name: event_start_channel
-
+        mentorship_accepted_channel:
+          name: mentorship-accepted-channel
   mail:
     host: smtp.gmail.com
     port: 587
