@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.user.UserDto;
-import faang.school.notificationservice.dto.notification.NotificationData;
 import faang.school.notificationservice.messageBuilder.MessageBuilder;
 import faang.school.notificationservice.sender.NotificationService;
 import lombok.RequiredArgsConstructor;
