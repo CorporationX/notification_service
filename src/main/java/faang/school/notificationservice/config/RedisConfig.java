@@ -26,15 +26,19 @@ public class RedisConfig {
     private String recommendationRequestedEventChannelName;
 
     @Bean
+    MessageListenerAdapter skillOfferListenerAdapter(SkillOfferListener skillOfferListener) {
+        return new MessageListenerAdapter(skillOfferListener, "onMessage");
+    }
+    @Bean
     MessageListenerAdapter recommendationRequestListenerAdapter(RecommendationRequestListener recommendationRequestListener) {
         return new MessageListenerAdapter(recommendationRequestListener, "onMessage");
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(SkillOfferListener skillOfferListener, MessageListenerAdapter recommendationRequestListenerAdapter) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter skillOfferListenerAdapter, MessageListenerAdapter recommendationRequestListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
-        container.addMessageListener(skillOfferListener, topicInviteEvent());
+        container.addMessageListener(skillOfferListenerAdapter, topicInviteEvent());
         container.addMessageListener(recommendationRequestListenerAdapter, topicRecommendationRequestedEvent());
         return container;
     }
