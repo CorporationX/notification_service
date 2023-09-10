@@ -12,6 +12,7 @@ spring:
           name: mentorship-requested-channel
         comment_channels:
           name: comments-channel
+        mentorship: mentorship-accepted-channel
         skill_channel:
           name: skill-offered-channel
 
