@@ -27,6 +27,9 @@ spring:
   messages:
     basename: messages
 
+config:
+  import: classpath:messages/messages_ru.yaml
+
 server:
   port: 8083
 
