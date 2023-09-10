@@ -33,7 +33,7 @@ public class SmsService implements NotificationService {
     }
 
     @Override
-    public void send(UserDto user, String msg) {
+    public void send(UserDto user,String topic, String msg) {
         TextMessage message = new TextMessage(from, phone, msg);
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(message);
 

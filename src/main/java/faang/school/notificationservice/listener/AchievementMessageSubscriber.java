@@ -21,7 +21,7 @@ public class AchievementMessageSubscriber extends AbstractEventListener<DtoUserE
     @Override
     public void onMessage(Message message, byte[] pattern) {
         DtoUserEventAchievement dtoUserEventAchievement = getEvent(getMessageBody(message), DtoUserEventAchievement.class);
-        sendNotification(dtoUserEventAchievement.getUserId(), getMessage(AchievementMessageBuilder.class, new Locale("ru")
+        sendNotification(dtoUserEventAchievement.getUserId(), "You have received an achievement", getMessage(AchievementMessageBuilder.class, new Locale("ru")
                 , dtoUserEventAchievement, ""));
     }
 }

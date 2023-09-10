@@ -27,12 +27,12 @@ public abstract class AbstractEventListener<T, V> {
         return messageBuilders.get(build).buildMessage(event, locale, argument);
     }
 
-    public void sendNotification(long id, String message) {
+    public void sendNotification(long id, String topic, String message) {
         UserDto userDto = userServiceClient.getUser(id);
         if (userDto.getPreference() == null) {
             return;
         }
-        notifications.get(userDto.getPreference()).send(userDto, message);
+        notifications.get(userDto.getPreference()).send(userDto, topic, message);
     }
 
     public String getMessageBody(Message message) {

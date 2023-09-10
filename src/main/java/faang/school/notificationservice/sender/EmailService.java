@@ -14,18 +14,18 @@ public class EmailService implements NotificationService {
     @Value("${spring.mail.sender.email}")
     private String senderMail;
 
-    public void sendMail(String receiver, String subject, String text) {
+    public void sendMail(String receiver, String topic, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(senderMail);
         message.setTo(receiver);
-        message.setSubject(subject);
+        message.setSubject(topic);
         message.setText(text);
         javaMailSender.send(message);
     }
 
     @Override
-    public void send(UserDto user, String message) {
-        sendMail(user.getEmail(), "title", message);
+    public void send(UserDto user, String topic, String message) {
+        sendMail(user.getEmail(), topic, message);
     }
 
 

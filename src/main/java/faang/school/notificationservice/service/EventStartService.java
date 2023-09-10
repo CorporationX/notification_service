@@ -59,7 +59,7 @@ public class EventStartService {
                 String message = String.format(eventStartMessageBuilder.buildMessage(event, Locale.UK, String.valueOf(timeTillStart)));
                 notificationServices.stream()
                         .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
-                        .forEach(service -> service.send(user, message));
+                        .forEach(service -> service.send(user, "", message));
             }
         }
     }
