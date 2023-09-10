@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import java.util.Locale;
+
 @Component
 @RequiredArgsConstructor
 public class SkillOfferedMessageBuilder implements MessageBuilder<SkillOfferDto> {
@@ -20,9 +21,7 @@ public class SkillOfferedMessageBuilder implements MessageBuilder<SkillOfferDto>
     @Override
     public String buildMessage(SkillOfferDto event, Locale locale) {
         return messageSource.getMessage("skill.offered.message",
-                new Object[]{
-                        userServiceClient.getUser(event.getAuthorId()).getUsername(), event.getSkill()},
-                locale
+                new Object[]{userServiceClient.getUser(event.getAuthorId()).getUsername(), event.getSkill()}, locale
         );
     }
 }

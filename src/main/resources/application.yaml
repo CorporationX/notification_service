@@ -12,7 +12,7 @@ spring:
           name: mentorship-requested-channel
         comment_channels:
           name: comments-channel
-        skill_offered_channel:
+        skill_channel:
           name: skill-offered-channel
 
   mail:

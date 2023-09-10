@@ -29,7 +29,7 @@ public class RedisConfig {
     private String mentorshipRequestChannel;
     @Value("${spring.data.redis.channels.comment_channels.name}")
     private String commentChannel;
-    @Value("${spring.data.redis.channels.skill-offered-channel.name}")
+    @Value("${spring.data.redis.channels.skill_channel.name}")
     private String skillOfferedChannel;
 
     @Bean(name = "eventMessageListenerAdapter")
