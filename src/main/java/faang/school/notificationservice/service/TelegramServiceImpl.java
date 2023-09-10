@@ -19,9 +19,7 @@ public class TelegramServiceImpl implements NotificationService {
     public void send(UserDto user, String message) {
         SendMessage notificationMessage = new SendMessage();
         ExtendedContactDto tgContact = userServiceClient.getUserContact(user.getId());
-        if (tgContact == null || tgContact.getTgChatId() == null) {
-            throw new RuntimeException("User's chatId is not verify in TG-notification system");
-        }
+        validateTgContact(tgContact);
         notificationMessage.setChatId(tgContact.getTgChatId());
         notificationMessage.setText(message);
 
@@ -35,5 +33,11 @@ public class TelegramServiceImpl implements NotificationService {
     @Override
     public UserDto.PreferredContact getPreferredContact() {
         return UserDto.PreferredContact.TELEGRAM;
+    }
+
+    public void validateTgContact(ExtendedContactDto tgContact){
+        if (tgContact == null || tgContact.getTgChatId() == null) {
+            throw new RuntimeException("User's chatId is not verify in TG-notification system");
+        }
     }
 }
