@@ -3,7 +3,7 @@ package faang.school.notificationservice.messageBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.achievement.DtoUserEventAchievement;
+import faang.school.notificationservice.dto.achievement.UserEventAchievementDto;
 import faang.school.notificationservice.dto.user.UserDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Component
-public class AchievementMessageBuilder implements MessageBuilder<DtoUserEventAchievement, String> {
+public class AchievementMessageBuilder implements MessageBuilder<UserEventAchievementDto, String> {
     private final UserServiceClient userServiceClient;
     private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
     private Map<String, Map<String, String>> map;
@@ -24,7 +24,7 @@ public class AchievementMessageBuilder implements MessageBuilder<DtoUserEventAch
     private UserDto userDto;
 
     @Override
-    public String buildMessage(DtoUserEventAchievement event, Locale locale, String argument) {
+    public String buildMessage(UserEventAchievementDto event, Locale locale, String argument) {
         userDto = userServiceClient.getUser(event.getUserId());
         try {
             map = mapper.readValue(new File("src/main/resources/messages.yaml"), Map.class);
@@ -37,6 +37,6 @@ public class AchievementMessageBuilder implements MessageBuilder<DtoUserEventAch
 
     @Override
     public Class<?> getEventType() {
-        return null;
+        return AchievementMessageBuilder.class;
     }
 }

@@ -2,7 +2,7 @@ package faang.school.notificationservice.messageBuilder;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.achievement.AchievementDto;
-import faang.school.notificationservice.dto.achievement.DtoUserEventAchievement;
+import faang.school.notificationservice.dto.achievement.UserEventAchievementDto;
 import faang.school.notificationservice.dto.achievement.Rarity;
 import faang.school.notificationservice.dto.user.UserDto;
 import org.junit.jupiter.api.Assertions;
@@ -33,7 +33,7 @@ public class AchievementMessageBuilderTest {
         achievementDto.setDescription("hello");
         achievementDto.setTitle("Raceta");
         achievementDto.setRarity(Rarity.EPIC);
-        DtoUserEventAchievement eventAchievement = new DtoUserEventAchievement();
+        UserEventAchievementDto eventAchievement = new UserEventAchievementDto();
         eventAchievement.setUserId(1L);
         eventAchievement.setAchievement(achievementDto);
 
