@@ -7,6 +7,7 @@ spring:
         follower: follower-channel
         achievement: achievement-channel
         skill_offer_channel: skill-offer-channel
+        recommendation_requested_event_channel: recommendation-requested-event-channel
 
   mail:
     host: smtp.gmail.com
@@ -25,6 +26,9 @@ spring:
 
   messages:
     basename: messages
+
+config:
+  import: classpath:messages/messages_ru.yaml
 
 server:
   port: 8083
