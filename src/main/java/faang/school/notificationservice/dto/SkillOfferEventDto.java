@@ -1,6 +1,5 @@
 package faang.school.notificationservice.dto;
 
-import faang.school.notificationservice.entity.PreferredContact;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
-    private long id;
-    private String username;
-    private String email;
-    private PreferredContact preferredContact;
+public class SkillOfferEventDto {
+    private long authorId;
+    private long receiverId;
+    private long skillOfferId;
+    private String skillName;
 }
