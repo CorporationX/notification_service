@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.EventStartListener;
+import faang.school.notificationservice.listener.FollowerProjectListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,8 @@ public class RedisConfig {
     private String eventStartChannel;
     @Value("${spring.data.redis.channels.mentorship_accepted_channel.name}")
     private String mentorshipAcceptedChannel;
+    @Value("${spring.data.redis.channels.follower_project.name}")
+    private String followerProject;
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
@@ -45,6 +48,7 @@ public class RedisConfig {
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
                                                                        LikeEventListener likeEventListener,
+                                                                       FollowerProjectListener followerProjectListener,
                                                                        EventStartListener eventStartListener,
                                                                        MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
@@ -52,6 +56,7 @@ public class RedisConfig {
         container.addMessageListener(likeEventListener, new ChannelTopic(likeChannel));
         container.addMessageListener(eventStartListener, new ChannelTopic(eventStartChannel));
         container.addMessageListener(mentorshipAcceptedEventListener, new ChannelTopic(mentorshipAcceptedChannel));
+        container.addMessageListener(followerProjectListener, new ChannelTopic(followerProject));
         return container;
     }
 }
