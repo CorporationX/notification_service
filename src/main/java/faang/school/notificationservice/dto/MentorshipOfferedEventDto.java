@@ -1,13 +1,10 @@
 package faang.school.notificationservice.dto;
 
-import faang.school.notificationservice.entity.PreferredContact;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.Locale;
 
 @Data
 @Builder
@@ -16,8 +13,6 @@ import java.util.Locale;
 public class MentorshipOfferedEventDto {
     private Long receiverId;
     private Long requesterId;
-    private String email;
-    private LocalDateTime timestamp;
-    private PreferredContact preferredContact;
-    private Locale locale;
+    @Size(max = 150)
+    private String message;
 }

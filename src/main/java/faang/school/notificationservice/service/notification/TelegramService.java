@@ -4,7 +4,7 @@ import faang.school.notificationservice.entity.PreferredContact;
 
 public class TelegramService implements NotificationService {
     @Override
-    public void sendNotification(String message) {
+    public void sendNotification(Long receiverId, String message) {
 
     }
 

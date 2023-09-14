@@ -31,12 +31,12 @@ public abstract class AbstractEventListener<T> implements MessageListener {
                 .buildMessage(event, Locale.ENGLISH);
     }
 
-    protected void sendNotification(long userId, String message) {
-        UserDto user = userServiceClient.getUser(userId);
+    protected void sendNotification(long receiverId, String message) {
+        UserDto user = userServiceClient.getUser(receiverId);
 
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact() == user.getPreferredContact())
-                .forEach(service -> service.sendNotification(message));
+                .forEach(service -> service.sendNotification(receiverId, message));
     }
 
     protected T deserializeJson(Message message, Class<T> clazz) {

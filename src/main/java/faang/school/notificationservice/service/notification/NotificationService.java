@@ -4,7 +4,7 @@ import faang.school.notificationservice.entity.PreferredContact;
 
 public interface NotificationService {
 
-    void sendNotification(String message);
+    void sendNotification(Long receiverId, String message);
 
     PreferredContact getPreferredContact();
 }
