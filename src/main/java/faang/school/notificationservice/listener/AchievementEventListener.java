@@ -25,7 +25,7 @@ public class AchievementEventListener extends AbstractEventListener<UserAchievem
     @Override
     public void onMessage(@NonNull Message message, byte[] pattern) {
         UserAchievementEventDto achievementEventDto = convertToJSON(message, UserAchievementEventDto.class);
-        String message2 = getMessage(achievementEventDto.getClass(), Locale.ENGLISH);
-        sendNotification(achievementEventDto.getUserId(), message2);
+        String messageToSend = getMessage(achievementEventDto.getClass(), Locale.ENGLISH);
+        sendNotification(achievementEventDto.getUserId(), messageToSend);
     }
 }

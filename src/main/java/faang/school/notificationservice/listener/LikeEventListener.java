@@ -26,7 +26,7 @@ public class LikeEventListener extends AbstractEventListener<LikeEventDto>{
     @Override
     public void onMessage(@NonNull Message message, byte[] pattern) {
         LikeEventDto likeEventDto = convertToJSON(message, LikeEventDto.class);
-        String message2 = getMessage(likeEventDto.getClass(), Locale.ENGLISH);
-        sendNotification(likeEventDto.getReceiverId(), message2);
+        String messageToSend = getMessage(likeEventDto.getClass(), Locale.ENGLISH);
+        sendNotification(likeEventDto.getReceiverId(), messageToSend);
     }
 }
