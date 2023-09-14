@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @AllArgsConstructor
@@ -12,5 +12,5 @@ import java.time.LocalDateTime;
 public class ProfileViewEventDto {
     private Long idVisitor;
     private Long idVisited;
-    private LocalDateTime dateTime;
+    private ZonedDateTime dateTime;
 }

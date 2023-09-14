@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,11 +28,11 @@ class ViewProfileMessageBuilderTest {
     private final Long idVisited = 20L;
     private final Locale locale = Locale.ENGLISH;
     private ProfileViewEventDto profileViewEvent;
-    private LocalDateTime dateTime;
+    private ZonedDateTime dateTime;
 
     @BeforeEach
     public void setUp(){
-        dateTime = LocalDateTime.now();
+        dateTime = ZonedDateTime.now();
         profileViewEvent = new ProfileViewEventDto(idVisitor, idVisited, dateTime);
     }
 
