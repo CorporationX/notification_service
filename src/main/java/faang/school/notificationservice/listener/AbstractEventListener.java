@@ -3,6 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.entity.PreferredContact;
 import faang.school.notificationservice.exception.DeserializeJsonException;
 import faang.school.notificationservice.exception.NotFoundException;
 import faang.school.notificationservice.message.MessageBuilder;
@@ -33,6 +34,10 @@ public abstract class AbstractEventListener<T> implements MessageListener {
 
     protected void sendNotification(long receiverId, String message) {
         UserDto user = userServiceClient.getUser(receiverId);
+
+        if (user.getPreferredContact() == null) {
+            user.setPreferredContact(PreferredContact.EMAIL);
+        }
 
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact() == user.getPreferredContact())

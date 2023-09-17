@@ -12,12 +12,10 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class MentorshipOfferBuilder implements MessageBuilder<MentorshipOfferedEventDto> {
     private final MessageSource messageSource;
-    @Value("${message.mentorship.new}")
-    private String key;
 
     @Override
     public String buildMessage(MentorshipOfferedEventDto mentorshipOfferedEventDto, Locale locale) {
-        return messageSource.getMessage(key, new Object[]{mentorshipOfferedEventDto.getRequesterId()}, locale);
+        return messageSource.getMessage("mentorship.new", new Object[]{mentorshipOfferedEventDto.getRequesterId()}, locale);
     }
 
     @Override

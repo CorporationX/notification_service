@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class EmailService implements NotificationService {
     private final JavaMailSender mailSender;
     private final UserServiceClient userServiceClient;
-    @Value("${mail.subject}")
+    @Value("${spring.mail.subject}")
     private String subject;
 
     @Override

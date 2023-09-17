@@ -14,5 +14,5 @@ public class MentorshipOfferedEventDto {
     private Long receiverId;
     private Long requesterId;
     @Size(max = 150)
-    private String message;
+    private String description;
 }
