@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.event.EventStartDto;
 import faang.school.notificationservice.dto.user.UserDto;
+import faang.school.notificationservice.listener.next.AbstractEventListener;
 import faang.school.notificationservice.messageBuilder.MessageBuilder;
 import faang.school.notificationservice.sender.NotificationService;
 import faang.school.notificationservice.service.EventStartService;

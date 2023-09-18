@@ -3,6 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.achievement.UserEventAchievementDto;
+import faang.school.notificationservice.listener.next.AbstractEventListener;
 import faang.school.notificationservice.messageBuilder.AchievementMessageBuilder;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;

@@ -1,4 +1,4 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.listener.next;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
