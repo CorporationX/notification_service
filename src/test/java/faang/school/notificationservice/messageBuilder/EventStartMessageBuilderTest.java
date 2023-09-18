@@ -29,10 +29,10 @@ class EventStartMessageBuilderTest {
         user.setEmail("some@email.com");
         user.setPhone("somePhone");
         user.setUsername("userName");
-        user.setPreference(UserDto.PreferredContact.PHONE);
+        user.setPreference(UserDto.PreferredContact.SMS);
         event.setUserDto(user);
 
-        String result = eventStartMessageBuilder.buildMessage(event, Locale.UK, String.valueOf(TimeUnit.MINUTES.toMinutes(10)));
+        String result = eventStartMessageBuilder.buildMessage(event, String.valueOf(TimeUnit.MINUTES.toMinutes(10)));
         System.out.println(result);
         String expected = "Hello, userName.\nEvent named \"SomeTitle\" is starting\nLocation: SomeLocation\nDescription: SomeDescription\n";
         Assertions.assertEquals(expected, result);

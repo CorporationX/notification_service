@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class EmailService implements NotificationService {
+public class EmailServiceNext implements NotificationServiceNext {
     private final JavaMailSender javaMailSender;
     @Value("${spring.mail.sender.email}")
     private String senderMail;

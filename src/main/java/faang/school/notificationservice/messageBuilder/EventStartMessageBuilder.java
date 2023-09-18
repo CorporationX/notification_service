@@ -7,14 +7,13 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
 public class EventStartMessageBuilder implements MessageBuilder<EventDto, String> {
     @Override
-    public String buildMessage(EventDto eventDto, Locale locale, String remainedTime) {
+    public String buildMessage(EventDto eventDto, String remainedTime) {
         Yaml yaml = new Yaml();
         ClassPathResource resource = new ClassPathResource("messages.yaml");
 
@@ -30,11 +29,6 @@ public class EventStartMessageBuilder implements MessageBuilder<EventDto, String
             throw new RuntimeException(e);
         }
 
-    }
-
-    @Override
-    public Class<?> getEventType() {
-        return EventDto.class;
     }
 
     private String beautify(String remainedTime) {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.achievement.UserEventAchievementDto;
 import faang.school.notificationservice.dto.user.UserDto;
+import faang.school.notificationservice.messageBuilder.next.MessageBuilder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

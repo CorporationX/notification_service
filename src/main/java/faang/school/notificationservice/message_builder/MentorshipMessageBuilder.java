@@ -1,7 +1,7 @@
-package faang.school.notificationservice.messageBuilder;
+package faang.school.notificationservice.message_builder;
 
 import faang.school.notificationservice.dto.notification.NotificationData;
-import faang.school.notificationservice.dto.redis.LikeEventDto;
+import faang.school.notificationservice.dto.redis.MentorshipAcceptedEventDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -10,11 +10,11 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class LikeMessageBuilder implements MessageBuilder<LikeEventDto> {
+public class MentorshipMessageBuilder implements MessageBuilder<MentorshipAcceptedEventDto> {
     private final MessageSource messageSource;
 
     public String getPredefinedMessage(NotificationData data, Locale locale) {
-        return messageSource.getMessage("like.new", new Object[]{data.getFrom()}, locale);
+        return messageSource.getMessage("mentorship.accepted", new Object[]{data.getFrom()}, locale);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class LikeMessageBuilder implements MessageBuilder<LikeEventDto> {
     }
 
     @Override
-    public boolean supportsEventType(LikeEventDto eventType) {
+    public boolean supportsEventType(MentorshipAcceptedEventDto eventType) {
         return true;
     }
 }

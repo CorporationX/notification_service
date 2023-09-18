@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.sender.EmailService;
+import faang.school.notificationservice.sender.EmailServiceNext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class EmailServiceTest {
     @InjectMocks
-    private EmailService emailService;
+    private EmailServiceNext emailService;
     @Mock
     private JavaMailSender mailSender;
     @Value("${spring.mail.sender.email}")

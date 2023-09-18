@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.user.UserDto;
-import faang.school.notificationservice.messageBuilder.MessageBuilder;
-import faang.school.notificationservice.sender.NotificationService;
+import faang.school.notificationservice.messageBuilder.next.MessageBuilder;
+import faang.school.notificationservice.sender.NotificationServiceNext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
@@ -19,7 +19,7 @@ import java.util.Map;
 @Slf4j
 public abstract class AbstractEventListener<T, V> {
     protected final ObjectMapper objectMapper;
-    private final Map<UserDto.PreferredContact, NotificationService> notifications;
+    private final Map<UserDto.PreferredContact, NotificationServiceNext> notifications;
     private final Map<Class<?>, MessageBuilder> messageBuilders;
     protected final UserServiceClient userServiceClient;
 

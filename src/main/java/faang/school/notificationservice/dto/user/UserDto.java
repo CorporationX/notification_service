@@ -21,6 +21,6 @@ public class UserDto {
     private Locale locale = Locale.UK;
 
     public enum PreferredContact {
-        EMAIL, PHONE, TELEGRAM
+        EMAIL, SMS, TELEGRAM
     }
 }

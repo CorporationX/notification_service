@@ -1,4 +1,4 @@
-package faang.school.notificationservice.sender;
+package faang.school.notificationservice.service.sms_sending;
 
 import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
@@ -6,6 +6,7 @@ import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.exception.FailedSendException;
+import faang.school.notificationservice.service.NotificationService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +34,7 @@ public class SmsService implements NotificationService {
     }
 
     @Override
-    public void send(UserDto user,String topic, String msg) {
+    public void send(UserDto user, String msg) {
         TextMessage message = new TextMessage(from, phone, msg);
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(message);
 
@@ -48,7 +49,7 @@ public class SmsService implements NotificationService {
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.PHONE;
+        return UserDto.PreferredContact.SMS;
     }
 }
 
