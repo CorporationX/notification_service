@@ -15,7 +15,7 @@ public class MentorshipOfferBuilder implements MessageBuilder<MentorshipOfferedE
 
     @Override
     public String buildMessage(MentorshipOfferedEventDto mentorshipOfferedEventDto, Locale locale) {
-        return messageSource.getMessage("mentorship.new", new Object[]{mentorshipOfferedEventDto.getRequesterId()}, locale);
+        return messageSource.getMessage("mentorship_request.new", new Object[]{mentorshipOfferedEventDto.getRequesterId()}, locale);
     }
 
     @Override
