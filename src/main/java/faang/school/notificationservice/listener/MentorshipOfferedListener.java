@@ -25,9 +25,7 @@ public class MentorshipOfferedListener extends AbstractEventListener<MentorshipO
     @Override
     public void onMessage(Message message, byte[] pattern) {
         MentorshipOfferedEventDto mentorshipOfferedEventDto = deserializeJson(message, MentorshipOfferedEventDto.class);
-        //TODO problem with getMessage, No message builder found
         String messageForNotification = getMessage(MentorshipOfferBuilder.class, mentorshipOfferedEventDto);
-
         sendNotification(mentorshipOfferedEventDto.getReceiverId(), messageForNotification);
     }
 }
