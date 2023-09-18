@@ -1,8 +1,10 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.AchievementMessageSubscriber;
 import faang.school.notificationservice.listener.EventStartListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +17,11 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
+    @Value("${spring.data.redis.channels.achievement.name}")
+    private String userAchievementChannel;
+    private final AchievementMessageSubscriber achievementMessageSubscriber;
     @Value("${spring.data.redis.channels.like_channel.name}")
     private String likeChannel;
     @Value("${spring.data.redis.channels.event_start_channel.name}")
@@ -49,6 +55,7 @@ public class RedisConfig {
                                                                        MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(achievementMessageSubscriber, new ChannelTopic(userAchievementChannel));
         container.addMessageListener(likeEventListener, new ChannelTopic(likeChannel));
         container.addMessageListener(eventStartListener, new ChannelTopic(eventStartChannel));
         container.addMessageListener(mentorshipAcceptedEventListener, new ChannelTopic(mentorshipAcceptedChannel));
