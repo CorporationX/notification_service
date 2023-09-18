@@ -36,7 +36,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
 
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact() == user.getPreferredContact())
-                .forEach(service -> service.sendNotification(message));
+                .forEach(service -> service.sendNotification(user.getId(), message));
     }
 
     protected T deserializeJson(Message message, Class<T> clazz) {

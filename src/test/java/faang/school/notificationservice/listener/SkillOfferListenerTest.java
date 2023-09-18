@@ -9,7 +9,7 @@ import faang.school.notificationservice.exception.NotFoundException;
 import faang.school.notificationservice.message.MessageBuilder;
 import faang.school.notificationservice.message.SkillOfferMessageBuilder;
 import faang.school.notificationservice.service.notification.NotificationService;
-import faang.school.notificationservice.service.notification.TelegramService;
+import faang.school.notificationservice.service.notification.telegram.TelegramService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -86,6 +86,6 @@ class SkillOfferListenerTest {
 
         skillOfferListener.sendNotification(event.getReceiverId(), message);
 
-        Mockito.verify(telegramService).sendNotification(message);
+        Mockito.verify(telegramService).sendNotification(userDto.getId(), message);
     }
 }
