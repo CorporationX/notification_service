@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import faang.school.notificationservice.listener.RecommendationRequestListener;
 import faang.school.notificationservice.listener.SkillOfferListener;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ public class RedisConfig {
     private String skillOfferChannelName;
     @Value("${spring.data.redis.channels.recommendation_requested_event_channel}")
     private String recommendationRequestedEventChannelName;
+    @Value("${spring.data.redis.channels.mentorship_accepted_request_event_channel}")
+    private String mentorshipAcceptedEventChannelName;
 
     @Bean
     MessageListenerAdapter skillOfferListenerAdapter(SkillOfferListener skillOfferListener) {
@@ -33,13 +36,19 @@ public class RedisConfig {
     MessageListenerAdapter recommendationRequestListenerAdapter(RecommendationRequestListener recommendationRequestListener) {
         return new MessageListenerAdapter(recommendationRequestListener, "onMessage");
     }
+    @Bean
+    MessageListenerAdapter mentorshipAcceptedRequestListenerAdapter(MentorshipAcceptedEventListener eventListener){
+        return new MessageListenerAdapter(eventListener, "onMessage");
+    }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter skillOfferListenerAdapter, MessageListenerAdapter recommendationRequestListenerAdapter) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter skillOfferListenerAdapter, MessageListenerAdapter recommendationRequestListenerAdapter,
+                                                        MessageListenerAdapter mentorshipAcceptedRequestListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(skillOfferListenerAdapter, topicInviteEvent());
         container.addMessageListener(recommendationRequestListenerAdapter, topicRecommendationRequestedEvent());
+        container.addMessageListener(mentorshipAcceptedRequestListenerAdapter, topicMentorshipAcceptedRequestEvent());
         return container;
     }
 
@@ -55,5 +64,9 @@ public class RedisConfig {
 
     private ChannelTopic topicRecommendationRequestedEvent() {
         return new ChannelTopic(recommendationRequestedEventChannelName);
+    }
+
+    private ChannelTopic topicMentorshipAcceptedRequestEvent() {
+        return new ChannelTopic(mentorshipAcceptedEventChannelName);
     }
 }
