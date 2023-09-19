@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.context;
 
+import faang.school.notificationservice.config.context.UserContext;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
