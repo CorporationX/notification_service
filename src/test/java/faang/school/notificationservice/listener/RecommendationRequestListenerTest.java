@@ -9,7 +9,7 @@ import faang.school.notificationservice.exception.NotFoundException;
 import faang.school.notificationservice.message.MessageBuilder;
 import faang.school.notificationservice.message.RecommendationRequestMessageBuilder;
 import faang.school.notificationservice.service.notification.NotificationService;
-import faang.school.notificationservice.service.notification.TelegramService;
+import faang.school.notificationservice.service.notification.telegram.TelegramService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
