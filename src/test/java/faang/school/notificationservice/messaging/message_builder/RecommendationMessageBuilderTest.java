@@ -1,11 +1,8 @@
-package faang.school.notificationservice.builder;
+package faang.school.notificationservice.messaging.message_builder;
 
-import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.ProfileViewEvent;
-import faang.school.notificationservice.dto.RecommendationReceivedEvent;
+import faang.school.notificationservice.client.service.UserServiceClient;
+import faang.school.notificationservice.dto.redis.RecommendationReceivedEvent;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.messaging.message_builder.ProfileViewMessageBuilder;
-import faang.school.notificationservice.messaging.message_builder.RecommendationReceiveMessageBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,12 +10,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
-import java.time.LocalDateTime;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 

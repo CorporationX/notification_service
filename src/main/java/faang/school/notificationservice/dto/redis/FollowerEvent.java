@@ -1,4 +1,4 @@
-package faang.school.notificationservice.dto;
+package faang.school.notificationservice.dto.redis;
 
 import faang.school.notificationservice.model.EventType;
 import lombok.AllArgsConstructor;
@@ -7,16 +7,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecommendationReceivedEvent implements Serializable {
+public class FollowerEvent implements Serializable {
     private EventType eventType;
-    private Date receivedAt;
-    private Long authorId;
-    private Long recipientId;
-    private Long recommendationId;
+    private LocalDateTime receivedAt;
+    private Long followerId;
+    private Long followeeId;
 }

@@ -1,13 +1,10 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.messaging.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.messaging.message_builder.ProfileViewMessageBuilder;
-import faang.school.notificationservice.messaging.listener.ProfileViewEventListener;
-import faang.school.notificationservice.messaging.message_builder.ProfileViewMessageBuilder;
-import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.ProfileViewEvent;
+import faang.school.notificationservice.client.service.UserServiceClient;
+import faang.school.notificationservice.dto.redis.ProfileViewEvent;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.messaging.listener.ProfileViewEventListener;
 import faang.school.notificationservice.service.sms.SmsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +21,6 @@ import java.util.Locale;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
 
@@ -62,14 +58,15 @@ public class ProfileViewEventListenerTest {
         UserDto user = UserDto.builder()
                 .preference(UserDto.PreferredContact.SMS)
                 .build();
-        builder = new ProfileViewMessageBuilder(messageSource);
+        builder = new ProfileViewMessageBuilder(userServiceClient, messageSource);
         Locale locale = Locale.ENGLISH;
         String notificationMsg = "notification message";
 
-        listener = new ProfileViewEventListener(objectMapper, userServiceClient, List.of(builder), List.of(smsService));
+        listener = new ProfileViewEventListener(objectMapper, userServiceClient, builder, List.of(smsService));
 
-        when(message.getBody()).thenReturn("message".getBytes());
-        when(objectMapper.readValue(any(byte[].class), eq(ProfileViewEvent.class))).thenReturn(event);
+
+        when(objectMapper.readValue(eq(message.getBody()), eq(ProfileViewEvent.class))).thenReturn(event);
+        when(userServiceClient.getUser(event.getProfileViewedId())).thenReturn(user);
         when(builder.buildMessage(event, locale)).thenReturn(notificationMsg);
         when(userServiceClient.getUser(event.getProfileViewedId())).thenReturn(user);
         when(smsService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS);

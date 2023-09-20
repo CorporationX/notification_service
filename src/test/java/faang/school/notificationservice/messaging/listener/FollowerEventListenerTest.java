@@ -1,10 +1,9 @@
 package faang.school.notificationservice.messaging.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.messaging.listener.FollowerEventListener;
 import faang.school.notificationservice.messaging.message_builder.FollowerMessageBuilder;
-import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.FollowerEvent;
+import faang.school.notificationservice.client.service.UserServiceClient;
+import faang.school.notificationservice.dto.redis.FollowerEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.model.EventType;
 import faang.school.notificationservice.service.email.EmailService;
@@ -54,7 +53,7 @@ class FollowerEventListenerTest {
         UserDto user = UserDto.builder()
                 .preference(UserDto.PreferredContact.EMAIL)
                 .build();
-        followerEventListener = new FollowerEventListener(objectMapper, userServiceClient, List.of(followerMessageBuilder), List.of(emailService));
+        followerEventListener = new FollowerEventListener(objectMapper, userServiceClient, followerMessageBuilder, List.of(emailService));
 
         when(objectMapper.readValue(message.getBody(), FollowerEvent.class)).thenReturn(event);
         when(userServiceClient.getUser(event.getFollowerId())).thenReturn(user);

@@ -1,24 +1,24 @@
 package faang.school.notificationservice.messaging.message_builder;
 
-import faang.school.notificationservice.dto.ProfileViewEvent;
-import faang.school.notificationservice.messaging.message_builder.MessageBuilder;
-import lombok.RequiredArgsConstructor;
+import faang.school.notificationservice.client.service.UserServiceClient;
+import faang.school.notificationservice.dto.redis.ProfileViewEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 
-@RequiredArgsConstructor
-public class ProfileViewMessageBuilder implements MessageBuilder<ProfileViewEvent> {
-
-    private final MessageSource messageSource;
-
-    @Override
-    public String buildMessage(ProfileViewEvent eventType, Locale locale) {
-        return messageSource.getMessage("profile_view.new", new Object[]{eventType.getProfileViewedId()}, locale);
+@Component
+public class ProfileViewMessageBuilder extends AbstractMessageBuilder
+        implements MessageBuilder<ProfileViewEvent> {
+    @Autowired
+    public ProfileViewMessageBuilder(UserServiceClient userServiceClient, MessageSource messageSource) {
+        super(userServiceClient, messageSource);
     }
 
     @Override
-    public boolean supportsEventType(ProfileViewEvent eventType) {
-        return eventType != null;
+    public String buildMessage(ProfileViewEvent eventType, Locale locale) {
+        String viewerName = userServiceClient.getUser(eventType.getProfileViewedId()).getUsername();
+        return messageSource.getMessage("profile_view.new", new Object[]{viewerName}, locale);
     }
 }
