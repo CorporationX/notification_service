@@ -30,7 +30,7 @@ class AbstractEventListenerTest {
     @Mock
     private NotificationService notificationService;
     @Mock
-    private MessageBuilder messageBuilder;
+    private MessageBuilder<Class<?>> messageBuilder;
     private UserDto userDto;
 
     private Locale usLocale;
