@@ -3,6 +3,7 @@ package faang.school.notificationservice.config;
 import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.ProfileViewEventListener;
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
+
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
@@ -24,6 +26,8 @@ public class RedisConfig {
     private String channelName;
     @Value("${spring.data.redis.channel.likeTopic}")
     private String likeChannelName;
+    @Value("${spring.data.redis.channel.completed_goal}")
+    private String goalCompletedTopic;
     @Value("${spring.data.redis.channel.achievementTopic}")
     private String achievementChannelName;
 
@@ -46,11 +50,16 @@ public class RedisConfig {
     MessageListenerAdapter messageListenerAdapter(ProfileViewEventListener profileViewEventListener) {
         return new MessageListenerAdapter(profileViewEventListener);
     }
+    @Bean
+    MessageListenerAdapter goalCompletedListener(GoalCompletedEventListener goalCompletedEventListener){
+        return new MessageListenerAdapter(goalCompletedEventListener);
+    }
 
     @Bean
-    public ChannelTopic viewProfileTopic() {
-        return new ChannelTopic(channelName);
+    MessageListenerAdapter goalCompletedListener(GoalCompletedEventListener goalCompletedEventListener){
+        return new MessageListenerAdapter(goalCompletedEventListener);
     }
+
 
     @Bean
     MessageListenerAdapter likeListener(LikeEventListener likeEventListener) {
@@ -61,10 +70,18 @@ public class RedisConfig {
     public ChannelTopic likeTopic() {
         return new ChannelTopic(likeChannelName);
     }
+    @Bean
+    public ChannelTopic goalCompletedTopic() {
+        return new ChannelTopic(goalCompletedTopic);
+    }
 
     @Bean
     MessageListenerAdapter achievementListener(AchievementEventListener achievementEventListener) {
         return new MessageListenerAdapter(achievementEventListener);
+    }
+    @Bean
+    public ChannelTopic viewProfileTopic() {
+        return new ChannelTopic(channelName);
     }
 
     @Bean

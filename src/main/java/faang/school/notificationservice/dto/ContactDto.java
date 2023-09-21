@@ -1,19 +1,20 @@
 package faang.school.notificationservice.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.ZonedDateTime;
-
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class LikeDto {
+@AllArgsConstructor
+public class ContactDto {
+    @NotNull
     private Long userId;
-    private Long commentId;
-    private Long postId;
-    private ZonedDateTime createdAt;
+    @NotNull
+    private String contact;
+    @NotNull
+    private ContactType contactType;
 }
