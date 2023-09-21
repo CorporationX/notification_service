@@ -2,6 +2,7 @@ package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.MentorshipRequestListener;
 import faang.school.notificationservice.listener.SkillOfferedEventListener;
+import faang.school.notificationservice.listener.achievement.AchievementListener;
 import faang.school.notificationservice.listener.event.CommentEventListener;
 import faang.school.notificationservice.listener.event.EventStartListener;
 import faang.school.notificationservice.listener.mentorship_event.MentorshipAcceptedEventListener;
@@ -33,7 +34,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.channels.skill_channel.name}")
     private String skillOfferedChannel;
     @Value("${spring.data.redis.channels.mentorship}")
-    private String channel;
+    private String mentorshipChannel;
+    @Value("${spring.data.redis.channels.achievement}")
+    private String achievementChannel;
 
     @Bean(name = "eventMessageListenerAdapter")
     public MessageListenerAdapter eventMessageListener(EventStartListener eventStartListener) {
@@ -60,6 +63,11 @@ public class RedisConfig {
         return new MessageListenerAdapter(mentorshipAcceptedEventListener);
     }
 
+    @Bean(name = "achievementListenerAdapter")
+    public MessageListenerAdapter achievementListenerAdapter(AchievementListener achievementListener) {
+        return new MessageListenerAdapter(achievementListener);
+    }
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         log.info("Crated redis connection factory with host: {}, port: {}", host, port);
@@ -68,7 +76,7 @@ public class RedisConfig {
 
     @Bean
     public ChannelTopic mentorshipAcceptedTopic() {
-        return new ChannelTopic(channel);
+        return new ChannelTopic(mentorshipChannel);
     }
 
     @Bean
@@ -92,12 +100,18 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic achievementTopic() {
+        return new ChannelTopic(achievementChannel);
+    }
+
+    @Bean
     public RedisMessageListenerContainer redisContainer(
             @Qualifier("eventMessageListenerAdapter") MessageListenerAdapter eventMessageListener,
             @Qualifier("commentMessageListenerAdapter") MessageListenerAdapter commentEventListener,
             @Qualifier("mentorshipRequestListenerAdapter") MessageListenerAdapter mentorshipRequestEventListener,
             @Qualifier("mentorshipAcceptedListenerAdapter") MessageListenerAdapter mentorshipAcceptedEventListener,
-            @Qualifier("skillOfferedListenerAdapter") MessageListenerAdapter skillOfferedEventListener) {
+            @Qualifier("skillOfferedListenerAdapter") MessageListenerAdapter skillOfferedEventListener,
+            @Qualifier("achievementListenerAdapter") MessageListenerAdapter achievementListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(eventMessageListener, eventTopic());
@@ -105,6 +119,7 @@ public class RedisConfig {
         container.addMessageListener(commentEventListener, commentTopic());
         container.addMessageListener(mentorshipAcceptedEventListener, mentorshipAcceptedTopic());
         container.addMessageListener(skillOfferedEventListener, skillOfferedTopic());
+        container.addMessageListener(achievementListener, achievementTopic());
         return container;
     }
 }
