@@ -1,16 +1,16 @@
 package faang.school.notificationservice.dto.redis;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserAchievementEvent {
-    private long id;
-    private Long achievementId;
     private long userId;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private long achievementId;
+    private String achievementTitle;
 }
