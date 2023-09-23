@@ -17,15 +17,13 @@ import org.springframework.stereotype.Service;
 public class EmailService implements NotificationService {
     private final JavaMailSender javaMailSender;
     private final UserServiceClient userServiceClient;
+    private final SimpleMailMessage mailMessage;
     @Value("${spring.mail.subject}")
     private String subject;
 
     @Override
     public void sendNotification(Long receiverId, String message) {
         UserDto receiver = userServiceClient.getUser(receiverId);
-
-        SimpleMailMessage mailMessage
-                = new SimpleMailMessage();
 
         mailMessage.setTo(receiver.getEmail());
         mailMessage.setText(message);

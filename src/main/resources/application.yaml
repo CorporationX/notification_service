@@ -31,8 +31,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: email_with_access_for_app #https://www.baeldung.com/spring-email
-    password: generated_password #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
+    username: ami5@tpu.ru    #https://www.baeldung.com/spring-email
+    password: hqxxqevqgeqhakew   #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
     subject: "CorporationX"
     properties:
       mail:
