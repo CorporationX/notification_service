@@ -23,7 +23,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     private final List<MessageBuilder<T>> messageBuilders;
     private final List<NotificationService> notificationServices;
 
-    public T readValue(byte[] json, Class<T> clazz) {
+    public T readValue(byte[] json, Class<T> clazz ) {
         try {
             return objectMapper.readValue(json, clazz);
         } catch (IOException e) {
