@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.messaging.listener.AchievementEventListener;
 import faang.school.notificationservice.messaging.listener.ProfileViewEventListener;
 import faang.school.notificationservice.messaging.listener.RecommendationReceivedEventListener;
 import faang.school.notificationservice.messaging.listener.FollowerEventListener;
@@ -19,21 +20,19 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
-
     @Value("${spring.data.redis.host}")
     private String host;
-
     @Value("${spring.data.redis.port}")
     private int port;
 
     @Value("${spring.data.redis.channel.follower}")
     private String followerChannelName;
-
     @Value("${spring.data.redis.channel.profile_view}")
     private String channelName;
-
     @Value("${spring.data.redis.channel.recommendation}")
     private String recommendationChannelName;
+    @Value("${spring.data.redis.channel.achievement}")
+    private String achievementChannelName;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -51,44 +50,56 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter profileViewListener(ProfileViewEventListener profileViewEventListener) {
+    public MessageListenerAdapter profileViewListener(ProfileViewEventListener profileViewEventListener) {
         return new MessageListenerAdapter(profileViewEventListener);
     }
 
     @Bean
-    MessageListenerAdapter recommendationListener(RecommendationReceivedEventListener recommendationReceivedEventListener) {
+    public MessageListenerAdapter recommendationListener(RecommendationReceivedEventListener recommendationReceivedEventListener) {
         return new MessageListenerAdapter(recommendationReceivedEventListener);
     }
 
     @Bean
-    MessageListenerAdapter followerListener(FollowerEventListener followerEventListener) {
+    public MessageListenerAdapter followerListener(FollowerEventListener followerEventListener) {
         return new MessageListenerAdapter(followerEventListener);
     }
 
     @Bean
-    ChannelTopic followerChannel() {
+    public MessageListenerAdapter achievementListener(AchievementEventListener achievementEventListener) {
+        return new MessageListenerAdapter(achievementEventListener);
+    }
+
+    @Bean
+    public ChannelTopic followerChannel() {
         return new ChannelTopic(followerChannelName);
     }
 
     @Bean
-    ChannelTopic profileViewTopic() {
+    public ChannelTopic profileViewTopic() {
         return new ChannelTopic(channelName);
     }
 
     @Bean
-    ChannelTopic recommendationChannel() {
+    public ChannelTopic recommendationChannel() {
         return new ChannelTopic(recommendationChannelName);
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter profileViewListener,
+    public ChannelTopic achievementChannel() {
+        return new ChannelTopic(achievementChannelName);
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter profileViewListener,
                                                  MessageListenerAdapter recommendationListener,
-                                                 MessageListenerAdapter followerListener) {
+                                                 MessageListenerAdapter followerListener,
+                                                 MessageListenerAdapter achievementListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(profileViewListener, profileViewTopic());
         container.addMessageListener(recommendationListener, recommendationChannel());
         container.addMessageListener(followerListener, followerChannel());
+        container.addMessageListener(achievementListener, achievementChannel());
         return container;
     }
 }
