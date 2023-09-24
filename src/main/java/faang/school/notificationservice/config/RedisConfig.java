@@ -1,7 +1,9 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.FollowerEventListener;
 import faang.school.notificationservice.listener.MentorshipRequestListener;
 import faang.school.notificationservice.listener.SkillOfferedEventListener;
+import faang.school.notificationservice.listener.achievement.AchievementListener;
 import faang.school.notificationservice.listener.event.CommentEventListener;
 import faang.school.notificationservice.listener.event.EventStartListener;
 import faang.school.notificationservice.listener.mentorship_event.MentorshipAcceptedEventListener;
@@ -123,8 +125,7 @@ public class RedisConfig {
             @Qualifier("mentorshipRequestListenerAdapter") MessageListenerAdapter mentorshipRequestEventListener,
             @Qualifier("mentorshipAcceptedListenerAdapter") MessageListenerAdapter mentorshipAcceptedEventListener,
             @Qualifier("skillOfferedListenerAdapter") MessageListenerAdapter skillOfferedEventListener,
-            @Qualifier("achievementListenerAdapter") MessageListenerAdapter achievementListener) {
-            @Qualifier("skillOfferedListenerAdapter") MessageListenerAdapter skillOfferedEventListener,
+            @Qualifier("achievementListenerAdapter") MessageListenerAdapter achievementListener,
             @Qualifier("followerListenerAdapter") MessageListenerAdapter followerEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
