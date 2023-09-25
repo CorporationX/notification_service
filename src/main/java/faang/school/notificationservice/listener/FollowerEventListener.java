@@ -31,6 +31,4 @@ public class FollowerEventListener extends AbstractEventListener<FollowerDto> {
         sendNotification(followee, messageText);
         log.info("Sending notifications for follower: {}", followerDto);
     }
-
-
 }

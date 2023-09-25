@@ -62,5 +62,4 @@ class FollowerMessageBuilderTest {
         verify(userServiceClient, times(1)).getUser(2L);
         verify(messageSource, times(1)).getMessage(anyString(), any(Object[].class), any(Locale.class));
     }
-
 }

@@ -38,7 +38,7 @@ public class RedisConfig {
     private String mentorshipChannel;
     @Value("${spring.data.redis.channels.achievement}")
     private String achievementChannel;
-    @Value("${spring.data.redis.channels.mentorship_requested_channel.name}")
+    @Value("${spring.data.redis.channels.mentorship}")
     private String channel;
     @Value("${spring.data.redis.channels.follower}")
     private String followerChannel;
