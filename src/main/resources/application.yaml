@@ -24,8 +24,9 @@ spring:
       channel:
         likeTopic: like-Topic
         follower: follower_channel
-        achievement: achievement_channel
+        achievementTopic: achievement_channel
         completed_goal: goal_completed_topic
+        viewProfileTopic: view_profile_topic
 
   mail:
     host: smtp.gmail.com
