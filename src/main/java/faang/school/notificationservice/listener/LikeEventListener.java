@@ -14,19 +14,19 @@ import java.util.List;
 import java.util.Locale;
 
 @Component
-public class LikeEventListener extends AbstractEventListener<LikeEventDto>{
+public class LikeEventListener extends AbstractEventListener<LikeEventDto> {
 
     public LikeEventListener(ObjectMapper objectMapper,
                              UserServiceClient userServiceClient,
                              List<NotificationService> notificationServices,
-                             List<MessageBuilder<Class<?>>> messageBuilders) {
+                             List<MessageBuilder<LikeEventDto>> messageBuilders) {
         super(objectMapper, userServiceClient, notificationServices, messageBuilders);
     }
 
     @Override
     public void onMessage(@NonNull Message message, byte[] pattern) {
         LikeEventDto likeEventDto = convertToJSON(message, LikeEventDto.class);
-        String messageToSend = getMessage(likeEventDto.getClass(), Locale.ENGLISH);
+        String messageToSend = getMessage(likeEventDto, Locale.ENGLISH);
         sendNotification(likeEventDto.getReceiverId(), messageToSend);
     }
 }

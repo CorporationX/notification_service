@@ -2,8 +2,8 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.messages.MessageBuilder;
 import faang.school.notificationservice.dto.ProfileViewEventDto;
+import faang.school.notificationservice.messages.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.NonNull;
 import org.springframework.data.redis.connection.Message;
@@ -19,14 +19,14 @@ public class ProfileViewEventListener extends AbstractEventListener<ProfileViewE
     public ProfileViewEventListener(ObjectMapper objectMapper,
                                     UserServiceClient userServiceClient,
                                     List<NotificationService> notificationServices,
-                                    List<MessageBuilder<Class<?>>> messageBuilders) {
+                                    List<MessageBuilder<ProfileViewEventDto>> messageBuilders) {
         super(objectMapper, userServiceClient, notificationServices, messageBuilders);
     }
 
     @Override
     public void onMessage(@NonNull Message message, byte[] pattern) {
         ProfileViewEventDto profileViewEvent = convertToJSON(message, ProfileViewEventDto.class);
-        String messageToSend = getMessage(profileViewEvent.getClass(), Locale.ENGLISH);
+        String messageToSend = getMessage(profileViewEvent, Locale.ENGLISH);
         sendNotification(profileViewEvent.getIdVisited(), messageToSend);
     }
 }

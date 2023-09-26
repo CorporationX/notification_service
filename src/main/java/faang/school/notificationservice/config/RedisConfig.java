@@ -1,8 +1,9 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.FolowerEventListener;
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.ProfileViewEventListener;
-import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +28,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.completed_goal}")
     private String goalCompletedTopic;
 
+    @Value("${spring.data.redis.channel.follower}")
+    private String followerChannelName;
+
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
@@ -34,8 +38,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String,Object> redisTemplate(){
-        RedisTemplate<String,Object> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, Object> redisTemplate() {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
@@ -46,14 +50,25 @@ public class RedisConfig {
     MessageListenerAdapter messageListenerAdapter(ProfileViewEventListener profileViewEventListener) {
         return new MessageListenerAdapter(profileViewEventListener);
     }
+
     @Bean
-    MessageListenerAdapter goalCompletedListener(GoalCompletedEventListener goalCompletedEventListener){
+    MessageListenerAdapter goalCompletedListener(GoalCompletedEventListener goalCompletedEventListener) {
         return new MessageListenerAdapter(goalCompletedEventListener);
     }
 
     @Bean
     MessageListenerAdapter likeListener(LikeEventListener likeEventListener) {
         return new MessageListenerAdapter(likeEventListener);
+    }
+
+    @Bean
+    MessageListenerAdapter folowerListener(FolowerEventListener folowerEventListener) {
+        return new MessageListenerAdapter(folowerEventListener);
+    }
+
+    @Bean
+    ChannelTopic folllowerTopic() {
+        return new ChannelTopic(followerChannelName);
     }
 
     @Bean
@@ -65,6 +80,7 @@ public class RedisConfig {
     public ChannelTopic likeTopic() {
         return new ChannelTopic(likeChannelName);
     }
+
     @Bean
     public ChannelTopic goalCompletedTopic() {
         return new ChannelTopic(goalCompletedTopic);
@@ -72,12 +88,14 @@ public class RedisConfig {
 
     @Bean
     RedisMessageListenerContainer redisContainer(MessageListenerAdapter messageListenerAdapter,
-                                                 MessageListenerAdapter likeListener) {
+                                                 MessageListenerAdapter likeListener,
+                                                 FolowerEventListener folowerEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.setTopicSerializer(new StringRedisSerializer());
         container.addMessageListener(messageListenerAdapter, viewProfileTopic());
         container.addMessageListener(likeListener, likeTopic());
+        container.addMessageListener(folowerListener(folowerEventListener), folllowerTopic());
         return container;
     }
 }

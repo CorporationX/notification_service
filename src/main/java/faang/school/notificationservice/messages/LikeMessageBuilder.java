@@ -14,6 +14,7 @@ public class LikeMessageBuilder implements MessageBuilder<LikeEventDto> {
 
     private final UserServiceClient userServiceClient;
     private final MessageSource messageSource;
+
     @Override
     public String buildMessage(LikeEventDto event, Locale locale) {
         String followerName = userServiceClient.getUserInternal(event.getAuthorId()).username();
@@ -21,7 +22,7 @@ public class LikeMessageBuilder implements MessageBuilder<LikeEventDto> {
     }
 
     @Override
-    public boolean supportsEventType(Class<?> eventType) {
-        return eventType == LikeEventDto.class;
+    public boolean supportsEventType(LikeEventDto eventType) {
+        return eventType.getClass() == LikeEventDto.class;
     }
 }

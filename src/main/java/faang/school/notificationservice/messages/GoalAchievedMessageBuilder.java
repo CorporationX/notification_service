@@ -11,7 +11,7 @@ import java.util.Locale;
 @Component
 public class GoalAchievedMessageBuilder implements MessageBuilder<GoalCompletedEvent> {
 
-private final MessageSource messageSource;
+    private final MessageSource messageSource;
 
     @Override
     public String buildMessage(GoalCompletedEvent goalCompletedEvent, Locale locale) {
@@ -20,7 +20,7 @@ private final MessageSource messageSource;
     }
 
     @Override
-    public boolean supportsEventType(Class<?> eventType) {
+    public boolean supportsEventType(GoalCompletedEvent eventType) {
         return false;
     }
 }

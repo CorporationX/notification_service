@@ -6,5 +6,6 @@ public interface MessageBuilder<T> {
 
     String buildMessage(T event, Locale locale);
 
-    boolean supportsEventType(Class<?> eventType);
+    boolean supportsEventType(T eventType);
+
 }

@@ -20,7 +20,7 @@ public class ViewProfileMessageBuilder<T> implements MessageBuilder<ProfileViewE
     }
 
     @Override
-    public boolean supportsEventType(Class<?> eventType) {
-        return eventType == ProfileViewEventDto.class;
+    public boolean supportsEventType(ProfileViewEventDto eventType) {
+        return eventType.getClass() == ProfileViewEventDto.class;
     }
 }
