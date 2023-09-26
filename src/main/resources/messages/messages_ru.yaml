@@ -2,3 +2,5 @@ skill_offer.new:
   title: "You got a new skill offer: {0}"
 recommendation_request.new:
   title:  "You got a new recommendation request: {0}"
+  like.new:
+    title: "You got a new like: {0}"
