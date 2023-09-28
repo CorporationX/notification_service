@@ -49,7 +49,7 @@ class AbstractEventListenerTest {
         usLocale = Locale.US;
         postLike = Object.class;
 
-        eventListener = new AbstractEventListener(null, userServiceClient, List.of(notificationService), List.of(messageBuilder)) {
+        eventListener = new AbstractEventListener(null, userServiceClient, List.of(notificationService), messageBuilder) {
             @Override
             public void onMessage(@NonNull Message message, byte[] pattern) {
 
@@ -58,25 +58,8 @@ class AbstractEventListenerTest {
     }
 
     @Test
-    void testGetMessageDataValidationException() {
-        when(messageBuilder.supportsEventType(postLike)).thenReturn(true);
-
-        assertThrows(DataValidationException.class,
-                () -> eventListener.getMessage(postLike, usLocale));
-    }
-
-    @Test
-    void testGetMessage() {
-        when(messageBuilder.supportsEventType(postLike)).thenReturn(true);
-        when(messageBuilder.buildMessage(postLike, usLocale)).thenReturn("Test");
-
-        String message = eventListener.getMessage(postLike, usLocale);
-        assertEquals("Test", message);
-    }
-
-    @Test
     void testSendNotificationDataValidationException() {
-        when(userServiceClient.getUserInternal(userDto.id())).thenReturn(userDto);
+        when(userServiceClient.getUserInternal(1L)).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(PreferredContact.SMS);
 
         assertThrows(DataValidationException.class,

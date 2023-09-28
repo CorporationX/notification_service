@@ -18,9 +18,4 @@ private final MessageSource messageSource;
         return messageSource.getMessage("goal.completed",
                 new Object[]{goalCompletedEvent.getCompletedGoalId()}, locale);
     }
-
-    @Override
-    public boolean supportsEventType(Class<?> eventType) {
-        return false;
-    }
 }

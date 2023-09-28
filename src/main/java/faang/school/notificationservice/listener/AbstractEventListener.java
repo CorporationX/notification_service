@@ -19,15 +19,10 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
     protected final List<NotificationService> notificationServices;
-    protected final List<MessageBuilder<Class<?>>> messageBuilders;
+    protected final MessageBuilder<T> messageBuilder;
 
-    public String getMessage(Class<?> event, Locale locale) {
-        return messageBuilders.stream()
-                .filter(messageBuilder -> messageBuilder.supportsEventType(event))
-                .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event, locale))
-                .orElseThrow(() -> new DataValidationException
-                        ("No message builder found for the given event type: " + event.getName()));
+    protected String getMessage(T event, Locale locale) {
+        return messageBuilder.buildMessage(event, locale);
     }
 
     public void sendNotification(Long id, String message) {
@@ -41,7 +36,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
                 .send(user, message);
     }
 
-    public T convertToJSON(Message message, Class<T> eventType) {
+    protected T fromJsonToObject(Message message, Class<T> eventType) {
         try {
             return objectMapper.readValue(message.getBody(), eventType);
         } catch (IOException e) {

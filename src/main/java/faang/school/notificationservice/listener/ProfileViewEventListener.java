@@ -19,14 +19,14 @@ public class ProfileViewEventListener extends AbstractEventListener<ProfileViewE
     public ProfileViewEventListener(ObjectMapper objectMapper,
                                     UserServiceClient userServiceClient,
                                     List<NotificationService> notificationServices,
-                                    List<MessageBuilder<Class<?>>> messageBuilders) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+                                    MessageBuilder<ProfileViewEventDto> messageBuilder) {
+        super(objectMapper, userServiceClient, notificationServices, messageBuilder);
     }
 
     @Override
     public void onMessage(@NonNull Message message, byte[] pattern) {
-        ProfileViewEventDto profileViewEvent = convertToJSON(message, ProfileViewEventDto.class);
-        String messageToSend = getMessage(profileViewEvent.getClass(), Locale.ENGLISH);
+        ProfileViewEventDto profileViewEvent = fromJsonToObject(message, ProfileViewEventDto.class);
+        String messageToSend = getMessage(profileViewEvent, Locale.ENGLISH);
         sendNotification(profileViewEvent.getIdVisited(), messageToSend);
     }
 }
