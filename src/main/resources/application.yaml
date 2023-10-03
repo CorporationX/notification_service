@@ -27,6 +27,8 @@ spring:
         achievementTopic: achievement_channel
         completed_goal: goal_completed_topic
         viewProfileTopic: view_profile_topic
+        comment_channel:
+          name: comment_chanel
 
   mail:
     host: smtp.gmail.com
