@@ -10,7 +10,7 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class AchievementMessageBuilder<T> implements MessageBuilder<UserAchievementEventDto> {
+public class AchievementMessageBuilder implements MessageBuilder<UserAchievementEventDto> {
 
     private final UserServiceClient userServiceClient;
     private final MessageSource messageSource;
@@ -18,11 +18,6 @@ public class AchievementMessageBuilder<T> implements MessageBuilder<UserAchievem
     @Override
     public String buildMessage(UserAchievementEventDto event, Locale locale) {
         String followerName = userServiceClient.getUserInternal(event.getUserId()).username();
-        return messageSource.getMessage("achievement.new", new Object[]{followerName,event.getAchievementName()}, locale);
-    }
-
-    @Override
-    public boolean supportsEventType(Class<?> eventType) {
-        return eventType == UserAchievementEventDto.class;
+        return messageSource.getMessage("achievement.new", new Object[]{followerName, event.getAchievementName()}, locale);
     }
 }

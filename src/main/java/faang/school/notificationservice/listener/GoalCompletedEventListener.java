@@ -16,14 +16,14 @@ public class GoalCompletedEventListener extends AbstractEventListener<GoalComple
     public GoalCompletedEventListener(ObjectMapper objectMapper,
                              UserServiceClient userServiceClient,
                              List<NotificationService> notificationServices,
-                             List<MessageBuilder<Class<?>>> messageBuilders) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+                             MessageBuilder<GoalCompletedEvent> messageBuilder) {
+        super(objectMapper, userServiceClient, notificationServices, messageBuilder);
     }
 
     @Override
     public void onMessage(@NonNull Message message, byte[] pattern) {
-        GoalCompletedEvent goalCompletedEvent = convertToJSON(message, GoalCompletedEvent.class);
-        String messageToSend = getMessage(goalCompletedEvent.getClass(), Locale.ENGLISH);
+        GoalCompletedEvent goalCompletedEvent = fromJsonToObject(message, GoalCompletedEvent.class);
+        String messageToSend = getMessage(goalCompletedEvent, Locale.ENGLISH);
         sendNotification(goalCompletedEvent.getCompletedGoalId(), messageToSend);
     }
 }

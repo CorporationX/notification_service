@@ -9,7 +9,7 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
-public class ViewProfileMessageBuilder<T> implements MessageBuilder<ProfileViewEventDto> {
+public class ViewProfileMessageBuilder implements MessageBuilder<ProfileViewEventDto> {
 
     private final MessageSource messageSource;
 
@@ -17,10 +17,5 @@ public class ViewProfileMessageBuilder<T> implements MessageBuilder<ProfileViewE
     public String buildMessage(ProfileViewEventDto event, Locale locale) {
         return messageSource.getMessage("visitor.new",
                 new Object[]{event.getIdVisitor(), event.getIdVisited()}, locale);
-    }
-
-    @Override
-    public boolean supportsEventType(Class<?> eventType) {
-        return eventType == ProfileViewEventDto.class;
     }
 }

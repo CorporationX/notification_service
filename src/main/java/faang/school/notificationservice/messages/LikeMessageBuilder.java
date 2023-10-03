@@ -19,9 +19,4 @@ public class LikeMessageBuilder implements MessageBuilder<LikeEventDto> {
         String followerName = userServiceClient.getUserInternal(event.getAuthorId()).username();
         return messageSource.getMessage("post_like.new", new Object[]{followerName}, locale);
     }
-
-    @Override
-    public boolean supportsEventType(Class<?> eventType) {
-        return eventType == LikeEventDto.class;
-    }
 }
