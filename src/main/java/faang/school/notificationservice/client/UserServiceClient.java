@@ -13,12 +13,18 @@ import java.util.List;
 @FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}/api/v1")
 public interface UserServiceClient {
 
-    @GetMapping("/users/{id}")
+    @GetMapping("api/v1/users/{id}")
     UserDto getUser(@PathVariable long id);
+
+    @GetMapping("/users/user/{id}")
+    UserDto getUserNoPublish(@PathVariable long id);
 
     @PostMapping("users/get-by-ids")
     List<UserDto> getUsersByIds(@RequestBody List<Long> ids);
 
     @GetMapping("/events/{id}")
     EventDto getEvent(@PathVariable long id);
+
+    @GetMapping("/users/notify/{id}")
+    UserDto getUserNotify(@PathVariable long id);
 }

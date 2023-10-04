@@ -9,3 +9,9 @@ event:
     Location: %s
     Description:
     %s
+
+profile:
+  view: Hello, %s. 
+        Your profile was recently viewed by "%s"
+        Best,
+        XCorporation

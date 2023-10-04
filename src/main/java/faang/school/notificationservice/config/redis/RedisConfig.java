@@ -1,6 +1,8 @@
-package faang.school.notificationservice.config;
+package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.EventStartListener;
+import faang.school.notificationservice.listener.LikeEventListener;
+import faang.school.notificationservice.listener.ProfileViewListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +16,12 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
-    @Value("${spring.data.redis.channel.event_start_channel}")
+    @Value("${spring.data.redis.channels.like_channel.name}")
+    private String likeChannel;
+    @Value("${spring.data.redis.channels.event_start_channel.name}")
     private String eventStartChannel;
+    @Value("${spring.data.redis.channels.profile_view_channel.name}")
+    private String profileViewEventChannel;
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
@@ -37,11 +43,13 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
-                                                                       EventStartListener eventStartListener) {
+    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory, LikeEventListener likeEventListener,
+                                                                       EventStartListener eventStartListener, ProfileViewListener profileViewListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(likeEventListener, new ChannelTopic(likeChannel));
         container.addMessageListener(eventStartListener, new ChannelTopic(eventStartChannel));
+        container.addMessageListener(profileViewListener, new ChannelTopic(profileViewEventChannel));
         return container;
     }
 }
