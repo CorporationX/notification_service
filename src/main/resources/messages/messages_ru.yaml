@@ -4,3 +4,5 @@ recommendation_request.new:
   title:  "You got a new recommendation request: {0}"
 mentorship_accepted.new:
   title: "Your request has been approved"
+like.new:
+  title: "У тебя новый лайк: {0}"
