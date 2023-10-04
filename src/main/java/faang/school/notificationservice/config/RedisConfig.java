@@ -35,27 +35,28 @@ public class RedisConfig {
     MessageListenerAdapter skillOfferListenerAdapter(SkillOfferListener skillOfferListener) {
         return new MessageListenerAdapter(skillOfferListener, "onMessage");
     }
+
     @Bean
     MessageListenerAdapter recommendationRequestListenerAdapter(RecommendationRequestListener recommendationRequestListener) {
         return new MessageListenerAdapter(recommendationRequestListener, "onMessage");
     }
 
     @Bean
-    MessageListenerAdapter mentorshipAcceptedRequestListenerAdapter(MentorshipAcceptedEventListener eventListener){
+    MessageListenerAdapter mentorshipAcceptedRequestListenerAdapter(MentorshipAcceptedEventListener eventListener) {
         return new MessageListenerAdapter(eventListener, "onMessage");
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter skillOfferListenerAdapter, MessageListenerAdapter recommendationRequestListenerAdapter,
-                                                        MessageListenerAdapter mentorshipAcceptedRequestListenerAdapter) {
     MessageListenerAdapter likeListenerAdapter(LikeEventListener likeListener) {
         return new MessageListenerAdapter(likeListener, "onMessage");
     }
 
+
     @Bean
     public RedisMessageListenerContainer redisContainer(MessageListenerAdapter skillOfferListenerAdapter,
                                                         MessageListenerAdapter recommendationRequestListenerAdapter,
-                                                        MessageListenerAdapter likeListenerAdapter) {
+                                                        MessageListenerAdapter likeListenerAdapter,
+                                                        MessageListenerAdapter mentorshipAcceptedRequestListenerAdapter ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(skillOfferListenerAdapter, topicInviteEvent());
