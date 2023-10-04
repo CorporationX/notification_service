@@ -16,9 +16,15 @@ public interface UserServiceClient {
     @GetMapping("users/{id}")
     UserDto getUser(@PathVariable long id);
 
+    @GetMapping("/users/user/{id}")
+    UserDto getUserNoPublish(@PathVariable long id);
+
     @PostMapping("users/get-by-ids")
     List<UserDto> getUsersByIds(@RequestBody List<Long> ids);
 
     @GetMapping("/events/{id}")
     EventDto getEvent(@PathVariable long id);
+
+    @GetMapping("/users/notify/{id}")
+    UserDto getUserNotify(@PathVariable long id);
 }

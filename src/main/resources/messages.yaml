@@ -14,3 +14,9 @@ achievement:
    Hello, %s you got an achievement: %s
    description: %s
    rarity: %s
+
+profile:
+  view: Hello, %s.
+    Your profile was recently viewed by "%s"
+    Best,
+    XCorporation

@@ -4,6 +4,7 @@ import faang.school.notificationservice.listener.AchievementMessageSubscriber;
 import faang.school.notificationservice.listener.EventStartListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
+import faang.school.notificationservice.listener.ProfileViewListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,8 @@ public class RedisConfig {
     private String eventStartChannel;
     @Value("${spring.data.redis.channels.mentorship_accepted_channel.name}")
     private String mentorshipAcceptedChannel;
+    @Value("${spring.data.redis.channels.profile_view_channel.name}")
+    private String profileViewEventChannel;
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
@@ -52,13 +55,14 @@ public class RedisConfig {
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
                                                                        LikeEventListener likeEventListener,
                                                                        EventStartListener eventStartListener,
-                                                                       MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
+                                                                       MentorshipAcceptedEventListener mentorshipAcceptedEventListener, ProfileViewListener profileViewListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(achievementMessageSubscriber, new ChannelTopic(userAchievementChannel));
         container.addMessageListener(likeEventListener, new ChannelTopic(likeChannel));
         container.addMessageListener(eventStartListener, new ChannelTopic(eventStartChannel));
         container.addMessageListener(mentorshipAcceptedEventListener, new ChannelTopic(mentorshipAcceptedChannel));
+        container.addMessageListener(profileViewListener, new ChannelTopic(profileViewEventChannel));
         return container;
     }
 }
