@@ -10,6 +10,8 @@ spring:
         mentorship_offered_event:
           name: mentorship_offered_event
         achievement: achievement_topic
+        like_channel:
+          name: like_channel
 
 
   kafka:
@@ -54,6 +56,9 @@ organization:
 project-service:
   host: localhost
   port: 8082
+post-service:
+  host: localhost
+  port: 8081
 user-service:
   host: localhost
   port: 8080
