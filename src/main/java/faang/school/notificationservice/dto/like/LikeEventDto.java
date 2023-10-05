@@ -26,6 +26,5 @@ public class LikeEventDto {
     @NotNull
     private Long postId;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
 }
