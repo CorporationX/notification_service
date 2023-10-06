@@ -35,10 +35,6 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     protected void sendNotification(long receiverId, String message) {
         UserDto user = userServiceClient.getUser(receiverId);
 
-        if (user.getPreferredContact() == null) {
-            user.setPreferredContact(PreferredContact.EMAIL);
-        }
-
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact() == user.getPreferredContact())
                 .forEach(service -> service.sendNotification(receiverId, message));
