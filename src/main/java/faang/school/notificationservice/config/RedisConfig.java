@@ -16,7 +16,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 @Configuration
 @RequiredArgsConstructor
-public class RedisConfig {
+public class RedisConfig extends AbstractMessageListener{
 
     @Value("${spring.data.redis.host}")
     private String host;
@@ -33,22 +33,22 @@ public class RedisConfig {
 
     @Bean
     MessageListenerAdapter skillOfferListenerAdapter(SkillOfferListener skillOfferListener) {
-        return new MessageListenerAdapter(skillOfferListener, "onMessage");
+        return createMessageListenerAdapter(skillOfferListener);
     }
 
     @Bean
     MessageListenerAdapter recommendationRequestListenerAdapter(RecommendationRequestListener recommendationRequestListener) {
-        return new MessageListenerAdapter(recommendationRequestListener, "onMessage");
+        return createMessageListenerAdapter(recommendationRequestListener);
     }
 
     @Bean
     MessageListenerAdapter mentorshipAcceptedRequestListenerAdapter(MentorshipAcceptedEventListener eventListener) {
-        return new MessageListenerAdapter(eventListener, "onMessage");
+        return createMessageListenerAdapter(eventListener);
     }
 
     @Bean
     MessageListenerAdapter likeListenerAdapter(LikeEventListener likeListener) {
-        return new MessageListenerAdapter(likeListener, "onMessage");
+        return createMessageListenerAdapter(likeListener);
     }
 
 

@@ -1,8 +1,8 @@
 skill_offer.new:
-  title: "You got a new skill offer: {0}"
+  title: "Вы получили новое предложение по навыкам: {0}"
 recommendation_request.new:
-  title:  "You got a new recommendation request: {0}"
+  title:  "Вы получили новый запрос рекомендаций: {0}"
 mentorship_accepted.new:
-  title: "Your request has been approved"
+  title: "Ваш запрос на менторство принят: {0}"
 like.new:
   title: "У тебя новый лайк: {0}"
