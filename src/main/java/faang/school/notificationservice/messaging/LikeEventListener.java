@@ -32,7 +32,7 @@ public class LikeEventListener extends EventListenerBase<LikeEventDto> implement
     public void onMessage(Message message, byte[] pattern) {
         jsonMapper.toObject(message.toString(), LikeEventDto.class)
                 .ifPresent(like -> {
-                    String text = getMessage(like, Locale.UK);
+                    String text = getMessage(like, Locale.ENGLISH);
                     sendNotification(like.getUserId(), text);
                 });
         log.info(message + " " + "send");
