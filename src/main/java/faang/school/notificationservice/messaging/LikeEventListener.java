@@ -1,14 +1,10 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.MentorshipOfferRequestSentDto;
 import faang.school.notificationservice.dto.like.LikeEventDto;
 import faang.school.notificationservice.service.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.util.JsonMapper;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
