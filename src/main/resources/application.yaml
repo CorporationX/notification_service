@@ -10,6 +10,8 @@ spring:
         mentorship_offered_event:
           name: mentorship_offered_event
         achievement: achievement_topic
+        recommendation_received_channel:
+          name: recommendation_received_channel
 
 
   kafka:

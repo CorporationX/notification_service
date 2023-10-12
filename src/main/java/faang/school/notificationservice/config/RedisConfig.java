@@ -30,6 +30,8 @@ public class RedisConfig {
     private String mentorshipOfferedEvent;
     @Value("${spring.data.redis.channels.skill-event.skill-offered-channel}")
     String skillOfferedChannel;
+    @Value("{spring.data.redis.channels.recommendation_received_channel.name}")
+    private String recommendationReceivedChannel;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -67,6 +69,9 @@ public class RedisConfig {
     MessageListenerAdapter skillOfferedAdapter(SkillOfferedEventListener skillOfferedEventListener) {
         return new MessageListenerAdapter(skillOfferedEventListener);
     }
+
+//    @Bean
+//    MessageListenerAdapter recommendationReceivedAdapter();
 
     @Bean
     ChannelTopic mentorshipOfferedEvent() {
