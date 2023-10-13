@@ -2,14 +2,15 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.EventRecommendationRequestDto;
+import faang.school.notificationservice.dto.MentorshipOfferedEventDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.entity.PreferredContact;
 import faang.school.notificationservice.exception.NotFoundException;
+import faang.school.notificationservice.message.MentorshipOfferBuilder;
 import faang.school.notificationservice.message.MessageBuilder;
 import faang.school.notificationservice.message.RecommendationRequestMessageBuilder;
+import faang.school.notificationservice.service.notification.EmailService;
 import faang.school.notificationservice.service.notification.NotificationService;
-import faang.school.notificationservice.service.notification.telegram.TelegramService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,59 +28,58 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-class RecommendationRequestListenerTest {
+class MentorshipOfferedListenerTest {
     @Spy
     private ObjectMapper objectMapper;
     @Mock
     private UserServiceClient userServiceClient;
     @Mock
-    private TelegramService telegramService;
+    private EmailService emailService;
     @Mock
-    private RecommendationRequestMessageBuilder messageBuilder;
+    private MentorshipOfferBuilder messageBuilder;
     @InjectMocks
-    private RecommendationRequestListener recommendationRequestListener;
+    private MentorshipOfferedListener mentorshipOfferedListener;
     private UserDto userDto;
-    private EventRecommendationRequestDto event;
-    private final String message = "You got a new recommendation request";
+    private MentorshipOfferedEventDto event;
+    private final String message = "Congratulations! You've received a new mentorship offer";
 
     @BeforeEach
     public void init() {
-        List<NotificationService> notificationServices = new ArrayList<>(List.of(telegramService));
-        List<MessageBuilder<EventRecommendationRequestDto>> messageBuilders = new ArrayList<>(List.of(messageBuilder));
-        recommendationRequestListener = new RecommendationRequestListener(objectMapper, userServiceClient, notificationServices, messageBuilders);
+        List<NotificationService> notificationServices = new ArrayList<>(List.of(emailService));
+        List<MessageBuilder<MentorshipOfferedEventDto>> messageBuilders = new ArrayList<>(List.of(messageBuilder));
+        mentorshipOfferedListener = new MentorshipOfferedListener(objectMapper, userServiceClient, notificationServices, messageBuilders);
 
-        event = EventRecommendationRequestDto.builder()
+        event = MentorshipOfferedEventDto.builder()
                 .requesterId(1L)
                 .receiverId(2L)
-                .recommendationId(1L)
                 .build();
 
         userDto = UserDto.builder()
                 .id(2L)
-                .preferredContact(PreferredContact.TELEGRAM)
+                .preferredContact(PreferredContact.EMAIL)
                 .build();
     }
 
     @Test
     public void sendNotificationTest() {
         Mockito.when(userServiceClient.getUser(event.getReceiverId())).thenReturn(userDto);
-        Mockito.when(telegramService.getPreferredContact()).thenReturn(PreferredContact.TELEGRAM);
-        recommendationRequestListener.sendNotification(event.getReceiverId(), message);
+        Mockito.when(emailService.getPreferredContact()).thenReturn(PreferredContact.EMAIL);
+        mentorshipOfferedListener.sendNotification(event.getReceiverId(), message);
 
-        Mockito.verify(telegramService, Mockito.times(1)).sendNotification(event.getReceiverId(), message);
+        Mockito.verify(emailService, Mockito.times(1)).sendNotification(event.getReceiverId(), message);
     }
 
     @Test
     public void getMessageTest() {
         Mockito.when(messageBuilder.buildMessage(event, Locale.ENGLISH)).thenReturn(message);
         Mockito.when(messageBuilder.supports(RecommendationRequestMessageBuilder.class)).thenReturn(true);
-        assertEquals(message, recommendationRequestListener.getMessage(RecommendationRequestMessageBuilder.class, event));
+        assertEquals(message, mentorshipOfferedListener.getMessage(RecommendationRequestMessageBuilder.class, event));
     }
 
     @Test
     public void getMessageThrowsExceptionTest() {
         Mockito.when(messageBuilder.supports(RecommendationRequestMessageBuilder.class)).thenReturn(false);
-        assertThrows(NotFoundException.class, () -> recommendationRequestListener.getMessage(RecommendationRequestMessageBuilder.class, null));
+        assertThrows(NotFoundException.class, () -> mentorshipOfferedListener.getMessage(RecommendationRequestMessageBuilder.class, null));
     }
 
 }

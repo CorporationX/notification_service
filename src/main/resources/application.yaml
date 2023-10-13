@@ -27,12 +27,14 @@ spring:
         skill_offer_channel: skill-offer-channel
         recommendation_requested_event_channel: recommendation-requested-event-channel
         like_channel: like-channel
+        mentorship_offered_channel: mentorship-offered-channel
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
+    username: ami5@tpu.ru    #https://www.baeldung.com/spring-email
+    password: hqxxqevqgeqhakew   #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
+    subject: "CorporationX"
     properties:
       mail:
         smtp:

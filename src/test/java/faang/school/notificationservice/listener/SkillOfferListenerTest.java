@@ -86,6 +86,6 @@ class SkillOfferListenerTest {
 
         skillOfferListener.sendNotification(event.getReceiverId(), message);
 
-        Mockito.verify(telegramService).sendNotification(userDto.getId(), message);
+        Mockito.verify(telegramService).sendNotification(event.getReceiverId(), message);
     }
 }

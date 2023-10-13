@@ -1,0 +1,6 @@
+skill_offer.new:
+    title: "You got a new skill offer: {0}"
+recommendation_request.new:
+    title: "You got a new recommendation request"
+mentorship_request.new:
+    title: "Congratulations! You've received a new mentorship offer"
