@@ -26,13 +26,12 @@ public class RecommendationReceivedEventListener extends AbstractEventListener<R
     }
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        String string = Arrays.toString(message.getBody());
-        jsonMapper.toObject(string, RecommendationReceivedEvent.class)
+        jsonMapper.toObjectFromByte(message.getBody(), RecommendationReceivedEvent.class)
                 .ifPresent(event -> {
                     Locale locale = LocaleContextHolder.getLocale();
                     String msg = getMessage(event, locale);
                     sendNotification(msg, event.getReceiverId());
                 });
-        log.info(string + " " + "send");
+        log.info(Arrays.toString(message.getBody()) + " " + "send");
     }
 }

@@ -33,7 +33,7 @@ public class RedisConfig {
     private String mentorshipOfferedEvent;
     @Value("${spring.data.redis.channels.skill-event.skill-offered-channel}")
     String skillOfferedChannel;
-    @Value("{spring.data.redis.channels.recommendation_received_channel.name}")
+    @Value("${spring.data.redis.channels.recommendation_received_channel.name}")
     private String recommendationReceivedChannel;
 
     private final RecommendationReceivedEventListener recommendationReceivedEventListener;
