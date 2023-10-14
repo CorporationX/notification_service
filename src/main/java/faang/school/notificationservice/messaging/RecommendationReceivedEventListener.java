@@ -32,6 +32,6 @@ public class RecommendationReceivedEventListener extends AbstractEventListener<R
                     String msg = getMessage(event, locale);
                     sendNotification(msg, event.getReceiverId());
                 });
-        log.info(Arrays.toString(message.getBody()) + " " + "send");
+        log.info("Message is sent");
     }
 }
