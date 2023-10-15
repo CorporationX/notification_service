@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.messaging.AchievementListener;
+import faang.school.notificationservice.messaging.LikeEventListener;
 import faang.school.notificationservice.messaging.MentorshipOfferedEventListener;
 import lombok.RequiredArgsConstructor;
 import faang.school.notificationservice.messaging.SkillOfferedEventListener;
@@ -30,6 +31,8 @@ public class RedisConfig {
     private String mentorshipOfferedEvent;
     @Value("${spring.data.redis.channels.skill-event.skill-offered-channel}")
     String skillOfferedChannel;
+    @Value("${spring.data.redis.channels.like_channel.name}")
+    private String likeEvent;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -69,22 +72,33 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListenerAdapter likeEventAdapter(LikeEventListener likeEventListener) {
+        return new MessageListenerAdapter(likeEventListener);
+    }
+
+    @Bean
     ChannelTopic mentorshipOfferedEvent() {
         return new ChannelTopic(mentorshipOfferedEvent);
     }
 
+    @Bean
+    ChannelTopic likeTopic() {
+        return new ChannelTopic(likeEvent);
+    }
 
     @Bean
     RedisMessageListenerContainer redisContainer(
             MessageListenerAdapter achievementAdapter,
             MessageListenerAdapter mentorshipOfferedAdapter,
-            MessageListenerAdapter skillOfferedAdapter
+            MessageListenerAdapter skillOfferedAdapter,
+            MessageListenerAdapter likeEventAdapter
     ) {
         final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(achievementAdapter, achievementTopic());
         container.addMessageListener(mentorshipOfferedAdapter, mentorshipOfferedEvent());
         container.addMessageListener(skillOfferedAdapter, skillOfferedChannel());
+        container.addMessageListener(likeEventAdapter, likeTopic());
         return container;
     }
 
