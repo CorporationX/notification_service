@@ -2,14 +2,12 @@ package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.messaging.AchievementListener;
 import faang.school.notificationservice.messaging.MentorshipOfferedEventListener;
-import faang.school.notificationservice.messaging.RecommendationReceivedEventListener;
-import lombok.RequiredArgsConstructor;
+import faang.school.notificationservice.messaging.RecommendationEventListener;
 import faang.school.notificationservice.messaging.SkillOfferedEventListener;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -33,10 +31,10 @@ public class RedisConfig {
     private String mentorshipOfferedEvent;
     @Value("${spring.data.redis.channels.skill-event.skill-offered-channel}")
     String skillOfferedChannel;
-    @Value("${spring.data.redis.channels.recommendation_received_channel.name}")
-    private String recommendationReceivedChannel;
+    @Value("${spring.data.redis.channels.recommendation_channel.name}")
+    private String recommendationChannel;
 
-    private final RecommendationReceivedEventListener recommendationReceivedEventListener;
+    private final RecommendationEventListener recommendationEventListener;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -76,8 +74,8 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter recommendationReceivedAdapter(RecommendationReceivedEventListener recommendationReceivedEventListener) {
-        return new MessageListenerAdapter(recommendationReceivedEventListener);
+    MessageListenerAdapter recommendationAdapter(RecommendationEventListener recommendationEventListener) {
+        return new MessageListenerAdapter(recommendationEventListener);
     }
 
     @Bean
@@ -86,8 +84,8 @@ public class RedisConfig {
     }
 
     @Bean
-    ChannelTopic recommendationReceivedChannel() {
-        return new ChannelTopic(recommendationReceivedChannel);
+    ChannelTopic recommendationChannel() {
+        return new ChannelTopic(recommendationChannel);
     }
 
 
@@ -103,8 +101,8 @@ public class RedisConfig {
         container.addMessageListener(mentorshipOfferedAdapter, mentorshipOfferedEvent());
         container.addMessageListener(skillOfferedAdapter, skillOfferedChannel());
 
-        MessageListenerAdapter recommendation = new MessageListenerAdapter(recommendationReceivedEventListener);
-        container.addMessageListener(recommendation, recommendationReceivedChannel());
+        MessageListenerAdapter recommendation = new MessageListenerAdapter(recommendationEventListener);
+        container.addMessageListener(recommendation, recommendationChannel());
         return container;
     }
 

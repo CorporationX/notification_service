@@ -17,8 +17,8 @@ import java.util.Locale;
 
 @Component
 @Slf4j
-public class RecommendationReceivedEventListener extends AbstractEventListener<RecommendationReceivedEvent> implements MessageListener {
-    public RecommendationReceivedEventListener(UserServiceClient userServiceClient,
+public class RecommendationEventListener extends AbstractEventListener<RecommendationReceivedEvent> implements MessageListener {
+    public RecommendationEventListener(UserServiceClient userServiceClient,
                                               List<MessageBuilder<RecommendationReceivedEvent>> messageBuilder,
                                               List<NotificationService> notificationService,
                                               JsonMapper jsonMapper) {
