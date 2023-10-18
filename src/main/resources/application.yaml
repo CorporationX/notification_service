@@ -12,7 +12,8 @@ spring:
         achievement: achievement_topic
         recommendation_channel:
           name: recommendation_channel
-
+        like_channel:
+          name: like_channel
 
   kafka:
     bootstrap-servers: localhost:9092
@@ -56,6 +57,9 @@ organization:
 project-service:
   host: localhost
   port: 8082
+post-service:
+  host: localhost
+  port: 8081
 user-service:
   host: localhost
   port: 8080

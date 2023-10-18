@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.messaging.AchievementListener;
+import faang.school.notificationservice.messaging.LikeEventListener;
 import faang.school.notificationservice.messaging.MentorshipOfferedEventListener;
 import faang.school.notificationservice.messaging.RecommendationEventListener;
 import faang.school.notificationservice.messaging.SkillOfferedEventListener;
@@ -33,8 +34,9 @@ public class RedisConfig {
     String skillOfferedChannel;
     @Value("${spring.data.redis.channels.recommendation_channel.name}")
     private String recommendationChannel;
-
     private final RecommendationEventListener recommendationEventListener;
+    @Value("${spring.data.redis.channels.like_channel.name}")
+    private String likeEvent;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -77,6 +79,11 @@ public class RedisConfig {
     MessageListenerAdapter recommendationAdapter(RecommendationEventListener recommendationEventListener) {
         return new MessageListenerAdapter(recommendationEventListener);
     }
+  
+    @Bean
+    MessageListenerAdapter likeEventAdapter(LikeEventListener likeEventListener) {
+        return new MessageListenerAdapter(likeEventListener);
+    }
 
     @Bean
     ChannelTopic mentorshipOfferedEvent() {
@@ -88,12 +95,17 @@ public class RedisConfig {
         return new ChannelTopic(recommendationChannel);
     }
 
+    @Bean
+    ChannelTopic likeTopic() {
+        return new ChannelTopic(likeEvent);
+    }
 
     @Bean
     RedisMessageListenerContainer redisContainer(
             MessageListenerAdapter achievementAdapter,
             MessageListenerAdapter mentorshipOfferedAdapter,
-            MessageListenerAdapter skillOfferedAdapter
+            MessageListenerAdapter skillOfferedAdapter,
+            MessageListenerAdapter likeEventAdapter
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
@@ -103,6 +115,8 @@ public class RedisConfig {
 
         MessageListenerAdapter recommendation = new MessageListenerAdapter(recommendationEventListener);
         container.addMessageListener(recommendation, recommendationChannel());
+
+        container.addMessageListener(likeEventAdapter, likeTopic());
         return container;
     }
 
