@@ -10,9 +10,10 @@ spring:
         mentorship_offered_event:
           name: mentorship_offered_event
         achievement: achievement_topic
+        recommendation_channel:
+          name: recommendation_channel
         like_channel:
           name: like_channel
-
 
   kafka:
     bootstrap-servers: localhost:9092

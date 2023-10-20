@@ -23,4 +23,14 @@ public class JsonMapper {
         }
         return Optional.ofNullable(object);
     }
+
+    public <T> Optional<T> toObjectFromByte(byte[] bytes, Class<T> valueType) {
+        T object = null;
+        try {
+            object = objectMapper.readValue(bytes, valueType);
+        } catch (IOException e) {
+            log.error("Exception with json mapping: " + e.getMessage());
+        }
+        return Optional.ofNullable(object);
+    }
 }

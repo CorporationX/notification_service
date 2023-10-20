@@ -3,8 +3,9 @@ package faang.school.notificationservice.config;
 import faang.school.notificationservice.messaging.AchievementListener;
 import faang.school.notificationservice.messaging.LikeEventListener;
 import faang.school.notificationservice.messaging.MentorshipOfferedEventListener;
-import lombok.RequiredArgsConstructor;
+import faang.school.notificationservice.messaging.RecommendationEventListener;
 import faang.school.notificationservice.messaging.SkillOfferedEventListener;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,9 @@ public class RedisConfig {
     private String mentorshipOfferedEvent;
     @Value("${spring.data.redis.channels.skill-event.skill-offered-channel}")
     String skillOfferedChannel;
+    @Value("${spring.data.redis.channels.recommendation_channel.name}")
+    private String recommendationChannel;
+    private final RecommendationEventListener recommendationEventListener;
     @Value("${spring.data.redis.channels.like_channel.name}")
     private String likeEvent;
 
@@ -72,6 +76,11 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListenerAdapter recommendationAdapter(RecommendationEventListener recommendationEventListener) {
+        return new MessageListenerAdapter(recommendationEventListener);
+    }
+  
+    @Bean
     MessageListenerAdapter likeEventAdapter(LikeEventListener likeEventListener) {
         return new MessageListenerAdapter(likeEventListener);
     }
@@ -79,6 +88,11 @@ public class RedisConfig {
     @Bean
     ChannelTopic mentorshipOfferedEvent() {
         return new ChannelTopic(mentorshipOfferedEvent);
+    }
+
+    @Bean
+    ChannelTopic recommendationChannel() {
+        return new ChannelTopic(recommendationChannel);
     }
 
     @Bean
@@ -93,11 +107,15 @@ public class RedisConfig {
             MessageListenerAdapter skillOfferedAdapter,
             MessageListenerAdapter likeEventAdapter
     ) {
-        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(achievementAdapter, achievementTopic());
         container.addMessageListener(mentorshipOfferedAdapter, mentorshipOfferedEvent());
         container.addMessageListener(skillOfferedAdapter, skillOfferedChannel());
+
+        MessageListenerAdapter recommendation = new MessageListenerAdapter(recommendationEventListener);
+        container.addMessageListener(recommendation, recommendationChannel());
+
         container.addMessageListener(likeEventAdapter, likeTopic());
         return container;
     }
