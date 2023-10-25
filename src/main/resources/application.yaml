@@ -3,15 +3,24 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
-
+      channels:
+        follower:
+          name: follower_channel
+        achievement:
+          name: achievement_channel
+        like_channel:
+          name: like_channel
+        event_start_channel:
+          name: event_start_channel
+        mentorship_accepted_channel:
+          name: mentorship-accepted-channel
+        profile_view_channel:
+          name: profile_view_channel
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: .pg@gmail.com #https://www.baeldung.com/spring-email
+    password: hlhll #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
         smtp:
@@ -21,6 +30,8 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+    sender:
+      email: .pg@gmail.com
 
   messages:
     basename: messages
@@ -32,21 +43,26 @@ logging:
   level:
     root: info
 
+messages:
+  basename: messages
+
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: whatever
-    secret: whatever
+    key: 54dc6c7b
+    secret: Ib1jPHqLrt39YSXJ
+    from: BasiliskTeam
+    phone: 31687519767
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    url: localhost:8080/api/v1/users/
-
+  url: localhost:8080/api/v1/users/
 
 bot:
   name: XCorporationManager_Bot
   token: 6104015945:AAE7mGi0Jk60XgUzwFWIG3k9HYFH_8ZX9m8
+
 
 

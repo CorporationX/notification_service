@@ -2,7 +2,7 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.ExtendedContactDto;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.telegram.NotificationTelegramBot;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
