@@ -41,7 +41,7 @@ public class ProfileViewListenerTest {
     @Test
     void onMessageTest() throws IOException {
         ProfileViewEventDto event = ProfileViewEventDto.builder().profileOwnerId(1L).viewerId(2L).build();
-        UserNameDto user = UserNameDto.builder().username("Alex").preference(UserDto.PreferredContact.EMAIL).email("123@123").build();
+        UserDto user = UserDto.builder().username("Alex").preference(UserDto.PreferredContact.EMAIL).email("123@123").build();
 
         Message message = mock(Message.class);
         byte[] body = new byte[0];
@@ -49,11 +49,11 @@ public class ProfileViewListenerTest {
         when(message.getBody()).thenReturn(body);
         when(objectMapper.readValue(body, ProfileViewEventDto.class)).thenReturn(event);
         when(messageBuilder.buildMessage(event, "eng")).thenReturn("message text");
-        when(userServiceClient.getUserName(event.getProfileOwnerId())).thenReturn(user);
+        when(userServiceClient.getUser(event.getProfileOwnerId())).thenReturn(user);
 
         profileViewListener.onMessage(message, null);
         verify(objectMapper).readValue(message.getBody(), EventStartDto.class);
-        verify(userServiceClient).getUserName(event.getProfileOwnerId());
+        verify(userServiceClient).getUser(event.getProfileOwnerId());
         verify(emailService).sendMail(user.getEmail(), "Profile View Notification", "message text");
     }
 }
