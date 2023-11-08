@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}")
 public interface UserServiceClient {
 
@@ -15,4 +17,7 @@ public interface UserServiceClient {
 
     @GetMapping("/api/v1/users/contact/")
     ContactDto getContactByContent(@RequestParam String content);
+
+    @GetMapping("/api/v1/event/{eventId}/participants")
+    List<UserDto> getParticipantEvent(@PathVariable Long eventId);
 }
