@@ -4,6 +4,7 @@ import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.ProfileViewEventListener;
 import faang.school.notificationservice.listener.GoalCompletedEventListener;
+import faang.school.notificationservice.listener.EventStartEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,8 @@ public class RedisConfig {
     private String goalCompletedTopic;
     @Value("${spring.data.redis.channel.achievementTopic}")
     private String achievementChannelName;
+    @Value("${spring.data.redis.channel.start_event_topic}")
+    private String startEventTopic;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -61,6 +64,11 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListenerAdapter eventStartListener(EventStartEventListener eventStartEventListener) {
+        return new MessageListenerAdapter(eventStartEventListener);
+    }
+
+    @Bean
     public ChannelTopic likeTopic() {
         return new ChannelTopic(likeChannelName);
     }
@@ -84,15 +92,22 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic startEventTopic() {
+        return new ChannelTopic(startEventTopic);
+    }
+
+    @Bean
     RedisMessageListenerContainer redisContainer(MessageListenerAdapter messageListenerAdapter,
                                                  MessageListenerAdapter likeListener,
-                                                 MessageListenerAdapter achievementListener) {
+                                                 MessageListenerAdapter achievementListener,
+                                                 MessageListenerAdapter eventStartListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.setTopicSerializer(new StringRedisSerializer());
         container.addMessageListener(messageListenerAdapter, viewProfileTopic());
         container.addMessageListener(likeListener, likeTopic());
         container.addMessageListener(achievementListener, achievementTopic());
+        container.addMessageListener(eventStartListener, startEventTopic());
         return container;
     }
 }

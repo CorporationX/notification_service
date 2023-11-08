@@ -26,6 +26,7 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         completed_goal: goal_completed_topic
+        start_event_topic: start_event_topic
 
   mail:
     host: smtp.gmail.com
