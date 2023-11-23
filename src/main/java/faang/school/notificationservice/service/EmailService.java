@@ -25,15 +25,15 @@ public class EmailService implements NotificationService {
     }
 
     @Override
-    public void send(UserDto userDto, String messageText) {
+    public void sendNotification(String message, UserDto userDto) {
         log.info("Email message send to email address: {}", userDto.getEmail());
-        SimpleMailMessage message = new SimpleMailMessage();
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
 
-        message.setFrom(senderEMail);
-        message.setTo(userDto.getEmail());
-        message.setSubject(subject);
-        message.setText(messageText);
+        mailMessage.setFrom(senderEMail);
+        mailMessage.setTo(userDto.getEmail());
+        mailMessage.setSubject(subject);
+        mailMessage.setText(message);
 
-        javaMailSender.send(message);
+        javaMailSender.send(mailMessage);
     }
 }

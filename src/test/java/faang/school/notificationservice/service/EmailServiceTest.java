@@ -39,7 +39,7 @@ class EmailServiceTest {
         message.setSubject(subject);
         message.setText(messageText);
 
-        service.send(userDto, messageText);
+        service.sendNotification(messageText, userDto);
 
         verify(javaMailSender).send(message);
     }
