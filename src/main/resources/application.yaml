@@ -12,11 +12,14 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
+    username: firstmainserver@gmail.com #https://www.baeldung.com/spring-email
+    password: * #https://support.google.com/mail/answer/7104828?hl=en&rd=3&visit_id=638195765566773400-3814427644
+    default_subject: "FAANG school"
+    sender_email: "noreply@faang-school.com"
     properties:
       mail:
         smtp:
+          debug: true
           auth: true
           starttls:
             enable: true
