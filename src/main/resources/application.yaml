@@ -6,6 +6,25 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        goal_completed: goal_completed_channel
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
   mail:
     host: smtp.gmail.com
@@ -24,6 +43,7 @@ spring:
 
   messages:
     basename: messages
+    encoding: UTF-8
 
 server:
   port: 8083
@@ -37,6 +57,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+
+#t.me/CoroporationXNotificationBot
+telegram:
+  token: 6742825405:AAHOHi6b4lpH3AFGpp9Ne0y4b5xWDvYqu7s
+  bot_username: CoroporationXNotificationBot
 
 project-service:
     host: localhost
