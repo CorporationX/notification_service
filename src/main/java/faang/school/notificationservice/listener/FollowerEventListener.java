@@ -1,12 +1,14 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.builder.FollowerMessageBuilder;
 import faang.school.notificationservice.builder.MessageBuilder;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.config.context.UserContext;
-import faang.school.notificationservice.dto.FollowerEvent;
+import faang.school.notificationservice.dto.FollowerEventDto;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.mapper.FollowerEventMapper;
+import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.mail.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,30 +22,32 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class FollowerEventListener implements MessageListener {
-    private FollowerEvent followerEvent;
     private ObjectMapper objectMapper;
-    private UserServiceClient userServiceClient;
+    private final UserServiceClient userServiceClient;
+    private final FollowerMessageBuilder followerMessageBuilder;
+    private final EmailService emailService;
     private List<MessageBuilder> messageBuilders;
-    private FollowerMessageBuilder followerMessageBuilder;
-    private EmailService emailService;
+    private List<NotificationService> notificationServices;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         // перевести стрингу в FollowerEvent
         try {
-            FollowerEvent event = objectMapper.readValue(message.getBody(), FollowerEvent.class);
+            objectMapper.registerModule(new JavaTimeModule());
+            FollowerEventDto followerEventDto = objectMapper.readValue(message.getBody(), FollowerEventDto.class);
+            // получить юзеров
+            UserDto follower = userServiceClient.getUser(followerEventDto.getFollowerId());
+            UserDto followee = userServiceClient.getUser(followerEventDto.getFolloweeId());
+            // получить текст сообщения
+            String text = followerMessageBuilder.buildMessage(follower.getUsername());
+            // получить способ доставки
+
+            // отправить сообщение
+            emailService.sendMessage("lions222@mail.ru", "Follow", text);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        // получить юзеров
-        UserDto follower = userServiceClient.getUser(followerEvent.getFollowerId());
-        UserDto followee = userServiceClient.getUser(followerEvent.getFolloweeId());
-        // получить текст сообщения
-        String messageToSend = followerMessageBuilder.buildMessage(follower.getUsername());
-        // получить способ доставки
 
-        // отправить сообщение
-        emailService.sendMessage("lions222@mail.ru", "Follow", messageToSend);
     }
 
     @Autowired
