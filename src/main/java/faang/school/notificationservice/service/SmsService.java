@@ -41,6 +41,4 @@ public class SmsService implements NotificationService{
     public UserDto.PreferredContact getPreferredContact() {
         return UserDto.PreferredContact.SMS;
     }
-
-
 }

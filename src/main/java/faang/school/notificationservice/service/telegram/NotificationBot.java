@@ -1,6 +1,5 @@
 package faang.school.notificationservice.service.telegram;
 
-import faang.school.notificationservice.repository.TelegramIdRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
