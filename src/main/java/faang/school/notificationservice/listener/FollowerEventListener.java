@@ -22,7 +22,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class FollowerEventListener implements MessageListener {
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
     private final FollowerMessageBuilder followerMessageBuilder;
     private final EmailService emailService;
@@ -48,10 +48,5 @@ public class FollowerEventListener implements MessageListener {
             throw new RuntimeException(e);
         }
 
-    }
-
-    @Autowired
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
     }
 }
