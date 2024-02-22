@@ -4,6 +4,7 @@ spring:
       port: 6379
       host: localhost
       channel:
+        mentorship_offered: mentorship_offered_channel
         follower: follower_channel
         achievement: achievement_channel
 
