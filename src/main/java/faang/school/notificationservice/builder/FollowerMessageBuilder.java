@@ -11,6 +11,6 @@ import java.util.Locale;
 public class FollowerMessageBuilder implements MessageBuilder{
     private final MessageSource messageSource;
     public String buildMessage(String followerName) {
-        return messageSource.getMessage("follower.new", new Object[]{followerName}, Locale.ENGLISH);
+        return messageSource.getMessage("follower.new", new Object[]{followerName}, Locale.US);
     }
 }
