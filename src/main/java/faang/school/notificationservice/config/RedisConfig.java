@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.dto.ProfileViewEvent;
+import faang.school.notificationservice.listener.ProfileViewListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,8 +43,8 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter messageListener(ProfileViewEvent profileViewEvent) {
-        return new MessageListenerAdapter(profileViewEvent);
+    MessageListenerAdapter messageListener(ProfileViewListener profileViewListener) {
+        return new MessageListenerAdapter(profileViewListener);
     }
 
     @Bean

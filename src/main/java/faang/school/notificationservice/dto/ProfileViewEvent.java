@@ -6,13 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class ProfileViewEvent {
-    private long userId;
-    private long ownerId;
+    private long viewerUserId;
+    private long viewedUserId;
     private LocalDateTime receivedAt;
 }
