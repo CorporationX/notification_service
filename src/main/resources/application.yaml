@@ -6,12 +6,13 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        name: email_topic
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: basilisk.bc2@mail.ru
-    password: CorporationX-2
+    username: 2311.mv@gmail.com
+    password: gwxb rwob rbin ytos
     properties:
       mail:
         smtp:
@@ -21,9 +22,10 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-
-  messages:
-    basename: messages
+    channels:
+      name: email_topic
+    messages:
+      basename: Premium Subscription
 
 server:
   port: 8083

@@ -13,23 +13,21 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class EmailServiceImpl implements NotificationService {
-    private final JavaMailSender javaMailSender;
-    private final SimpleMailMessage message;
-    @Value("$(mail.messages.basename)")
+    private final JavaMailSender emailMailSender;
+    @Value("${spring.mail.messages.basename}")
     private String subject;
-
-    @Override
-    public void send(UserDto user, String text) {
-        message.setTo(user.getEmail());
-        message.setText(text);
-        message.setSubject(subject);
-
-        javaMailSender.send(message);
-        log.info("Email sent to {}", user.getEmail());
-    }
-
     @Override
     public UserDto.PreferredContact getPreferredContact() {
         return UserDto.PreferredContact.EMAIL;
+    }
+    @Override
+    public void send(UserDto user, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("CorpX");
+        message.setTo("bugsi-47@yandex.ru");
+        message.setSubject(subject);
+        message.setText(text);
+        emailMailSender.send(message);
+        log.info("Email sent to {}", user.getEmail());
     }
 }

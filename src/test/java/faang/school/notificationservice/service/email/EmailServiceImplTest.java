@@ -21,7 +21,7 @@ class EmailServiceImplTest {
     @Test
     void testSendSuccessful() {
         UserDto userDto = UserDto.builder()
-                .email("bugsi-47@yandex.ru")
+                .email("user@gmail.com")
                 .build();
         String text = "text";
 
