@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MentorshipOfferedEventDto {
     private Long requestId;
-    private Long requesterId;
-    private Long receiverId;
+    private long requesterId;
+    private long receiverId;
 }
