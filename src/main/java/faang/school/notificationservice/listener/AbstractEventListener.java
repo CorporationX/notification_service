@@ -2,26 +2,33 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.config.context.UserContext;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import faang.school.notificationservice.service.message_builder.MessageBuilder;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 
 @Slf4j
-@RequiredArgsConstructor
+@Component
 public class AbstractEventListener<EventType> {
     private final ObjectMapper objectMapper;
     private final List<NotificationService> services;
     private final List<MessageBuilder<EventType>> messageBuilders;
     private final UserServiceClient userServiceClient;
-    private final UserContext userContext;
+
+    public AbstractEventListener(ObjectMapper objectMapper,
+                                 List<NotificationService> services,
+                                 List<MessageBuilder<EventType>> messageBuilders,
+                                 UserServiceClient userServiceClient) {
+        this.objectMapper = objectMapper;
+        this.services = services;
+        this.messageBuilders = messageBuilders;
+        this.userServiceClient = userServiceClient;
+    }
 
     public void buildAndSendMessage(Message message, Class<EventType> type) {
         try {
@@ -30,6 +37,7 @@ public class AbstractEventListener<EventType> {
 
             sendTextToUser(event, messageBuilder);
         } catch (IOException e) {
+            log.error("IOException trying read value from json to event {}", type);
             throw new RuntimeException(e);
         }
     }
@@ -42,21 +50,15 @@ public class AbstractEventListener<EventType> {
 
     private void sendTextToUser(EventType event, MessageBuilder<EventType> messageBuilder) {
         long receiverId = messageBuilder.getReceiverId(event);
-        UserDto receiver = getUserDto(receiverId);
+        UserDto receiver = userServiceClient.getUserUtility(receiverId);
+        receiver.setPreference(UserDto.PreferredContact.PHONE);
 
         String textMessage = messageBuilder.buildMessage(event, receiver.getLocale());
 
+        log.debug("Message built successfully {}", textMessage);
         services.stream().filter(service -> service.getPreferredContact() == receiver.getPreference())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Service not found for event type " + event.getClass()))
                 .send(receiver, textMessage);
-    }
-
-    private UserDto getUserDto(long receiverId) {
-        userContext.setUserId(0);
-        UserDto receiver = userServiceClient.getUser(receiverId);
-        receiver.setLocale(Locale.US);
-        receiver.setPreference(UserDto.PreferredContact.PHONE);
-        return receiver;
     }
 }
