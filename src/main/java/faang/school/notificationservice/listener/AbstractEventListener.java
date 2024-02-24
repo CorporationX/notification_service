@@ -8,9 +8,7 @@ import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.message_builder.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,11 +42,7 @@ public class AbstractEventListener<EventType> {
 
     private void sendTextToUser(EventType event, MessageBuilder<EventType> messageBuilder) {
         long receiverId = messageBuilder.getReceiverId(event);
-        userContext.setUserId(0);
-        UserDto receiver = userServiceClient.getUser(receiverId);
-
-        receiver.setLocale(Locale.US);
-        receiver.setPreference(UserDto.PreferredContact.PHONE);
+        UserDto receiver = getUserDto(receiverId);
 
         String textMessage = messageBuilder.buildMessage(event, receiver.getLocale());
 
@@ -56,5 +50,13 @@ public class AbstractEventListener<EventType> {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Service not found for event type " + event.getClass()))
                 .send(receiver, textMessage);
+    }
+
+    private UserDto getUserDto(long receiverId) {
+        userContext.setUserId(0);
+        UserDto receiver = userServiceClient.getUser(receiverId);
+        receiver.setLocale(Locale.US);
+        receiver.setPreference(UserDto.PreferredContact.PHONE);
+        return receiver;
     }
 }

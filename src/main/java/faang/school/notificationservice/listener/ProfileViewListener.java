@@ -36,6 +36,5 @@ public class ProfileViewListener implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         eventListener.buildAndSendMessage(message, ProfileViewEvent.class);
-        System.out.println("i am here");
     }
 }
