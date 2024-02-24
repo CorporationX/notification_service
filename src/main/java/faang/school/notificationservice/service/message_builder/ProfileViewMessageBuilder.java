@@ -20,9 +20,4 @@ public class ProfileViewMessageBuilder implements MessageBuilder<ProfileViewEven
     public long getReceiverId(ProfileViewEvent event) {
         return event.getViewedUserId();
     }
-
-    @Override
-    public Class<ProfileViewEvent> eventType() {
-        return ProfileViewEvent.class;
-    }
 }
