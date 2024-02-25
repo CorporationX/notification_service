@@ -5,8 +5,11 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -47,6 +50,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
                 .buildMessage(event, userLocale);
     }
 
+    @Retryable(retryFor = FeignException.class, maxAttempts = 5, backoff = @Backoff(delay = 1000))
     protected void sendNotification(Long id, String message) {
         UserDto user = userServiceClient.getUser(id);
         notificationServices.stream()
