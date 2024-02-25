@@ -15,7 +15,7 @@ public class EmailServiceImpl implements NotificationService {
     @Override
     public void send(UserDto user, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("dariuskpp@gmail.com");
+        message.setFrom("example@mail.com");
         message.setTo(user.getEmail());
         message.setSubject("Follow");
         message.setText(text);

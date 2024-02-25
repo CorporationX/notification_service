@@ -58,14 +58,14 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     public MessageBuilder<T> getBuilder() {
         return messageBuilders.stream()
                 .findFirst()
-                .orElseThrow( () -> new EntityNotFoundException("Message builder not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Message builder not found"));
     }
 
     public NotificationService getNotificationService(UserDto receiver) {
         return notificationServices.stream()
                 .filter(service -> service.getPreferredContact() == receiver.getPreference())
                 .findFirst()
-                .orElseThrow( () -> new EntityNotFoundException("Notification service not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Notification service not found"));
     }
 
     public abstract UserDto getUser(T event);
