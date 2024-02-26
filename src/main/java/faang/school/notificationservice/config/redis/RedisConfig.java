@@ -1,7 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.MentorshipOfferedListener;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +14,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@RequiredArgsConstructor
 public class RedisConfig {
-
-    private final MentorshipOfferedListener mentorshipOfferedListener;
 
     @Value("${spring.data.redis.host}")
     private String host;
@@ -45,8 +41,8 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter mentorshipOfferedListener() {
-        return new MessageListenerAdapter(mentorshipOfferedListener);
+    MessageListenerAdapter mentorshipOfferedListener(MentorshipOfferedListener mentorshipOfferedEventListener) {
+        return new MessageListenerAdapter(mentorshipOfferedEventListener);
     }
 
     @Bean
@@ -55,10 +51,10 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer redisMessageListenerContainer(MentorshipOfferedListener mentorshipOfferedListener) {
+    RedisMessageListenerContainer redisMessageListenerContainer(MentorshipOfferedListener mentorshipOfferedListenerTwo) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(mentorshipOfferedListener(), mentorshipOfferedTopic());
+        container.addMessageListener(mentorshipOfferedListener(mentorshipOfferedListenerTwo), mentorshipOfferedTopic());
 
         return container;
     }

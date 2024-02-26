@@ -12,7 +12,7 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
+    username: vladchangelove@gmail.com #https://www.baeldung.com/spring-email
     password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
@@ -23,6 +23,8 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+
+
 
   messages:
     basename: messages
@@ -41,8 +43,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
