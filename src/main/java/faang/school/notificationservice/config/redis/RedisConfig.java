@@ -17,13 +17,14 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
+
     private final MentorshipOfferedListener mentorshipOfferedListener;
 
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
     private int port;
-    @Value("${spring.data.redis.channel.mentorship_offered}")
+    @Value("${spring.data.redis.channel.mentorship_offered_channel.name}")
     private String mentorshipOfferedTopic;
 
 
@@ -39,6 +40,7 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
+
         return redisTemplate;
     }
 
