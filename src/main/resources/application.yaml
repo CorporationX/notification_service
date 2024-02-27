@@ -12,8 +12,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: vladchangelove@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: vlad.meniailov@gmail.com #https://www.baeldung.com/spring-email
+    password:  #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
         smtp:
@@ -48,3 +48,4 @@ project-service:
 user-service:
   host: localhost
   port: 8080
+  api_version: /api/v1

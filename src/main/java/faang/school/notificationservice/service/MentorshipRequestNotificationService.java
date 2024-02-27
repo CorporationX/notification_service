@@ -2,7 +2,7 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
 
-public class MentorshipOfferedNotificationService implements NotificationService{
+public class MentorshipRequestNotificationService implements NotificationService{
     @Override
     public void send(UserDto user, String message) {
 

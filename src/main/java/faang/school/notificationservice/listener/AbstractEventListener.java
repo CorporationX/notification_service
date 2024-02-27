@@ -1,7 +1,9 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.config.context.UserContext;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -23,9 +25,11 @@ public abstract class AbstractEventListener<T> {
     protected final UserServiceClient userServiceClient;
     protected final List<MessageBuilder<T>> messageBuilders;
     private final List<NotificationService> notificationServices;
+    protected final UserContext userContext;
 
     protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
         try {
+            objectMapper.registerModule(new JavaTimeModule());
             T event = objectMapper.readValue(message.getBody(), type);
             consumer.accept(event);
         } catch (IOException e) {
@@ -43,8 +47,7 @@ public abstract class AbstractEventListener<T> {
                         ("No message builder found for the given event type: " + event.getClass().getName()));
     }
 
-    protected void sendNotification(Long id, String message) {
-        UserDto user = userServiceClient.getUser(id);
+    protected void sendNotification(UserDto user, String message) {
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
