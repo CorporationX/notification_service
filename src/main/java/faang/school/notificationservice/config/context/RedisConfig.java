@@ -12,11 +12,11 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 public class RedisConfig {
-    @Value("{spring.data.redis.host}")
+    @Value("${spring.data.redis.host}")
     private String redisHost;
-    @Value("{spring.data.redis.port}")
+    @Value("${spring.data.redis.port}")
     private int redisPort;
-    @Value("{spring.data.redis.channel.follower}")
+    @Value("${spring.data.redis.channel.follower}")
     private String followerChannelName;
 
     @Bean
