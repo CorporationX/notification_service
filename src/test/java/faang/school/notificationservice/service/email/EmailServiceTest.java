@@ -31,7 +31,6 @@ class EmailServiceTest {
         UserDto user = UserDto.builder().build();
         String text = "text";
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("atraxlxxxl@gmail.com");
         message.setTo(user.getEmail());
         message.setSubject("Notification from CorporationX");
         message.setText(text);

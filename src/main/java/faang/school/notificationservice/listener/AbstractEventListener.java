@@ -12,6 +12,7 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,12 +43,12 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         this.messageBuilders = messageBuilders;
     }
 
-    protected String getMessage(T event, Locale userLocale) {
+    protected String getMessage(T event) {
         return messageBuilders.stream()
                 .filter(messageBuilder -> messageBuilder.supportsEventType() == event.getClass())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Message builder not found"))
-                .buildMessage(event, userLocale);
+                .buildMessage(event, Locale.UK);
     }
 
     @Retryable(retryFor = FeignException.class, maxAttempts = 5, backoff = @Backoff(delay = 1000))
@@ -56,7 +57,15 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact() == user.getPreference())
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Notification service not found"))
+                .orElseThrow(() -> new IllegalArgumentException("Preferred contact not found"))
                 .send(user, message);
+    }
+
+    protected T getEvent(byte[] message, Class<T> eventTypeClass) {
+        try {
+            return objectMapper.readValue(message, eventTypeClass);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
