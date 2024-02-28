@@ -26,6 +26,11 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     /**
+     * Vonage
+     */
+    implementation("com.vonage:client:6.0.0")
+
+    /**
      * Database
      */
     implementation("redis.clients:jedis:4.3.2")
