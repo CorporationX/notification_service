@@ -22,8 +22,6 @@ public class RedisConfig {
     private String host;
     @Value("${spring.data.redis.port}")
     private int port;
-    @Value("${spring.data.redis.channels.comment_channel")
-    private String commentChannel;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -32,29 +30,17 @@ public class RedisConfig {
     }
 
     @Bean
-    public MessageListenerAdapter commentEventListener() {
-        return new MessageListenerAdapter(commentEventListener, "onMessage");
-    }
-
-    @Bean
     public RedisMessageListenerContainer redisContainer() {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
 
-        container.addMessageListener(commentEventListener(), commentEventTopic());
+        container.addMessageListener(commentEventListener, commentEventTopic());
 
         return container;
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        final RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(jedisConnectionFactory());
-        return template;
-    }
-
-    @Bean
     public ChannelTopic commentEventTopic() {
-        return new ChannelTopic(commentChannel);
+        return new ChannelTopic("comment_channel");
     }
 }

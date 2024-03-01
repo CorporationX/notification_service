@@ -1,6 +1,5 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
@@ -22,19 +21,20 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     private final List<NotificationService> notificationServices;
     private final ObjectMapper mapper;
 
-    public String getMessage(Class<?> clazz,T event) {
+    public String getMessage(Class<?> clazz, T event, Locale locale) {
         return messageBuilders.stream()
                 .filter(builder -> builder.getClass().equals(clazz))
                 .findFirst()
                 .orElseThrow(() ->
                         new IllegalArgumentException("Message builder not found"))
-                .getMessage(Locale.ENGLISH, event);
+                .getMessage(locale, event);
     }
 
-    public void sendNotification(long receiverId, String message) {
-        UserDto userDto = userServiceClient.getUser(receiverId);
-        NotificationService notificationService = notificationServices.get(0);
-        notificationService.send(userDto, message);
+    public void sendNotification(UserDto user, String message) {
+        notificationServices.stream()
+                .filter(service -> service.getPreferredContact().equals(user.getPreference()))
+                .findFirst()
+                .ifPresent(service -> service.send(user, message));
     }
 
     public T getEvent(Message message, Class<T> clazz) {

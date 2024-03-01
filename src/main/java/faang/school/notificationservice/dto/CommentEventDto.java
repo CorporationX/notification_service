@@ -1,5 +1,6 @@
 package faang.school.notificationservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CommentEventDto {
     private long postId;
-    private long authorCommentId;
+    private long authorId;
     private long authorPostId;
     private long commentId;
     private String content;
