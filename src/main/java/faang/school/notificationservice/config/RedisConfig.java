@@ -17,7 +17,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
-    @Value ("${spring.data.redis.host}")
+    @Value("${spring.data.redis.host}")
     private String host;
 
     @Value("${spring.data.redis.port}")
@@ -27,7 +27,12 @@ public class RedisConfig {
 
     private final FollowerEventListener followerEventListener;
 
-@Bean
+    @Bean
+    ChannelTopic followerTopic() {
+        return new ChannelTopic(followerChannel);
+    }
+
+    @Bean
     MessageListenerAdapter followerListener() {
         return new MessageListenerAdapter(followerEventListener);
     }
@@ -54,10 +59,5 @@ public class RedisConfig {
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new StringRedisSerializer());
         return template;
-    }
-
-    @Bean
-    ChannelTopic followerTopic() {
-        return new ChannelTopic(followerChannel);
     }
 }

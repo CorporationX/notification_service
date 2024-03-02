@@ -2,15 +2,15 @@ package faang.school.notificationservice.service.mail;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.NotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class EmailServiceImpl implements NotificationService {
-    @Autowired
-    private JavaMailSender emailSender;
+    private final JavaMailSender emailSender;
 
     @Override
     public void send(UserDto user, String text) {

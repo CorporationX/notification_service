@@ -1,11 +1,10 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.builder.MessageBuilder;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.exception.EntityNotFoundException;
 import faang.school.notificationservice.service.NotificationService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -26,9 +25,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     @Autowired
     private void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
-        this.objectMapper.registerModule(new JavaTimeModule());
     }
-
 
     @Autowired
     private void setMessageBuilders(List<MessageBuilder<T>> messageBuilders) {
