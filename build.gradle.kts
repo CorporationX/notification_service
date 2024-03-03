@@ -54,8 +54,7 @@ dependencies {
      * Telegram
      */
     implementation ("org.telegram:telegrambots:6.8.0")
-    implementation ("io.lettuce:lettuce-core:6.3.1.RELEAS")
-
+    implementation ("io.lettuce:lettuce-core:6.3.1.RELEASE")
 
     /**
      * Tests
