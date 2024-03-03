@@ -20,14 +20,14 @@ public class FollowerEventListener implements MessageListener {
     private final ObjectMapper objectMapper;
     private UserServiceClient userServiceClient;
     private TelegramService telegramService;
-    @Value("${follower.new}")
+    @Value("${follower}")
     private String messageText;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         FollowerEvent event;
         try {
-             event = objectMapper.readValue(message.getBody(), FollowerEvent.class);
+            event = objectMapper.readValue(message.getBody(), FollowerEvent.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
