@@ -13,13 +13,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Service
 @RequiredArgsConstructor
 public class TelegramService extends TelegramLongPollingBot implements NotificationService {
-    private TelegramBotConfig telegramBotConfig;
+    private final TelegramBotConfig telegramBotConfig;
 
     @Override
     public void send(UserDto user, String messageText) {
         try {
             SendMessage message = new SendMessage();
-            message.setChatId(user.getId());
+            message.setChatId("417512145");        //"417512145"
             message.setText(messageText);
             execute(message);
         } catch (TelegramApiException e) {

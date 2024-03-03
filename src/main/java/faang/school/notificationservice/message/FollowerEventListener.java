@@ -5,28 +5,25 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.FollowerEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.TelegramService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class FollowerEventListener implements MessageListener {
-
     private final ObjectMapper objectMapper;
-    private UserServiceClient userServiceClient;
-    private TelegramService telegramService;
-    @Value("${follower}")
-    private String messageText;
+    private final UserServiceClient userServiceClient;
+    private final TelegramService telegramService;
+    private final MessageSource messageSource;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
@@ -39,8 +36,10 @@ public class FollowerEventListener implements MessageListener {
             log.error("не получилось из json делаем event, {}", message);
             throw new RuntimeException(e);
         }
-        UserDto user = userServiceClient.getUser(event.getFolloweeId());
-        String text = event.getFolloweeId() + messageText;
-        telegramService.send(user, messageText);
+        long userId = event.getFolloweeId();
+        UserDto user = userServiceClient.getUser(userId);
+        String text = user.getUsername() + " " + messageSource.getMessage(
+                "follower.new", null, null);
+        telegramService.send(user, text);
     }
 }
