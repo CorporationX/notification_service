@@ -1,6 +1,5 @@
 package faang.school.notificationservice.service;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.vonage.client.VonageClient;
@@ -30,8 +29,8 @@ public class SmsServiceTest {
         );
 
         SmsSubmissionResponse response = client.getSmsClient().submitMessage(textMessage);
+
         assertEquals(1, response.getMessages().size());
         assertEquals(MessageStatus.OK, response.getMessages().get(0).getStatus());
     }
-
 }
