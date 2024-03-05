@@ -1,4 +1,4 @@
-package faang.school.notificationservice.dto;
+package faang.school.notificationservice.dto.skill;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LikeEventDto {
-    private long authorId;
-    private long userId;
-    private long postId;
+public class SkillDto {
+    private Long id;
+    private String title;
 }

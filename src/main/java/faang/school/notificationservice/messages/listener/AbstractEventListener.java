@@ -2,7 +2,7 @@ package faang.school.notificationservice.messages.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.messages.builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +44,7 @@ public abstract class AbstractEventListener<T> {
     protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
         try {
             T event = objectMapper.readValue(message.getBody(), type);
+            log.info("Получено событие: {}", type.getName());
             consumer.accept(event);
         } catch (IOException e) {
             log.error("Ошибка десериализации JSON в объект  " + type.getName(), e);
