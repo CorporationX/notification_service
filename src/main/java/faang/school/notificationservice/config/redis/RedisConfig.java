@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
-import faang.school.notificationservice.listener.LikeEventListener;
+import faang.school.notificationservice.messages.listener.LikeEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +19,8 @@ public class RedisConfig {
     private String host;
     @Value("${spring.data.redis.port}")
     private int port;
-    @Value("${spring.data.redis.like_event_topic}")
-    private String likeEventTopic;
+    @Value("${spring.data.redis.channel.like_event}")
+    private String likePostTopic;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -38,13 +38,13 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter likeEventListener(LikeEventListener likeEventListener) {
+    MessageListenerAdapter likeListener(LikeEventListener likeEventListener) {
         return new MessageListenerAdapter(likeEventListener);
     }
 
     @Bean
     ChannelTopic likeEventTopic() {
-        return new ChannelTopic(likeEventTopic);
+        return new ChannelTopic(likePostTopic);
     }
 
     @Bean
