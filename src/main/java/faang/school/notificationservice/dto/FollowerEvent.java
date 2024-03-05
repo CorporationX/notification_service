@@ -13,5 +13,4 @@ public class FollowerEvent {
     private long followerId;
     private long followeeId;
     private LocalDateTime followTime;
-
 }

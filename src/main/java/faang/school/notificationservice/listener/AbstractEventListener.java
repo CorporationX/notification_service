@@ -37,7 +37,7 @@ public abstract class AbstractEventListener<T> {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("There are no preffered contact"))
                 .send(userDto, message);
-                log.info("The message has been sent");
+        log.info("The message has been sent");
     }
 
     protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
@@ -45,7 +45,6 @@ public abstract class AbstractEventListener<T> {
             T event = objectMapper.readValue(message.getBody(), type);
             consumer.accept(event);
         } catch (IOException e) {
-            log.error("Error deserializing JSON to object of type " + type.getName(), e);
             throw new RuntimeException("Error deserializing JSON to object of type " + type.getName());
         }
     }
