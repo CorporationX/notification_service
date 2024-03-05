@@ -32,13 +32,14 @@ public abstract class AbstractEventListener<T> {
     }
 
     protected void sendNotification(long id, String message) {
+        log.info("Подготавливаем запрос в FeignClient на получения пользователя с ID: {}", id);
         UserDto user = userServiceClient.getUser(id);
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Ne naiden"))
+                .orElseThrow(() -> new IllegalArgumentException("Нет предпочтений для уведомлений: " + user.getPreference()))
                 .send(user, message);
-        log.info("оправлено");
+        log.info("Пользователю с ID: {} отправлено уведомление: {}", id, "Получен новый лайк поста");
     }
 
     protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {

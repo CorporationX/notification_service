@@ -22,7 +22,6 @@ public class LikeMessageBuilder implements MessageBuilder<LikeEventDto> {
     public String builderMessage(LikeEventDto likeEvent, Locale locale) {
         log.info("Подготавливаем запрос в FeignClient на получения пользователя c ID: {}", likeEvent.getAuthorId());
         UserDto user = userServiceClient.getUser(likeEvent.getAuthorId());
-        user.setPreference(UserDto.PreferredContact.SMS); // удалить после теста
         log.info("Получили пользователя c ID: {} через FeignClient", likeEvent.getAuthorId());
         return messageSource.getMessage("liked.post.new", new Object[]{user.getUsername()}, locale);
     }

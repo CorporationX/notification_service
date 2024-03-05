@@ -32,29 +32,3 @@ public class LikeEventListener extends AbstractEventListener<LikeEventDto> imple
         });
     }
 }
-
-
-//    @Override
-//    public void onMessage(Message message, byte[] pattern) {
-//        try {
-//            LikeEventDto likeEventDto = objectMapper.readValue(message.getBody(), LikeEventDto.class);
-//            log.info("Получено  событие лайка поста с ID: {}, автору поста с ID: {}, от пользователя с ID: {}",
-//                    likeEventDto.getPostId(), likeEventDto.getAuthorId(), likeEventDto.getUserId());
-//
-//            log.info("Запрос через FeignClient на получения пользователя с ID: {}", likeEventDto.getAuthorId());
-//            UserDto userDto = userServiceClient.getUser(likeEventDto.getAuthorId());
-//            log.info("Получили пользователя с ID: {} через FeignClient", likeEventDto.getAuthorId());
-//
-//            notificationServices.stream()
-//                    .filter(service -> service.getPreferredContact() == userDto.getPreference())
-//                    .findFirst()
-//                    .ifPresent(service -> service.send(userDto, "Получен новый лайк поста"));
-//
-//            log.info("Пользователю с ID: {} отправлено уведомление о лайке поста с ID: {}",
-//                    likeEventDto.getAuthorId(), likeEventDto.getPostId());
-//
-//        } catch (IOException e) {
-//            log.error("Ошибка в обработке", e);
-//            throw new RuntimeException(e);
-//        }
-//    }
