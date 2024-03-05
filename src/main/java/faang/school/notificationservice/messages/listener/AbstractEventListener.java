@@ -37,7 +37,8 @@ public abstract class AbstractEventListener<T> {
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Нет предпочтений для уведомлений: " + user.getPreference()))
+                .orElseThrow(() -> new IllegalArgumentException("У пользователя " + user.getUsername() +
+                        ", нет предпочтений для уведомлений."))
                 .send(user, message);
         log.info("Пользователю с ID: {} отправлено уведомление: {}", id, "Получен новый лайк поста");
     }
