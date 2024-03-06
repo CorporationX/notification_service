@@ -2,10 +2,11 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.PreferredContact;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.message.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -20,21 +21,16 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     private Class<T> eventType;
     private List<MessageBuilder<T>> messageBuilders;
     private List<NotificationService> notificationServices;
+    private UserServiceClient userServiceClient;
 
     @Autowired
-    public void setMessageBuilders(List<MessageBuilder<T>> messageBuilders) {
-        this.messageBuilders = messageBuilders;
-    }
-
-    @Autowired
-    public void setNotificationServices(List<NotificationService> notificationServices) {
-        this.notificationServices = notificationServices;
-    }
-
-    @Autowired
-    public void setObjectMapper(ObjectMapper objectMapper) {
+    public void init(ObjectMapper objectMapper, List<MessageBuilder<T>> messageBuilders, List<NotificationService> notificationServices, UserServiceClient userServiceClient) {
         this.objectMapper = objectMapper;
+        this.messageBuilders = messageBuilders;
+        this.notificationServices = notificationServices;
+        this.userServiceClient = userServiceClient;
     }
+
     public AbstractEventListener(Class<T> eventType) {
         this.eventType = eventType;
     }
@@ -50,13 +46,14 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     }
 
     private void processEvent(T event) {
-        UserDto userDto = getUserDto(event);
-        UserDto.PreferredContact preference = userDto.getPreference();
+        UserDto userDto = userServiceClient.getUser(getUserId(event));
+        userDto.setPreference(PreferredContact.TELEGRAM);
+        PreferredContact preference = userDto.getPreference();
 
         String message = messageBuilders.stream()
                 .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event, userDto.getUsername()))
-                .orElseThrow(() -> new DataValidationException("MessageBuilder не найден"));
+                .map(messageBuilder -> messageBuilder.buildMessage(event))
+                .orElseThrow(() -> new EntityNotFoundException("MessageBuilder не найден"));
 
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact().equals(preference))
@@ -64,5 +61,5 @@ public abstract class AbstractEventListener<T> implements MessageListener {
                 .ifPresent(service -> service.send(userDto, message));
     }
 
-    protected abstract UserDto getUserDto(T event);
+    protected abstract Long getUserId(T event);
 }

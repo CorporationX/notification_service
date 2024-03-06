@@ -1,6 +1,9 @@
 package faang.school.notificationservice.message;
 
+import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.GoalCompletedEvent;
+import faang.school.notificationservice.dto.GoalDto;
+import faang.school.notificationservice.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +17,7 @@ import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -22,7 +26,8 @@ class GoalCompletedMessageBuilderTest {
 
     @Mock
     private MessageSource messageSource;
-
+    @Mock
+    private UserServiceClient userServiceClient;
     @InjectMocks
     private GoalCompletedMessageBuilder messageBuilder;
 
@@ -39,8 +44,10 @@ class GoalCompletedMessageBuilderTest {
 
         when(messageSource.getMessage(eq("goal_completed.new"), any(), any(Locale.class)))
                 .thenReturn(expectedMessage);
+        when(userServiceClient.getUser(anyLong())).thenReturn(new UserDto());
+        when(userServiceClient.getGoalById(anyLong())).thenReturn(new GoalDto());
 
-        String actualMessage = messageBuilder.buildMessage(event, username);
+        String actualMessage = messageBuilder.buildMessage(event);
 
         assertEquals(expectedMessage, actualMessage);
     }

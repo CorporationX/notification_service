@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service;
 
+import faang.school.notificationservice.dto.PreferredContact;
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -21,7 +22,7 @@ public class EmailService implements NotificationService {
     }
 
     @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.EMAIL;
+    public PreferredContact getPreferredContact() {
+        return PreferredContact.EMAIL;
     }
 }

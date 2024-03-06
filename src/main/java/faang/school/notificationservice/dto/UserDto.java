@@ -19,14 +19,8 @@ public class UserDto {
     @NotBlank
     @Email
     private String email;
-    @NotBlank
-    private String password;
     private String phone;
     @NotNull
     private Long countryId;
     private PreferredContact preference;
-
-    public enum PreferredContact {
-        EMAIL, SMS, TELEGRAM
-    }
 }

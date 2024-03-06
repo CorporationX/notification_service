@@ -2,11 +2,9 @@ package faang.school.notificationservice.service.telegram;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.entity.TelegramId;
-import faang.school.notificationservice.entity.User;
 import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.repository.TelegramIdRepository;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +43,7 @@ public class TelegramServiceTest {
 
     @Test
     void sendShouldUseNotificationBot() {
-        when(telegramIdRepository.findByUserId(user.getId())).thenReturn(Optional.of(new TelegramId(1L, new User(), chatId)));
+        when(telegramIdRepository.findByUserId(user.getId())).thenReturn(Optional.of(new TelegramId(1L, 1L, chatId)));
 
         telegramService.send(user, message);
 
