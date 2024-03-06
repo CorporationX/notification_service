@@ -41,7 +41,7 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter mentorshipOfferedListenerAdapter(MentorshipOfferedListener mentorshipOfferedEventListener) {
+    MessageListenerAdapter mentorshipOfferedListener(MentorshipOfferedListener mentorshipOfferedEventListener) {
         return new MessageListenerAdapter(mentorshipOfferedEventListener);
     }
 
@@ -51,10 +51,10 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer redisMessageListenerContainer(MentorshipOfferedListener mentorshipOfferedListener) {
+    RedisMessageListenerContainer redisMessageListenerContainer(MessageListenerAdapter mentorshipOfferedListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(mentorshipOfferedListenerAdapter(mentorshipOfferedListener), mentorshipOfferedTopic());
+        container.addMessageListener(mentorshipOfferedListener, mentorshipOfferedTopic());
 
         return container;
     }

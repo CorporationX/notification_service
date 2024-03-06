@@ -1,7 +1,6 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.context.UserContext;
 import faang.school.notificationservice.dto.UserDto;
@@ -21,6 +20,7 @@ import java.util.function.Consumer;
 @Slf4j
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
+
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
     protected final List<MessageBuilder<T>> messageBuilders;
@@ -29,7 +29,6 @@ public abstract class AbstractEventListener<T> {
 
     protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
         try {
-            objectMapper.registerModule(new JavaTimeModule());
             T event = objectMapper.readValue(message.getBody(), type);
             consumer.accept(event);
         } catch (IOException e) {
@@ -55,4 +54,5 @@ public abstract class AbstractEventListener<T> {
                         ("No notification service found for the user's preferred communication method."))
                 .send(user, message);
     }
+
 }
