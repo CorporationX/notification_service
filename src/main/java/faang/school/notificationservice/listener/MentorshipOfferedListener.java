@@ -31,7 +31,8 @@ public class MentorshipOfferedListener extends AbstractEventListener<MentorshipO
     @Override
     public void onMessage(@NotNull Message message, byte[] pattern) {
         handleEvent(message, MentorshipOfferedEvent.class, event -> {
-            UserDto receiver = userServiceClient.getUser(event.getReceiver());
+            userContext.setUserId(event.getReceiverId());
+            UserDto receiver = userServiceClient.getUser(event.getReceiverId());
             String text = getMessage(event, Locale.UK);
             sendNotification(receiver, text);
         });

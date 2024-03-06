@@ -53,6 +53,7 @@ public abstract class AbstractEventListener<T> {
                 .orElseThrow(() -> new IllegalArgumentException
                         ("No notification service found for the user's preferred communication method."))
                 .send(user, message);
+        log.info("Notification successful send to user with ID - {}", user.getId());
     }
 
 }
