@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.MessageBuilder;
+import faang.school.notificationservice.service.messageBuilders.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
