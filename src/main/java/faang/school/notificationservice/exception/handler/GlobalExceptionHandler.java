@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -18,6 +19,13 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleIllegalArgumentException(Exception exception, HttpServletRequest request) {
         log.error("Error: {}", exception);
         return getErrorResponse(request.getRequestURI(), HttpStatus.BAD_REQUEST, exception.getMessage());
+    }
+
+    @ExceptionHandler({IOException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleIOException(Exception exception, HttpServletRequest request) {
+        log.error("Error: {}", exception);
+        return getErrorResponse(request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
     }
 
 
