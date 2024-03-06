@@ -28,7 +28,7 @@ public abstract class AbstractEventListener<T> {
                 .filter(messageBuilder -> messageBuilder.supportsEventType().equals(eventType.getClass()))
                 .findFirst()
                 .map(messageBuilder -> messageBuilder.builderMessage(eventType, locale))
-                .orElseThrow(() -> new IllegalArgumentException("Unsupported event type: " + eventType.getClass()));
+                .orElseThrow(() -> new IllegalArgumentException("Неподдерживаемый тип события: " + eventType.getClass()));
     }
 
     protected void sendNotification(long id, String message) {
