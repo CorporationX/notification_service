@@ -28,7 +28,6 @@ public class GlobalExceptionHandler {
         return getErrorResponse(request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
     }
 
-
     private ErrorResponse getErrorResponse(String url, HttpStatus status, String message) {
         return ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())

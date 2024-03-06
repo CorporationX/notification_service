@@ -50,7 +50,6 @@ public abstract class AbstractEventListener<T> {
             consumer.accept(event);
         } catch (IOException e) {
             log.error("Ошибка десериализации JSON в объект  " + type.getName(), e);
-            throw new RuntimeException(e);
         }
     }
 }
