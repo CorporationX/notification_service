@@ -20,7 +20,7 @@ public class LikeMessageBuilder implements MessageBuilder<LikeEventDto> {
 
     @Override
     public String builderMessage(LikeEventDto likeEvent, Locale locale) {
-        log.info("Подготавливаем запрос в FeignClient на получения пользователя c ID: {}", likeEvent.getAuthorId());
+        log.info("Запрос в FeignClient на получения пользователя c ID: {}, для message", likeEvent.getAuthorId());
         UserDto user = userServiceClient.getUser(likeEvent.getAuthorId());
         log.info("Получили пользователя c ID: {} через FeignClient", likeEvent.getAuthorId());
         return messageSource.getMessage("liked.post.new", new Object[]{user.getUsername()}, locale);
