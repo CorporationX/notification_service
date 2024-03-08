@@ -32,6 +32,11 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     /**
+     * Telegram Bot
+     */
+    implementation("org.telegram:telegrambots:6.9.7.1")
+
+    /**
      * Utils & Logging
      */
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")

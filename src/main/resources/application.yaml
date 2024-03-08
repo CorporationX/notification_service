@@ -37,6 +37,9 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+telegram:
+  bot-username: CorpX_FAANG_bot
+  bot-token: 7085595326:AAF9xqBFGVZ2iQqj6AYKxS1YocVxjf8jGcs
 
 project-service:
     host: localhost
