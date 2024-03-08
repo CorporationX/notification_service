@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.telegram;
+package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.message.FollowerEventListener;
 import org.springframework.beans.factory.annotation.Value;

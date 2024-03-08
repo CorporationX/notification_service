@@ -29,15 +29,13 @@ public class FollowerEventListener implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
         FollowerEvent event;
         try {
-            log.info("из json хотим сделать event, {}", message);
             event = objectMapper.readValue(message.getBody(), FollowerEvent.class);
             log.info("из json делаем event, {}", message);
         } catch (IOException e) {
             log.error("не получилось из json делаем event, {}", message);
             throw new RuntimeException(e);
         }
-        long userId = event.getFolloweeId();
-        UserDto user = userServiceClient.getUser(userId);
+        UserDto user = userServiceClient.getUser(event.getFolloweeId());
         String text = user.getUsername() + " " + messageSource.getMessage(
                 "follower.new", null, null);
         telegramService.send(user, text);

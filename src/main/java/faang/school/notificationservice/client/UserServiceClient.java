@@ -1,5 +1,6 @@
 package faang.school.notificationservice.client;
 
+import faang.school.notificationservice.dto.TgContactDto;
 import faang.school.notificationservice.dto.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,4 +11,7 @@ public interface UserServiceClient {
 
     @GetMapping("/api/v1/users/{userId}")
     UserDto getUser(@PathVariable long userId);
+
+    @GetMapping("/api/v1/users/tgContact/{userId}")
+    TgContactDto getTgContact(@PathVariable long userId);
 }
