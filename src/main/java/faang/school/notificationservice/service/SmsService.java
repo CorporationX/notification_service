@@ -11,10 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+@Slf4j
+@Setter
 @Service
 @RequiredArgsConstructor
-@Setter
-@Slf4j
 public class SmsService implements NotificationService{
     @Value("${vonage.api.key}")
     private String apiKey;

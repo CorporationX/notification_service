@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Locale;
 
-@Component
 @Slf4j
+@Component
 public class LikeEventListener extends AbstractEventListener<LikeEventDto> implements MessageListener {
 
     public LikeEventListener(UserServiceClient userServiceClient,

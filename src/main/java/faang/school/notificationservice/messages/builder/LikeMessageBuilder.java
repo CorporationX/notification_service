@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class LikeMessageBuilder implements MessageBuilder<LikeEventDto> {
 
     private final MessageSource messageSource;

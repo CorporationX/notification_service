@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
 
     protected final UserServiceClient userServiceClient;
