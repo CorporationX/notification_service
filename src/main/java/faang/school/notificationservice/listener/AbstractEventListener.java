@@ -42,27 +42,29 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         try {
             T event = objectMapper.readValue(message.getBody(), eventDtoClass);
             UserDto receiver = getUser(event);
-            sendMessage(getBuilder().buildMessage(event), receiver);
+            sendMessage(buildMessage(event), receiver);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void sendMessage(String text, UserDto receiver) {
-        getNotificationService(receiver).send(receiver, text);
+        sendMessage(receiver, text);
     }
 
-    public MessageBuilder<T> getBuilder() {
+    public String buildMessage(T event) {
         return messageBuilders.stream()
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Message builder not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Message builder not found"))
+                .buildMessage(event);
     }
 
-    public NotificationService getNotificationService(UserDto receiver) {
-        return notificationServices.stream()
+    public void sendMessage(UserDto receiver, String text) {
+        notificationServices.stream()
                 .filter(service -> service.getPreferredContact() == receiver.getPreference())
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Notification service not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Notification service not found"))
+                .send(receiver, text);
     }
 
     public abstract UserDto getUser(T event);
