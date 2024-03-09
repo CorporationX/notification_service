@@ -37,12 +37,12 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         this.notificationServices = notificationServices;
     }
 
-
+    @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
             T event = objectMapper.readValue(message.getBody(), eventDtoClass);
-            UserDto reciever = getUser(event);
-            sendMessage(getBuilder().buildMessage(event), reciever);
+            UserDto receiver = getUser(event);
+            sendMessage(getBuilder().buildMessage(event), receiver);
         } catch (IOException e) {
             e.printStackTrace();
         }
