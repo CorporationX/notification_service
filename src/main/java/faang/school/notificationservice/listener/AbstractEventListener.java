@@ -22,20 +22,20 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     private final List<NotificationService> notificationServices;
     private final ObjectMapper mapper;
 
-    public String getMessage(Class<?> clazz, T event, Locale locale) {
+    public String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
-                .filter(builder -> builder.getClass().equals(clazz))
+                .filter(builder -> builder.getBuilderType() == event.getClass())
                 .findFirst()
                 .orElseThrow(() ->
                         new IllegalArgumentException("Message builder not found"))
                 .getMessage(locale, event);
     }
 
-    public void sendNotification(long receiverId, String message) {
-        UserDto userDto = userServiceClient.getUser(receiverId);
+    public void sendNotification(UserDto user, String message) {
         notificationServices.stream()
-                .filter(notifService -> notifService.getPreferredContact() == userDto.getPreference())
-                .forEach(notifService -> notifService.send(userDto, message));
+                .filter(service -> service.getPreferredContact().equals(user.getPreference()))
+                .findFirst()
+                .ifPresent(service -> service.send(user, message));
     }
 
     public T getEvent(Message message, Class<T> clazz) {
