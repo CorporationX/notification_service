@@ -10,9 +10,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 @RequiredArgsConstructor
 @Slf4j
 public class StartCommand extends Command {
-    @Value("${telegram.command.start-command}")
-    private String startCommand;
-    @Value("${telegram.command.start-message}")
+    private static final String startCommand = "/start";
+    @Value("${telegram.start-message}")
     private String startMessage;
 
     @Override

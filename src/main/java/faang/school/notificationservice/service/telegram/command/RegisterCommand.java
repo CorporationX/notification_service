@@ -1,41 +1,48 @@
 package faang.school.notificationservice.service.telegram.command;
 
+import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.entity.TelegramAccount;
 import faang.school.notificationservice.service.telegram.TelegramAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-
-import java.text.ParseException;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class RegisterCommand extends Command {
-    @Value("${telegram.command.register-command}")
-    private String registerCommand;
-
-    private final String example = "username:yourName password:YourPassword";
-    //@Value("${telegram.command.start-message}")
-    private String registrationMessage1 = "You are already registered";
-    //@Value("${telegram.command.start-message}")
-    private String registrationMessage2 = "Do what I said u to do to register!!!";
+    private static final String registerCommand = "/register";
     private final TelegramAccountService telegramAccountService;
+    private final UserServiceClient userServiceClient;
 
     @Override
     public SendMessage build(String text, long chatId) {
-        String answer = telegramAccountService.existsByChatId(chatId)
-                ? registrationMessage1
-                : registrationMessage2;
+        String answer;
 
-        String username = parseUsername(text);
-        String password = parsePassword(text);
+        if (telegramAccountService.existsByChatId(chatId)) {
+            answer = "You are already registered!";
+            return buildSendMessage(answer, chatId);
+        }
 
-        return SendMessage.builder()
-                .chatId(chatId)
-                .text(answer + " " + username + " " + password)
-                .build();
+        long userId = userServiceClient.getUserByUsername(getUsername(text)).getId();
+        answer = saveTelegramAccount(chatId, userId);
+
+        return buildSendMessage(answer, chatId);
+    }
+
+    private String saveTelegramAccount(long chatId, long userId) {
+        if (userServiceClient.existsUserById(userId)) {
+            telegramAccountService.save(
+                    TelegramAccount.builder()
+                            .userId(userId)
+                            .chatId(chatId)
+                            .build()
+            );
+            return String.format("Your logged in with user id = %s", userId);
+        }
+
+        return String.format("User with id = %s not found", userId);
     }
 
     @Override
@@ -43,22 +50,21 @@ public class RegisterCommand extends Command {
         return commandText.contains(registerCommand);
     }
 
-    private String parseUsername(String input) {
-        return parse(input, "username:");
-    }
-
-    private String parsePassword(String input) {
-        return parse(input, "password:");
-    }
-
-    private String parse(String input, String parsePattern) {
+    private String getUsername(String input) {
         String[] parts = input.split("\\s+");
 
         for (String part : parts) {
-            if (part.startsWith(parsePattern)) {
-                return part.substring(parsePattern.length());
+            if (!part.equals(registerCommand)) {
+                return part;
             }
         }
         throw new RuntimeException("failed to process command = " + input);
+    }
+
+    private SendMessage buildSendMessage(String text, long chatId) {
+        return SendMessage.builder()
+                .chatId(chatId)
+                .text(text)
+                .build();
     }
 }

@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config;
+package faang.school.notificationservice.config.telegram;
 
 import faang.school.notificationservice.service.telegram.TelegramBotService;
 import lombok.RequiredArgsConstructor;

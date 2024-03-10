@@ -60,10 +60,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
 telegram:
   bot-username: CorpX_FAANG_bot
   bot-token: 7085595326:AAF9xqBFGVZ2iQqj6AYKxS1YocVxjf8jGcs
-  command:
-    start-command: /start
-    start-message: "You are registered!"
-    register-command: /register
+  start-message: /register username
 project-service:
   host: localhost
   port: 8082
