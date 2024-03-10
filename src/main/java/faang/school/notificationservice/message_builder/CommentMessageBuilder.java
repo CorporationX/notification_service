@@ -18,4 +18,9 @@ public class CommentMessageBuilder implements MessageBuilder<CommentEventDto> {
         return messageSource.getMessage("comment.new",
                 new Object[]{event.getPostId(), event.getContent()}, locale);
     }
+
+    @Override
+    public Class<?> getBuilderType() {
+        return CommentEventDto.class;
+    }
 }

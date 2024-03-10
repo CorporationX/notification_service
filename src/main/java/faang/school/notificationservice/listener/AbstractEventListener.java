@@ -21,9 +21,9 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     private final List<NotificationService> notificationServices;
     private final ObjectMapper mapper;
 
-    public String getMessage(Class<?> clazz, T event, Locale locale) {
+    public String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
-                .filter(builder -> builder.getClass().equals(clazz))
+                .filter(builder -> builder.getBuilderType() == event.getClass())
                 .findFirst()
                 .orElseThrow(() ->
                         new IllegalArgumentException("Message builder not found"))

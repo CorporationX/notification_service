@@ -28,7 +28,7 @@ public class CommentEventListener extends AbstractEventListener<CommentEventDto>
 
     public void onMessage(Message message, byte[] pattern) {
         CommentEventDto event = getEvent(message, CommentEventDto.class);
-        String notifyMessage = getMessage(CommentMessageBuilder.class, event, Locale.ENGLISH);
+        String notifyMessage = getMessage(event, Locale.ENGLISH);
 
         UserDto user = userServiceClient.getUser(event.getAuthorPostId());
         sendNotification(user, notifyMessage);

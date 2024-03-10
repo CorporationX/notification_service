@@ -6,5 +6,6 @@ import java.util.Locale;
 
 @Component
 public interface MessageBuilder<T> {
-    String getMessage(Locale locale, T Event);
+    String getMessage(Locale locale, T event);
+    Class<?> getBuilderType();
 }
