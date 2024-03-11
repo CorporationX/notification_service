@@ -38,6 +38,10 @@ public class FollowerEventListener implements MessageListener {
         UserDto user = userServiceClient.getUser(event.getFolloweeId());
         String text = user.getUsername() + " " + messageSource.getMessage(
                 "follower.new", null, null);
-        telegramService.send(user, text);
+        try {
+            telegramService.send(user, text);
+        } catch (Exception e) {
+            log.error("ошибка отправки сообщения {}", text );
+            throw new IllegalStateException(e);        }
     }
 }
