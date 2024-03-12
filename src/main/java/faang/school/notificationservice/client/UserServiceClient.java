@@ -10,4 +10,7 @@ public interface UserServiceClient {
 
     @GetMapping("/api/users/{id}")
     UserDto getUser(@PathVariable long id);
+
+    @GetMapping("/api/users/exists/{userId}")
+    boolean isUserExists(@PathVariable long userId);
 }
