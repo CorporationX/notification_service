@@ -1,9 +1,11 @@
 package faang.school.notificationservice.builder;
 
 import faang.school.notificationservice.dto.CreateRequestEvent;
+import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 
+@Component
 public class CreateRequestMessageBuilder implements MessageBuilder<CreateRequestEvent>{
     @Override
     public String buildMessage(CreateRequestEvent eventType, Locale locale) {
