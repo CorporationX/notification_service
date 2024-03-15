@@ -47,7 +47,6 @@ public abstract class AbstractEventListener<T> implements MessageListener {
 
     private void processEvent(T event) {
         UserDto userDto = userServiceClient.getUser(getUserId(event));
-        userDto.setPreference(PreferredContact.TELEGRAM);
         PreferredContact preference = userDto.getPreference();
 
         String message = messageBuilders.stream()
