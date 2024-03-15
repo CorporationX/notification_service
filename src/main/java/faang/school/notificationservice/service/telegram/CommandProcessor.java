@@ -12,14 +12,15 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class CommandProcessor {
+    private static final String exceptionMessage = "command %s not found in commands base";
     private final List<Command> commands;
 
     public SendMessage buildSendMessage(String textCommand, long chatId) {
         return commands.stream().filter(command -> command.isApplicable(textCommand))
                 .findFirst()
                 .orElseThrow(() -> new UnsupportedOperationException(
-                        String.format("command %s not found in commands base", textCommand))
+                        String.format(exceptionMessage, textCommand))
                 )
-                .build(textCommand, chatId);
+                .process(chatId, textCommand);
     }
 }

@@ -11,31 +11,29 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Service
 public class TelegramBotService extends TelegramLongPollingBot {
     private final String telegramBotUsername;
-    private final TelegramAccountService telegramAccountService;
     private final CommandProcessor commandProcessor;
 
     public TelegramBotService(String telegramBotToken,
                               String telegramBotUsername,
-                              TelegramAccountService telegramAccountService, CommandProcessor commandProcessor) {
+                              CommandProcessor commandProcessor) {
         super(telegramBotToken);
         this.telegramBotUsername = telegramBotUsername;
-        this.telegramAccountService = telegramAccountService;
         this.commandProcessor = commandProcessor;
     }
 
-    public void sendMessageTo(long userId, String message) {
-        long chatId = telegramAccountService.getChatIdByUserId(userId);
+    public void sendMessageTo(long chatId, String message) {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chatId)
                 .text(message)
                 .build();
+
         try {
             execute(sendMessage);
-            log.error("Message = {} sent to user with id = {} and chatId = {}"
-                    , message, userId, chatId);
+            log.info("Message = {} sent to chat with id = {}",
+                    message, chatId);
         } catch (TelegramApiException e) {
-            log.error("TelegramApiException during try to execute SendMessage.class to user with id = {} and chatId = {}"
-                    , userId, chatId, e);
+            log.error("TelegramApiException during try to execute SendMessage.class to chat with id = {}",
+                    chatId, e);
             throw new RuntimeException(e);
         }
     }

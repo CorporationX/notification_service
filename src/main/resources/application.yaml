@@ -14,6 +14,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        type:
+          UUID: org.hibernate.type.PostgresUUIDType
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
@@ -57,10 +60,16 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+
 telegram:
   bot-username: CorpX_FAANG_bot
   bot-token: 7085595326:AAF9xqBFGVZ2iQqj6AYKxS1YocVxjf8jGcs
-  start-message: /register username
+  command:
+    start: /start
+    register: /register
+    confirm: /send
+  start-message:
+
 project-service:
   host: localhost
   port: 8082

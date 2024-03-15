@@ -3,46 +3,63 @@ package faang.school.notificationservice.service.telegram.command;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.entity.TelegramAccount;
 import faang.school.notificationservice.service.telegram.TelegramAccountService;
-import lombok.RequiredArgsConstructor;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class RegisterCommand extends Command {
-    private static final String registerCommand = "/register";
+    @Value("${telegram.command.register}")
+    private String registerCommand;
     private final TelegramAccountService telegramAccountService;
     private final UserServiceClient userServiceClient;
 
-    @Override
-    public SendMessage build(String text, long chatId) {
-        String answer;
-
-        if (telegramAccountService.existsByChatId(chatId)) {
-            answer = "You are already registered!";
-            return buildSendMessage(answer, chatId);
-        }
-
-        long userId = userServiceClient.getUserByUsername(getUsername(text)).getId();
-        answer = saveTelegramAccount(chatId, userId);
-
-        return buildSendMessage(answer, chatId);
+    public RegisterCommand(MessageSource messageSource,
+                           TelegramAccountService telegramAccountService,
+                           UserServiceClient userServiceClient) {
+        super(messageSource);
+        this.telegramAccountService = telegramAccountService;
+        this.userServiceClient = userServiceClient;
     }
 
-    private String saveTelegramAccount(long chatId, long userId) {
-        if (userServiceClient.existsUserById(userId)) {
+    @Override
+    public SendMessage process(long chatId, String text) {
+        String answer;
+
+        var telegramAccountOpt = telegramAccountService.findByChatId(chatId);
+
+        if (telegramAccountOpt.isPresent()) {
+
+            if (telegramAccountOpt.get().isConfirmed()) {
+                answer = getMessage("telegram.register-message.registered.already", null);
+            } else {
+                answer = getMessage("telegram.register-message.registered.new", null);
+            }
+
+        } else {
+            answer = registerUser(chatId, getUsername(text));
+        }
+
+        return buildSendMessage(chatId, answer);
+    }
+
+    private String registerUser(long chatId, String username) {
+        try {
+            long userId = userServiceClient.getUserByUsername(username).getId();
             telegramAccountService.save(
                     TelegramAccount.builder()
                             .userId(userId)
                             .chatId(chatId)
                             .build()
             );
-            return String.format("Your logged in with user id = %s", userId);
+            return getMessage("telegram.register-message.registered.new", new Object[]{username});
+        } catch (FeignException e) {
+            return getMessage("telegram.register-message.notFound", new Object[]{username});
         }
-
-        return String.format("User with id = %s not found", userId);
     }
 
     @Override
@@ -51,20 +68,8 @@ public class RegisterCommand extends Command {
     }
 
     private String getUsername(String input) {
-        String[] parts = input.split("\\s+");
-
-        for (String part : parts) {
-            if (!part.equals(registerCommand)) {
-                return part;
-            }
-        }
-        throw new RuntimeException("failed to process command = " + input);
-    }
-
-    private SendMessage buildSendMessage(String text, long chatId) {
-        return SendMessage.builder()
-                .chatId(chatId)
-                .text(text)
-                .build();
+        return input
+                .replace(registerCommand, "")
+                .trim();
     }
 }

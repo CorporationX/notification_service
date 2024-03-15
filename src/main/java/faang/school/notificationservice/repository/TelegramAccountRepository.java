@@ -5,10 +5,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface TelegramAccountRepository extends JpaRepository<TelegramAccount, Long> {
+public interface TelegramAccountRepository extends JpaRepository<TelegramAccount, UUID> {
     Optional<TelegramAccount> findByUserId (long userId);
 
     boolean existsByChatId(long chatId);
+
+    Optional<TelegramAccount> findByChatId(long chatId);
+
+
 }

@@ -1,25 +1,26 @@
 package faang.school.notificationservice.service.telegram.command;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class StartCommand extends Command {
-    private static final String startCommand = "/start";
-    @Value("${telegram.start-message}")
-    private String startMessage;
+    @Value("${telegram.command.start}")
+    private String startCommand;
+    public StartCommand(MessageSource messageSource) {
+        super(messageSource);
+    }
 
     @Override
-    public SendMessage build(String text, long chatId) {
-        return SendMessage.builder()
-                .chatId(chatId)
-                .text(startMessage)
-                .build();
+    public SendMessage process(long chatId, String text) {
+        return buildSendMessage(
+                chatId,
+                messageSource.getMessage("telegram.start-message", new Object[]{}, this.locale)
+        );
     }
 
     @Override

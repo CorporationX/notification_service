@@ -1,6 +1,9 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE telegram_account
 (
-    id      bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY UNIQUE,
-    user_id bigint NOT NULL,
-    chat_id bigint NOT NULL
+    id        UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id   BIGINT  NOT NULL,
+    chat_id   BIGINT  NOT NULL,
+    confirmed BOOLEAN NOT NULL
 );
