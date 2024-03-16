@@ -24,7 +24,7 @@ public class TelegramAccountService {
     }
 
     @Transactional
-    public void confirmAccount (UUID uuid) {
+    public void confirmAccount(UUID uuid) {
         TelegramAccount telegramAccount = telegramAccountRepository.findById(uuid)
                 .orElseThrow(() -> new EntityNotFoundException("Wrong confirmation link"));
         telegramAccount.setConfirmed(true);

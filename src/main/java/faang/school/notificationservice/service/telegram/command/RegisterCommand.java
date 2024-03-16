@@ -28,22 +28,23 @@ public class RegisterCommand extends Command {
 
     @Override
     public SendMessage process(long chatId, String text) {
-        String answer;
-
         var telegramAccountOpt = telegramAccountService.findByChatId(chatId);
 
-        if (telegramAccountOpt.isPresent()) {
-
-            if (telegramAccountOpt.get().isConfirmed()) {
-                answer = getMessage("telegram.register-message.registered.already", null);
-            } else {
-                answer = getMessage("telegram.register-message.registered.new", null);
-            }
-
-        } else {
-            answer = registerUser(chatId, getUsername(text));
+        if (telegramAccountOpt.isPresent() && telegramAccountOpt.get().isConfirmed()) {
+            return buildSendMessage(
+                    chatId,
+                    getMessage("telegram.register-message.registered.already", null)
+            );
         }
 
+        if (telegramAccountOpt.isPresent() && !telegramAccountOpt.get().isConfirmed()) {
+            return buildSendMessage(
+                    chatId,
+                    getMessage("telegram.register-message.registered.new", null)
+            );
+        }
+
+        String answer = registerUser(chatId, getUsername(text));
         return buildSendMessage(chatId, answer);
     }
 
@@ -62,14 +63,14 @@ public class RegisterCommand extends Command {
         }
     }
 
-    @Override
-    public boolean isApplicable(String commandText) {
-        return commandText.contains(registerCommand);
-    }
-
     private String getUsername(String input) {
         return input
                 .replace(registerCommand, "")
                 .trim();
+    }
+
+    @Override
+    public boolean isApplicable(String commandText) {
+        return commandText.contains(registerCommand);
     }
 }
