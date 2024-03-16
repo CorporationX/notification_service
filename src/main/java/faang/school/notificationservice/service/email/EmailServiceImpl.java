@@ -24,7 +24,7 @@ public class EmailServiceImpl implements NotificationService {
     public void send(UserDto user, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("CorpX");
-        message.setTo("bugsi-47@yandex.ru");
+        message.setTo("bugsi-47@yandex.ru");      //user.getEmail()
         message.setSubject(subject);
         message.setText(text);
         emailMailSender.send(message);

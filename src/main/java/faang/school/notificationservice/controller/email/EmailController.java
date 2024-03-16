@@ -5,7 +5,7 @@ import faang.school.notificationservice.service.email.EmailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Validated
 public class EmailController {
     public final EmailServiceImpl emailService;
-    @PutMapping("/email")
-    public void getEmail(@Validated UserDto user, String text){
+
+    @PostMapping("/email")
+    public void getEmail(@Validated UserDto user, String text) {
         emailService.send(user, text);
     }
 }
