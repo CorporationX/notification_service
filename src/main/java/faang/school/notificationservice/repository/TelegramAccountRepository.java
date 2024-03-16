@@ -11,8 +11,6 @@ import java.util.UUID;
 public interface TelegramAccountRepository extends JpaRepository<TelegramAccount, UUID> {
     Optional<TelegramAccount> findByUserId (long userId);
 
-    boolean existsByChatId(long chatId);
-
     Optional<TelegramAccount> findByChatId(long chatId);
 
 

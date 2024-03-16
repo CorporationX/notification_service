@@ -10,6 +10,7 @@ import java.util.Locale;
 public abstract class Command {
     protected final Locale locale = Locale.US;
     protected final MessageSource messageSource;
+
     public abstract SendMessage process(long chatId, String text);
 
     public abstract boolean isApplicable(String textCommand);

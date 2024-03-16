@@ -9,6 +9,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
+import java.util.Locale;
+
 @Component
 public class ConfirmationCommand extends Command {
     private final TelegramAccountService telegramAccountService;
