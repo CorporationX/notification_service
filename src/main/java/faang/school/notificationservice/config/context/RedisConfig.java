@@ -29,15 +29,6 @@ public class RedisConfig {
         return new JedisConnectionFactory(configuration);
     }
 
-
-    @Bean
-    public RedisMessageListenerContainer redisContainer() {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(jedisConnectionFactory());
-
-        return container;
-    }
-
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         final RedisTemplate<String, Object> template = new RedisTemplate<>();
@@ -62,7 +53,6 @@ public class RedisConfig {
         container.setConnectionFactory(jedisConnectionFactory());
 
         container.addMessageListener(commentEventListener, commentEventTopic());
-
         return container;
     }
 }
