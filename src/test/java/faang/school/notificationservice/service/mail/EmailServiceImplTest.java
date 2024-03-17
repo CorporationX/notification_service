@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service.mail;
 
+import faang.school.notificationservice.dto.PreferredContact;
 import faang.school.notificationservice.dto.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class EmailServiceImplTest {
@@ -33,6 +34,6 @@ class EmailServiceImplTest {
 
     @Test
     void getPreferredContact() {
-        assertEquals(UserDto.PreferredContact.EMAIL, emailService.getPreferredContact());
+        assertEquals(PreferredContact.EMAIL, emailService.getPreferredContact());
     }
 }
