@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.FollowerEventListener;
 import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,13 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.mentorship_accepted_channel}")
     private String mentorshipAcceptedChannel;
 
+    @Value("${spring.data.redis.channel.follower}")
+    private String followerChannel;
+
+
     private final GoalCompletedEventListener goalCompletedEventListener;
     private final MentorshipAcceptedEventListener mentorshipAcceptedEventListener;
+    private final FollowerEventListener followerEventListener;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -63,6 +69,17 @@ public class RedisConfig {
     }
 
     @Bean
+    ChannelTopic followerTopic() {
+        return new ChannelTopic(followerChannel);
+    }
+
+
+    @Bean
+    MessageListenerAdapter followerListener() {
+        return new MessageListenerAdapter(followerEventListener);
+    }
+
+    @Bean
     MessageListenerAdapter mentorshipAcceptedListener() {
         return new MessageListenerAdapter(mentorshipAcceptedEventListener);
     }
@@ -73,6 +90,7 @@ public class RedisConfig {
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(goalCompletedListener(), goalCompletedChannel());
         container.addMessageListener(mentorshipAcceptedListener(), mentorshipAcceptedChannel());
+        container.addMessageListener(followerListener(), followerTopic());
         return container;
     }
 }

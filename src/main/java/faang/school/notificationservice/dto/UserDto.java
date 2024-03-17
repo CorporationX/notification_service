@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
