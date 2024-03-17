@@ -4,13 +4,14 @@ import faang.school.notificationservice.dto.PreferredContact;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.repository.TelegramIdRepository;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class TelegramService implements NotificationService {
+
     private final NotificationBot notificationBot;
     private final TelegramIdRepository telegramIdRepository;
 

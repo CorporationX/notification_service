@@ -49,6 +49,4 @@ public abstract class AbstractEventListener<T> implements MessageListener {
                 .findFirst()
                 .ifPresent(service -> service.send(user, message));
     }
-
-    protected abstract Long getUserId(T event);
 }

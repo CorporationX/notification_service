@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.GoalCompletedEventListener;
+import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,11 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.goal_completed}")
     private String goalCompletedChannelName;
 
+    @Value("${spring.data.redis.channel.mentorship_accepted_channel}")
+    private String mentorshipAcceptedChannel;
+
     private final GoalCompletedEventListener goalCompletedEventListener;
+    private final MentorshipAcceptedEventListener mentorshipAcceptedEventListener;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -53,10 +58,21 @@ public class RedisConfig {
     }
 
     @Bean
+    ChannelTopic mentorshipAcceptedChannel() {
+        return new ChannelTopic(mentorshipAcceptedChannel);
+    }
+
+    @Bean
+    MessageListenerAdapter mentorshipAcceptedListener() {
+        return new MessageListenerAdapter(mentorshipAcceptedEventListener);
+    }
+
+    @Bean
     RedisMessageListenerContainer redisContainer() {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(goalCompletedListener(), goalCompletedChannel());
+        container.addMessageListener(mentorshipAcceptedListener(), mentorshipAcceptedChannel());
         return container;
     }
 }

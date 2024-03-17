@@ -44,10 +44,8 @@ class GoalCompletedMessageBuilderTest {
 
         when(messageSource.getMessage(eq("goal_completed.new"), any(), any(Locale.class)))
                 .thenReturn(expectedMessage);
-        when(userServiceClient.getUser(anyLong())).thenReturn(new UserDto());
-        when(userServiceClient.getGoalById(anyLong())).thenReturn(new GoalDto());
 
-        String actualMessage = messageBuilder.buildMessage(event);
+        String actualMessage = messageBuilder.buildMessage(event, Locale.getDefault());
 
         assertEquals(expectedMessage, actualMessage);
     }
