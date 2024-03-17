@@ -1,7 +1,8 @@
 package faang.school.notificationservice.config;
 
-
 import faang.school.notificationservice.listener.FollowerEventListener;
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
+import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,14 +19,68 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 public class RedisConfig {
     @Value("${spring.data.redis.host}")
-    private String host;
+    private String redisHost;
 
     @Value("${spring.data.redis.port}")
-    private int port;
+    private int redisPort;
+
+    @Value("${spring.data.redis.channel.goal_completed}")
+    private String goalCompletedChannelName;
+
+    @Value("${spring.data.redis.channel.mentorship_accepted_channel}")
+    private String mentorshipAcceptedChannel;
+
     @Value("${spring.data.redis.channel.follower}")
     private String followerChannel;
 
+
+    private final GoalCompletedEventListener goalCompletedEventListener;
+    private final MentorshipAcceptedEventListener mentorshipAcceptedEventListener;
     private final FollowerEventListener followerEventListener;
+
+    @Bean
+    public JedisConnectionFactory jedisConnectionFactory() {
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
+        return new JedisConnectionFactory(config);
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate() {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(jedisConnectionFactory());
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
+        return template;
+    }
+
+    @Bean
+    ChannelTopic goalCompletedChannel() {
+        return new ChannelTopic(goalCompletedChannelName);
+    }
+
+    @Bean
+    MessageListenerAdapter goalCompletedListener() {
+        return new MessageListenerAdapter(goalCompletedEventListener);
+    }
+
+    @Bean
+    ChannelTopic mentorshipAcceptedChannel() {
+        return new ChannelTopic(mentorshipAcceptedChannel);
+    }
+
+    @Bean
+    MessageListenerAdapter mentorshipAcceptedListener() {
+        return new MessageListenerAdapter(mentorshipAcceptedEventListener);
+    }
+
+    @Bean
+    RedisMessageListenerContainer redisContainer() {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(jedisConnectionFactory());
+        container.addMessageListener(goalCompletedListener(), goalCompletedChannel());
+        container.addMessageListener(mentorshipAcceptedListener(), mentorshipAcceptedChannel());
+        return container;
+    }
 
     @Bean
     ChannelTopic followerTopic() {
@@ -44,20 +99,5 @@ public class RedisConfig {
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(followerListener, followerTopic());
         return container;
-    }
-
-    @Bean
-    public JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
-        return new JedisConnectionFactory(config);
-    }
-
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(jedisConnectionFactory());
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new StringRedisSerializer());
-        return template;
     }
 }
