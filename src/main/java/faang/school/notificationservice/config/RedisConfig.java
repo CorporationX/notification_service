@@ -1,5 +1,6 @@
-package faang.school.notificationservice.config.context;
+package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,14 +17,19 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
-
     @Value("${spring.data.redis.host}")
     private String redisHost;
+
     @Value("${spring.data.redis.port}")
     private int redisPort;
+
+    @Value("${spring.data.redis.channel.goal_completed}")
+    private String goalCompletedChannelName;
+
     @Value("${spring.data.redis.channel.mentorship_accepted_channel}")
     private String mentorshipAcceptedChannel;
 
+    private final GoalCompletedEventListener goalCompletedEventListener;
     private final MentorshipAcceptedEventListener mentorshipAcceptedEventListener;
 
     @Bean
@@ -42,6 +48,16 @@ public class RedisConfig {
     }
 
     @Bean
+    ChannelTopic goalCompletedChannel() {
+        return new ChannelTopic(goalCompletedChannelName);
+    }
+
+    @Bean
+    MessageListenerAdapter goalCompletedListener() {
+        return new MessageListenerAdapter(goalCompletedEventListener);
+    }
+
+    @Bean
     ChannelTopic mentorshipAcceptedChannel() {
         return new ChannelTopic(mentorshipAcceptedChannel);
     }
@@ -53,9 +69,9 @@ public class RedisConfig {
 
     @Bean
     RedisMessageListenerContainer redisContainer() {
-        RedisMessageListenerContainer container
-                = new RedisMessageListenerContainer();
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
+        container.addMessageListener(goalCompletedListener(), goalCompletedChannel());
         container.addMessageListener(mentorshipAcceptedListener(), mentorshipAcceptedChannel());
         return container;
     }

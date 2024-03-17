@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service.notification;
 
+import faang.school.notificationservice.dto.PreferredContact;
 import faang.school.notificationservice.dto.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,8 +37,8 @@ class EmailServiceTest {
     @Test
     void testGetPreferredContact() {
         //Act
-        UserDto.PreferredContact result = emailService.getPreferredContact();
+        PreferredContact result = emailService.getPreferredContact();
         //Assert
-        assertEquals(result, UserDto.PreferredContact.EMAIL);
+        assertEquals(result, PreferredContact.EMAIL);
     }
 }
