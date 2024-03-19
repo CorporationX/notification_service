@@ -25,9 +25,9 @@ public class RecommendationRequestListener extends AbstractEventListener<Recomme
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        handleEvent(message, FollowerEvent.class, followerEvent -> {
-            String text = getMessage(followerEvent, Locale.UK);
-            sendNotification(followerEvent.getFolloweeId(), text);
+        handleEvent(message, RecommendationRequestEvent.class, recommendationRequestEvent -> {
+            String text = getMessage(recommendationRequestEvent, Locale.UK);
+            sendNotification(recommendationRequestEvent.getReceiverId(), text);
         });
     }
 }
