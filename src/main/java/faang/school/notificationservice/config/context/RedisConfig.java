@@ -21,6 +21,8 @@ public class RedisConfig {
     private int redisPort;
     @Value("${spring.data.redis.channel.follower}")
     private String followerChannelName;
+    @Value("${spring.data.redis.channel.recommendationRequest}")
+    private String recommendationRequestedChannelName;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -43,16 +45,28 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListenerAdapter recommendationRequestedListener(FollowerEventListener recommendationRequestedEventListener) {
+        return new MessageListenerAdapter(recommendationRequestedEventListener);
+    }
+
+    @Bean
     ChannelTopic followerTopic() {
         return new ChannelTopic(followerChannelName);
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener) {
+    ChannelTopic recommendationRequestedTopic() {
+        return new ChannelTopic(recommendationRequestedChannelName);
+    }
+
+    @Bean
+    RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener,
+                                                 MessageListenerAdapter recommendationRequestedListener) {
         RedisMessageListenerContainer container
                 = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(followerListener, followerTopic());
+        container.addMessageListener(recommendationRequestedListener, recommendationRequestedTopic());
         return container;
     }
 }
