@@ -56,24 +56,28 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
     }
 
     private void subscribeToNotifications(String message_text, long chat_id) {
-        if (isInteger(message_text)) {
+        try {
             long userId = Long.parseLong(message_text);
-            if (userServiceClient.isUserExists(userId)) {
-                String response = "Вы подписались на получение оповещений";
-                TelegramUser telegramUser = TelegramUser.builder().chatId(chat_id).userId(userId).build();
-                if (!telegramUserRepository.existsByChatId(chat_id)) {
-                    telegramUserRepository.save(telegramUser);
-                    sendMessage(chat_id, response);
-                } else {
-                    String response2 = "Вы уже подписались на получение оповещений";
-                    sendMessage(chat_id, response2);
-                }
-            } else {
-                String response = "Ваш аккаунт не найден";
+            processUserId(chat_id, userId);
+        } catch (NumberFormatException e) {
+            String response = "Предоставьте корректный id";
+            sendMessage(chat_id, response);
+        }
+    }
+
+    private void processUserId(long chat_id, long userId) {
+        if (userServiceClient.isUserExists(userId)) {
+            String response = "Вы подписались на получение оповещений";
+            TelegramUser telegramUser = TelegramUser.builder().chatId(chat_id).userId(userId).build();
+            if (!telegramUserRepository.existsByChatId(chat_id)) {
+                telegramUserRepository.save(telegramUser);
                 sendMessage(chat_id, response);
+            } else {
+                String response2 = "Вы уже подписались на получение оповещений";
+                sendMessage(chat_id, response2);
             }
         } else {
-            String response = "Предоставьте корректный id";
+            String response = "Ваш аккаунт не найден";
             sendMessage(chat_id, response);
         }
     }
@@ -88,24 +92,5 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             log.error("Message has not sent " + e);
         }
-    }
-
-    private boolean isInteger(String str) {
-        if (str == null || str.isEmpty()) {
-            return false;
-        }
-        for (int i = 0; i < str.length(); i++) {
-            if (i == 0 && str.charAt(i) == '-') {
-                if (str.length() == 1) {
-                    return false;
-                } else {
-                    continue;
-                }
-            }
-            if (!Character.isDigit(str.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
     }
 }

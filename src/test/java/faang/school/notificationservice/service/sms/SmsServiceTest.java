@@ -15,6 +15,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.lang.reflect.Field;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -32,25 +35,29 @@ class SmsServiceTest {
     }
 
     @Test
-    void testSendCallsMethodVonageClient() {
-        // Чего я тут уже только не писал, но так и не смог никак сделать этот тест
-////        ReflectionTestUtils.setField(smsService,"vonageApiKey","as");
-////        ReflectionTestUtils.setField(smsService,"vonageApiSecret","as");
-////        ReflectionTestUtils.setField(smsService,"from","as");
-//        SmsSubmissionResponse successfulResponse = new SmsSubmissionResponse();
-//        successfulResponse.getMessages().add(new SmsSubmissionResponseMessage());
-//        //successfulResponse.getMessages().get(0).setStatus(MessageStatus.OK);
-//
-//        UserDto userDto = UserDto.builder().build();
-//        String message = "message";
-//        TextMessage textMessage = new TextMessage("string","string","string");
-//        when(successfulResponse.getMessages().get(0).getStatus()).thenReturn(MessageStatus.OK);
-//        //when(vonageClient.getSmsClient()).thenReturn()
-//        SmsClient smsClient = Mockito.mock(SmsClient.class);
-//        when(vonageClient.getSmsClient()).thenReturn(smsClient);
-//       // when(vonageClient.getSmsClient().submitMessage(textMessage)).thenReturn(new SmsSubmissionResponse());
-//
-//        smsService.send(userDto,message);
-//        verify(vonageClient,times(1)).getSmsClient().submitMessage(textMessage);
+    void testSendCallsMethodVonageClient()  {
+        String vonageApiKey = "as";
+        String vonageApiSecret = "as";
+        String from = "as";
+        ReflectionTestUtils.setField(smsService, "vonageApiKey", vonageApiKey);
+        ReflectionTestUtils.setField(smsService, "vonageApiSecret", vonageApiSecret);
+        ReflectionTestUtils.setField(smsService, "from", from);
+
+        SmsClient smsClientMock = mock(SmsClient.class);
+        SmsSubmissionResponse successfulResponse = mock(SmsSubmissionResponse.class);
+        SmsSubmissionResponseMessage smsSubmissionResponseMessage = new SmsSubmissionResponseMessage();
+        when(successfulResponse.getMessages()).thenReturn(List.of(smsSubmissionResponseMessage));
+        when(smsClientMock.submitMessage(any(TextMessage.class))).thenReturn(successfulResponse);
+        when(vonageClient.getSmsClient()).thenReturn(smsClientMock);
+
+        UserDto userDto = UserDto.builder().phone("123456789").build();
+        String message = "Test message";
+
+        smsService.send(userDto, message);
+
+        verify(smsClientMock).submitMessage(argThat(textMessage ->
+                textMessage.getTo().equals(userDto.getPhone()) &&
+                        textMessage.getFrom().equals(from)
+        ));
     }
 }

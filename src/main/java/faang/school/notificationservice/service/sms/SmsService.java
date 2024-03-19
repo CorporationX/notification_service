@@ -35,11 +35,11 @@ public class SmsService implements NotificationService {
     public void send(UserDto user, String message) {
         TextMessage textMessage = new TextMessage(from, user.getPhone(), message);
         SmsClient response = vonageClient.getSmsClient();
-        SmsSubmissionResponse response1 = response.submitMessage(textMessage);
-        if (response1.getMessages().get(0).getStatus() == MessageStatus.OK) {
-            log.info("Message sent successfully {}", response1.getMessages());
+        SmsSubmissionResponse submitMessage = response.submitMessage(textMessage);
+        if (submitMessage.getMessages().get(0).getStatus() == MessageStatus.OK) {
+            log.info("Message sent successfully {}", submitMessage.getMessages());
         } else {
-            log.info("Message failed with error {}", response1.getMessages().get(0).getErrorText());
+            log.info("Message failed with error {}", submitMessage.getMessages().get(0).getErrorText());
         }
     }
 }
