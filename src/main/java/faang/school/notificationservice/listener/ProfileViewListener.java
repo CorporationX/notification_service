@@ -23,6 +23,6 @@ public class ProfileViewListener extends AbstractEventListener<ProfileViewEvent>
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        buildAndSendMessage(message, ProfileViewEvent.class);
+        notify(message, ProfileViewEvent.class);
     }
 }

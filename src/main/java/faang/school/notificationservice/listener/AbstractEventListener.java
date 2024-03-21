@@ -15,34 +15,40 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class AbstractEventListener<EventType> implements MessageListener {
+public abstract class AbstractEventListener<Event> implements MessageListener {
     private final ObjectMapper objectMapper;
     private final List<NotificationService> services;
-    private final MessageBuilder<EventType> messageBuilder;
+    private final MessageBuilder<Event> messageBuilder;
     private final UserServiceClient userServiceClient;
 
-    public void buildAndSendMessage(Message message, Class<EventType> type) {
+    public void notify(Message message, Class<Event> type) {
         try {
-            EventType event = objectMapper.readValue(message.getBody(), type);
-
-            sendTextToUser(event, messageBuilder);
+            Event event = objectMapper.readValue(message.getBody(), type);
+            buildAndSendMessage(event);
         } catch (IOException e) {
             log.error("IOException trying read value from json to event {}", type);
             throw new RuntimeException(e);
         }
     }
 
-    private void sendTextToUser(EventType event, MessageBuilder<EventType> messageBuilder) {
-        long receiverId = messageBuilder.getReceiverId(event);
-        UserDto receiver = userServiceClient.getUserUtility(receiverId);
-        receiver.setPreference(UserDto.PreferredContact.PHONE);
+    protected void buildAndSendMessage(Event event) {
+        UserDto receiverUserDto = userServiceClient.getUserUtility(messageBuilder.getReceiverId(event));
+        log.debug("Receiver found with user id = {}", receiverUserDto.getId());
 
-        String textMessage = messageBuilder.buildMessage(event, receiver.getLocale());
-
+        String textMessage = messageBuilder.buildMessage(event, receiverUserDto.getLocale());
         log.debug("Message built successfully {}", textMessage);
-        services.stream().filter(service -> service.getPreferredContact() == receiver.getPreference())
+
+        sendMessage(receiverUserDto, textMessage);
+    }
+
+    protected void sendMessage(UserDto receiverUserDto, String textMessage) {
+        UserDto.PreferredContact contactType = receiverUserDto.getPreference();
+        services.stream().filter(service -> service.getPreferredContact() == contactType)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Service not found for event type " + event.getClass()))
-                .send(receiver, textMessage);
+                .orElseThrow(() ->
+                        new IllegalArgumentException(String.format("Notification service with contact type %s not found",
+                                contactType)))
+                .send(receiverUserDto, textMessage);
+        log.info("Notification type = {} successful sent to user with id = {}", contactType, receiverUserDto.getId());
     }
 }
