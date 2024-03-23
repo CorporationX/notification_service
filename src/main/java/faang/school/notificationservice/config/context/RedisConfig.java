@@ -2,6 +2,7 @@ package faang.school.notificationservice.config.context;
 
 import faang.school.notificationservice.listener.CreateRequestEventListener;
 import faang.school.notificationservice.listener.FollowerEventListener;
+import faang.school.notificationservice.listener.OpenAccountEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 public class RedisConfig {
     private final CreateRequestEventListener createRequestEventListener;
+    private final OpenAccountEventListener openAccountEventListener;
 
     @Value("${spring.data.redis.host}")
     private String redisHost;
@@ -25,6 +27,9 @@ public class RedisConfig {
     private String followerChannelName;
     @Value("${spring.data.redis.channel.create_request}")
     private String createRequestChannelName;
+    @Value("${spring.data.redis.channel.open_account}")
+    private String openAccountChannelName;
+
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -52,6 +57,11 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListenerAdapter openRequestListener(OpenAccountEventListener openAccountEventListener) {
+        return new MessageListenerAdapter(openAccountEventListener);
+    }
+
+    @Bean
     ChannelTopic followerTopic() {
         return new ChannelTopic(followerChannelName);
     }
@@ -62,12 +72,18 @@ public class RedisConfig {
     }
 
     @Bean
+    ChannelTopic openAccountTopic() {
+        return new ChannelTopic(openAccountChannelName);
+    }
+
+    @Bean
     RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener) {
         RedisMessageListenerContainer container
                 = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(followerListener, followerTopic());
         container.addMessageListener(createRequestListener(createRequestEventListener), createRequestTopic());
+        container.addMessageListener(openRequestListener(openAccountEventListener), openAccountTopic());
         return container;
     }
 }
