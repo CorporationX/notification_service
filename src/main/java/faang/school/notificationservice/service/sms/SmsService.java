@@ -32,11 +32,6 @@ public class SmsService implements NotificationService {
     }
 
     @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.SMS;
-    }
-
-    @Override
     public void send(UserDto user, String text) {
         TextMessage message = new TextMessage(from, user.getPhone(), text);
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(message);
@@ -46,6 +41,11 @@ public class SmsService implements NotificationService {
         } else {
             log.info("Message failed with error: {}", response.getMessages().get(0).getErrorText());
         }
+    }
+
+    @Override
+    public UserDto.PreferredContact getPreferredContact() {
+        return UserDto.PreferredContact.SMS;
     }
 
 }

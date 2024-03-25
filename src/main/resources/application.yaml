@@ -39,6 +39,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+  from: whatever
 
 project-service:
     host: localhost

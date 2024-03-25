@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.context.UserContext;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.MessageBuilder;
+import faang.school.notificationservice.message_builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,4 +57,6 @@ public abstract class AbstractEventListener<T> implements MessageListener {
                 .send(user, message);
         log.info("Notification successful send to user with ID - {}", user.getId());
     }
+
+    public abstract void onMessage(Message message, byte[] pattern);
 }

@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service;
+package faang.school.notificationservice.message_builder;
 
 import faang.school.notificationservice.dto.MentorshipOfferedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
