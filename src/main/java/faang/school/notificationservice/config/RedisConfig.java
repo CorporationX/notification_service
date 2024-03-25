@@ -1,6 +1,8 @@
 package faang.school.notificationservice.config;
 
-import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
+import faang.school.notificationservice.listener.FollowerEventListener;
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
+import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,11 +20,23 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
     @Value("${spring.data.redis.host}")
     private String redisHost;
+
     @Value("${spring.data.redis.port}")
     private int redisPort;
-    @Value("${spring.data.redis.channel.mentorship_offered_channel.name}")
-    private String mentorshipOfferedChannelName;
-    private final MentorshipOfferedEventListener mentorshipOfferedEventListener;
+
+    @Value("${spring.data.redis.channel.goal_completed}")
+    private String goalCompletedChannelName;
+
+    @Value("${spring.data.redis.channel.mentorship_accepted_channel}")
+    private String mentorshipAcceptedChannel;
+
+    @Value("${spring.data.redis.channel.follower}")
+    private String followerChannel;
+
+
+    private final GoalCompletedEventListener goalCompletedEventListener;
+    private final MentorshipAcceptedEventListener mentorshipAcceptedEventListener;
+    private final FollowerEventListener followerEventListener;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -40,20 +54,43 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter mentorshipOfferedMessageListener() {
-        return new MessageListenerAdapter(mentorshipOfferedEventListener);
+    ChannelTopic goalCompletedChannel() {
+        return new ChannelTopic(goalCompletedChannelName);
     }
 
     @Bean
-    ChannelTopic mentorshipOfferedTopic() {
-        return new ChannelTopic(mentorshipOfferedChannelName);
+    MessageListenerAdapter goalCompletedListener() {
+        return new MessageListenerAdapter(goalCompletedEventListener);
+    }
+
+    @Bean
+    ChannelTopic mentorshipAcceptedChannel() {
+        return new ChannelTopic(mentorshipAcceptedChannel);
+    }
+
+    @Bean
+    ChannelTopic followerTopic() {
+        return new ChannelTopic(followerChannel);
+    }
+
+
+    @Bean
+    MessageListenerAdapter followerListener() {
+        return new MessageListenerAdapter(followerEventListener);
+    }
+
+    @Bean
+    MessageListenerAdapter mentorshipAcceptedListener() {
+        return new MessageListenerAdapter(mentorshipAcceptedEventListener);
     }
 
     @Bean
     RedisMessageListenerContainer redisContainer() {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(mentorshipOfferedMessageListener(), mentorshipOfferedTopic());
+        container.addMessageListener(goalCompletedListener(), goalCompletedChannel());
+        container.addMessageListener(mentorshipAcceptedListener(), mentorshipAcceptedChannel());
+        container.addMessageListener(followerListener(), followerTopic());
         return container;
     }
 }

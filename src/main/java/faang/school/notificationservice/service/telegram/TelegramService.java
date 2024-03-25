@@ -1,31 +1,28 @@
 package faang.school.notificationservice.service.telegram;
 
+import faang.school.notificationservice.dto.PreferredContact;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.entity.TelegramUser;
-import faang.school.notificationservice.repository.TelegramUserRepository;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.exception.DataValidationException;
+import faang.school.notificationservice.repository.TelegramIdRepository;
+import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class TelegramService implements NotificationService {
-    private final TelegramNotificationBot telegramNotificationBot;
-    private final TelegramUserRepository telegramUserRepository;
 
+    private final NotificationBot notificationBot;
+    private final TelegramIdRepository telegramIdRepository;
 
     @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.TELEGRAM;
+    public void send(UserDto user, String message) {
+        Long chatId = telegramIdRepository.findByUserId(user.getId()).orElseThrow(() -> new DataValidationException("Не зарегистрирован chat_id")).getChatId();
+        notificationBot.sendMessage(chatId, message);
     }
 
     @Override
-    public void send(UserDto userDto, String message) {
-        TelegramUser telegramUser = telegramUserRepository.findByUserId(userDto.getId())
-                .orElseThrow(() -> new RuntimeException("ID телеграмм-чата не найден"));
-        telegramNotificationBot.sendNotification(telegramUser.getChatId(), message);
-        log.info("Message sent successfully");
+    public PreferredContact getPreferredContact() {
+        return PreferredContact.TELEGRAM;
     }
 }

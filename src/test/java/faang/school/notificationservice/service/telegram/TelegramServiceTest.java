@@ -1,8 +1,11 @@
 package faang.school.notificationservice.service.telegram;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.entity.TelegramUser;
-import faang.school.notificationservice.repository.TelegramUserRepository;
+import faang.school.notificationservice.entity.TelegramId;
+import faang.school.notificationservice.exception.DataValidationException;
+import faang.school.notificationservice.repository.TelegramIdRepository;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,32 +14,48 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class TelegramServiceTest {
+public class TelegramServiceTest {
+
     @Mock
-    private TelegramNotificationBot telegramNotificationBot;
+    private NotificationBot notificationBot;
+
     @Mock
-    private TelegramUserRepository telegramUserRepository;
+    private TelegramIdRepository telegramIdRepository;
+
     @InjectMocks
     private TelegramService telegramService;
 
-    @Test
-    void testGetPreferredContact() {
-        assertEquals(UserDto.PreferredContact.TELEGRAM, telegramService.getPreferredContact());
+    private UserDto user;
+    private final Long chatId = 12345L;
+    private final String message = "Test message";
+
+    @BeforeEach
+    void setUp() {
+        user = new UserDto();
+        user.setId(1L);
+        user.setUsername("testUser");
     }
 
     @Test
-    void testSend() {
-        UserDto userDto = UserDto.builder().id(1L).build();
-        String message = "Test message";
-        TelegramUser telegramUser = new TelegramUser();
-        when(telegramUserRepository.findByUserId(anyLong())).thenReturn(Optional.of(telegramUser));
-        telegramService.send(userDto, message);
-        verify(telegramNotificationBot, times(1)).sendNotification(anyLong(), anyString());
+    void sendShouldUseNotificationBot() {
+        when(telegramIdRepository.findByUserId(user.getId())).thenReturn(Optional.of(new TelegramId(1L, 1L, chatId)));
+
+        telegramService.send(user, message);
+
+        verify(notificationBot).sendMessage(chatId, message);
+    }
+
+    @Test
+    void sendShouldThrowExceptionWhenChatIdNotFound() {
+        when(telegramIdRepository.findByUserId(anyLong())).thenReturn(Optional.empty());
+
+        DataValidationException dataValidationException = assertThrows(DataValidationException.class, () -> telegramService.send(user, message));
+
+        assertEquals("Не зарегистрирован chat_id", dataValidationException.getMessage());
     }
 }
