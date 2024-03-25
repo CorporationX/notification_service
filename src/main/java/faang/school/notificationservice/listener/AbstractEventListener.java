@@ -1,5 +1,6 @@
 package faang.school.notificationservice.listener;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.context.UserContext;
@@ -9,6 +10,7 @@ import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,7 +21,7 @@ import java.util.function.Consumer;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public abstract class AbstractEventListener<T> {
+public abstract class AbstractEventListener<T> implements MessageListener {
 
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
@@ -55,5 +57,4 @@ public abstract class AbstractEventListener<T> {
                 .send(user, message);
         log.info("Notification successful send to user with ID - {}", user.getId());
     }
-
 }
