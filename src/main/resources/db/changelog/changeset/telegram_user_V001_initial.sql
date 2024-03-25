@@ -1,5 +1,0 @@
-CREATE TABLE telegram_user(
-    id      BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY UNIQUE,
-    chat_id BIGINT NOT NULL,
-    user_id BIGINT NOT NULL
-);
