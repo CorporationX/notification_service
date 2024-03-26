@@ -7,8 +7,9 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         mentorship_accepted_channel: mentorship_accepted_channel
-
+        mentorship_offered_channel: mentorship_offered_channel
         goal_completed: goal_completed_channel
+
 
   datasource:
     driver-class-name: org.postgresql.Driver
