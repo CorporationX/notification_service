@@ -2,6 +2,7 @@ package faang.school.notificationservice.message_builder;
 
 import faang.school.notificationservice.dto.CommentEventDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -11,16 +12,17 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class CommentMessageBuilder implements MessageBuilder<CommentEventDto> {
 
+    @Autowired
     private final MessageSource messageSource;
 
     @Override
-    public String getMessage(Locale locale, CommentEventDto event) {
+    public String buildMessage(CommentEventDto eventType, Locale locale) {
         return messageSource.getMessage("comment.new",
-                new Object[]{event.getPostId(), event.getContent()}, locale);
+                new Object[]{eventType.getPostId(), eventType.getContent()}, locale);
     }
 
     @Override
-    public Class<?> getBuilderType() {
+    public Class<?> supportsEventType() {
         return CommentEventDto.class;
     }
 }

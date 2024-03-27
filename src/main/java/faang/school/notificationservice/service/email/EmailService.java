@@ -1,6 +1,7 @@
-package faang.school.notificationservice.service;
+package faang.school.notificationservice.service.email;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -11,17 +12,18 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailService implements NotificationService {
 
-    private final JavaMailSender javaMailSender;
+    private final JavaMailSender mailSender;
     @Value("${spring.mail.username}")
     private String senderMail;
 
-    public void sendMail(String receiver, String subject, String text) {
+    @Override
+    public void send(UserDto user, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(senderMail);
-        message.setTo(receiver);
-        message.setSubject(subject);
+        message.setTo(user.getEmail());
+        message.setSubject("CorporationX");
         message.setText(text);
-        javaMailSender.send(message);
+        mailSender.send(message);
     }
 
     @Override
@@ -29,9 +31,4 @@ public class EmailService implements NotificationService {
         return UserDto.PreferredContact.EMAIL;
     }
 
-
-    @Override
-    public void send(UserDto user, String message) {
-        sendMail(user.getEmail(), "Title", message);
-    }
 }
