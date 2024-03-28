@@ -1,11 +1,17 @@
 package faang.school.notificationservice.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Locale;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class UserDto {
     private long id;
     private String username;
@@ -17,6 +23,8 @@ public class UserDto {
     private LocalDateTime updatedAt;
 
     public enum PreferredContact {
-        EMAIL, PHONE, TELEGRAM
+        EMAIL,
+        SMS,
+        TELEGRAM
     }
 }

@@ -9,4 +9,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface UserServiceClient {
     @GetMapping("/{id}/utility")
     UserDto getUserUtility(@PathVariable long id);
+
+    @GetMapping("/users/{id}")
+    UserDto getUser(@PathVariable long id);
+
+    @GetMapping("/users/{username}")
+    UserDto getUserByUsername(@PathVariable String username);
+
+    @GetMapping("/{id}/exists")
+    boolean existsUserById (@PathVariable long id);
 }
