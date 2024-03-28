@@ -1,6 +1,6 @@
-package faang.school.notificationservice.service.telegram;
+package faang.school.notificationservice.service.notification.telegram;
 
-import faang.school.notificationservice.service.telegram.command.Command;
+import faang.school.notificationservice.service.notification.telegram.command.Command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

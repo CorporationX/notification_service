@@ -13,7 +13,7 @@ public class ProfileViewMessageBuilder implements MessageBuilder<ProfileViewEven
     private final MessageSource messageSource;
     @Override
     public String buildMessage(ProfileViewEvent event, Locale locale) {
-        return messageSource.getMessage("follower.new", new Object[]{}, locale);
+        return messageSource.getMessage("profile.viewed", new Object[]{}, locale);
     }
 
     @Override

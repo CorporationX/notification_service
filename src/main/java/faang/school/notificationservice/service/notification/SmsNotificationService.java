@@ -12,12 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class SmsNotificationService implements NotificationService {
-
-    @Override
-    public void send(UserDto user, String message) {
-        System.out.println(message);
-    }
-    /*@Value("${vonage.api.key}")
+    @Value("${vonage.api.key}")
     private String apiKey;
     @Value("${vonage.api.secret}")
     private String apiSecret;
@@ -46,7 +41,7 @@ public class SmsNotificationService implements NotificationService {
         } else {
             log.warn("Message failed with error: " + response.getMessages().get(0).getErrorText());
         }
-    }*/
+    }
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {

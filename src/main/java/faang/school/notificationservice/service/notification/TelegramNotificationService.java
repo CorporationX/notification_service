@@ -1,8 +1,9 @@
 package faang.school.notificationservice.service.notification;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.telegram.TelegramAccountService;
-import faang.school.notificationservice.service.telegram.TelegramBotService;
+import faang.school.notificationservice.service.notification.NotificationService;
+import faang.school.notificationservice.service.notification.telegram.TelegramAccountService;
+import faang.school.notificationservice.service.notification.telegram.TelegramBotService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

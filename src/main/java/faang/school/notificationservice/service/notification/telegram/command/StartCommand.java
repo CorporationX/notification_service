@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.telegram.command;
+package faang.school.notificationservice.service.notification.telegram.command;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

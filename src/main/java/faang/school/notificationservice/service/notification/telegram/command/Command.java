@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.telegram.command;
+package faang.school.notificationservice.service.notification.telegram.command;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;

@@ -1,6 +1,6 @@
 package faang.school.notificationservice.controller;
 
-import faang.school.notificationservice.service.telegram.TelegramAccountService;
+import faang.school.notificationservice.service.notification.telegram.TelegramAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

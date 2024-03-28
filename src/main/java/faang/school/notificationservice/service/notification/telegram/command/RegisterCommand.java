@@ -1,8 +1,8 @@
-package faang.school.notificationservice.service.telegram.command;
+package faang.school.notificationservice.service.notification.telegram.command;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.entity.TelegramAccount;
-import faang.school.notificationservice.service.telegram.TelegramAccountService;
+import faang.school.notificationservice.service.notification.telegram.TelegramAccountService;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
