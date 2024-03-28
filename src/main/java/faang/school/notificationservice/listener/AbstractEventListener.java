@@ -12,6 +12,7 @@ import org.springframework.data.redis.connection.MessageListener;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,23 +23,31 @@ public abstract class AbstractEventListener<Event> implements MessageListener {
     private final UserServiceClient userServiceClient;
 
     public void notify(Message message, Class<Event> type) {
+        Event event = readValue(message, type);
+        UserDto receiver = getReceiver(event);
+        String textMessage = getMessage(event, receiver.getLocale());
+        sendMessage(receiver, textMessage);
+    }
+
+    protected Event readValue(Message message, Class<Event> type) {
         try {
-            Event event = objectMapper.readValue(message.getBody(), type);
-            buildAndSendMessage(event);
+            return objectMapper.readValue(message.getBody(), type);
         } catch (IOException e) {
             log.error("IOException trying read value from json to event {}", type);
             throw new RuntimeException(e);
         }
     }
 
-    protected void buildAndSendMessage(Event event) {
+    protected String getMessage(Event event, Locale locale) {
+        String textMessage = messageBuilder.buildMessage(event, locale);
+        log.debug("Message built successfully {}", textMessage);
+        return textMessage;
+    }
+
+    protected UserDto getReceiver(Event event) {
         UserDto receiverUserDto = userServiceClient.getUserUtility(messageBuilder.getReceiverId(event));
         log.debug("Receiver found with user id = {}", receiverUserDto.getId());
-
-        String textMessage = messageBuilder.buildMessage(event, receiverUserDto.getLocale());
-        log.debug("Message built successfully {}", textMessage);
-
-        sendMessage(receiverUserDto, textMessage);
+        return receiverUserDto;
     }
 
     protected void sendMessage(UserDto receiverUserDto, String textMessage) {

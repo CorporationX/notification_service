@@ -26,11 +26,12 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channels:
+      channel:
         follower: follower_channel
         achievement: achievement_channel
-        profile_view_channel:
-          name: profile_view_channel
+        profile_view: profile_view_channel
+        comment: comment_channel
+        mentorship_offered: mentorship_offered_channel
 
   mail:
     host: smtp.gmail.com
@@ -71,7 +72,6 @@ telegram:
     start: /start
     register: /register
     confirm: /send
-  start-message:
 
 project-service:
   host: localhost

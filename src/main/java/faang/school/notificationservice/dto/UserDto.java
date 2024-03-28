@@ -1,5 +1,6 @@
 package faang.school.notificationservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +10,9 @@ import java.time.LocalDateTime;
 import java.util.Locale;
 
 @Data
-@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UserDto {
     private long id;

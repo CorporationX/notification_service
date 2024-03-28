@@ -10,7 +10,7 @@ public interface UserServiceClient {
     @GetMapping("/{id}/utility")
     UserDto getUserUtility(@PathVariable long id);
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/api/v1/users/{id}")
     UserDto getUser(@PathVariable long id);
 
     @GetMapping("/users/{username}")
