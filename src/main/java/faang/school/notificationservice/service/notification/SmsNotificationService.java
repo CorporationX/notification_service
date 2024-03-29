@@ -5,41 +5,33 @@ import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.dto.UserDto;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class SmsNotificationService implements NotificationService {
-    @Value("${vonage.api.key}")
-    private String apiKey;
-    @Value("${vonage.api.secret}")
-    private String apiSecret;
+    private final VonageClient vonageClient;
     @Value("${vonage.api.number}")
     private String appPhoneNumber;
 
     @Override
-    public void send(UserDto user, String message) {
-        VonageClient client = VonageClient.builder()
-                .apiKey(apiKey)
-                .apiSecret(apiSecret)
-                .build();
-
+    public void send(UserDto user, String text) {
         String userPhoneNumber = user.getPhone();
 
-        TextMessage msg = new TextMessage(
-                appPhoneNumber,
-                userPhoneNumber,
-                message
-        );
-
-        SmsSubmissionResponse response = client.getSmsClient().submitMessage(msg);
+        TextMessage message = new TextMessage(appPhoneNumber, userPhoneNumber, text);
+        SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(message);
 
         if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
-            log.info("Message sent successfully to number {} with msg {}.", userPhoneNumber, message);
+            log.info("Message sent successfully to number {} with msg {}.",
+                    userPhoneNumber,
+                    response.getMessages().get(0));
         } else {
-            log.warn("Message failed with error: " + response.getMessages().get(0).getErrorText());
+            log.info("Message failed with error: {}", response.getMessages().get(0).getErrorText());
         }
     }
 

@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service.email;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.service.notification.EmailNotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.verify;
 class EmailServiceTest {
 
     @InjectMocks
-    private EmailService emailService;
+    private EmailNotificationService emailService;
     @Mock
     private JavaMailSender mailSender;
     UserDto user;

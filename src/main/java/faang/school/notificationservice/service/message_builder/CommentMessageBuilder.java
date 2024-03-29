@@ -1,4 +1,4 @@
-package faang.school.notificationservice.message_builder;
+package faang.school.notificationservice.service.message_builder;
 
 import faang.school.notificationservice.dto.CommentEventDto;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +16,13 @@ public class CommentMessageBuilder implements MessageBuilder<CommentEventDto> {
     private final MessageSource messageSource;
 
     @Override
-    public String buildMessage(CommentEventDto eventType, Locale locale) {
+    public String buildMessage(CommentEventDto event, Locale locale) {
         return messageSource.getMessage("comment.new",
-                new Object[]{eventType.getPostId(), eventType.getContent()}, locale);
+                new Object[]{event.getPostId(), event.getContent()}, locale);
     }
 
     @Override
-    public Class<?> supportsEventType() {
-        return CommentEventDto.class;
+    public long getReceiverId(CommentEventDto event) {
+        return event.getAuthorPostId();
     }
 }
