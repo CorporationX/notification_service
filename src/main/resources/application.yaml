@@ -39,6 +39,10 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
+tg-bot:
+  name: FAANG_CorpX_bot
+  token: 6602626214:AAFI0WmCbQMEAe-i3yAZLJsDvi8ujnpZAdw
+
 project-service:
     host: localhost
     port: 8082
