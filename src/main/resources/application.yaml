@@ -4,9 +4,10 @@ spring:
       port: 6379
       host: localhost
       channel:
-        mentorship_offered: mentorship_offered_channel
         follower: follower_channel
         achievement: achievement_channel
+        comment: comment_channel
+        mentorship_offered: mentorship_offered_channel
 
   mail:
     host: smtp.gmail.com
@@ -38,6 +39,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+  from: whatever
 
 tg-bot:
   name: FAANG_CorpX_bot
