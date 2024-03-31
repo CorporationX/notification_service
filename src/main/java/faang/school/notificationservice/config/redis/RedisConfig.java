@@ -26,7 +26,6 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.comment")
     private String commentChannel;
 
-
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
@@ -63,6 +62,4 @@ public class RedisConfig {
 
         return container;
     }
-
-
 }
