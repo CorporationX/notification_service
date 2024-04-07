@@ -18,12 +18,12 @@ public class RecommendationRequestMessageBuilder implements MessageBuilder<Recom
 
     @Override
     public String buildMessage(RecommendationRequestEvent eventType, Locale locale) {
-        UserDto follower = userServiceClient.getUser(eventType.getAuthorId());
-        return messageSource.getMessage("follower.new", new Object[]{follower.getUsername()}, locale);
+        UserDto recommendationRequest = userServiceClient.getUser(eventType.getAuthorId());
+        return messageSource.getMessage("recommendationRequest.new", new Object[]{recommendationRequest.getUsername()}, locale);
     }
 
     @Override
     public Class<?> supportsEventType() {
-        return FollowerEvent.class;
+        return RecommendationRequestEvent.class;
     }
 }
