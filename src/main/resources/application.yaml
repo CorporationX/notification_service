@@ -1,4 +1,27 @@
 spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        type:
+          UUID: org.hibernate.type.PostgresUUIDType
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+
   data:
     redis:
       port: 6379
@@ -6,6 +29,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        profile_view: profile_view_channel
         comment: comment_channel
         mentorship_offered: mentorship_offered_channel
 
@@ -37,17 +61,25 @@ logging:
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: whatever
-    secret: whatever
-  from: whatever
+    key: 8e307551
+    secret: e45AhrXMvj0mHqsl
+    number: 18723108864
+
+telegram:
+  bot-username: CorpX_FAANG_bot
+  bot-token: 7085595326:AAF9xqBFGVZ2iQqj6AYKxS1YocVxjf8jGcs
+  command:
+    start: /start
+    register: /register
+    confirm: /send
 
 tg-bot:
   name: FAANG_CorpX_bot
   token: 6602626214:AAFI0WmCbQMEAe-i3yAZLJsDvi8ujnpZAdw
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080

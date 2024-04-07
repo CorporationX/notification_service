@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -22,10 +23,13 @@ public class UserDto {
     private String email;
     private String phone;
     private PreferredContact preference;
+    private Locale locale;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public enum PreferredContact {
-        EMAIL, SMS, TELEGRAM
+        EMAIL,
+        SMS,
+        TELEGRAM
     }
 }

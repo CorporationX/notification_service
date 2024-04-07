@@ -30,10 +30,21 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     /**
+     * Vonage
+     */
+    implementation("com.vonage:client:6.0.0")
+
+    /**
      * Database
      */
+    implementation("org.liquibase:liquibase-core")
     implementation("redis.clients:jedis:4.3.2")
     runtimeOnly("org.postgresql:postgresql")
+
+    /**
+     * Telegram Bot
+     */
+    implementation("org.telegram:telegrambots:6.9.7.1")
 
     /**
      * Utils & Logging

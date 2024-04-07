@@ -1,7 +1,6 @@
-package faang.school.notificationservice.service.email;
+package faang.school.notificationservice.service.notification;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class EmailService implements NotificationService {
+public class EmailNotificationService implements NotificationService {
 
     private final JavaMailSender mailSender;
     @Value("${spring.mail.username}")

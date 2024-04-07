@@ -1,7 +1,7 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.MentorshipOfferedEvent;
-import faang.school.notificationservice.message_builder.MentorshipRequestMessageBuilder;
+import faang.school.notificationservice.service.message_builder.MentorshipRequestMessageBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
