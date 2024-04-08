@@ -1,6 +1,5 @@
 package faang.school.notificationservice.config.context;
 
-import faang.school.notificationservice.listener.CreateRequestEventListener;
 import faang.school.notificationservice.listener.FollowerEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +14,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @RequiredArgsConstructor
 public class RedisConfig {
-    private final CreateRequestEventListener createRequestEventListener;
 
     @Value("${spring.data.redis.host}")
     private String redisHost;
@@ -23,8 +21,8 @@ public class RedisConfig {
     private int redisPort;
     @Value("${spring.data.redis.channel.follower}")
     private String followerChannelName;
-    @Value("${spring.data.redis.channel.create_request}")
-    private String createRequestChannelName;
+    @Value("${spring.data.redis.channel.recommendationRequest}")
+    private String recommendationRequestedChannelName;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -47,8 +45,8 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter createRequestListener(CreateRequestEventListener createRequestEventListener) {
-        return new MessageListenerAdapter(createRequestEventListener);
+    MessageListenerAdapter recommendationRequestedListener(FollowerEventListener recommendationRequestedEventListener) {
+        return new MessageListenerAdapter(recommendationRequestedEventListener);
     }
 
     @Bean
@@ -57,17 +55,18 @@ public class RedisConfig {
     }
 
     @Bean
-    ChannelTopic createRequestTopic() {
-        return new ChannelTopic(createRequestChannelName);
+    ChannelTopic recommendationRequestedTopic() {
+        return new ChannelTopic(recommendationRequestedChannelName);
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener) {
+    RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener,
+                                                 MessageListenerAdapter recommendationRequestedListener) {
         RedisMessageListenerContainer container
                 = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(followerListener, followerTopic());
-        container.addMessageListener(createRequestListener(createRequestEventListener), createRequestTopic());
+        container.addMessageListener(recommendationRequestedListener, recommendationRequestedTopic());
         return container;
     }
 }
