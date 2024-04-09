@@ -7,6 +7,8 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         like_event: like_event_channel
+        recommendationRequest: recommendationRequest_chanel
+        create_request: create_request
 
   mail:
     host: smtp.gmail.com
