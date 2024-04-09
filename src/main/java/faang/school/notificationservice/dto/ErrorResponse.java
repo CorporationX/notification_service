@@ -1,4 +1,4 @@
-package faang.school.notificationservice.exception.handler;
+package faang.school.notificationservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
