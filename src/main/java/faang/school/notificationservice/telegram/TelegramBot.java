@@ -1,6 +1,7 @@
 package faang.school.notificationservice.telegram;
 
-import faang.school.notificationservice.exception.TelegramInteractionException;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -10,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+@Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
@@ -19,16 +21,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     public TelegramBot(@Value("${telegram-bot.token}")
                        String apiToken) {
         super(apiToken);
-        TelegramBotsApi botsApi = null;
+    }
+
+    @PostConstruct
+    public void init() {
         try {
-            botsApi = new TelegramBotsApi(DefaultBotSession.class);
-        } catch (TelegramApiException e) {
-            throw new TelegramInteractionException(e.getMessage());
-        }
-        try {
+            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(this);
         } catch (TelegramApiException e) {
-            throw new TelegramInteractionException(e.getMessage());
+            log.error("TelegramApiException", e);
         }
     }
 
@@ -47,7 +48,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            throw new TelegramInteractionException(e.getMessage());
+            log.error("TelegramApiException", e);
         }
     }
 }
