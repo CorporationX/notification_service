@@ -22,7 +22,9 @@ public abstract class AbstractEventListener<T> {
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
-                .ifPresent(service -> service.send(user, message));
+                .ifPresentOrElse(service -> service.send(user, message), () -> {
+                    throw new IllegalStateException("No notification service found for " + user.getPreference());
+                });
     }
 
     protected String getMessage(T event, Locale locale) {
