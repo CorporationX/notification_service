@@ -51,6 +51,12 @@ dependencies {
     testImplementation("org.testcontainers:postgresql")
 
     /**
+     * Telegram
+     */
+    implementation ("org.telegram:telegrambots:6.8.0")
+    implementation ("io.lettuce:lettuce-core:6.3.1.RELEASE")
+
+    /**
      * Tests
      */
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")

@@ -9,6 +9,11 @@ spring:
         recommendationRequest: recommendationRequest_chanel
         create_request: create_request
 
+  telegram:
+    botName: giveMessage_bot
+    botToken: 7156554211:AAHQnjCcKQoShfxEB4TsAU1piUrWxyN2_1s
+
+
   mail:
     host: smtp.gmail.com
     port: 587
