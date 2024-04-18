@@ -23,7 +23,7 @@ public class FollowerEventListener extends AbstractEventListener<FollowerEvent> 
     }
 
     @Override
-    protected void publishMessage(FollowerEvent event) {
+    protected void sendSpecifiedNotification(FollowerEvent event) {
         sendNotification(event.getFolloweeId(), getMessage(event, Locale.ENGLISH));
     }
 }

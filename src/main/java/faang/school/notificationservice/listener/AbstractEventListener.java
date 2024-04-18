@@ -24,7 +24,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     protected final List<MessageBuilder<T>> messageBuilders;
     protected final Class<T> eventType;
 
-    protected abstract void publishMessage(T event);
+    protected abstract void sendSpecifiedNotification(T event);
 
     protected void sendNotification(long userId, String message) {
         UserDto user = userServiceClient.getUser(userId);
@@ -48,7 +48,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
         try {
             T event = objectMapper.readValue(message.getBody(), eventType);
-            publishMessage(event);
+            sendSpecifiedNotification(event);
         } catch (IOException e) {
             log.error("IOException was thrown", e);
             throw new SerializationException("Failed to deserialized a message", e);
