@@ -1,5 +1,6 @@
 package faang.school.notificationservice.listener;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messagebuilder.MessageBuilder;
@@ -10,13 +11,12 @@ import java.util.List;
 import java.util.Locale;
 
 @RequiredArgsConstructor
-public abstract class AbstractKafkaEventListener<T> {
+public abstract class AbstractEventListener<T> {
 
     protected final MessageBuilder<T> messageBuilder;
     protected final List<NotificationService> notificationServices;
     protected final UserServiceClient userServiceClient;
-
-    public abstract void listen(T event);
+    protected final ObjectMapper objectMapper;
 
     protected String getMessage(T event, Locale locale) {
         return messageBuilder.buildMessage(event, locale);

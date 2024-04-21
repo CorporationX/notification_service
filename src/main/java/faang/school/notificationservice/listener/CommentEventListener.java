@@ -1,5 +1,6 @@
 package faang.school.notificationservice.listener;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.event.CommentEvent;
 import faang.school.notificationservice.messagebuilder.MessageBuilder;
@@ -13,10 +14,10 @@ import java.util.Locale;
 
 @Slf4j
 @Component
-public class CommentEventListener extends AbstractKafkaEventListener<CommentEvent> {
+public class CommentEventListener extends AbstractEventListener<CommentEvent> {
 
-    public CommentEventListener(MessageBuilder<CommentEvent> messageBuilder, List<NotificationService> notificationServices, UserServiceClient userServiceClient) {
-        super(messageBuilder, notificationServices, userServiceClient);
+    public CommentEventListener(MessageBuilder<CommentEvent> messageBuilder, List<NotificationService> notificationServices, UserServiceClient userServiceClient, ObjectMapper objectMapper) {
+        super(messageBuilder, notificationServices, userServiceClient, objectMapper);
     }
 
     @KafkaListener(topics = "${spring.data.kafka.channels.comment-channel.name}", groupId = "${spring.data.kafka.group-id}")
