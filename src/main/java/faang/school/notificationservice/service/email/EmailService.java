@@ -6,17 +6,23 @@ import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EmailService implements NotificationService {
 
-    @Autowired
+
     private JavaMailSender javaMailSender;
+
+    @Override
+    public UserDto.PreferredContact getPreferredContact() {
+        return UserDto.PreferredContact.EMAIL;
+    }
 
     @Override
     public void send(UserDto user, String message) {
@@ -30,10 +36,5 @@ public class EmailService implements NotificationService {
             log.error("Error sending message");
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return null;
     }
 }
