@@ -10,4 +10,7 @@ public interface UserServiceClient {
 
     @GetMapping("/users/{id}")
     UserDto getUser(@PathVariable long id);
+
+    @GetMapping("/users/notification/{id}")
+    UserDto getNotificationUser(@PathVariable long id);
 }
