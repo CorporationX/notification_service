@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.redis;
+package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listeners.LikeEventListener;
 import lombok.extern.slf4j.Slf4j;

@@ -24,7 +24,8 @@ public class LikeEventListener extends AbstractListener<LikeEvent> {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, LikeEvent.class, likeEvent -> {
-            String textMessage = getMessage(likeEvent, Locale.UK);
+            String textMessage = getMessage(likeEvent, Locale.UK); // TODO: Тут надо бы по хорошему брать с профиля пользователя локаль,
+            // а это надо в юзер сервис идти + в таблице добавить столбец для локали
             sendNotification(likeEvent.getAuthorLikeId(), textMessage);
         });
     }
