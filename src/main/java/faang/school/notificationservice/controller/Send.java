@@ -20,6 +20,7 @@ public class Send {
     public void send() {
         UserDto userDto = new UserDto();
         userDto.setEmail("pl4stmass@yandex.ru");
+        userDto.setPreference(UserDto.PreferredContact.EMAIL);
         emailService.send(userDto, "asfafasf");
     }
 }
