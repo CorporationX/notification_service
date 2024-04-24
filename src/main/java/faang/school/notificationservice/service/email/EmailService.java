@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailService implements NotificationService {
 
-
     private JavaMailSender javaMailSender;
     @Value("${spring.mail.username}")
     private String sendMail;
@@ -34,7 +33,7 @@ public class EmailService implements NotificationService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom(sendMail);
         mailMessage.setTo(user.getEmail());
-        mailMessage.setSubject("Notify from Corporation X");
+        mailMessage.setSubject("Notification");
         mailMessage.setText(message);
         javaMailSender.send(mailMessage);
     }
