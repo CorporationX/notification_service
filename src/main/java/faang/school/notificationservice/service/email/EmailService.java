@@ -4,7 +4,6 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,8 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class EmailService implements NotificationService {
-    @Autowired
-    private JavaMailSender javaMailSender;
+
+    private final JavaMailSender javaMailSender;
     @Value("${spring.mail.username}")
     private String sendMail;
 
@@ -29,8 +28,10 @@ public class EmailService implements NotificationService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom(sendMail);
         mailMessage.setTo(user.getEmail());
-        mailMessage.setSubject("ВЫ ВЫГРАЛИ 1000000$");
+        mailMessage.setSubject("Notification");
         mailMessage.setText(message);
+        log.info("Message create");
         javaMailSender.send(mailMessage);
+        log.info("Message send");
     }
 }
