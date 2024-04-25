@@ -17,13 +17,14 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 @RequiredArgsConstructor
-@Slf4j
+    @Slf4j
 public abstract class AbstractListener<T> implements MessageListener {
 
     private final ObjectMapper objectMapper;
-    private final List<NotificationService> notificationServicesList;
-    protected final List<MessageBuilder<T>> messageBuildersList;
     protected final UserServiceClient userServiceClient;
+    private final List<NotificationService> notificationServicesList;
+    protected final List<MessageBuilder<Class<?>>> messageBuildersList;
+
 
     protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
         try {
@@ -35,9 +36,9 @@ public abstract class AbstractListener<T> implements MessageListener {
         }
     }
 
-    protected String getMessage(T event, Locale locale) {
+    protected String getMessage(Class<?> event, Locale locale) {
         return messageBuildersList.stream()
-                .filter(messageBuilder -> messageBuilder.supportEventType() == event.getClass())
+                .filter(messageBuilder -> messageBuilder.supportsEventType(event))
                 .findFirst()
                 .map(messageBuilder -> messageBuilder.buildMessage(event, locale))
                 .orElseThrow(() -> new IllegalArgumentException("No message constructor was found for the event: "

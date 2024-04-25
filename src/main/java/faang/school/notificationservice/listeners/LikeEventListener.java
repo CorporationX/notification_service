@@ -15,17 +15,16 @@ import java.util.Locale;
 public class LikeEventListener extends AbstractListener<LikeEvent> {
 
     public LikeEventListener(ObjectMapper objectMapper,
+                             UserServiceClient userServiceClient,
                              List<NotificationService> notificationServicesList,
-                             List<MessageBuilder<LikeEvent>> messageBuildersList,
-                             UserServiceClient userServiceClient) {
-        super(objectMapper, notificationServicesList, messageBuildersList, userServiceClient);
+                             List<MessageBuilder<Class<?>>> messageBuildersList) {
+        super(objectMapper, userServiceClient, notificationServicesList, messageBuildersList);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, LikeEvent.class, likeEvent -> {
-            String textMessage = getMessage(likeEvent, Locale.UK); // TODO: Тут надо бы по хорошему брать с профиля пользователя локаль,
-            // а это надо в юзер сервис идти + в таблице добавить столбец для локали
+            String textMessage = getMessage(likeEvent.getClass(), Locale.UK);
             sendNotification(likeEvent.getAuthorLikeId(), textMessage);
         });
     }
