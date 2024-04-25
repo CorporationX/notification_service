@@ -2,37 +2,42 @@ package faang.school.notificationservice.service.listener;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.EventStartEvent;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.service.NotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-@Service
-@Slf4j
-@RequiredArgsConstructor
-public class EventStartEventListener implements MessageListener {
-    private final ObjectMapper objectMapper;
+@Component
+public class EventStartEventListener extends AbstractEventListener<EventStartEvent> implements MessageListener {
 
+    @Autowired
+    public EventStartEventListener(ObjectMapper objectMapper,
+                                   UserServiceClient userServiceClient,
+                                   List<MessageBuilder<EventStartEvent>> messageBuilders,
+                                   List<NotificationService> notificationServices) {
+        super(objectMapper, userServiceClient, messageBuilders, notificationServices);
+    }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        EventStartEvent eventStartEvent;
+        ExecutorService service = Executors.newFixedThreadPool(4);
         try {
-
-           eventStartEvent = objectMapper.readValue( message.getBody(), EventStartEvent.class );
-
+            EventStartEvent event = objectMapper.readValue(message.getBody(), EventStartEvent.class);
+            System.out.println( "event.toString() = " + event.toString() );
+            List<Long> attendees = event.getAttendeeIds();
+            attendees.forEach(attendee -> service.submit(() -> notifyAttendees(attendee, getMessage(event, Locale.US))));
         } catch (IOException e) {
-            log.warn( "Unsuccessful mapping", e );
-            throw new RuntimeException( e );
+            throw new RuntimeException(e);
         }
-
-
-        log.info( "Data successfully passed to analyticsEventService" );
-
     }
 }
