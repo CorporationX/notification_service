@@ -1,5 +1,12 @@
 spring:
   data:
+    kafka:
+      port: 9092
+      host: localhost
+      group-id: "notification_service"
+      channels:
+        skill-channel:
+          name: "skill_event_channel"
     redis:
       port: 6379
       host: localhost
