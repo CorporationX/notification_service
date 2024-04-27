@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 @RequiredArgsConstructor
-    @Slf4j
+@Slf4j
 public abstract class AbstractListener<T> implements MessageListener {
 
     private final ObjectMapper objectMapper;

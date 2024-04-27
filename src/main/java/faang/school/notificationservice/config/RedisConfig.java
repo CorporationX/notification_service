@@ -22,7 +22,7 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int port;
 
-    @Value("${spring.data.redis.channels.notification_of_like_channel.name}")
+    @Value("${spring.data.redis.channels.notification_like_channel.name}")
     private String notificationOfLikeTopic;
 
     @Bean
