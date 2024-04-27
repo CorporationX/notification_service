@@ -6,6 +6,13 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+    kafka:
+      port: 9092
+      host: localhost
+      group-id: notification_service
+      channels:
+        comment-channel:
+          name: comment_event_channel
 
   mail:
     host: smtp.gmail.com
