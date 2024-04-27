@@ -25,6 +25,10 @@ spring:
   messages:
     basename: messages
 
+telegram-bot:
+  name: CorpXTGBot
+  token: 6456953161:AAEC5LCCFF24dESs4RCbaSrpus9DALyL3zc
+
 server:
   port: 8083
 
@@ -39,8 +43,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
