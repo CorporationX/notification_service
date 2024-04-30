@@ -4,9 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messagebuilder.MessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.connection.MessageListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -14,7 +13,6 @@ import org.springframework.data.redis.serializer.SerializationException;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,8 +26,8 @@ public abstract class AbstractEventListener<T> implements MessageListener {
 
     protected abstract void sendSpecifiedNotification(T event);
 
-    protected String getMessage(T event, Locale locale) {
-        return messageBuilder.buildMessage(event, locale);
+    protected String getMessage(T event) {
+        return messageBuilder.buildMessage(event);
     }
 
     protected void sendNotification(long userId, String message) {

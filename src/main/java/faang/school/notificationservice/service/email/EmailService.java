@@ -1,7 +1,7 @@
 package faang.school.notificationservice.service.email;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
