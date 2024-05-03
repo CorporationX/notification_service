@@ -23,8 +23,6 @@ public class EventStartMessageBuilder implements MessageBuilder<EventStartEvent>
     public boolean supportsEventType(Class<?> eventType) {
         return eventType.equals(EventStartEvent.class);
     }
-
-
 }
 
 
