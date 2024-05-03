@@ -14,17 +14,17 @@ import java.util.Locale;
 @Component
 public class LikeEventListener extends AbstractListener<LikeEvent> {
 
-    public LikeEventListener(ObjectMapper objectMapper,
-                             UserServiceClient userServiceClient,
-                             List<NotificationService> notificationServicesList,
-                             List<MessageBuilder<Class<?>>> messageBuildersList) {
-        super(objectMapper, userServiceClient, notificationServicesList, messageBuildersList);
+    protected LikeEventListener(ObjectMapper objectMapper,
+                                UserServiceClient userServiceClient,
+                                MessageBuilder<LikeEvent> messageBuilder,
+                                List<NotificationService> notificationServicesList) {
+        super(objectMapper, userServiceClient, messageBuilder, notificationServicesList);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, LikeEvent.class, likeEvent -> {
-            String textMessage = getMessage(likeEvent.getClass(), Locale.UK);
+            String textMessage = getMessage(likeEvent, Locale.ENGLISH);
             sendNotification(likeEvent.getAuthorLikeId(), textMessage);
         });
     }

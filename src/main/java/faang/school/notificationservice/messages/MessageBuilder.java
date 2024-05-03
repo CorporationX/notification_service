@@ -3,7 +3,7 @@ package faang.school.notificationservice.messages;
 import java.util.Locale;
 
 public interface MessageBuilder<T> {
+    Class<?> getEventType();
 
-    boolean supportsEventType(Class<?> eventType);
     String buildMessage(T event, Locale locale);
 }

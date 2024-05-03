@@ -52,9 +52,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(
-            MessageListenerAdapter likeEventAdapter
-    ) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter likeEventAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(likeEventAdapter, likeEventTopic());

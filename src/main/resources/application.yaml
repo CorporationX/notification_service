@@ -4,8 +4,6 @@ spring:
       port: 6379
       host: localhost
       channels:
-        follower: follower_channel
-        achievement: achievement_channel
         notification_of_like_channel:
           name: notification_like_channel
 
@@ -46,3 +44,7 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+likeEvent:
+  postCode: like_post.new
+  commentCode: like_comment.new

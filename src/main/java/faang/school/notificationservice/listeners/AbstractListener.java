@@ -22,9 +22,8 @@ public abstract class AbstractListener<T> implements MessageListener {
 
     private final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
+    protected final MessageBuilder<T> messageBuilder;
     private final List<NotificationService> notificationServicesList;
-    protected final List<MessageBuilder<Class<?>>> messageBuildersList;
-
 
     protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
         try {
@@ -36,13 +35,8 @@ public abstract class AbstractListener<T> implements MessageListener {
         }
     }
 
-    protected String getMessage(Class<?> event, Locale locale) {
-        return messageBuildersList.stream()
-                .filter(messageBuilder -> messageBuilder.supportsEventType(event))
-                .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event, locale))
-                .orElseThrow(() -> new IllegalArgumentException("No message constructor was found for the event: "
-                        + event.getClass().getName()));
+    protected String getMessage(T event, Locale locale) {
+        return messageBuilder.buildMessage(event, locale);
     }
 
     protected void sendNotification(Long userId, String message) {
