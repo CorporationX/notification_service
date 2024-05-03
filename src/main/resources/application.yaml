@@ -6,6 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+
     kafka:
       port: 9092
       host: localhost
@@ -17,8 +18,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: xapakupu2@gmail.com #https://www.baeldung.com/spring-email
-    password: sksulebbdwelsqoz #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: xapakupu2@gmail.com
+    password: sksulebbdwelsqoz
     properties:
       mail:
         smtp:
