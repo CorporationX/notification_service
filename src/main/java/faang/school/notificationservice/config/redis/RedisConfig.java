@@ -1,7 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.service.listener.EventStartEventListener;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,7 @@ public class RedisConfig {
     private String host;
     @Value("${spring.data.redis.port}")
     private int port;
-    @Value( "${spring.data.redis.channel.event-start-channel}" )
+    @Value( "${spring.data.redis.channel.event_start_channel}" )
     private  String eventStartChannel;
 
 
@@ -34,15 +33,15 @@ public class RedisConfig {
     }
 
     @Bean
-    ChannelTopic topic() {
+    ChannelTopic eventStartTopic() {
         return new ChannelTopic(eventStartChannel);
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter messageListener) {
+    RedisMessageListenerContainer redisEventStartContainer(MessageListenerAdapter messageListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
-        container.addMessageListener(messageListener, topic());
+        container.addMessageListener(messageListener, eventStartTopic());
         return container;
     }
 

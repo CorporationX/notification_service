@@ -19,6 +19,12 @@ public class EventStartMessageBuilder implements MessageBuilder<EventStartEvent>
         return messageSource.getMessage("event_start.new", event_id, locale);
     }
 
+    @Override
+    public boolean supportsEventType(Class<?> eventType) {
+        return eventType.equals(EventStartEvent.class);
+    }
+
+
 }
 
 

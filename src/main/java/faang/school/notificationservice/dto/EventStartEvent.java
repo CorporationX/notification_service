@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventStartEvent {
+public class EventStartEvent implements  Event{
 
     @NotNull
     long event_id;
