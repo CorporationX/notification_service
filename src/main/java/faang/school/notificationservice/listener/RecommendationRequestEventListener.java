@@ -6,6 +6,7 @@ import faang.school.notificationservice.dto.RecommendationRequestEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Component
+@Slf4j
 public class RecommendationRequestEventListener extends AbstractListenerNotification<RecommendationRequestEvent> implements MessageListener {
 
     public RecommendationRequestEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,

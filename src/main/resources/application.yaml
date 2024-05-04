@@ -11,8 +11,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: semenmigachev@yandex.ru #https://www.baeldung.com/spring-email
-    password: ltbrtbrbwvgbsngz #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: krivonosov.2000@gmail.com #https://www.baeldung.com/spring-email
+    password: tdtbgkogpstdcijy #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
         smtp:

@@ -19,7 +19,7 @@ public abstract class AbstractListenerNotification<T>{
 
     protected void sendNotification(Long id, String textMessage){
         UserDto user = userServiceClient.getUser(id);
-        notification.stream().filter(service -> service.getPreferredContact().equals(user.getPreference()))
+        notification.stream().filter(service -> service.getPreferredContact().equals(user.getContactPreference()))
                 .findFirst()
                 .ifPresent(service -> service.send(user, textMessage));
     }
