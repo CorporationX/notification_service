@@ -27,11 +27,11 @@ public class EmailService implements NotificationService {
         emailMessage.setSubject("CorporationXNotification");
         emailMessage.setText(message);
         emailSender.send(emailMessage);
-        log.info("Message send to user: {}",user.getId());
+        log.info("Message send to user: {}", user.getId());
     }
 
     @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.EMAIL;
+    public UserDto.ContactPreference getPreferredContact() {
+        return UserDto.ContactPreference.EMAIL;
     }
 }
