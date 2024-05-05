@@ -95,16 +95,16 @@ class LikeEventListenerTest {
         assertThrows(RuntimeException.class, () -> likeEventListener.handleEvent(message, LikeEvent.class, consumer));
     }
 
-//    @Test
-//    @DisplayName("Checking that the MessageBuilder exists and the method returns the expected message")
-//    public void getMessage_MessageBuilderExists() {
-//        when(messageBuilder.getEventType()).thenReturn(LikeEvent.class); //// TODO: Не понимаю почему тут не хочет возвращать LikeEvent.class
-//        when(messageBuilder.buildMessage(likeEventPost, locale)).thenReturn(textMessage);
-//
-//        String textMessage = likeEventListener.getMessage(likeEventPost, locale);
-//        assertEquals("Test", textMessage);
-//    }
-//
+    @Test
+    @DisplayName("Checking that the MessageBuilder exists and the method returns the expected message")
+    public void getMessage_MessageBuilderExists() {
+        //when(messageBuilder.getEventType()).thenReturn(LikeEvent.class); //// TODO: Не понимаю почему тут не хочет возвращать LikeEvent.class
+        when(messageBuilder.buildMessage(likeEventPost, locale)).thenReturn(textMessage);
+
+        String textMessage = likeEventListener.getMessage(likeEventPost, locale);
+        assertEquals("Test", textMessage);
+    }
+
 //    @Test
 //    @DisplayName("Checking that the message builder has not been found and the method throws an exception")
 //    public void getMessage_MessageBuilderNotFound_ThrowsException() {

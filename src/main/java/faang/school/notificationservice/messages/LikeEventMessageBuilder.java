@@ -25,7 +25,7 @@ public class LikeEventMessageBuilder implements MessageBuilder<LikeEvent> {
     private String commentCode;
 
     @Override
-    public Class<?> getEventType() {
+    public Class<LikeEvent> getEventType() {
         return LikeEvent.class;
     }
 
