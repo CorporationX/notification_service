@@ -3,9 +3,9 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
+      channels:
+        notification_of_like_channel:
+          name: notification_like_channel
 
   mail:
     host: smtp.gmail.com
@@ -44,3 +44,7 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+likeEvent:
+  postCode: like_post.new
+  commentCode: like_comment.new
