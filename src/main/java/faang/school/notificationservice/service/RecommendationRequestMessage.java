@@ -11,9 +11,10 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class RecommendationRequestMessage implements MessageBuilder<RecommendationRequestEvent>{
+public class RecommendationRequestMessage implements MessageBuilder<RecommendationRequestEvent> {
     private final MessageSource messageSource;
     private final UserServiceClient userServiceClient;
+
     @Override
     public String buildMessage(RecommendationRequestEvent eventType, Locale locale) {
         UserDto user = userServiceClient.getUser(eventType.getAuthorId());

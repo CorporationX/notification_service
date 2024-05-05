@@ -31,7 +31,6 @@ public class EmailConfig {
     private int writeTimeout;
 
 
-
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);
@@ -44,9 +43,9 @@ public class EmailConfig {
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", smtpAuth);
         props.put("mail.smtp.starttls.enable", starttls);
-        props.put("mail.smtp.starttls.connectiontimeout",connectionTimeout);
-        props.put("mail.smtp.starttls.timeout",timeout);
-        props.put("mail.smtp.starttls.writetimeout",writeTimeout);
+        props.put("mail.smtp.starttls.connectiontimeout", connectionTimeout);
+        props.put("mail.smtp.starttls.timeout", timeout);
+        props.put("mail.smtp.starttls.writetimeout", writeTimeout);
         return mailSender;
     }
 

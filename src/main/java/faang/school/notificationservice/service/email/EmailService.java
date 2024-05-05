@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class EmailService implements NotificationService {
-    @Autowired
     private final JavaMailSender mailSender;
     @Value("${spring.mail.username}")
     private String userName;
+
     @Override
     public void send(UserDto user, String message) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
