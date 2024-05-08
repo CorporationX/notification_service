@@ -23,7 +23,7 @@ public class RedisConfig {
     private int port;
 
     @Value("${spring.data.redis.channels.notification_like_channel.name}")
-    private String notificationOfLikeTopic;
+    private String notificationLikeTopic;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -48,7 +48,7 @@ public class RedisConfig {
 
     @Bean
     public ChannelTopic likeEventTopic() {
-        return new ChannelTopic(notificationOfLikeTopic);
+        return new ChannelTopic(notificationLikeTopic);
     }
 
     @Bean

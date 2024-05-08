@@ -4,7 +4,7 @@ spring:
       port: 6379
       host: localhost
       channels:
-        notification_of_like_channel:
+        notification_like_channel:
           name: notification_like_channel
 
   mail:
