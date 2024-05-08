@@ -6,6 +6,8 @@ spring:
       channels:
         notification_like_channel:
           name: notification_like_channel
+        comment_event_channel:
+          name: comment_event_channel
 
   mail:
     host: smtp.gmail.com
@@ -48,3 +50,6 @@ user-service:
 likeEvent:
   postCode: like_post.new
   commentCode: like_comment.new
+
+commentEvent:
+  comment: comment.new
