@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.context;
 
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
+import faang.school.notificationservice.listener.RecommendationRequestEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +24,11 @@ public class RedisConfig {
     private int port;
     @Value("${spring.data.redis.channel.mentorship_accepted_channel.name}")
     private String mentorshipAcceptedChannel;
+    @Value("${spring.data.redis.channel.recommendationRequest}")
+    private String recommendationRequestChannel;
 
     private final MentorshipAcceptedEventListener mentorshipAcceptedEventListener;
+    private final RecommendationRequestEventListener recommendationRequestEventListener;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -52,11 +56,22 @@ public class RedisConfig {
     }
 
     @Bean
+    public MessageListenerAdapter recommendationRequestListener() {
+        return new MessageListenerAdapter(recommendationRequestEventListener);
+    }
+
+    @Bean
+    public ChannelTopic recommendationRequestTopic() {
+        return new ChannelTopic(recommendationRequestChannel);
+    }
+
+    @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory redisConnectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
         container.addMessageListener(mentorshipAcceptedEventListenerAdapter()
                 , mentorshipAcceptedChannelTopic());
+        container.addMessageListener(recommendationRequestListener(), recommendationRequestTopic());
         return container;
     }
 

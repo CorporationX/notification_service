@@ -23,7 +23,12 @@ public class RecommendationRequestMessage implements MessageBuilder<Recommendati
     }
 
     @Override
-    public Class<RecommendationRequestEvent> supportsEventType() {
+    public long getRequestAuthor(RecommendationRequestEvent event) {
+        return event.getAuthorId();
+    }
+
+    @Override
+    public Class<RecommendationRequestEvent> supportEventType() {
         return RecommendationRequestEvent.class;
     }
 }

@@ -46,7 +46,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
 
     protected void sendNotification(long id, String messageText) {
         UserDto user = userServiceClient.getUser(id);
-        notificationService.stream().filter(service -> service.getPreferredContact() == (user.getPreferredContact()))
+        notificationService.stream().filter(service -> service.getPreferredContact() == (user.getContactPreference()))
                 .findFirst()
                 .ifPresent(service -> service.send(user, messageText));
     }
