@@ -28,14 +28,14 @@ public class RecommendationRequestMessageTest {
     @Test
     public void testSupporterRecommendationRequestEventClass() {
         RecommendationRequestEvent recommendationRequestEvent = new RecommendationRequestEvent(1L, 2L, 3L);
-        Class<RecommendationRequestEvent> recommendationRequestEventClass = recommendationRequestMessage.supportsEventType();
+        Class<RecommendationRequestEvent> recommendationRequestEventClass = recommendationRequestMessage.supportEventType();
         Assertions.assertEquals(recommendationRequestEvent.getClass(), recommendationRequestEventClass);
     }
 
     @Test
     public void testUnSupporterRecommendationRequestEventClass() {
         Object recommendationRequestEvent = new Object();
-        Class<RecommendationRequestEvent> recommendationRequestEventClass = recommendationRequestMessage.supportsEventType();
+        Class<RecommendationRequestEvent> recommendationRequestEventClass = recommendationRequestMessage.supportEventType();
         Assertions.assertNotEquals(recommendationRequestEvent.getClass(), recommendationRequestEventClass);
     }
 

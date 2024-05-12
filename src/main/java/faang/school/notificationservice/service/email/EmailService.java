@@ -10,23 +10,24 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
+@Service
 @Slf4j
 public class EmailService implements NotificationService {
-    private final JavaMailSender mailSender;
+    @Autowired
+    private final JavaMailSender emailSender;
     @Value("${spring.mail.username}")
-    private String userName;
+    private String username;
 
     @Override
     public void send(UserDto user, String message) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom(userName);
-        simpleMailMessage.setTo(user.getEmail());
-        simpleMailMessage.setSubject("Subject");
-        simpleMailMessage.setText(message);
-        mailSender.send(simpleMailMessage);
-        log.info("message send");
+        SimpleMailMessage emailMessage = new SimpleMailMessage();
+        emailMessage.setFrom(username);
+        emailMessage.setTo(user.getEmail());
+        emailMessage.setSubject("CorporationXNotification");
+        emailMessage.setText(message);
+        emailSender.send(emailMessage);
+        log.info("Message send to user: {}", user.getId());
     }
 
     @Override
