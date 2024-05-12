@@ -24,6 +24,6 @@ public class MentorshipAcceptedMessageBuilder implements MessageBuilder<Mentorsh
 
     @Override
     public long getRequestAuthor(MentorshipAcceptedEvent event) {
-        return event.getIdRequestAuthor();
+        return event.getRequestAuthorId();
     }
 }

@@ -15,7 +15,9 @@ import java.util.List;
 @Component
 public class MentorshipAcceptedEventListener extends AbstractEventListener<MentorshipAcceptedEvent> implements MessageListener {
 
-    public MentorshipAcceptedEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient, List<NotificationService> notificationService, MessageBuilder<MentorshipAcceptedEvent> messageBuilders) {
+    public MentorshipAcceptedEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
+                                           List<NotificationService> notificationService,
+                                           MessageBuilder<MentorshipAcceptedEvent> messageBuilders) {
         super(objectMapper, userServiceClient, notificationService, messageBuilders);
     }
 

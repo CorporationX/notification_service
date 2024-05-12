@@ -16,9 +16,9 @@ public class UserDto {
     private String username;
     private String email;
     private String phone;
-    private ContactPreference preferredContact;
+    private PreferredContact preferredContact;
 
-    public enum ContactPreference {
+    public enum PreferredContact {
         EMAIL, SMS, TELEGRAM
     }
 }

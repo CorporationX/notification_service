@@ -31,7 +31,7 @@ public class EmailService implements NotificationService {
     }
 
     @Override
-    public UserDto.ContactPreference getPreferredContact() {
-        return UserDto.ContactPreference.EMAIL;
+    public UserDto.PreferredContact getPreferredContact() {
+        return UserDto.PreferredContact.EMAIL;
     }
 }
