@@ -2,8 +2,9 @@ package faang.school.notificationservice.service.telegram.command;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.ContactDto;
-import faang.school.notificationservice.entity.TelegramProfiles;
+import faang.school.notificationservice.entity.TelegramProfile;
 import faang.school.notificationservice.service.telegram.TelegramProfileService;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -22,25 +23,34 @@ public class StartCommand extends Command {
     }
 
     @Override
-    public SendMessage message(long chatId, String userName) {
-        log.info("Executing command for chatId: {} with userName: {}", chatId, userName);
+    public SendMessage sendMessage(long chatId, String userName) {
+        log.info("Executing START command for chatId: {} with userName: {}", chatId, userName);
         String message;
 
-        if (telegramProfileService.existsByChatId(chatId)) {
+        if (telegramProfileService.existsByUserName(userName)) {
             message = messageSource.getMessage("telegram.start.already_registered", null, Locale.getDefault());
-        } else {
-            ContactDto contact = userServiceClient.getContact(userName);
-            TelegramProfiles telegramProfiles = createTelegramProfiles(chatId, userName, contact);
-            telegramProfilesService
-
+            return buildMessage(chatId, message);
         }
 
-        return null;
+        try {
+            ContactDto contact = userServiceClient.getContact(userName);
+
+            TelegramProfile telegramProfile = createTelegramProfiles(chatId, userName, contact);
+            telegramProfileService.save(telegramProfile);
+            log.info("Telegram profile is saved for the user: {}", userName);
+
+            message = messageSource.getMessage("telegram.start.registered", new String[]{userName}, defaultLocale);
+        } catch (FeignException exception) {
+            log.error("Error occurred while processing the user {}. Exception: {}", userName, exception.getMessage());
+            message = messageSource.getMessage("telegram.start.not_registered_corporationX", null, Locale.getDefault());
+        }
+
+        return buildMessage(chatId, message);
     }
 
-    public TelegramProfiles createTelegramProfiles(long chatId, String userName, ContactDto contact) {
+    public TelegramProfile createTelegramProfiles(long chatId, String userName, ContactDto contact) {
         log.info("Creating TelegramProfile with chatId {} userName {}", chatId, userName);
-        return TelegramProfiles.builder()
+        return TelegramProfile.builder()
                 .userId(contact.getUserId())
                 .userName(userName)
                 .chatId(chatId)

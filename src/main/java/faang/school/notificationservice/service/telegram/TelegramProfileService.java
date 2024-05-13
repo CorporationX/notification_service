@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service.telegram;
 
-import faang.school.notificationservice.entity.TelegramProfiles;
+import faang.school.notificationservice.entity.TelegramProfile;
 import faang.school.notificationservice.repository.TelegramProfilesRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +14,16 @@ public class TelegramProfileService {
     private final TelegramProfilesRepository telegramProfilesRepository;
 
     @Transactional
-    public void save(TelegramProfiles telegramProfiles) {
-        telegramProfilesRepository.save(telegramProfiles);
+    public void save(TelegramProfile telegramProfile) {
+        telegramProfilesRepository.save(telegramProfile);
     }
 
-    public boolean existsByChatId(Long chatId) {
-        return telegramProfilesRepository.existsByChatId(chatId);
+    @Transactional(readOnly = true)
+    public boolean existsByUserName(String userName) {
+        return telegramProfilesRepository.existsByUserName(userName);
     }
 
-    public TelegramProfiles findByUserId(Long userId) {
+    public TelegramProfile findByUserId(Long userId) {
         return telegramProfilesRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Telegram profile not found"));
     }

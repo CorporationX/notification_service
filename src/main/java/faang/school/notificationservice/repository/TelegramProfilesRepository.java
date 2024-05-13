@@ -1,15 +1,15 @@
 package faang.school.notificationservice.repository;
 
-import faang.school.notificationservice.entity.TelegramProfiles;
+import faang.school.notificationservice.entity.TelegramProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface TelegramProfilesRepository extends JpaRepository<TelegramProfiles, Long> {
+public interface TelegramProfilesRepository extends JpaRepository<TelegramProfile, Long> {
 
-    boolean existsByChatId(Long chatId);
+    boolean existsByUserName(String userName);
 
-    Optional<TelegramProfiles> findByUserId(Long userId);
+    Optional<TelegramProfile> findByUserId(Long userId);
 }

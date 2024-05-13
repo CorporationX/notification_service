@@ -49,4 +49,4 @@ user-service:
 
 telegram-bot:
   name: CorporationXEventAlertBot
-  token: .......  #TODO: СТИРЕТЬ перд комитом и напишм что тут должно быть
+  token: .......  #тут должен быть токен Телеграмма =]

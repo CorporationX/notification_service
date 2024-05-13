@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "telegram_profiles")
-public class TelegramProfiles {
+public class TelegramProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,9 +14,9 @@ public class CommandExecutor {
 
     private final Map<String, Command> commands;
 
-    public SendMessage message(String messageText, long chatId, String userName) {
-        log.info("Executing command {}", messageText);
-        Command command = commands.getOrDefault(messageText, commands.get("/unknown command"));
-        return command.message(chatId, userName);
+    public SendMessage execute(String command, long chatId, String userName) {
+        log.info("Executing command {}", command);
+        Command executeCommand = commands.getOrDefault(command, commands.get("/unknown"));
+        return executeCommand.sendMessage(chatId, userName);
     }
 }
