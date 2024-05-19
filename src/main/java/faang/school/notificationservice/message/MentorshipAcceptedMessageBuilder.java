@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service;
+package faang.school.notificationservice.message;
 
 import faang.school.notificationservice.dto.messagebroker.MentorshipAcceptedEvent;
 import lombok.RequiredArgsConstructor;

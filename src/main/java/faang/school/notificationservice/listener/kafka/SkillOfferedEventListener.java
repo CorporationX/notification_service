@@ -17,7 +17,10 @@ import java.util.Locale;
 @Slf4j
 public class SkillOfferedEventListener extends AbstractEventListener<SkillOfferedEvent>{
 
-    public SkillOfferedEventListener(MessageBuilder<SkillOfferedEvent> messageBuilder, List<NotificationService> notificationServices, UserServiceClient userServiceClient, ObjectMapper objectMapper) {
+    public SkillOfferedEventListener(MessageBuilder<SkillOfferedEvent> messageBuilder,
+                                     List<NotificationService> notificationServices,
+                                     UserServiceClient userServiceClient,
+                                     ObjectMapper objectMapper) {
         super(messageBuilder, notificationServices, userServiceClient, objectMapper);
     }
 

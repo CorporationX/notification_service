@@ -23,7 +23,12 @@ public class SkillOfferedMessage implements MessageBuilder<SkillOfferedEvent> {
     }
 
     @Override
-    public Class<?> supportsEventType() {
+    public Class<?> supportEventType() {
         return SkillOfferedEvent.class;
+    }
+
+    @Override
+    public long getRequestAuthor(SkillOfferedEvent event) {
+        return event.getSenderUserId();
     }
 }

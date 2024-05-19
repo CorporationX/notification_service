@@ -1,6 +1,7 @@
-package faang.school.notificationservice.config.context;
+package faang.school.notificationservice.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -27,9 +28,8 @@ public class MailConfig {
     @Value("${spring.mail.properties.mail.smtp.writeTimeout}")
     private int writeTimeout;
 
-
-
-    public JavaMailSender getJavaMailSender() {
+    @Bean
+    public JavaMailSender emailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);
         mailSender.setPort(port);

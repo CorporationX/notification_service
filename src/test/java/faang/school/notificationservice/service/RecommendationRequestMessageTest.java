@@ -3,6 +3,7 @@ package faang.school.notificationservice.service;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.RecommendationRequestEvent;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.message.RecommendationRequestMessage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
