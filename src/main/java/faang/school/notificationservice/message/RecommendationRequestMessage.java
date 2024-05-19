@@ -1,8 +1,9 @@
-package faang.school.notificationservice.service;
+package faang.school.notificationservice.message;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.RecommendationRequestEvent;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.message.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;

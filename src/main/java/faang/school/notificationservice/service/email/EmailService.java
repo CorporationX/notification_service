@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class EmailService implements NotificationService {
-    @Autowired
     private final JavaMailSender emailSender;
     @Value("${spring.mail.username}")
     private String username;
