@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.LikeEvent;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.enums.PreferredContact;
 import faang.school.notificationservice.messages.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +63,7 @@ class LikeEventListenerTest {
         userDto = UserDto.builder()
                 .id(100L)
                 .username("Ivan")
-                .preference(UserDto.PreferredContact.TELEGRAM)
+                .preference(PreferredContact.TELEGRAM)
                 .build();
 
         likeEventPost = LikeEvent.builder()
@@ -119,7 +120,7 @@ class LikeEventListenerTest {
     @DisplayName("Checking that the user's preferred contact was not found and an exception is thrown")
     public void sendNotification_UserContactNotFound_ExceptionThrown() {
         when(userServiceClient.getUser(likeEventPost.getAuthorLikeId())).thenReturn(userDto);
-        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
+        when(notificationService.getPreferredContact()).thenReturn(PreferredContact.EMAIL);
 
         assertThrows(IllegalArgumentException.class,
                 () -> likeEventListener.sendNotification(100L, textMessage));

@@ -5,7 +5,6 @@ import faang.school.notificationservice.dto.CommentEvent;
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +14,9 @@ import java.util.Locale;
 @RequiredArgsConstructor
 @Slf4j
 public class CommentEventMessageBuilder implements MessageBuilder<CommentEvent> {
+
     protected final UserServiceClient userServiceClient;
     protected final MessageSource messageSource;
-
-
-    @Value("${commentEvent.comment}")
-    private String commentCode;
 
     @Override
     public Class<CommentEvent> getEventType() {
@@ -30,19 +26,8 @@ public class CommentEventMessageBuilder implements MessageBuilder<CommentEvent> 
     @Override
     public String buildMessage(CommentEvent event, Locale locale) {
         UserDto user = userServiceClient.getUser(event.getAuthorOfPostId());
-        String code = null;
-        Long publication = null;
+        Long publication = event.getCommentId();
 
-        if (event.getPostId() != null) {
-            code = commentCode;
-            publication = event.getCommentId();
-        }
-
-        if (code != null) {
-            return messageSource.getMessage(code, new Object[]{user.getUsername(), publication}, locale);
-        } else {
-            log.error("The message code for the CommentEvent event could not be found {}", event);
-            throw new IllegalArgumentException("The message code for the CommentEvent event could not be found");
-        }
+        return messageSource.getMessage("comment.new", new Object[]{user.getUsername(), publication}, locale);
     }
 }
