@@ -24,7 +24,7 @@ public class LikeEventListener extends AbstractListener<LikeEvent> {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, LikeEvent.class, likeEvent -> {
-            String textMessage = getMessage(likeEvent, Locale.ENGLISH);
+            String textMessage = getMessage(likeEvent, Locale.getDefault());
             sendNotification(likeEvent.getAuthorLikeId(), textMessage);
         });
     }

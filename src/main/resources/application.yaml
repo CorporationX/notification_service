@@ -47,6 +47,9 @@ user-service:
     host: localhost
     port: 8080
 
+telegram-bot:
+  name: CorporationXEventAlertBot
+  token: .......  #тут должен быть токен Телеграмма =]
 likeEvent:
   postCode: like_post.new
   commentCode: like_comment.new

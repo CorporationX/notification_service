@@ -5,7 +5,6 @@ import faang.school.notificationservice.dto.LikeEvent;
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +18,6 @@ public class LikeEventMessageBuilder implements MessageBuilder<LikeEvent> {
     protected final UserServiceClient userServiceClient;
     protected final MessageSource messageSource;
 
-    @Value("${likeEvent.postCode}")
-    private String postCode;
-    @Value("${likeEvent.commentCode}")
-    private String commentCode;
-
     @Override
     public Class<LikeEvent> getEventType() {
         return LikeEvent.class;
@@ -32,6 +26,8 @@ public class LikeEventMessageBuilder implements MessageBuilder<LikeEvent> {
     @Override
     public String buildMessage(LikeEvent event, Locale locale) {
         UserDto user = userServiceClient.getUser(event.getAuthorLikeId());
+        String postCode = "like_post.new";
+        String commentCode = "like_comment.new";
         String code = null;
         Long publication = null;
 

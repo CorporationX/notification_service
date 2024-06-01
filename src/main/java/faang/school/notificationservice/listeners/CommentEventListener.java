@@ -23,7 +23,7 @@ public class CommentEventListener extends AbstractListener<CommentEvent> {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, CommentEvent.class, commentEvent -> {
-            String textMessage = getMessage(commentEvent, Locale.ENGLISH);
+            String textMessage = getMessage(commentEvent, Locale.getDefault());
             sendNotification(commentEvent.getAuthorOfPostId(), textMessage);
         });
     }
