@@ -30,13 +30,10 @@ public class CommentEventMessageBuilder implements MessageBuilder<CommentEvent> 
     @Override
     public String buildMessage(CommentEvent event, Locale locale) {
         UserDto user = userServiceClient.getUser(event.getAuthorOfPostId());
-        String code = null;
-        Long publication = null;
-
-        if (event.getPostId() != null) {
-            code = commentCode;
-            publication = event.getCommentId();
-        }
+        String code;
+        Long publication;
+        code = commentCode;
+        publication = event.getCommentId();
 
         if (code != null) {
             return messageSource.getMessage(code, new Object[]{user.getUsername(), publication}, locale);
