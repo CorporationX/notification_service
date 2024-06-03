@@ -1,0 +1,4 @@
+like_post.new:
+  text: "The user {0} has put a like on your post {1}!"
+like_comment.new:
+  text: "The user {0} has put a like on your comment {1}!"
