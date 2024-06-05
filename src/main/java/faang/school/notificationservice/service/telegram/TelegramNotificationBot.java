@@ -34,7 +34,7 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return telegramBotProperty.getUsername();
+        return telegramBotProperty.getName();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
             execute(message);
             log.info("Notification successfully sent to chat = {}", chatId);
         } catch (TelegramApiException e) {
-            log.error("Failed to send notification to chat = {}", chatId);
+            log.error("Failed to send notification to chat = {}", e.getMessage());
             throw new IllegalArgumentException(e);
         }
     }

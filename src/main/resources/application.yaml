@@ -40,7 +40,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
 
 telegram:
   api:
-    username: CorporationX
+    name: CorporationX
     token: 7487712150:AAGfAjSdwMuJNSvxOtX9wWu6_MPHxv-1WpA
 
 project-service:
