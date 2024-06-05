@@ -49,6 +49,8 @@ dependencies {
     implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
+    testImplementation("com.redis.testcontainers:testcontainers-redis-junit:1.6.4")
+    testImplementation("org.wiremock:wiremock-standalone:3.6.0")
 
     /**
      * Tests
