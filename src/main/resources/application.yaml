@@ -32,15 +32,19 @@ logging:
   level:
     root: info
 
+#TODO: заменить на работоспособный аккаунт
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: whatever
-    secret: whatever
+    key: bd191d41
+    secret: dSphqbgfUz8vq72R
+
+brand:
+  name: CorporationX
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
