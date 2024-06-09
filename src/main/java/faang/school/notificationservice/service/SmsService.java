@@ -3,6 +3,7 @@ package faang.school.notificationservice.service;
 import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
+import com.vonage.client.sms.SmsSubmissionResponseMessage;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +21,20 @@ public class SmsService implements NotificationService {
 
     @Override
     public void send(UserDto user, String message) {
-        log.info("Sending message: " + message + " To user with id = " + user.getId());
+        log.info("Sending message: {}. To user with id = {}", message, user.getId());
         TextMessage textMessage = new TextMessage(brandName, user.getPhone(), message);
 
         SmsSubmissionResponse response = client.getSmsClient().submitMessage(textMessage);
 
-        if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
+        if (response.getMessages() == null) {
+            log.error("There is no messages in sms submission response.");
+        }
+
+        SmsSubmissionResponseMessage responseMessage = response.getMessages().get(0);
+        if (responseMessage.getStatus() == MessageStatus.OK) {
             log.info("Message sent successfully.");
         } else {
-            log.error("Message failed with error: " + response.getMessages().get(0).getErrorText());
+            log.error("Message failed with error: {}", responseMessage.getErrorText());
         }
     }
 
