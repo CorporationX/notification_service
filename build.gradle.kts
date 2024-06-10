@@ -60,7 +60,8 @@ dependencies {
     /**
      * Notifications
      */
-    implementation("com.vonage:client:6.1.0")
+    implementation("com.vonage:server-sdk:8.6.0")
+    implementation("com.vonage:jwt:1.1.1")
 }
 
 tasks.withType<Test> {
