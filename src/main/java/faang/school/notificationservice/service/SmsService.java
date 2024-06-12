@@ -28,6 +28,7 @@ public class SmsService implements NotificationService {
 
         if (response.getMessages() == null) {
             log.error("There is no messages in sms submission response.");
+            return;
         }
 
         SmsSubmissionResponseMessage responseMessage = response.getMessages().get(0);
