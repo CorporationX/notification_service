@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import java.util.Locale;
 
 @Slf4j
-@Component
+@Component(value = "/help")
 public class HelpCommand extends Command {
 
     public HelpCommand(MessageSource messageSource,
