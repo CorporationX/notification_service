@@ -56,9 +56,9 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
             String messageText = update.getMessage().getText();
 
             long chatId = update.getMessage().getChatId();
-            //String userName = update.getMessage().getFrom().getUserName();
+            String userName = update.getMessage().getFrom().getUserName();
 
-            SendMessage message = commandExecutor.executeCommand(messageText, chatId, "JohnDoe");
+            SendMessage message = commandExecutor.executeCommand(messageText, chatId, userName);
             executeMessage(message);
         }
     }
