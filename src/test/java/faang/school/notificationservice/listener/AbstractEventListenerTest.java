@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -99,15 +98,6 @@ class AbstractEventListenerTest {
             messageBuilders.forEach(builder -> {
                 verify(builder, times(0)).buildMessage(any(Locale.class), anyList());
             });
-        }
-
-        @Test
-        void sendNotification() {
-            when(userServiceClient.getUser(anyLong())).thenReturn(null);
-
-            assertThrows(ListenerException.class, () -> abstractEventListener.sendNotification(anyLong(), "message"));
-
-            notificationServices.forEach(Mockito::verifyNoInteractions);
         }
     }
 }

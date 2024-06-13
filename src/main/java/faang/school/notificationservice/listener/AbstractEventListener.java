@@ -5,7 +5,6 @@ import faang.school.notificationservice.builder.MessageBuilder;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.ListenerException;
-import faang.school.notificationservice.exception.message.ListenerExceptionMessage;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -38,10 +37,6 @@ public abstract class AbstractEventListener {
 
     public void sendNotification(long userId, String message) {
         UserDto userDto = userServiceClient.getUser(userId);
-
-        if (userDto == null) {
-            throw new ListenerException(ListenerExceptionMessage.NO_SUCH_USER.getMessage());
-        }
 
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreference()))
