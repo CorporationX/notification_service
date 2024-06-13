@@ -34,7 +34,7 @@ public class StartCommand extends Command {
         }
 
         try {
-            ContactPreferenceDto contact = userServiceClient.getContact(userName);
+            ContactPreferenceDto contact = userServiceClient.getContactPreference(userName);
 
             TelegramProfile telegramProfile = createTelegramProfile(chatId, userName, contact);
             telegramProfileService.save(telegramProfile);
