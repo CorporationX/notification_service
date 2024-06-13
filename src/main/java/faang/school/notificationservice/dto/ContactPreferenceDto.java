@@ -1,5 +1,6 @@
 package faang.school.notificationservice.dto;
 
+import faang.school.notificationservice.entity.PreferredContact;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -20,5 +21,5 @@ public class ContactPreferenceDto {
     private Long userId;
 
     @NotNull(message = "Preference should not be null")
-    private UserDto.PreferredContact preference;
+    private PreferredContact preference;
 }

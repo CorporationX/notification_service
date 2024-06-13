@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service.telegram;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.entity.PreferredContact;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class TelegramService implements NotificationService {
     }
 
     @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.TELEGRAM;
+    public PreferredContact getPreferredContact() {
+        return PreferredContact.TELEGRAM;
     }
 }

@@ -1,5 +1,6 @@
 package faang.school.notificationservice.dto;
 
+import faang.school.notificationservice.entity.PreferredContact;
 import lombok.Data;
 
 @Data
@@ -9,8 +10,4 @@ public class UserDto {
     private String email;
     private String phone;
     private PreferredContact preference;
-
-    public enum PreferredContact {
-        EMAIL, SMS, TELEGRAM
-    }
 }
