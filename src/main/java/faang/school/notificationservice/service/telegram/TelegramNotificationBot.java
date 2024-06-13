@@ -1,6 +1,9 @@
 package faang.school.notificationservice.service.telegram;
 
+import faang.school.notificationservice.entity.TelegramProfile;
 import faang.school.notificationservice.property.TelegramBotProperty;
+import faang.school.notificationservice.service.telegram.command.CommandBuilder;
+import faang.school.notificationservice.service.telegram.command.CommandExecutor;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,10 +19,19 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class TelegramNotificationBot extends TelegramLongPollingBot {
 
     private final TelegramBotProperty telegramBotProperty;
+    private final TelegramProfileService telegramProfileService;
+    private final CommandExecutor commandExecutor;
+    private final CommandBuilder commandBuilder;
 
-    public TelegramNotificationBot(TelegramBotProperty telegramBotProperty) {
+    public TelegramNotificationBot(TelegramBotProperty telegramBotProperty,
+                                   TelegramProfileService telegramProfileService,
+                                   CommandExecutor commandExecutor,
+                                   CommandBuilder commandBuilder) {
         super(telegramBotProperty.getToken());
         this.telegramBotProperty = telegramBotProperty;
+        this.telegramProfileService = telegramProfileService;
+        this.commandExecutor = commandExecutor;
+        this.commandBuilder = commandBuilder;
     }
 
     @PostConstruct
@@ -38,18 +50,29 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
     }
 
     @Override
-    public void onUpdateReceived(Update update) {}
+    public void onUpdateReceived(Update update) {
+        if (update.hasMessage() && update.getMessage().hasText()) {
 
-    public void sendMessage(Long chatId, String textToSend) {
+            String messageText = update.getMessage().getText();
 
-        SendMessage message = SendMessage.builder()
-                .chatId(chatId)
-                .text(textToSend)
-                .build();
+            long chatId = update.getMessage().getChatId();
+            String userName = update.getMessage().getFrom().getUserName();
 
+            SendMessage message = commandExecutor.executeCommand(messageText, chatId, userName);
+            executeMessage(message);
+        }
+    }
+
+    public void sendMessage(long userId, String text) {
+        TelegramProfile profile = telegramProfileService.findByUserId(userId);
+        SendMessage sendMessage = commandBuilder.buildMessage(profile.getChatId(), text);
+        executeMessage(sendMessage);
+    }
+
+    public void executeMessage(SendMessage message) {
         try {
             execute(message);
-            log.info("Notification successfully sent to chat = {}", chatId);
+            log.info("Notification successfully sent to chat = {}", message.getChatId());
         } catch (TelegramApiException e) {
             log.error("Failed to send notification to chat = {}", e.getMessage());
             throw new IllegalArgumentException(e);
