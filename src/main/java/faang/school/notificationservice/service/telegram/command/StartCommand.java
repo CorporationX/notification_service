@@ -1,7 +1,7 @@
 package faang.school.notificationservice.service.telegram.command;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.ContactPreferenceDto;
+import faang.school.notificationservice.dto.ContactDto;
 import faang.school.notificationservice.entity.TelegramProfile;
 import faang.school.notificationservice.service.telegram.TelegramProfileService;
 import feign.FeignException;
@@ -34,7 +34,7 @@ public class StartCommand extends Command {
         }
 
         try {
-            ContactPreferenceDto contact = userServiceClient.getContact(userName);
+            ContactDto contact = userServiceClient.getContact(userName);
 
             TelegramProfile telegramProfile = createTelegramProfile(chatId, userName, contact);
             telegramProfileService.save(telegramProfile);
@@ -49,7 +49,7 @@ public class StartCommand extends Command {
         return super.commandBuilder.buildMessage(chatId, message);
     }
 
-    private TelegramProfile createTelegramProfile(long chatId, String userName, ContactPreferenceDto contact) {
+    private TelegramProfile createTelegramProfile(long chatId, String userName, ContactDto contact) {
         log.info("Creating TelegramProfile with chatId {} userName {}", chatId, userName);
         return TelegramProfile.builder()
                 .userId(contact.getUserId())
