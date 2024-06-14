@@ -26,7 +26,7 @@ public class RegisterCommand extends Command {
         log.info("Executing REGISTER command for chatId: {} with userName: {}", chatId, userName);
         String message;
 
-        if (telegramProfileService.findByChatId(chatId).isPresent()) {
+        if (telegramProfileService.existsByChatId(chatId)) {
             message = messageSource.getMessage("telegram.start.already_registered", null, defaultLocale);
             return commandBuilder.buildMessage(chatId, message);
         }

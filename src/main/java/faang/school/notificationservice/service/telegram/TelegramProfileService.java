@@ -11,4 +11,6 @@ public interface TelegramProfileService {
     TelegramProfile findByUserId(Long userId);
 
     Optional<TelegramProfile> findByChatId(long chatId);
+
+    boolean existsByChatId(long chatId);
 }

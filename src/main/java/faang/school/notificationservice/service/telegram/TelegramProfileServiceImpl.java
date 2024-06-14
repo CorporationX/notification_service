@@ -28,12 +28,18 @@ public class TelegramProfileServiceImpl implements TelegramProfileService {
     @Transactional(readOnly = true)
     public TelegramProfile findByUserId(Long userId) {
         return telegramProfileRepository.findByUserId(userId)
-                .orElseThrow(() -> new NotFoundException("Telegram profile not found"));
+                .orElseThrow(() -> new NotFoundException("Telegram profile with userId=" + userId + " not found"));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<TelegramProfile> findByChatId(long chatId) {
         return telegramProfileRepository.findByChatId(chatId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsByChatId(long chatId) {
+        return telegramProfileRepository.existsByChatId(chatId);
     }
 }
