@@ -73,7 +73,7 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
         }
     }
 
-    public void executeMessage(SendMessage message) {
+    private void executeMessage(SendMessage message) {
         try {
             execute(message);
             log.info("Notification successfully sent to chat = {}", message.getChatId());
