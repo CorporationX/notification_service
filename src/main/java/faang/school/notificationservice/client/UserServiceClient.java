@@ -12,6 +12,6 @@ public interface UserServiceClient {
     @GetMapping("/users/{id}")
     UserDto getUser(@PathVariable long id);
 
-    @GetMapping("/contacts/preferences/{userName}")
+    @GetMapping("/api/v1/contacts/preferences/{userName}")
     ContactPreferenceDto getContactPreference(@PathVariable String userName);
 }
