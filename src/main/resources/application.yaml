@@ -6,6 +6,8 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        mentorship_accepted_channel:
+          name: mentorship_accepted_channel
 
   mail:
     host: smtp.gmail.com
@@ -39,8 +41,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
