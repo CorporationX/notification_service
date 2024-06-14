@@ -65,8 +65,12 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
 
     public void sendMessage(long userId, String text) {
         TelegramProfile profile = telegramProfileService.findByUserId(userId);
-        SendMessage sendMessage = commandBuilder.buildMessage(profile.getChatId(), text);
-        executeMessage(sendMessage);
+        if (profile.isActive()) {
+            SendMessage sendMessage = commandBuilder.buildMessage(profile.getChatId(), text);
+            executeMessage(sendMessage);
+        } else {
+            log.info("Can't send message to TelegramProfile with id={} because profile is inactive", profile.getId());
+        }
     }
 
     public void executeMessage(SendMessage message) {
