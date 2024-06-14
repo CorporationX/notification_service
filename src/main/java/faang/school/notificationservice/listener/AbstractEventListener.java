@@ -1,10 +1,10 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.builder.MessageBuilder;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.ListenerException;
+import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -19,20 +19,20 @@ import static faang.school.notificationservice.exception.message.ListenerExcepti
 @Component
 @Setter
 @RequiredArgsConstructor
-public abstract class AbstractEventListener {
+public abstract class AbstractEventListener<T> {
     private final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationServices;
-    private final List<MessageBuilder<?>> messageBuilders;
+    private final List<MessageBuilder<T>> messageBuilders;
 
-    public String getMessage(Class<?> eventType, Locale userLocale, List<Object> messageArgs) {
-        Optional<MessageBuilder<?>> messageBuilder = messageBuilders.stream()
-                .filter(builder -> builder.getEventType().equals(eventType))
+    public String getMessage(Class<?> eventType, Locale userLocale, T event) {
+        Optional<MessageBuilder<T>> messageBuilder = messageBuilders.stream()
+                .filter(builder -> builder.getInstance().equals(eventType))
                 .findFirst();
 
         return messageBuilder
                 .orElseThrow(() -> new ListenerException(MESSAGE_BUILDER_NOT_FOUND.getMessage()))
-                .buildMessage(userLocale, messageArgs);
+                .buildMessage(event, userLocale);
     }
 
     public void sendNotification(long userId, String message) {
