@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @Builder
@@ -31,4 +32,8 @@ public class TelegramProfile {
 
     @Column(name = "chat_id", nullable = false)
     private long chatId;
+
+    @Column(name = "is_active", nullable = false)
+    @ColumnDefault(value = "false")
+    private boolean isActive;
 }

@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -23,14 +25,14 @@ public class TelegramProfileServiceImpl implements TelegramProfileService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean existsByUserName(String userName) {
-        return telegramProfileRepository.existsByUserName(userName);
+    public TelegramProfile findByUserId(Long userId) {
+        return telegramProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException("Telegram profile not found"));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public TelegramProfile findByUserId(Long userId) {
-        return telegramProfileRepository.findByUserId(userId)
-                .orElseThrow(() -> new NotFoundException("Telegram profile not found"));
+    public Optional<TelegramProfile> findByChatId(long chatId) {
+        return telegramProfileRepository.findByChatId(chatId);
     }
 }
