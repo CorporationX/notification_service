@@ -7,22 +7,23 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(IOException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleIOException(IllegalArgumentException e, HttpServletRequest request) {
+    public ErrorResponse handleIOException(IOException e, HttpServletRequest request) {
         log.error("Runtime Exception: ", e);
         return buildErrorResponse(e, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleRuntimeException(IllegalArgumentException e, HttpServletRequest request) {
+    public ErrorResponse handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         log.error("Runtime Exception: ", e);
         return buildErrorResponse(e, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
