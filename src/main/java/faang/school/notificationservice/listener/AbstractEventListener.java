@@ -22,8 +22,8 @@ import static faang.school.notificationservice.exception.message.ListenerExcepti
 public abstract class AbstractEventListener {
     private final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
-    private List<NotificationService> notificationServices;
-    private List<MessageBuilder<?>> messageBuilders;
+    private final List<NotificationService> notificationServices;
+    private final List<MessageBuilder<?>> messageBuilders;
 
     public String getMessage(Class<?> eventType, Locale userLocale, List<Object> messageArgs) {
         Optional<MessageBuilder<?>> messageBuilder = messageBuilders.stream()
