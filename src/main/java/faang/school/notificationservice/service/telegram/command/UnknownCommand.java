@@ -7,8 +7,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import java.util.Locale;
-
 @Slf4j
 @Component(value = "/unknown")
 public class UnknownCommand extends Command {
@@ -23,7 +21,7 @@ public class UnknownCommand extends Command {
     @Override
     public SendMessage sendMessage(long chatId, String userName) {
         log.info("Executing UNKNOWN command for chatId: {} with userName: {}", chatId, userName);
-        String message = messageSource.getMessage("telegram.unknown", null, Locale.getDefault());
-        return super.commandBuilder.buildMessage(chatId, message);
+        String message = messageSource.getMessage("telegram.unknown", null, defaultLocale);
+        return commandBuilder.buildMessage(chatId, message);
     }
 }

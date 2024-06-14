@@ -8,7 +8,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import java.util.Locale;
 import java.util.Optional;
 
 @Slf4j
@@ -30,8 +29,8 @@ public class StartCommand extends Command {
 
         String message;
         if (optionalProfile.isEmpty()) {
-            message = messageSource.getMessage("telegram.not_registered_corporationX", null, Locale.getDefault());
-            return super.commandBuilder.buildMessage(chatId, message);
+            message = messageSource.getMessage("telegram.not_registered_corporationX", null, defaultLocale);
+            return commandBuilder.buildMessage(chatId, message);
         }
 
         TelegramProfile profile = optionalProfile.get();
@@ -43,6 +42,6 @@ public class StartCommand extends Command {
         String code = profile.isActive() ? "telegram.start" : "telegram.stop";
         message = messageSource.getMessage(code, new String[]{userName}, defaultLocale);
 
-        return super.commandBuilder.buildMessage(chatId, message);
+        return commandBuilder.buildMessage(chatId, message);
     }
 }

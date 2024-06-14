@@ -10,8 +10,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import java.util.Locale;
-
 @Slf4j
 @Component("/register")
 public class RegisterCommand extends Command {
@@ -29,8 +27,8 @@ public class RegisterCommand extends Command {
         String message;
 
         if (telegramProfileService.findByChatId(chatId).isPresent()) {
-            message = messageSource.getMessage("telegram.start.already_registered", null, Locale.getDefault());
-            return super.commandBuilder.buildMessage(chatId, message);
+            message = messageSource.getMessage("telegram.start.already_registered", null, defaultLocale);
+            return commandBuilder.buildMessage(chatId, message);
         }
 
         try {
@@ -43,10 +41,10 @@ public class RegisterCommand extends Command {
             message = messageSource.getMessage("telegram.start.registered", new String[]{userName}, defaultLocale);
         } catch (FeignException exception) {
             log.error("Error occurred while processing the user {}. Exception: {}", userName, exception.getMessage());
-            message = messageSource.getMessage("telegram.service_exception", null, Locale.getDefault());
+            message = messageSource.getMessage("telegram.service_exception", null, defaultLocale);
         }
 
-        return super.commandBuilder.buildMessage(chatId, message);
+        return commandBuilder.buildMessage(chatId, message);
     }
 
     private TelegramProfile createTelegramProfile(long chatId, String userName, ContactPreferenceDto contact) {
