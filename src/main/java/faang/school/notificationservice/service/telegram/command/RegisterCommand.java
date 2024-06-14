@@ -40,7 +40,7 @@ public class RegisterCommand extends Command {
 
             message = messageSource.getMessage("telegram.start.registered", new String[]{userName}, defaultLocale);
         } catch (FeignException exception) {
-            log.error("Error occurred while processing the user {}. Exception: {}", userName, exception.getMessage());
+            log.error("Error occurred while processing the user: ", exception);
             message = messageSource.getMessage("telegram.service_exception", null, defaultLocale);
         }
 

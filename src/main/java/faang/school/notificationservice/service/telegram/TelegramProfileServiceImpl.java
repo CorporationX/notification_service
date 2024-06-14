@@ -21,6 +21,7 @@ public class TelegramProfileServiceImpl implements TelegramProfileService {
     @Transactional
     public void save(TelegramProfile telegramProfile) {
         telegramProfileRepository.save(telegramProfile);
+        log.info("Saved new TelegramProfile with chatId={} for user with userId={}", telegramProfile.getChatId(),  telegramProfile.getUserId());
     }
 
     @Override

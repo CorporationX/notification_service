@@ -40,7 +40,7 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(this);
         } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+            log.error("Failed to start TelegramBot: ", e);
         }
     }
 
@@ -78,7 +78,7 @@ public class TelegramNotificationBot extends TelegramLongPollingBot {
             execute(message);
             log.info("Notification successfully sent to chat = {}", message.getChatId());
         } catch (TelegramApiException e) {
-            log.error("Failed to send notification to chat = {}", e.getMessage());
+            log.error("Failed to send notification to chat: ", e);
             throw new IllegalArgumentException(e);
         }
     }
