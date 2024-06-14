@@ -28,6 +28,7 @@ class MentorshipAcceptedMessageBuilderTest {
     private static final String USERNAME = "Mentor User Name";
     private static final String EMAIL = "test@gmail.com";
     private static final String MSG_EVENT_KEY = "mentorship_accepted";
+    private static final String LOCALE = "ENGLISH";
 
     @Mock
     private UserServiceClient userServiceClient;
@@ -43,11 +44,19 @@ class MentorshipAcceptedMessageBuilderTest {
     public void whenBuildMessageOk() {
         String expectedResult = USERNAME + " accepted your request " + REQUEST_ID + " for mentorship";
 
-        UserDto userDto = UserDto.builder()
+        UserDto mentorDto = UserDto.builder()
                 .id(MENTOR_ID)
                 .username(USERNAME)
                 .email(EMAIL)
                 .preference(UserDto.PreferredContact.EMAIL)
+                .build();
+
+        UserDto menteeDto = UserDto.builder()
+                .id(MENTEE_ID)
+                .username(USERNAME)
+                .email(EMAIL)
+                .preference(UserDto.PreferredContact.EMAIL)
+                .preferredLocale(LOCALE)
                 .build();
 
         MentorshipAcceptedEvent event = MentorshipAcceptedEvent.builder()
@@ -56,10 +65,11 @@ class MentorshipAcceptedMessageBuilderTest {
                 .requestId(REQUEST_ID)
                 .build();
 
-        when(userServiceClient.getUser(MENTOR_ID)).thenReturn(userDto);
+        when(userServiceClient.getUser(MENTOR_ID)).thenReturn(mentorDto);
+        when(userServiceClient.getUser(MENTEE_ID)).thenReturn(menteeDto);
         when(messageSource.getMessage(MSG_EVENT_KEY, new Object[]{USERNAME, REQUEST_ID}, Locale.ENGLISH)).thenReturn(expectedResult);
 
-        String actualResult = mentorshipAcceptedMessageBuilder.buildMessage(event, Locale.ENGLISH);
+        String actualResult = mentorshipAcceptedMessageBuilder.buildMessage(event);
         assertEquals(expectedResult, actualResult);
     }
 
@@ -75,10 +85,9 @@ class MentorshipAcceptedMessageBuilderTest {
 
         FeignException exception = Mockito.mock(FeignException.class);
         Mockito.when(exception.status()).thenReturn(404);
-        when(userServiceClient.getUser(MENTOR_ID)).thenThrow(exception);
+        when(userServiceClient.getUser(MENTEE_ID)).thenThrow(exception);
 
-        var actualException = assertThrows(FeignException.class, () -> mentorshipAcceptedMessageBuilder.buildMessage(event, Locale.ENGLISH));
+        var actualException = assertThrows(FeignException.class, () -> mentorshipAcceptedMessageBuilder.buildMessage(event));
         assertEquals(actualException.status(), 404);
     }
-
 }

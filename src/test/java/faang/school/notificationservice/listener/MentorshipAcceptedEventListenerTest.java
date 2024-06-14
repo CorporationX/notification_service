@@ -5,7 +5,7 @@ import faang.school.notificationservice.builder.MentorshipAcceptedMessageBuilder
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.MentorshipAcceptedEvent;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.MessageBuilder;
+import faang.school.notificationservice.builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.email.EmailService;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +17,6 @@ import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.doReturn;
@@ -71,7 +70,7 @@ class MentorshipAcceptedEventListenerTest {
                 notificationServices, messageBuilders);
 
         doReturn(MentorshipAcceptedEvent.class).when(builder).supportsEventType();
-        when(builder.buildMessage(messageEvent, Locale.ENGLISH)).thenReturn(BUILD_MESSAGE);
+        when(builder.buildMessage(messageEvent)).thenReturn(BUILD_MESSAGE);
         when(messageBuilders.stream()).thenAnswer(invocation -> Stream.of(builder));
         when(emailService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
         when(notificationServices.stream()).thenAnswer(invocation -> Stream.of(emailService));

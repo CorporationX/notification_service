@@ -21,8 +21,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 public class RedisConfig {
 
-    private final MentorshipAcceptedEventListener mentorshipAcceptedEventListener;
-
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
@@ -37,14 +35,16 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
+    public RedisMessageListenerContainer redisMessageListenerContainer(MessageListenerAdapter mentorshipAcceptedListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-
-        MessageListenerAdapter messageListenerAdapterForMentorshipAcceptedEvent = new MessageListenerAdapter(mentorshipAcceptedEventListener);
-        container.addMessageListener(messageListenerAdapterForMentorshipAcceptedEvent, new ChannelTopic(mentorshipAcceptedChannel));
-
+        container.setConnectionFactory(redisConnectionFactory());
+        container.addMessageListener(mentorshipAcceptedListener, mentorshipAcceptedTopic());
         return container;
+    }
+
+    @Bean
+    public MessageListenerAdapter mentorshipAcceptedListener(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
+        return new MessageListenerAdapter(mentorshipAcceptedEventListener);
     }
 
     @Bean
