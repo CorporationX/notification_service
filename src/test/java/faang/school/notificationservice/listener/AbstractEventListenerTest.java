@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -62,11 +63,11 @@ class AbstractEventListenerTest {
     @Nested
     class PositiveTests {
         @Test
-        void mapMessageBodyToEventTest() {
-            Object messageBody = new Object();
+        void mapMessageBodyToEventTest() throws IOException {
+            byte[] messageBody = new byte[]{};
             abstractEventListener.mapMessageBodyToEvent(messageBody, Object.class);
 
-            verify(objectMapper).convertValue(messageBody, Object.class);
+            verify(objectMapper).readValue(messageBody, Object.class);
         }
 
         @Test
