@@ -22,6 +22,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -85,6 +86,27 @@ class AbstractEventListenerTest {
             abstractEventListener.sendNotification(1L, message);
 
             notificationServices.forEach(notificationService -> verify(notificationService).send(any(UserDto.class), eq(message)));
+        }
+    }
+
+    @Nested
+    class NegativeTests {
+        @Test
+        void sendNotificationTest() {
+            String message = "Message";
+            UserDto userDto = UserDto.builder()
+                    .id(1L)
+                    .email("email@gmail.com")
+                    .phone("12345678")
+                    .build();
+            userDto.setPreference(null);
+
+            when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
+
+            abstractEventListener.sendNotification(1L, message);
+
+            notificationServices.forEach(notificationService ->
+                    verify(notificationService, times(0)).send(any(UserDto.class), eq(message)));
         }
     }
 }

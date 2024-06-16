@@ -36,7 +36,11 @@ public abstract class AbstractEventListener<T> {
 
     public void sendNotification(long userId, String message) {
         UserDto userDto = userServiceClient.getUser(userId);
-        userDto.setPreference(UserDto.PreferredContact.SMS);
+
+        if (userDto.getPreference() == null) {
+            log.info("User (id = {}) doesn't have preferred contact. Not sending notification.", userId);
+            return;
+        }
 
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreference()))
