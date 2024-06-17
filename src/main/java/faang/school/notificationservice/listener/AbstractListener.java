@@ -22,7 +22,6 @@ public abstract class AbstractListener<T> {
     protected final List<MessageBuilder<T>> messageBuilders;
     protected final List<NotificationService> notificationServices;
 
-
     protected T getEvent(Message message, Class<T> type) {
         try {
             return objectMapper.readValue(message.getBody(), type);
@@ -49,7 +48,7 @@ public abstract class AbstractListener<T> {
                 .send(userNotificationDto, message);
     }
 
-    protected NotificationData getNotificationData(long followerId) {
+    protected NotificationData getNotificationData(long followerId){
         UserNotificationDto follower = userServiceClient.getDtoForNotification(followerId);
         return NotificationData.builder()
                 .follower(follower.getUsername())
