@@ -33,11 +33,4 @@ public class ProjectFollowerEventListener extends AbstractListener<ProjectFollow
         sendNotification(userDto, textOfMessage);
         log.info("sending notification for event {}", projectFollowerEvent);
     }
-
-    private NotificationData getNotificationData(long followerId) {
-        UserNotificationDto follower = userServiceClient.getDtoForNotification(followerId);
-        return NotificationData.builder()
-                .follower(follower.getUsername())
-                .build();
-    }
 }
