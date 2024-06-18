@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class RecommendationDto {
+public class RecommendationRequestedEventDto {
     private long id;
     private Long authorId;
     private Long receiverId;

@@ -2,7 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.RecommendationDto;
+import faang.school.notificationservice.dto.RecommendationRequestedEventDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,18 +15,18 @@ import java.util.Locale;
 
 @Component
 @Slf4j
-public class RecommendationRequestedEventListener extends AbstractEventListener<RecommendationDto> implements MessageListener {
+public class RecommendationRequestedEventListener extends AbstractEventListener<RecommendationRequestedEventDto> implements MessageListener {
     public RecommendationRequestedEventListener(ObjectMapper objectMapper,
                                                 UserServiceClient userServiceClient,
                                                 List<NotificationService> notificationServices,
-                                                MessageBuilder<RecommendationDto> messageBuilder) {
+                                                MessageBuilder<RecommendationRequestedEventDto> messageBuilder) {
         super(objectMapper, userServiceClient, notificationServices, messageBuilder);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        RecommendationDto recommendationDto = mapMessageBodyToEvent(message.getBody(), RecommendationDto.class);
-        String text = getMessageBuilder().buildMessage(recommendationDto, Locale.getDefault());
-        log.info(text);
+        RecommendationRequestedEventDto recommendationRequestedEventDto = mapMessageBodyToEvent(message.getBody(), RecommendationRequestedEventDto.class);
+        String text = getMessageBuilder().buildMessage(recommendationRequestedEventDto, Locale.getDefault());
+        sendNotification(recommendationRequestedEventDto.getReceiverId(), text);
     }
 }
