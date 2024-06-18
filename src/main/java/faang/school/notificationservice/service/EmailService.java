@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailService implements NotificationService {
     private final JavaMailSender javaMailSender;
-    @Value("${spring.mail.sender.email}")
+    @Value("${spring.mail.sender}")
     private String senderMail;
 
     @Override

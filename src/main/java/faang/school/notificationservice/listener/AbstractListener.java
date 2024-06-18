@@ -48,4 +48,11 @@ public abstract class AbstractListener<T> {
                         String.format("There is no notification service for user preference. User id: %s", userNotificationDto.getId())))
                 .send(userNotificationDto, message);
     }
+
+    protected NotificationData getNotificationData(long followerId) {
+        UserNotificationDto follower = userServiceClient.getDtoForNotification(followerId);
+        return NotificationData.builder()
+                .follower(follower.getUsername())
+                .build();
+    }
 }
