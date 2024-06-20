@@ -72,13 +72,14 @@ class AbstractEventListenerTest {
         }
 
         @Test
-        void sendNotification() {
+        void sendNotificationTest() {
             String message = "Message";
             UserDto userDto = UserDto.builder()
                     .id(1L)
                     .email("email@gmail.com")
                     .phone("12345678")
                     .build();
+
             userDto.setPreference(SMS);
             when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
             notificationServices.forEach(notificationService -> when(notificationService.getPreferredContact()).thenReturn(SMS));
