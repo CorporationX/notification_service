@@ -21,10 +21,11 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.port}")
     private int port;
+
     @Value("${spring.data.redis.channels.project-follower-channel.name}")
     private String projectFollowerName;
 
-    @Value("${spring.data.redis.channel.comment}")
+    @Value("${spring.data.redis.channels.comment.name}")
     private String commentChannelName;
 
     @Bean
@@ -42,20 +43,23 @@ public class RedisConfig {
         return template;
     }
 
-    public RedisMessageListenerContainer listenerContainer(MessageListenerAdapter messageListenerAdapter) {
+    @Bean
+    public RedisMessageListenerContainer listenerContainer(MessageListenerAdapter projectFollowerListener,
+                                                           MessageListenerAdapter commentListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
-        container.addMessageListener(messageListenerAdapter, projectFollowerTopic());
+        container.addMessageListener(projectFollowerListener, projectFollowerTopic());
+        container.addMessageListener(commentListener, commentTopic());
         return container;
     }
-
 
     @Bean
     public MessageListenerAdapter projectFollowerListener(ProjectFollowerEventListener projectFollowerEventListener) {
         return new MessageListenerAdapter(projectFollowerEventListener);
     }
 
-    MessageListenerAdapter commentListener(CommentEventListener commentEventListener) {
+    @Bean
+    public MessageListenerAdapter commentListener(CommentEventListener commentEventListener) {
         return new MessageListenerAdapter(commentEventListener);
     }
 
@@ -64,17 +68,8 @@ public class RedisConfig {
         return new ChannelTopic(projectFollowerName);
     }
 
-    ChannelTopic commentTopic() {
-        return new ChannelTopic(commentChannelName);
-    }
-
     @Bean
-    RedisMessageListenerContainer listenerContainer(MessageListenerAdapter messageListenerAdapter,
-                                                    MessageListenerAdapter commentListener) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConnectionFactory());
-        container.addMessageListener(commentListener, commentTopic());
-        container.addMessageListener(messageListenerAdapter, projectFollowerTopic());
-        return container;
+    public ChannelTopic commentTopic() {
+        return new ChannelTopic(commentChannelName);
     }
 }
