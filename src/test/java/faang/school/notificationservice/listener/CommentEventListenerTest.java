@@ -44,10 +44,6 @@ class CommentEventListenerTest {
 
     @BeforeEach
     void setUp() {
-        objectMapper = mock(ObjectMapper.class);
-        commentMessageBuilder = mock(CommentMessageBuilder.class);
-        userServiceClient = mock(UserServiceClient.class);
-        notificationService = mock(NotificationService.class);
         commentEventListener = new CommentEventListener(objectMapper, userServiceClient,
                 List.of(commentMessageBuilder), List.of(notificationService));
         commentEvent = CommentEvent.builder()
