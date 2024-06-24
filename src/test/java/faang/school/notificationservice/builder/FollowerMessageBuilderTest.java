@@ -32,9 +32,10 @@ public class FollowerMessageBuilderTest {
     public void testBuildMessage() {
         String expectedMessage = "Congrats! You've got a new follower!";
 
-        FollowerEvent event = new FollowerEvent();
-        event.setFollower(1L);
-        event.setFollowee(2L);
+        FollowerEvent event = FollowerEvent.builder()
+                .follower(1L)
+                .followee(2L)
+                .build();
 
         UserDto follower = UserDto.builder()
                 .id(1L)
