@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/notifications_V001_telegram_profile.sql
+  - include:
+      file: db/changelog/changeset/notifications_V002_telegram_profile_is_active.sql

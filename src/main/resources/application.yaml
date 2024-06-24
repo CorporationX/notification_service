@@ -1,4 +1,22 @@
 spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
   data:
     redis:
       port: 6379
@@ -38,6 +56,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: f4bb24a5
     secret: GroMJNVK8K2J6Z1H
   from: Basilisk
+
+telegram:
+  api:
+    name: CorporationX
+    token: 7487712150:AAGfAjSdwMuJNSvxOtX9wWu6_MPHxv-1WpA
 
 project-service:
     host: localhost
