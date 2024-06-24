@@ -5,6 +5,7 @@ import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.entity.PreferredContact;
 import faang.school.notificationservice.exception.SmsSendingException;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,8 @@ public class SmsService implements NotificationService {
     private String from;
 
     @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.SMS;
+    public PreferredContact getPreferredContact() {
+        return PreferredContact.SMS;
     }
 
     @Override
@@ -36,7 +37,6 @@ public class SmsService implements NotificationService {
             log.info("Message sent successfully. {}", message);
         } else {
             String errorMsg = response.getMessages().get(0).getErrorText();
-            log.error("Message sending failed: {}", errorMsg);
             throw new SmsSendingException("Message sending failed: " + errorMsg);
         }
     }
