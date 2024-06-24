@@ -29,7 +29,7 @@ public class FollowerMessageBuilder implements MessageBuilder<FollowerEvent> {
         UserDto followee = userServiceClient.getUser(event.getFollowee());
         Locale userLocale = Arrays.stream(Locale.getAvailableLocales())
                 .filter(locale -> locale.getDisplayName().toUpperCase().equals(followee.getPreferredLocale()))
-                .findFirst().orElse(null);
+                .findFirst().orElse(Locale.ENGLISH);
         log.info("Follower, followee: {}, {}", follower.getUsername(), followee.getUsername());
         return messageSource.getMessage("follower.new", new Object[]{}, userLocale);
     }

@@ -26,7 +26,7 @@ public class MentorshipAcceptedMessageBuilder implements MessageBuilder<Mentorsh
         UserDto mentor = userServiceClient.getUser(event.getReceiverId());
         Locale userLocale = Arrays.stream(Locale.getAvailableLocales())
                 .filter(locale -> locale.getDisplayName().toUpperCase().equals(mentee.getPreferredLocale()))
-                .findFirst().orElse(null);
+                .findFirst().orElse(Locale.ENGLISH);
         log.info("User mentor: {}, {}", mentor.getUsername(), mentor.getEmail());
         return messageSource.getMessage("mentorship_accepted", new Object[]{mentor.getUsername(), event.getRequestId()}, userLocale);
     }
