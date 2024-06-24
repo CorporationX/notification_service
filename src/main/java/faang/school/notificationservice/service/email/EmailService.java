@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service.email;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.entity.PreferredContact;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,17 +17,17 @@ public class EmailService implements NotificationService {
 
     private final JavaMailSender javaMailSender;
     @Value("${spring.mail.username}")
-    private String sendMail;
+    private String username;
 
     @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.EMAIL;
+    public PreferredContact getPreferredContact() {
+        return PreferredContact.EMAIL;
     }
 
     @Override
     public void send(UserDto user, String message) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom(sendMail);
+        mailMessage.setFrom(username);
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("Notification");
         mailMessage.setText(message);
@@ -35,7 +36,6 @@ public class EmailService implements NotificationService {
             javaMailSender.send(mailMessage);
             log.info("Message sent successfully to {}", user.getEmail());
         } catch (Exception e) {
-            log.error("Failed to send message to {}: {}", user.getEmail(), e.getMessage());
             throw new RuntimeException("Error during email sending");
         }
     }
