@@ -9,7 +9,6 @@ import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -21,7 +20,6 @@ public abstract class AbstractListener<T> {
     protected final UserServiceClient userServiceClient;
     protected final List<MessageBuilder<T>> messageBuilders;
     protected final List<NotificationService> notificationServices;
-
 
     protected T getEvent(Message message, Class<T> type) {
         try {
@@ -49,7 +47,7 @@ public abstract class AbstractListener<T> {
                 .send(userNotificationDto, message);
     }
 
-    protected NotificationData getNotificationData(long followerId) {
+    protected NotificationData getNotificationData(long followerId){
         UserNotificationDto follower = userServiceClient.getDtoForNotification(followerId);
         return NotificationData.builder()
                 .follower(follower.getUsername())
