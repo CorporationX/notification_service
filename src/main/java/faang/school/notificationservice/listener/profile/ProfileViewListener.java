@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.event.profile.ProfileViewEvent;
+import faang.school.notificationservice.exception.ListenerException;
 import faang.school.notificationservice.listener.AbstractEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -23,14 +24,20 @@ public class ProfileViewListener extends AbstractEventListener<ProfileViewEvent>
         super(messageBuilder, notificationServices, userServiceClient, objectMapper);
     }
 
-    @KafkaListener(topics = "${spring.data.kafka.channel.profile.view.name}", groupId = "${spring.data.kafka.group-id}")
+    @KafkaListener(topics = "${spring.data.kafka.channel.profile-view.name}", groupId = "${spring.data.kafka.group-id}")
     public void listen(String event) {
         try {
             ProfileViewEvent profileViewEvent = objectMapper.readValue(event, ProfileViewEvent.class);
-            sendNotification(profileViewEvent.getUserId(), getMessage(profileViewEvent, Locale.ENGLISH));
+            log.info("Received new profileViewEvent {}", event);
+            if(profileViewEvent.getViewerId() != profileViewEvent.getUserId()){
+                sendNotification(profileViewEvent.getUserId(), getMessage(profileViewEvent, Locale.ENGLISH));
+            }
         } catch (JsonProcessingException e) {
+            log.error("Error processing event JSON: {}", event, e);
             throw new SerializationException(e);
+        } catch (Exception e) {
+            log.error("Unexpected error occurred while processing event: {}", event, e);
+            throw new ListenerException(e.getMessage());
         }
     }
 }
-

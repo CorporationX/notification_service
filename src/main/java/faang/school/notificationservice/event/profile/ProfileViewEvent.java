@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProfileViewEvent {
-    private Long userId;
-    private Long viewerId;
+    private long userId;
+    private long viewerId;
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime viewedAt;

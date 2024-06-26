@@ -18,7 +18,7 @@ public class ProfileViewEventMessageBuilder implements MessageBuilder<ProfileVie
 
     @Override
     public String buildMessage(ProfileViewEvent event, Locale locale) {
-        UserDto viewer = userServiceClient.getUser(event.getUserId());
+        UserDto viewer = userServiceClient.getUser(event.getViewerId());
         String defaultMessage = messageSource.getMessage("profile.view", new Object[]{viewer.getUsername()}, Locale.ENGLISH);
         return messageSource.getMessage("profile.view", new Object[]{viewer.getUsername()}, defaultMessage, locale);
     }

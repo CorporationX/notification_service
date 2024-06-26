@@ -21,18 +21,14 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
 
     kafka:
       port: 9092
       host: localhost
       group-id: notification_service
       channel:
-        profile:
-          view:
-            name: profile_view_event_channel
+        profile-view:
+            name: profile_view_channel
 
   mail:
     host: smtp.gmail.com

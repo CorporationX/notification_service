@@ -1,5 +1,6 @@
 package faang.school.notificationservice.handler;
 
+import faang.school.notificationservice.exception.ListenerException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
-        log.error("IllegalArgumentException ", e);
+        log.error("IllegalArgumentException: ", e);
         return buildErrorResponse(e, request, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ListenerException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleIllegalArgumentException(ListenerException e, HttpServletRequest request) {
+        log.error("ListenerException: ", e);
+        return buildErrorResponse(e, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private ErrorResponse buildErrorResponse(Exception e, HttpServletRequest request, HttpStatus status) {
