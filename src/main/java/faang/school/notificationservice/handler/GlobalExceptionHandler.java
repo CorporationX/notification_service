@@ -1,5 +1,6 @@
 package faang.school.notificationservice.handler;
 
+import faang.school.notificationservice.exception.SmsSendingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         log.error("Runtime Exception: ", e);
+        return buildErrorResponse(e, request, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(SmsSendingException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleSmsSendingException(SmsSendingException e, HttpServletRequest request) {
+        log.error("SmsSendingException ", e);
         return buildErrorResponse(e, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
