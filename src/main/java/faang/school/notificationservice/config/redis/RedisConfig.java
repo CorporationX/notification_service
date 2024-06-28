@@ -1,7 +1,8 @@
-package faang.school.notificationservice.config;
+package faang.school.notificationservice.config.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vonage.client.incoming.MessageEvent;
+import faang.school.notificationservice.listener.FollowerEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +28,10 @@ public class RedisConfig {
     private int port;
     @Value("${spring.data.redis.channel.mentorship_accepted_channel.name}")
     private String mentorshipAcceptedChannel;
+    @Value("${spring.data.redis.channel.follower.name}")
+    private String followerChanel;
+
+    private final FollowerEventListener followerEventListener;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -39,6 +44,7 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(mentorshipAcceptedListener, mentorshipAcceptedTopic());
+        container.addMessageListener(followerListener(), followerTopic());
         return container;
     }
 
@@ -58,7 +64,17 @@ public class RedisConfig {
     }
 
     @Bean
-    ChannelTopic mentorshipAcceptedTopic() {
+    public ChannelTopic mentorshipAcceptedTopic() {
         return new ChannelTopic(mentorshipAcceptedChannel);
+    }
+
+    @Bean
+    public ChannelTopic followerTopic() {
+        return new ChannelTopic(followerChanel);
+    }
+
+    @Bean
+    public MessageListenerAdapter followerListener() {
+        return new MessageListenerAdapter(followerEventListener);
     }
 }
