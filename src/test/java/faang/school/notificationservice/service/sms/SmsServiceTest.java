@@ -42,7 +42,8 @@ public class SmsServiceTest {
         user.setPhone("1234567890");
         user.setUsername("testUser");
         String message = "Test message";
-        smsService.send(user, message);
+        String messagesHeader = "message";
+        smsService.send(user, message, messagesHeader);
 
         verify(smsClient).submitMessage(any(TextMessage.class));
     }
