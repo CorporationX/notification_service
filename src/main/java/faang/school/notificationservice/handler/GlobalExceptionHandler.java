@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
-        log.error("IllegalArgumentException ", e);
+        log.error("IllegalArgumentException: ", e);
         return buildErrorResponse(e, request, HttpStatus.BAD_REQUEST);
     }
 
