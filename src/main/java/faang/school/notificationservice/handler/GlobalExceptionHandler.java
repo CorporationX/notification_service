@@ -1,5 +1,6 @@
 package faang.school.notificationservice.handler;
 
+import faang.school.notificationservice.exception.SmsSendingException;
 import faang.school.notificationservice.exception.ListenerException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +30,17 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(e, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(SmsSendingException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleSmsSendingException(SmsSendingException e, HttpServletRequest request) {
+        log.error("SmsSendingException ", e);
+        return buildErrorResponse(e, request, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
-        log.error("IllegalArgumentException: ", e);
+        log.error("IllegalArgumentException ", e);
         return buildErrorResponse(e, request, HttpStatus.BAD_REQUEST);
     }
 

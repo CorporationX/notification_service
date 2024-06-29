@@ -58,8 +58,9 @@ logging:
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: whatever
-    secret: whatever
+    key: f4bb24a5
+    secret: GroMJNVK8K2J6Z1H
+  from: Basilisk
 
 telegram:
   api:
