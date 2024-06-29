@@ -26,9 +26,10 @@ spring:
       port: 9092
       host: localhost
       group-id: notification_service
-      channel:
-        profile-view:
-            name: profile_view_channel
+
+    channel:
+      profile-view:
+          name: profile_view_channel
 
   mail:
     host: smtp.gmail.com

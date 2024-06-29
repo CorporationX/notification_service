@@ -24,7 +24,7 @@ public class ProfileViewListener extends AbstractEventListener<ProfileViewEvent>
         super(messageBuilder, notificationServices, userServiceClient, objectMapper);
     }
 
-    @KafkaListener(topics = "${spring.data.kafka.channel.profile-view.name}", groupId = "${spring.data.kafka.group-id}")
+    @KafkaListener(topics = "${spring.data.channel.profile-view.name}", groupId = "${spring.data.kafka.group-id}")
     public void listen(String event) {
         if (event == null || event.trim().isEmpty()) {
             log.error("Received empty or null event");
