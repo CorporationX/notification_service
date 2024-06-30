@@ -7,14 +7,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
-public class NotificationContext {
-    private final SmsConfig smsConfig;
+public class NotificationConfig {
+    private final SmsProperties smsProperties;
 
     @Bean
     public VonageClient vonageClient() {
         return VonageClient.builder()
-                .apiKey(smsConfig.getApiKey())
-                .apiSecret(smsConfig.getApiSecret())
+                .apiKey(smsProperties.getKey())
+                .apiSecret(smsProperties.getSecret())
                 .build();
     }
 }
