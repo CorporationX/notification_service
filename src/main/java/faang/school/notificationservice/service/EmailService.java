@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.config.notification.EmailConfig;
+import faang.school.notificationservice.config.notification.EmailProperties;
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class EmailService implements NotificationService {
 
     private final JavaMailSender javaMailSender;
-    private final EmailConfig emailConfig;
+    private final EmailProperties emailProperties;
     private static final String DEFAULT_SUBJECT = "CorporationX";
 
     @Override
@@ -31,7 +31,7 @@ public class EmailService implements NotificationService {
         }
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom(emailConfig.getUsername());
+        simpleMailMessage.setFrom(emailProperties.getUsername());
         simpleMailMessage.setTo(user.getEmail());
         simpleMailMessage.setSubject(DEFAULT_SUBJECT);
         simpleMailMessage.setText(message);

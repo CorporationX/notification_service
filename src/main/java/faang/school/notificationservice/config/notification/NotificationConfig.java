@@ -13,7 +13,8 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class NotificationConfig {
     private final SmsProperties smsProperties;
-    private final EmailProperties emailConfig;
+    private final EmailProperties emailProperties;
+
     @Bean
     public VonageClient vonageClient() {
         return VonageClient.builder()
@@ -25,17 +26,17 @@ public class NotificationConfig {
     @Bean
     public JavaMailSender configureMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(emailConfig.getHost());
-        mailSender.setPort(emailConfig.getPort());
-        mailSender.setUsername(emailConfig.getUsername());
-        mailSender.setPassword(emailConfig.getPassword());
+        mailSender.setHost(emailProperties.getHost());
+        mailSender.setPort(emailProperties.getPort());
+        mailSender.setUsername(emailProperties.getUsername());
+        mailSender.setPassword(emailProperties.getUserAppPassword());
 
         Properties properties = mailSender.getJavaMailProperties();
-        properties.put("mail.smtp.auth", emailConfig.getAuth());
-        properties.put("mail.smtp.starttls.enable", emailConfig.getEnable());
-        properties.put("mail.smtp.connectiontimeout", emailConfig.getConnectionTimeout());
-        properties.put("mail.smtp.timeout", emailConfig.getTimeout());
-        properties.put("mail.smtp.writetimeout", emailConfig.getWriteTimeout());
+        properties.put("mail.smtp.auth", emailProperties.getAuthSmtp());
+        properties.put("mail.smtp.starttls.enable", emailProperties.getStarttlsEnable());
+        properties.put("mail.smtp.connectiontimeout", emailProperties.getConnectionTimeout());
+        properties.put("mail.smtp.timeout", emailProperties.getTimeout());
+        properties.put("mail.smtp.writetimeout", emailProperties.getWriteTimeout());
 
         return mailSender;
     }

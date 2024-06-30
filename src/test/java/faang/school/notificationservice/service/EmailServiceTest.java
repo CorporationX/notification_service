@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.config.notification.EmailConfig;
+import faang.school.notificationservice.config.notification.EmailProperties;
 import faang.school.notificationservice.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -26,7 +26,7 @@ class EmailServiceTest {
     private JavaMailSender javaMailSender;
 
     @Mock
-    private EmailConfig emailConfig;
+    private EmailProperties emailProperties;
 
     private UserDto userDto;
 
@@ -47,7 +47,7 @@ class EmailServiceTest {
         void send() {
             String text = "text";
             String username = "p1mafka@gmail.com";
-            when(emailConfig.getUsername()).thenReturn(username);
+            when(emailProperties.getUsername()).thenReturn(username);
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(username);
             message.setTo(userDto.getEmail());
