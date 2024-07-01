@@ -31,6 +31,9 @@ server:
 logging:
   level:
     root: info
+threadPool:
+  nThreads:
+    telegram: 10
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
