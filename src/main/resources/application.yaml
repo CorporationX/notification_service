@@ -1,4 +1,10 @@
 spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+
   data:
     redis:
       port: 6379
@@ -27,6 +33,10 @@ spring:
 
 server:
   port: 8083
+
+
+url:
+  version01: /api/v1
 
 logging:
   level:
