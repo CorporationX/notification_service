@@ -2,12 +2,10 @@ package faang.school.notificationservice.config.notification;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Getter
 @Component
-@ConfigurationProperties(prefix = "spring.mail")
 public class EmailProperties {
     @Value("${spring.mail.host}")
     private String host;
