@@ -11,8 +11,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: sergey.nikov7473@gmail.com   #Здесь переменная окружения
-    password: uxgvrdckicqpvgcx   #Здесь переменная окружения
+    username: ${mail_username}   #Здесь переменная окружения
+    password: ${mail_password}   #Здесь переменная окружения
     properties:
       mail:
         smtp:
