@@ -30,7 +30,7 @@ server:
   port: 8083
 
 url:
-  version01: /api/v1
+  version: /api/v1
 
 logging:
   level:
