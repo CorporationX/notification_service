@@ -34,14 +34,11 @@ public class ProfileViewListener extends AbstractEventListener<ProfileViewEvent>
         try {
             ProfileViewEvent profileViewEvent = objectMapper.readValue(event, ProfileViewEvent.class);
             log.info("Received new profileViewEvent {}", event);
-            if(profileViewEvent.getViewerId() != profileViewEvent.getUserId()){
                 sendNotification(profileViewEvent.getUserId(), getMessage(profileViewEvent, Locale.ENGLISH));
-            }
         } catch (JsonProcessingException e) {
             log.error("Error processing event JSON: {}", event, e);
             throw new SerializationException(e);
         } catch (Exception e) {
-            log.error("Unexpected error occurred while processing event: {}", event, e);
             throw new ListenerException(e.getMessage());
         }
     }
