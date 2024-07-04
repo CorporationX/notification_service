@@ -31,6 +31,7 @@ public class EmailServiceTest {
     private String message;
     private String pathAttachment;
     private MimeMessage mimeMessage;
+    private String messagesHeader;
 
     @BeforeEach
     public void setUp() {
@@ -38,6 +39,7 @@ public class EmailServiceTest {
         userDto = UserDto.builder().email("email").id(1L).username("username").build();
         message = "message";
         pathAttachment = "pathAttachment";
+        messagesHeader = "message";
     }
 
     @Test
@@ -52,8 +54,9 @@ public class EmailServiceTest {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(userDto.getEmail());
         simpleMailMessage.setText(message);
+        simpleMailMessage.setSubject(messagesHeader);
 
-        emailService.send(userDto, message);
+        emailService.send(userDto, message, messagesHeader);
 
         verify(emailServiceValidator, times(1)).checkUserDtoIsNull(userDto);
         verify(emailServiceValidator, times(1)).checkMessageIsNull(message);

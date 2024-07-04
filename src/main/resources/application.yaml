@@ -6,6 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        comment-event-chanel: comment_event_chanel;
 
   mail:
     host: smtp.gmail.com
@@ -28,6 +29,9 @@ spring:
 server:
   port: 8083
 
+url:
+  version: /api/v1
+
 logging:
   level:
     root: info
@@ -46,3 +50,6 @@ project-service:
 user-service:
   host: localhost
   port: 8080
+post-service:
+  host: localhost
+  port: 8081

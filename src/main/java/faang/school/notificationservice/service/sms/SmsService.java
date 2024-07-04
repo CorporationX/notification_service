@@ -22,7 +22,7 @@ public class SmsService implements NotificationService {
     private String corpName;
 
     @Override
-    public void send(UserDto user, String message) {
+    public void send(UserDto user, String message, String messagesHeader) {
         TextMessage textMessage = new TextMessage(corpName, user.getPhone(), message);
 
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(textMessage);
