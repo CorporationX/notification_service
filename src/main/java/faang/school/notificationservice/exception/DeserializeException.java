@@ -5,4 +5,3 @@ public class DeserializeException extends RuntimeException {
         super(message);
     }
 }
-

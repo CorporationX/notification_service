@@ -9,7 +9,6 @@ import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -19,12 +18,16 @@ import java.util.function.Consumer;
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class AbstractEventListener<T> implements MessageListener {
+public abstract class AbstractEventListener<T> {
 
     private final ObjectMapper objectMapper;
     private final MessageBuilder<T> messageBuilder;
     private final List<NotificationService> notificationServices;
     private final UserServiceClient userServiceClient;
+
+    protected String getMessage(T event, Locale locale) {
+        return messageBuilder.buildMessage(event, locale);
+    }
 
     protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
         try {
@@ -37,17 +40,12 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         }
     }
 
-    protected String getMessage(T event, Locale userLocale){
-        return messageBuilder.buildMessage(event, userLocale);
-    }
-
-    protected void sendNotification(Long id, String message){
-        UserDto user = userServiceClient.getUser(id);
+    protected void sendNotification(long userId, String message) {
+        UserDto userDto = userServiceClient.getUser(userId);
         notificationServices.stream()
-                .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
+                .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreferredContact()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No notification service found for the user's preferred communication method"))
-                .send(user, message);
+                .orElseThrow(() -> new IllegalArgumentException("Preferred contact not found"))
+                .send(userDto, message);
     }
 }
-

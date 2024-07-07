@@ -1,5 +1,5 @@
 package faang.school.notificationservice.entity;
 
 public enum PreferredContact {
-    EMAIL, SMS, TELEGRAM
+    EMAIL, PHONE, TELEGRAM
 }
