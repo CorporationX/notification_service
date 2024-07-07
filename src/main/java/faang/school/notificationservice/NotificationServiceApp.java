@@ -7,7 +7,9 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.annotation.EnableKafka;
 
+@EnableKafka
 @SpringBootApplication
 @EnableFeignClients("faang.school.notificationservice.client")
 @ConfigurationPropertiesScan("faang.school.notificationservice.property")

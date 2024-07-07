@@ -25,7 +25,7 @@ public class SmsService implements NotificationService {
 
     @Override
     public PreferredContact getPreferredContact() {
-        return PreferredContact.SMS;
+        return PreferredContact.PHONE;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class SmsService implements NotificationService {
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(message);
 
         if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
-            log.info("Message sent successfully. {}", message);
+            log.info("Message successfully sent to {}", user.getPhone());
         } else {
             String errorMsg = response.getMessages().get(0).getErrorText();
             throw new SmsSendingException("Message sending failed: " + errorMsg);
