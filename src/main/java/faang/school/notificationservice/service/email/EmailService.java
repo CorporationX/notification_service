@@ -6,6 +6,9 @@ import faang.school.notificationservice.validator.EmailServiceValidator;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,9 +18,13 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailService implements NotificationService {
+
+    @Value("${spring.mail.username}")
+    private String senderOfMessage;
 
     private final JavaMailSender javaMailSender;
     private final EmailServiceValidator emailServiceValidator;
@@ -28,11 +35,13 @@ public class EmailService implements NotificationService {
     }
 
     @Override
-    public void send(UserDto user, String message) {
+    public void send(UserDto user, String message, String messagesHeader) {
         emailServiceValidator.checkUserDtoIsNull(user);
         emailServiceValidator.checkMessageIsNull(message);
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setFrom(senderOfMessage);
         simpleMailMessage.setTo(user.getEmail());
+        simpleMailMessage.setSubject(messagesHeader);
         simpleMailMessage.setText(message);
 
         javaMailSender.send(simpleMailMessage);
