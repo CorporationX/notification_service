@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 public abstract class AbstractEventListener<T> implements MessageListener {
 
     private final ObjectMapper objectMapper;
-    private final List<MessageBuilder<T>> messageBuilders;
+    private final MessageBuilder<T> messageBuilder;
     private final List<NotificationService> notificationServices;
     private final UserServiceClient userServiceClient;
 
@@ -38,11 +38,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     }
 
     protected String getMessage(T event, Locale userLocale){
-        return messageBuilders.stream()
-                .filter(messageBuilder -> messageBuilder.getInstance().equals(event.getClass()))
-                .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event, userLocale))
-                .orElseThrow(() -> new IllegalArgumentException("No message builder found for the given event type: " + event.getClass().getName()));
+        return messageBuilder.buildMessage(event, userLocale);
     }
 
     protected void sendNotification(Long id, String message){

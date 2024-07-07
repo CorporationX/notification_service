@@ -17,10 +17,10 @@ import java.util.Locale;
 public class LikeEventListener extends AbstractEventListener<LikeEvent> {
 
     public LikeEventListener(ObjectMapper objectMapper,
-                             List<MessageBuilder<LikeEvent>> messageBuilders,
+                             MessageBuilder<LikeEvent> messageBuilder,
                              List<NotificationService> notificationServices,
                              UserServiceClient userServiceClient) {
-        super(objectMapper, messageBuilders, notificationServices, userServiceClient);
+        super(objectMapper, messageBuilder, notificationServices, userServiceClient);
     }
 
     @Override
