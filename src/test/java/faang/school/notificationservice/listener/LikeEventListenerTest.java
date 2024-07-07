@@ -59,7 +59,7 @@ public class LikeEventListenerTest {
 
         userDto = UserDto.builder()
                 .id(1L)
-                .preference(PreferredContact.EMAIL)
+                .preferredContact(PreferredContact.EMAIL)
                 .build();
 
         Locale.setDefault(locale);

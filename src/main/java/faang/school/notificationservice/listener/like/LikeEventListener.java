@@ -8,13 +8,14 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.NonNull;
 import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Locale;
 
 @Component
-public class LikeEventListener extends AbstractEventListener<LikeEvent> {
+public class LikeEventListener extends AbstractEventListener<LikeEvent> implements MessageListener {
 
     public LikeEventListener(ObjectMapper objectMapper,
                              MessageBuilder<LikeEvent> messageBuilder,
