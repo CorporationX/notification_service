@@ -15,9 +15,9 @@ public class TelegramService implements NotificationService {
     private final TelegramRepository telegramRepository;
 
     @Override
-    public void send(UserDto user, String message) {
+    public void send(UserDto user, String message, String messagesHeader) {
         telegramBot.sendNotification(telegramRepository.findByPostAuthorId(user.getId())
-                .orElseThrow(() -> new DataNotificationException("Пользователь с id: " + user.getId() + " не авторизовался в CorporationX")).getChatId(), message);
+                .orElseThrow(() -> new DataNotificationException("Пользователь с id: " + user.getId() + " не авторизовался в CorporationX")).getChatId(), message, messagesHeader);
     }
 
     @Override
