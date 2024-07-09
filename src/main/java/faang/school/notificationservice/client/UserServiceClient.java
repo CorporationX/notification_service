@@ -10,4 +10,7 @@ public interface UserServiceClient {
 
     @GetMapping("${url.version}/users/{userId}")
     UserDto getUser(@PathVariable("userId") long userId);
+
+    @GetMapping("${url.version}/users/authorize/{userEmail}/{userPassword}")
+    Long authorizeUser(@PathVariable("userEmail") String userEmail, @PathVariable("userPassword") String userPassword);
 }
