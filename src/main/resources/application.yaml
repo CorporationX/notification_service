@@ -10,6 +10,8 @@ spring:
           name: achievement_channel
         comment:
           name: comment_channel
+        tariff_rate_change_channel:
+          name: tariff_rate_change_channel
 
   mail:
     sender: Corporation-X
@@ -52,3 +54,6 @@ user-service:
 post-service:
     host: localhost
     port: 8081
+account-service:
+    host: localhost
+    port: 8090
