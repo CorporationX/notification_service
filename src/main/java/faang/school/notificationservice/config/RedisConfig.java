@@ -2,6 +2,7 @@ package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.ProjectFollowerEventListener;
+import faang.school.notificationservice.listener.TariffRateChangeListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.channels.comment.name}")
     private String commentChannelName;
 
+    @Value("${spring.data.redis.channels.tariff_rate_change_channel.name}")
+    private String tariffRateChangeChannelName;
+
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
@@ -45,11 +49,13 @@ public class RedisConfig {
 
     @Bean
     public RedisMessageListenerContainer listenerContainer(MessageListenerAdapter projectFollowerListener,
-                                                           MessageListenerAdapter commentListener) {
+                                                           MessageListenerAdapter commentListener,
+                                                           MessageListenerAdapter tariffRateListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(projectFollowerListener, projectFollowerTopic());
         container.addMessageListener(commentListener, commentTopic());
+        container.addMessageListener(tariffRateListener, tariffRateChangeTopic());
         return container;
     }
 
@@ -63,6 +69,10 @@ public class RedisConfig {
         return new MessageListenerAdapter(commentEventListener);
     }
 
+    @Bean MessageListenerAdapter tariffRateListener(TariffRateChangeListener tariffRateChangeListener){
+        return new MessageListenerAdapter(tariffRateChangeListener);
+    }
+
     @Bean
     public ChannelTopic projectFollowerTopic() {
         return new ChannelTopic(projectFollowerName);
@@ -71,5 +81,10 @@ public class RedisConfig {
     @Bean
     public ChannelTopic commentTopic() {
         return new ChannelTopic(commentChannelName);
+    }
+
+    @Bean
+    public ChannelTopic tariffRateChangeTopic(){
+        return new ChannelTopic(tariffRateChangeChannelName);
     }
 }

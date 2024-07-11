@@ -8,4 +8,5 @@ import lombok.Data;
 public class NotificationData {
     private String follower;
     private String followee;
+    private String accountOwner;
 }
