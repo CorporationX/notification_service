@@ -20,8 +20,8 @@ import java.util.Locale;
 @Component
 public class ProfileViewListener extends AbstractEventListener<ProfileViewEvent> {
 
-    public ProfileViewListener(MessageBuilder<ProfileViewEvent> messageBuilder, List<NotificationService> notificationServices, UserServiceClient userServiceClient, ObjectMapper objectMapper) {
-        super(messageBuilder, notificationServices, userServiceClient, objectMapper);
+    public ProfileViewListener(ObjectMapper objectMapper, MessageBuilder<ProfileViewEvent> messageBuilder, List<NotificationService> notificationServices, UserServiceClient userServiceClient) {
+        super(objectMapper, messageBuilder, notificationServices, userServiceClient);
     }
 
     @KafkaListener(topics = "${spring.data.channel.profile-view.name}", groupId = "${spring.data.kafka.group-id}")
