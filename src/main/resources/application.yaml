@@ -10,6 +10,7 @@ spring:
       port: 6379
       host: localhost
       channel:
+        like_channel: like_view_channel
         follower: follower_channel
         achievement: achievement_channel
         comment-event-chanel: comment_event_chanel;
