@@ -6,6 +6,8 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        comment: comment_channel
+        mentorship_offered: mentorship_offered_channel
 
   mail:
     host: smtp.gmail.com
@@ -37,6 +39,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+  from: whatever
+
+tg-bot:
+  name: FAANG_CorpX_bot
+  token: 6602626214:AAFI0WmCbQMEAe-i3yAZLJsDvi8ujnpZAdw
 
 project-service:
     host: localhost
