@@ -43,9 +43,6 @@ class AbstractEventListenerTest {
     @Mock
     private NotificationService notificationService;
 
-    @Captor
-    private ArgumentCaptor<Consumer<Object>> consumerCaptor;
-
     private TestEventListener eventListener;
     private long userId;
     private String messageContent;
