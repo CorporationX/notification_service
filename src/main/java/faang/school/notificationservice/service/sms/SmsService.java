@@ -8,11 +8,13 @@ import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SmsService implements NotificationService {
     @Value("${notification.brand}")
     private String brand;
@@ -25,6 +27,9 @@ public class SmsService implements NotificationService {
 
         if (response.getMessages().get(0).getStatus() != MessageStatus.OK) {
             throw new RuntimeException("Failed to send SMS: " + response.getMessages().get(0).getStatus());
+        }
+        else {
+            log.info("Message to number {} sent successfully.", user.getPhone());
         }
     }
 
