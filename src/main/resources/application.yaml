@@ -7,6 +7,24 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
 
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -21,6 +39,10 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+  telegram:
+    name: notificationusersbot
+    token: 7413327448:AAFoEq1a8OqazwcSifEOEF9ItA3cYyjN5JE
+
 
   messages:
     basename: messages
@@ -39,8 +61,12 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
+post-service:
+  host: localhost
+  port: 8081
+
