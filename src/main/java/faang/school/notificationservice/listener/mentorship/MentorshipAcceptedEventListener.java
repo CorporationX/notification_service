@@ -28,7 +28,7 @@ public class MentorshipAcceptedEventListener extends AbstractEventListener<Mento
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, MentorshipAcceptedEvent.class, event -> {
             var notificationContent = getMessage(event, Locale.US);
-            sendNotification(event.getReceiverId(), notificationContent);
+            sendNotification(event.getRequesterId(), notificationContent);
         });
     }
 }

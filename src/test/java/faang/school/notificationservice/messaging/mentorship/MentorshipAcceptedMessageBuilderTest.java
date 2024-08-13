@@ -40,7 +40,7 @@ class MentorshipAcceptedMessageBuilderTest {
         event = new MentorshipAcceptedEvent(UUID.randomUUID(),
                 123L, 456L, 789L);
         receiver = new UserDto();
-        receiver.setId(event.getReceiverId());
+        receiver.setId(event.getRequesterId());
         receiver.setUsername("testUser");
     }
 

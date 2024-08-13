@@ -28,7 +28,7 @@ public class MentorshipAcceptedMessageBuilder implements MessageBuilder<Mentorsh
 
     @Override
     public String buildMessage(MentorshipAcceptedEvent event, Locale locale) {
-        var receiver = fetchUser(event.getReceiverId());
+        var receiver = fetchUser(event.getRequesterId());
         return messageSource.getMessage("mentorship.accepted", new Object[]{receiver.getUsername()}, locale);
     }
 

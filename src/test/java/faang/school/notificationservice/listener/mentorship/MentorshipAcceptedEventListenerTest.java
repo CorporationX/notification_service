@@ -70,7 +70,7 @@ class MentorshipAcceptedEventListenerTest {
 
         UserDto userDto = new UserDto();
         userDto.setPreference(UserDto.PreferredContact.EMAIL);
-        when(userServiceClient.getUser(3L)).thenReturn(userDto);
+        when(userServiceClient.getUser(2L)).thenReturn(userDto);
 
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
 
@@ -79,7 +79,7 @@ class MentorshipAcceptedEventListenerTest {
         verify(objectMapper).readValue(jsonMessage.getBytes(), MentorshipAcceptedEvent.class);
         verify(messageBuilder).getInstance();
         verify(messageBuilder).buildMessage(event, Locale.US);
-        verify(userServiceClient).getUser(3L);
+        verify(userServiceClient).getUser(2L);
         verify(notificationService).getPreferredContact();
         verify(notificationService).send(userDto, notificationContent);
     }
