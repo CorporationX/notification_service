@@ -2,7 +2,7 @@ package faang.school.notificationservice.messaging.mentorship;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.event.mentorship.MentorshipAcceptedEvent;
+import faang.school.notificationservice.event.mentorship.request.MentorshipAcceptedEvent;
 import faang.school.notificationservice.exception.ExceptionMessages;
 import faang.school.notificationservice.exception.feign.UserServiceException;
 import faang.school.notificationservice.messaging.MessageBuilder;

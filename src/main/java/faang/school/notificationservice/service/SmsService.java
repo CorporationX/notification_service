@@ -32,7 +32,7 @@ public class SmsService implements NotificationService {
                     new PhoneNumber(sender),
                     message
             ).create();
-            log.info("SMS sent to user: {}. The contents: {}", user.getId(), messageSent);
+            log.info("SMS sent to user with id {}. The contents: {}", user.getId(), messageSent);
         } catch (Exception e) {
             log.error("Failed to send SMS to user: {}", user.getId(), e);
             throw new SmsSendingException(String.format(ExceptionMessages.SMS_SENDING_FAILURE, user.getId()), e);

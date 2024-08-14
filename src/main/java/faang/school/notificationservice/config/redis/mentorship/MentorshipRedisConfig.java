@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.redis;
+package faang.school.notificationservice.config.redis.mentorship;
 
 import faang.school.notificationservice.listener.mentorship.MentorshipAcceptedEventListener;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,8 +12,8 @@ import org.springframework.data.util.Pair;
 @Configuration
 public class MentorshipRedisConfig {
 
-    @Value("${spring.data.redis.channel.mentorship}")
-    private String mentorshipChannel;
+    @Value("${spring.data.redis.channel.mentorship_accepted}")
+    private String mentorshipAcceptedChannelName;
 
     @Bean
     MessageListenerAdapter mentorshipAcceptedListener(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
@@ -22,6 +22,6 @@ public class MentorshipRedisConfig {
 
     @Bean
     Pair<MessageListenerAdapter, ChannelTopic> mentorshipAccepted(@Qualifier("mentorshipAcceptedListener") MessageListenerAdapter mentorshipAcceptedListener) {
-        return Pair.of(mentorshipAcceptedListener, new ChannelTopic(mentorshipChannel));
+        return Pair.of(mentorshipAcceptedListener, new ChannelTopic(mentorshipAcceptedChannelName));
     }
 }

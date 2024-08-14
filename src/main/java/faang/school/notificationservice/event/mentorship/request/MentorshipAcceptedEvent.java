@@ -1,4 +1,4 @@
-package faang.school.notificationservice.event.mentorship;
+package faang.school.notificationservice.event.mentorship.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener.mentorship;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.event.mentorship.MentorshipAcceptedEvent;
+import faang.school.notificationservice.event.mentorship.request.MentorshipAcceptedEvent;
 import faang.school.notificationservice.exception.listener.EventHandlingException;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
