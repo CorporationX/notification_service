@@ -1,29 +1,29 @@
-package faang.school.notificationservice.config;
+package faang.school.notificationservice.config.redis;
 
-import faang.school.notificationservice.listener.recommendationReceived.RecommendationReceivedListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.util.Pair;
+
+import java.util.List;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-public class RedisConfig {
+public class GeneralRedisConfig {
 
     @Value("${spring.data.redis.host}")
     private String host;
-
     @Value("${spring.data.redis.port}")
     private int port;
-
-    @Value("${spring.data.redis.channel.recommendation_received}")
-    private String recommendationReceivedChannel;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -31,13 +31,14 @@ public class RedisConfig {
     }
 
     @Bean
-    ChannelTopic recommendationReceivedTopic() {
-        return new ChannelTopic(recommendationReceivedChannel);
-    }
-
-    @Bean
-    MessageListenerAdapter recommendationReceivedAdapter(RecommendationReceivedListener recommendationReceivedListener) {
-        return new MessageListenerAdapter(recommendationReceivedListener);
+    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory jedisConnectionFactory,
+                                                        List<Pair<MessageListenerAdapter, ChannelTopic>> redisEventListener) {
+        var container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(jedisConnectionFactory);
+        for (var listenerWithTopic : redisEventListener) {
+            container.addMessageListener(listenerWithTopic.getFirst(), listenerWithTopic.getSecond());
+        }
+        return container;
     }
 
     @Bean
@@ -49,13 +50,4 @@ public class RedisConfig {
         return template;
     }
 
-    @Bean
-    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory redisConnectionFactory,
-                                                        MessageListenerAdapter recommendationReceivedAdapter) {
-        var container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConnectionFactory);
-
-        container.addMessageListener(recommendationReceivedAdapter, recommendationReceivedTopic());
-        return container;
-    }
 }
