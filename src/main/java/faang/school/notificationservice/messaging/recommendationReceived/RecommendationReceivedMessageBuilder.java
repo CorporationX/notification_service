@@ -13,7 +13,7 @@ import java.util.Locale;
 public class RecommendationReceivedMessageBuilder implements MessageBuilder<RecommendationReceivedEvent> {
     private final MessageSource messageSource;
     @Override
-    public Class<?> getInstance() {
+    public Class<RecommendationReceivedEvent> getInstance() {
         return RecommendationReceivedEvent.class;
     }
 
