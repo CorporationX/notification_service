@@ -10,6 +10,7 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.web.client.RestClientException;
 
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
  *
  * @param <T> the type of event this listener handles
  */
+@Slf4j
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
 
@@ -46,8 +48,10 @@ public abstract class AbstractEventListener<T> {
     protected void handleEvent(Message message, Class<T> type, Consumer<T> eventConsumer) {
         try {
             T event = objectMapper.readValue(message.getBody(), type);
+            log.info("Received event: {}", event);
             eventConsumer.accept(event);
         } catch (IOException e) {
+            log.error(ExceptionMessages.EVENT_HANDLING_FAILURE, e);
             throw new EventHandlingException(e);
         }
     }
