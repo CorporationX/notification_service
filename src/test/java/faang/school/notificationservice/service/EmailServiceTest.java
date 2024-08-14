@@ -37,7 +37,7 @@ class EmailServiceTest {
         message.setTo(email);
         message.setText(text);
 
-        mailSender.send(message);
+        emailService.send(user, text);
         verify(mailSender).send(messageCaptor.capture());
         SimpleMailMessage capturedMessage = messageCaptor.getValue();
         List<String> recievers = Arrays.asList(capturedMessage.getTo());
