@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config;
+package faang.school.notificationservice.config.redis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -6,16 +6,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.util.Pair;
+
+import java.util.List;
 
 @Configuration
-public class RedisConfig {
+public class GeneralRedisConfig {
 
     @Value("${spring.data.redis.host}")
     private String host;
-
     @Value("${spring.data.redis.port}")
     private int port;
 
@@ -25,18 +27,13 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        var template = new RedisTemplate<String, Object>();
-        template.setConnectionFactory(redisConnectionFactory);
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new StringRedisSerializer());
-        return template;
-    }
-
-    @Bean
-    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory redisConnectionFactory) {
+    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory jedisConnectionFactory,
+                                                        List<Pair<MessageListenerAdapter, ChannelTopic>> redisEventListener) {
         var container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConnectionFactory);
+        container.setConnectionFactory(jedisConnectionFactory);
+        for (var listenerWithTopic : redisEventListener) {
+            container.addMessageListener(listenerWithTopic.getFirst(), listenerWithTopic.getSecond());
+        }
         return container;
     }
 

@@ -6,6 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        mentorship_accepted: mentorship_accepted_channel
 
   mail:
     host: smtp.gmail.com
@@ -37,6 +38,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+
+twilio:
+  account-sid: ${ACCOUNT_SID}
+  auth-token: ${AUTH_TOKEN}
+  phone-number: +13345130419
 
 project-service:
     host: localhost
