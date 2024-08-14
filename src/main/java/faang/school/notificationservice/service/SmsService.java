@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
 
+import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import faang.school.notificationservice.dto.UserDto;
@@ -22,6 +23,7 @@ public class SmsService implements NotificationService {
 
     @Value("${twilio.phone-number}")
     private String sender;
+    private final TwilioRestClient twilioRestClient;
 
     @Override
     public void send(UserDto user, String message) {
@@ -31,7 +33,7 @@ public class SmsService implements NotificationService {
                     new PhoneNumber(user.getPhone()),
                     new PhoneNumber(sender),
                     message
-            ).create();
+            ).create(twilioRestClient);
             log.info("SMS sent to user with id {}. The contents: {}", user.getId(), messageSent);
         } catch (Exception e) {
             log.error("Failed to send SMS to user: {}", user.getId(), e);

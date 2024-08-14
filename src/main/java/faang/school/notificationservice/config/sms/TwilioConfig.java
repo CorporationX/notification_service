@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config.sms;
 
-import com.twilio.Twilio;
+import com.twilio.http.TwilioRestClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +14,7 @@ public class TwilioConfig {
     private String authToken;
 
     @Bean
-    public void twilioInit() {
-        Twilio.init(accountSid, authToken);
+    public TwilioRestClient twilioRestClient() {
+        return new TwilioRestClient.Builder(accountSid, authToken).build();
     }
 }

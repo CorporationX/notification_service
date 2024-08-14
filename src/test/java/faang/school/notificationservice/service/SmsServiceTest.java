@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service;
 
-import com.twilio.Twilio;
+import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.api.v2010.account.MessageCreator;
 import com.twilio.type.PhoneNumber;
@@ -32,13 +32,14 @@ class SmsServiceTest {
 
     @Mock
     private MessageCreator messageCreator;
+    @Mock
+    private TwilioRestClient twilioRestClient;
     @InjectMocks
     private SmsService smsService;
 
     @BeforeEach
     void setUp() {
         ReflectionTestUtils.setField(smsService, "sender", "+15551234567");
-        Twilio.init("testAccountSid", "testAuthToken");
     }
 
     @Test
@@ -51,11 +52,11 @@ class SmsServiceTest {
         try (MockedStatic<Message> mocked = mockStatic(Message.class)) {
             mocked.when(() -> Message.creator(any(PhoneNumber.class), any(PhoneNumber.class), anyString()))
                     .thenReturn(messageCreator);
-            when(messageCreator.create()).thenReturn(mock(Message.class));
+            when(messageCreator.create(twilioRestClient)).thenReturn(mock(Message.class));
 
             assertDoesNotThrow(() -> smsService.send(user, message));
 
-            verify(messageCreator, times(1)).create();
+            verify(messageCreator, times(1)).create(twilioRestClient);
         }
     }
 
@@ -69,7 +70,7 @@ class SmsServiceTest {
         try (MockedStatic<Message> mocked = mockStatic(Message.class)) {
             mocked.when(() -> Message.creator(any(PhoneNumber.class), any(PhoneNumber.class), anyString()))
                     .thenReturn(messageCreator);
-            when(messageCreator.create()).thenThrow(new RuntimeException("Test exception"));
+            when(messageCreator.create(twilioRestClient)).thenThrow(new RuntimeException("Test exception"));
 
             var exception = assertThrows(SmsSendingException.class, () -> smsService.send(user, message));
 
