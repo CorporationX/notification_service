@@ -71,7 +71,7 @@ class AbstractEventListenerTest {
 
         when(messageBuilder.getInstance()).thenReturn((Class) String.class);
 
-        assertThrows(MissingFormatArgumentException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
                 eventListener.getMessage(event, locale, null)
         );
     }
@@ -102,7 +102,7 @@ class AbstractEventListenerTest {
         when(userServiceClient.getUser(userId)).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS);
 
-        assertThrows(MissingFormatArgumentException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
                 eventListener.sendNotification(userId, message)
         );
     }

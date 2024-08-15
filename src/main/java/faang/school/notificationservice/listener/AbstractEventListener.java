@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.MissingFormatArgumentException;
 
 
 @RequiredArgsConstructor
@@ -23,7 +22,7 @@ public abstract class AbstractEventListener<T> {
         return messageBuilderList.stream()
                 .filter(messageBuilder -> messageBuilder.getInstance().equals(event.getClass()))
                 .findFirst()
-                .orElseThrow(() -> new MissingFormatArgumentException("MessageBuilder with " + event.getClass() + " type not found"))
+                .orElseThrow(() -> new IllegalArgumentException("MessageBuilder with " + event.getClass() + " type not found"))
                 .buildMessage(event, userLocale, args);
     }
 
@@ -32,7 +31,7 @@ public abstract class AbstractEventListener<T> {
         notificationServiceList.stream()
                 .filter(notificationService -> notificationService.getPreferredContact() == user.getPreference())
                 .findFirst()
-                .orElseThrow(() -> new MissingFormatArgumentException("NotificationService with preferred user contact " + user.getPreference() + " not found"))
+                .orElseThrow(() -> new IllegalArgumentException("NotificationService with preferred user contact " + user.getPreference() + " not found"))
                 .send(user, message);
     }
 }
