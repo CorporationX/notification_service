@@ -34,7 +34,7 @@ public abstract class AbstractEventListener<T> {
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreference()))
                 .findFirst()
-                .orElseThrow(()-> new IllegalArgumentException("No one notification was found for the given user " + userId + " as preferred contact"))
+                .orElseThrow(() -> new IllegalArgumentException("No one notification was found for the given user " + userId + " as preferred contact"))
                 .send(userDto, message);
     }
 
@@ -42,18 +42,17 @@ public abstract class AbstractEventListener<T> {
         return eventType.getClass();
     }
 
-    public T constructEvent(Message message, Class<T> eventClass){
+    public T constructEvent(byte[] message, Class<T> eventClass) {
         try {
-            return objectMapper.readValue(message.getBody(), eventClass);
+            return objectMapper.readValue(message, eventClass);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    public String sendMessage (T event, long receiverId, Locale userLocale) {
+    public void sendMessage(T event, long receiverId, Locale userLocale) {
         String msg = getMessage(event, userLocale);
         sendNotification(receiverId, msg);
-        return msg;
     }
 }

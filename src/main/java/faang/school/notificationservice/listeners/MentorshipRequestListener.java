@@ -16,12 +16,12 @@ public class MentorshipRequestListener extends AbstractEventListener<MentorshipO
     public MentorshipRequestListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
                                      List<MessageBuilder<MentorshipOfferedEvent>> messageBuilders,
                                      List<NotificationService> notificationServices) {
-        super(objectMapper,userServiceClient,notificationServices,messageBuilders);
+        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        MentorshipOfferedEvent event = constructEvent(message,MentorshipOfferedEvent.class);
-        sendMessage(event, event.getMentorId(),Locale.US);
+        MentorshipOfferedEvent event = constructEvent(message.getBody(), MentorshipOfferedEvent.class);
+        sendMessage(event, event.getMentorId(), Locale.US);
     }
 }

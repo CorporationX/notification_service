@@ -8,11 +8,13 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
+
 @Component
 @RequiredArgsConstructor
 public class MentorshipOfferedMessageBuilder implements MessageBuilder<MentorshipOfferedEvent> {
     private final MessageSource messageSource;
     private final UserServiceClient userServiceClient;
+
     @Override
     public Class<?> getInstance() {
         return this.getClass();
@@ -21,7 +23,8 @@ public class MentorshipOfferedMessageBuilder implements MessageBuilder<Mentorshi
     @Override
     public String buildMessage(MentorshipOfferedEvent event, Locale locale) {
         UserDto dto = userServiceClient.getUser(event.getAuthorId());
-        return messageSource.getMessage("mentorship.offer", new Object[]{dto.getUsername()}, locale);
+        Object[] obj = {dto.getUsername()};
+        return messageSource.getMessage("mentorship.offer", obj, locale);
     }
 
     @Override
