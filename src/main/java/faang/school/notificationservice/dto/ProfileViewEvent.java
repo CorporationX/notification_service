@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class ProfileViewEvent {
-    private long userId;
+    private long authorId;
     private long viewerId;
     private LocalDateTime viewTime;
 }

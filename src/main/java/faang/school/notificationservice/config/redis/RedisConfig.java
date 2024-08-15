@@ -21,14 +21,13 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
-    @Value("${spring.data.redis.profile_view}")
+    @Value("${spring.data.redis.channel.profileView}")
     private String channelName;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHost, redisPort);
-        // redisConfig в connection
-        return new JedisConnectionFactory();
+        RedisStandaloneConfiguration conf = new RedisStandaloneConfiguration(redisHost, redisPort);
+        return new JedisConnectionFactory(conf);
     }
 
     @Bean
