@@ -6,11 +6,11 @@ import lombok.Data;
 public class UserDto {
     private long id;
     private String username;
+    private String city;
     private String email;
     private String phone;
     private PreferredContact preference;
-
     public enum PreferredContact {
-        EMAIL, SMS, TELEGRAM
+        EMAIL, PHONE, TELEGRAM
     }
 }
