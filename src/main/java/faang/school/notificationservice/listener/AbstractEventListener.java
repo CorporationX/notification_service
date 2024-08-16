@@ -25,7 +25,7 @@ public class  AbstractEventListener<T> {
     protected final List<NotificationService> notificationServices;
     protected final List<MessageBuilder<T>> messageBuilders;
 
-    protected T handleMessage(Message message, byte[] pattern, Class<T> clazz) {
+    public T handleMessage(Message message, Class<T> clazz) {
         try {
             return objectMapper.readValue(message.getBody(), clazz);
         } catch (IOException e) {
@@ -33,7 +33,7 @@ public class  AbstractEventListener<T> {
         }
     }
 
-    protected String getMessage(T event, Locale locale) {
+    public String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
                 .filter((messageBuilder) -> messageBuilder.getInstance().equals(event.getClass()))
                 .findFirst()
@@ -41,7 +41,7 @@ public class  AbstractEventListener<T> {
                 .buildMessage(event, locale);
     }
 
-    protected void sendNotification(UserDto user, String message) {
+    public void sendNotification(UserDto user, String message) {
         notificationServices.stream()
                 .filter((notificationService) -> notificationService.getPreferredContact() == user.getPreference())
                 .forEach((service) -> service.send(user, message));

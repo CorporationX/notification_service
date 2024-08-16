@@ -28,7 +28,7 @@ public class AchievementEventListener extends AbstractEventListener<AchievementE
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        AchievementEvent achievementEvent = handleMessage(message, pattern, AchievementEvent.class);
+        AchievementEvent achievementEvent = handleMessage(message, AchievementEvent.class);
         UserDto user = userServiceClient.getUser(achievementEvent.getUserId());
         String msg = getMessage(achievementEvent, user.getPreferredLocale());
         sendNotification(user, msg);
