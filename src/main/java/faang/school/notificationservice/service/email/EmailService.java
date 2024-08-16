@@ -14,9 +14,7 @@ public class EmailService implements NotificationService {
     private final JavaMailSender javaMailSender;
     @Value("${spring.mail.username}")
     private String emailFrom;
-
     private final String SUBJECT_MESSAGE = "Notification service";
-
 
     @Override
     public void send(UserDto user, String message) {
