@@ -34,16 +34,17 @@ public class EmailServiceTest {
 
     @Test
     void sendTest() {
+        String email = "user@gmail.com";
         String message = "Some test message";
         UserDto user = UserDto.builder()
                 .id(1L)
-                .email("user@gmail.com")
+                .email(email)
                 .preference(UserDto.PreferredContact.EMAIL)
                 .build();
         emailService.send(user,message);
         verify(mailSender,times(1)).send(messageCaptor.capture());
         SimpleMailMessage sentMessage = messageCaptor.getValue();
         assertEquals(message,sentMessage.getText());
+        assertEquals(email,sentMessage.getTo()[0]);
     }
-
 }
