@@ -6,5 +6,5 @@ public interface MessageBuilder<T> {
 
     Class<?> getInstance();
 
-    String buildMessage(T event, Locale locale);
+    String buildMessage(T event, Locale locale, Object[] args);
 }
