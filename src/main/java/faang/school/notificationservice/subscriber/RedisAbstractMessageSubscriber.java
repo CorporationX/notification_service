@@ -14,7 +14,7 @@ import java.util.Locale;
 
 
 @RequiredArgsConstructor
-public abstract class RedisAbstractMessageSubscriber<T> {
+public abstract class RedisAbstractMessageSubscriber<T>{
     protected final ObjectMapper objectMapper;
     protected final UserService userService;
     protected final PostService postService;

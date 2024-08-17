@@ -12,20 +12,20 @@ import org.springframework.data.util.Pair;
 public class LikeConfig {
 
     @Value("${spring.data.redis.channel.like}")
-    private String likeChannel;
+    private String likeTopic;
 
     @Bean
-    public ChannelTopic topic() {
-        return new ChannelTopic(likeChannel);
+    public ChannelTopic likeTopic() {
+        return new ChannelTopic(likeTopic);
     }
 
     @Bean
-    MessageListenerAdapter followerEventListener(LikeEventSubscriber likeEventSubscriber) {
+    MessageListenerAdapter likeEventListener(LikeEventSubscriber likeEventSubscriber) {
         return new MessageListenerAdapter(likeEventSubscriber);
     }
 
     @Bean
-    Pair<MessageListenerAdapter, ChannelTopic> followerRequester(MessageListenerAdapter followerEventListener) {
-        return Pair.of(followerEventListener, topic());
+    Pair<MessageListenerAdapter, ChannelTopic> likeRequester(MessageListenerAdapter likeEventListener) {
+        return Pair.of(likeEventListener, likeTopic());
     }
 }
