@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.MessageDto;
 import faang.school.notificationservice.dto.PostDto;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.event.FollowerEvent;
+import faang.school.notificationservice.event.LikeEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.PostService;
@@ -21,21 +21,21 @@ import java.util.Locale;
 
 @Service
 @Slf4j
-public class FollowerEventSubscriber extends RedisAbstractMessageSubscriber<FollowerEvent>
+public class LikeEventSubscriber extends RedisAbstractMessageSubscriber<LikeEvent>
         implements MessageListener {
 
-    public FollowerEventSubscriber(ObjectMapper objectMapper,
-                                   UserService userService,
-                                   PostService postService,
-                                   List<NotificationService> notificationServices,
-                                   List<MessageBuilder<FollowerEvent>> messageBuilders) {
+    public LikeEventSubscriber(ObjectMapper objectMapper,
+                               UserService userService,
+                               PostService postService,
+                               List<NotificationService> notificationServices,
+                               List<MessageBuilder<LikeEvent>> messageBuilders) {
         super(objectMapper, userService, postService, notificationServices, messageBuilders);
     }
 
     @Override
     public void onMessage(@NonNull Message message, byte[] pattern) {
         try {
-            FollowerEvent event = objectMapper.readValue(message.getBody(), FollowerEvent.class);
+            LikeEvent event = objectMapper.readValue(message.getBody(), LikeEvent.class);
             UserDto author = userService.getUser(event.getAuthorId());
             UserDto likeAuthor = userService.getUser(event.getLikeAuthorId());
             PostDto post = postService.getPostById(event.getPostId());

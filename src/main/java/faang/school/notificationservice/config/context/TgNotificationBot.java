@@ -14,7 +14,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -118,8 +117,6 @@ public class TgNotificationBot extends TelegramLongPollingBot {
             throw new EntityNotFoundException("Failed to send message to chatId " + chatId);
         }
     }
-
-
 }
 
 

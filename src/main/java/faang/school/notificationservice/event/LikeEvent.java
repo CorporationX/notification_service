@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FollowerEvent {
+public class LikeEvent {
     private Long id;
     private Long postId;
     private Long authorId;
