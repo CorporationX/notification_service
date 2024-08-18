@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,5 +65,11 @@ public class MentorshipOfferedMessageBuilderTest {
         when(userServiceClient.getUser(event.getAuthorId())).thenReturn(dto);
         String result = mentorshipOfferedMessageBuilder.buildMessage(event, new Locale("ru"));
         assertEquals(str, result);
+    }
+
+    @Test
+    public void testSupportsEventSuccess(){
+        boolean result = mentorshipOfferedMessageBuilder.supportsEvent(new MentorshipOfferedEvent());
+        assertTrue(result);
     }
 }
