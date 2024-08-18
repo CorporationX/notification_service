@@ -14,7 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,7 +68,7 @@ public class MentorshipOfferedMessageBuilderTest {
 
     @Test
     public void testSupportsEventSuccess(){
-        boolean result = mentorshipOfferedMessageBuilder.supportsEvent(new MentorshipOfferedEvent());
-        assertTrue(result);
+        Class<?> result = mentorshipOfferedMessageBuilder.supportsEvent();
+        assertEquals(MentorshipOfferedEvent.class, result);
     }
 }

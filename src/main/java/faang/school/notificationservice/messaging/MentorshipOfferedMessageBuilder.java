@@ -28,7 +28,7 @@ public class MentorshipOfferedMessageBuilder implements MessageBuilder<Mentorshi
     }
 
     @Override
-    public boolean supportsEvent(MentorshipOfferedEvent event) {
-        return MentorshipOfferedEvent.class == event.getClass();
+    public Class<?> supportsEvent() {
+        return MentorshipOfferedEvent.class;
     }
 }

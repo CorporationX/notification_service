@@ -22,7 +22,7 @@ public abstract class AbstractEventListener<T> {
 
     public String getMessage(T eventType, Locale userLocale) {
         return messageBuilders.stream()
-                .filter(mb -> mb.supportsEvent(eventType))
+                .filter(mb -> mb.supportsEvent() == eventType.getClass())
                 .findFirst()
                 .map(mb -> mb.buildMessage(eventType, userLocale))
                 .orElseThrow(() -> new IllegalArgumentException("No one message was found for the given event type " + eventType.getClass().getName()));

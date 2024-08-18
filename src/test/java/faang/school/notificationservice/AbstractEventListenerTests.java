@@ -60,7 +60,7 @@ public class AbstractEventListenerTests {
 
     @Test
     public void testGetMessageFailure() {
-        when(messageBuilders.get(0).supportsEvent(any())).thenReturn(false);
+        when(messageBuilders.get(0).supportsEvent()).thenCallRealMethod();
         assertThrows(IllegalArgumentException.class, () -> mentorshipRequestListener.getMessage(new MentorshipOfferedEvent(), Locale.US));
     }
 
@@ -96,7 +96,6 @@ public class AbstractEventListenerTests {
 
     @Test
     public void testConstructEventFailure() {
-        MentorshipOfferedEvent event = new MentorshipOfferedEvent();
         String json = "{\"authorId\" : 1 , \"mentorId\" : 2, \"requestId\" : 1}";
         byte[] msg = json.getBytes();
         assertThrows(IllegalArgumentException.class, () -> mentorshipRequestListener.constructEvent(msg, null));
@@ -112,14 +111,13 @@ public class AbstractEventListenerTests {
 
     private String initGetMessage() {
         String str = "You've got an offer for mentoring by {0}";
-        when(messageBuilders.get(0).supportsEvent(any())).thenReturn(true);
+        when(messageBuilders.get(0).supportsEvent()).thenCallRealMethod();
         when(messageBuilders.get(0).buildMessage(any(), any())).thenReturn(str);
         return str;
     }
 
     private UserDto initSendNotification() {
         UserDto dto = new UserDto();
-        String msg = "Test message";
         dto.setPreference(UserDto.PreferredContact.EMAIL);
         when(notificationService.get(0).getPreferredContact()).thenReturn(dto.getPreference());
         when(userServiceClient.getUser(1L)).thenReturn(dto);
