@@ -12,22 +12,13 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.util.Pair;
+
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
-    @Value("${spring.data.redis.channel.mentorship_offered}")
-    private String mentorshipOfferedChannel;
-
-    @Bean
-    public MessageListenerAdapter mentorshipOfferedAdapter(MentorshipRequestListener mentorshipRequestListener) {
-        return new MessageListenerAdapter(mentorshipRequestListener);
-    }
-
-    @Bean
-    public ChannelTopic mentorshipOfferedTopic() {
-        return new ChannelTopic(mentorshipOfferedChannel);
-    }
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
@@ -35,10 +26,10 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer container(MessageListenerAdapter mentorshipOfferedAdapter) {
+    public RedisMessageListenerContainer container(List<Pair<MessageListenerAdapter, ChannelTopic>> listenerChannelPair) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
-        container.addMessageListener(mentorshipOfferedAdapter, mentorshipOfferedTopic());
+        listenerChannelPair.forEach(pair -> container.addMessageListener(pair.getFirst(), pair.getSecond()));
         return container;
     }
 
