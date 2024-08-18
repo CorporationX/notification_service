@@ -1,7 +1,7 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.dto.FollowerEventDto;
+import faang.school.notificationservice.dto.FollowerEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.FollowerMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -17,7 +17,7 @@ import java.util.Locale;
 
 @Slf4j
 @Service
-public class FollowerEventListener extends AbstractEventListener<FollowerEventDto> implements MessageListener {
+public class FollowerEventListener extends AbstractEventListener<FollowerEvent> implements MessageListener {
 
     private final FollowerMessageBuilder followerMessageBuilder;
     private final List<NotificationService> notificationServices;
@@ -34,7 +34,7 @@ public class FollowerEventListener extends AbstractEventListener<FollowerEventDt
 
     @Override
     public void onMessage(@NonNull Message message, byte[] pattern) {
-        FollowerEventDto event = handleEvent(FollowerEventDto.class, message);
+        FollowerEvent event = handleEvent(FollowerEvent.class, message);
         UserDto followee = userService.getUser(event.getFolloweeId());
         UserDto follower = userService.getUser(event.getFollowerId());
         notificationServices.stream()

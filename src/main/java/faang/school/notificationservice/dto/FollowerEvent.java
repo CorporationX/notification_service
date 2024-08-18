@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class FollowerEventDto {
+public class FollowerEvent {
     private long followerId;
     private long followeeId;
     private String eventType;
