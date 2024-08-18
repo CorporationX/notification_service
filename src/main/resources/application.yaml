@@ -10,8 +10,8 @@ spring:
   mail:
     host: smtp.yandex.ru
     port: 587
-    username: medusabc5@yandex.ru
-    password: mrszsmutwwejbjar
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     properties:
       mail:
         smtp:
