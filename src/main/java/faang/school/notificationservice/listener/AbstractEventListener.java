@@ -34,7 +34,7 @@ public abstract class AbstractEventListener<T>  implements MessageListener {
     protected void sentNotification(long id, String message) {
         UserDto user = userServiceClient.getUser(id);
         user.setPreference(UserDto.PreferredContact.EMAIL);
-        user.setEmail("nikita.tolstv@gmail.com");
+        user.setEmail(user.getEmail());
         log.info(user.toString());
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact().equals(user.getPreference()))
