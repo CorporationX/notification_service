@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class ProfileViewEvent {
+public class ProfileViewEventDto {
     private long authorId;
     private long viewerId;
     private LocalDateTime viewTime;

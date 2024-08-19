@@ -6,14 +6,17 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Locale;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-public abstract class AbstractEventListener<T> {
+public abstract class AbstractEventListener<T>  implements MessageListener {
 
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
@@ -30,6 +33,9 @@ public abstract class AbstractEventListener<T> {
 
     protected void sentNotification(long id, String message) {
         UserDto user = userServiceClient.getUser(id);
+        user.setPreference(UserDto.PreferredContact.EMAIL);
+        user.setEmail("nikita.tolstv@gmail.com");
+        log.info(user.toString());
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact().equals(user.getPreference()))
                 .findFirst()

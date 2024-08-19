@@ -2,9 +2,10 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.ProfileViewEvent;
+import faang.school.notificationservice.dto.ProfileViewEventDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
@@ -14,23 +15,24 @@ import java.util.List;
 import java.util.Locale;
 
 @Component
-public class ProfileViewEventListener extends AbstractEventListener<ProfileViewEvent> implements MessageListener {
+@Slf4j
+public class ProfileViewEventListener extends AbstractEventListener<ProfileViewEventDto>  {
 
     private final Locale DEFAULT_LOCALE = Locale.US;
 
     public ProfileViewEventListener(ObjectMapper objectMapper,
                                     UserServiceClient userServiceClient,
                                     List<NotificationService> notificationServices,
-                                    List<MessageBuilder<ProfileViewEvent>> messageBuilders) {
+                                    List<MessageBuilder<ProfileViewEventDto>> messageBuilders) {
         super(objectMapper, userServiceClient, notificationServices, messageBuilders);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            ProfileViewEvent event = objectMapper.readValue(message.getBody(), ProfileViewEvent.class);
-
+            ProfileViewEventDto event = objectMapper.readValue(message.getBody(), ProfileViewEventDto.class);
             String messageText = getMessage(event, DEFAULT_LOCALE);
+            log.info("message text"+messageText);
             sentNotification(event.getAuthorId(), messageText);
         } catch (IOException e) {
             throw new RuntimeException(e);

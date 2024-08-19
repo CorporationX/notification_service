@@ -55,7 +55,6 @@ public class RedisConfig {
 
     @Bean
     RedisMessageListenerContainer container(MessageListenerAdapter profileViewListener) {
-
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(profileViewListener, profileViewTopic());
