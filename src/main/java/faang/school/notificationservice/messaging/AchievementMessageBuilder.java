@@ -12,7 +12,8 @@ public class AchievementMessageBuilder implements MessageBuilder<AchievementEven
 
     @Override
     public String buildMessage(AchievementEvent event, Locale locale) {
-        return messageSource.getMessage("messages", new Object[]{event.getUserId(), event.getRarity(), event.getCreatedAt()}, locale);
+        return messageSource
+                .getMessage("messages", new Object[]{event.getUserId(), event.getAchievementId(), event.getAchievementDttm()}, locale);
     }
 
     @Override
