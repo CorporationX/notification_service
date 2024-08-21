@@ -44,3 +44,6 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+notification:
+  brand: Faang
