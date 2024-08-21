@@ -28,7 +28,7 @@ public abstract class AbstractEventListener<T> {
             T event = objectMapper.readValue(message.getBody(), eventType);
             eventConsumer.accept(event);
         } catch (IOException e) {
-            String errMessage = "Could not parse message into event";
+            String errorMessage = "Failed to process event of type %s. Error details: %s".formatted(eventType, e.getMessage());
             log.error(errMessage, e);
             throw new RuntimeException(errMessage, e);
         }
@@ -39,8 +39,8 @@ public abstract class AbstractEventListener<T> {
                 .filter(messageBuilder -> messageBuilder.getInstance() == event.getClass())
                 .findFirst()
                 .map(messageBuilder -> messageBuilder.buildMessage(event, locale))
-                .orElseThrow(() -> new IllegalArgumentException("No matched event found for event type: "
-                        + event.getClass().getName()));
+                .orElseThrow(() -> new IllegalArgumentException("No message builder found for event type: %s"
+                        .formatted(event.getClass().getName())));
     }
 
     protected void sendNotification(long userId, String message) {
@@ -48,7 +48,8 @@ public abstract class AbstractEventListener<T> {
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact() == user.getPreference())
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No matched preference contact"))
+                .orElseThrow(() -> new IllegalArgumentException("No notification service found for preference: %s"
+                        .formatted(userDto.getPreference())))
                 .send(user, message);
     }
 }
