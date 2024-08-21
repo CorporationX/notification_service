@@ -1,49 +1,47 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class EmailServiceTest {
+public class EmailServiceTest {
+
     @Mock
-    JavaMailSender mailSender;
+    private JavaMailSender mailSender;
 
     @InjectMocks
-    EmailService emailService;
+    private EmailService emailService;
 
-    UserDto userDto;
-    String message;
-    UserDto.PreferredContact preferredContact;
+    @Test
+    void testSend() {
+        UserDto user = new UserDto();
+        user.setEmail("test@example.com");
+        String message = "Test message";
 
-    @BeforeEach
-    void setUp() {
-        userDto = new UserDto();
-        message = "Some message";
-        preferredContact = UserDto.PreferredContact.EMAIL;
+        ArgumentCaptor<SimpleMailMessage> captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+
+        emailService.send(user, message);
+
+        verify(mailSender).send(captor.capture());
+        SimpleMailMessage sentMessage = captor.getValue();
+        assertEquals("test@example.com", sentMessage.getTo()[0]);
+        assertEquals(message, sentMessage.getText());
     }
 
     @Test
-    void send() {
-        emailService.send(userDto, message);
+    void testGetPreferredContact() {
+        UserDto.PreferredContact preferredContact = emailService.getPreferredContact();
 
-        verify(mailSender).send(any(SimpleMailMessage.class));
-    }
-
-    @Test
-    void getPreferredContact() {
-        UserDto.PreferredContact result = emailService.getPreferredContact();
-
-        assertEquals(preferredContact, result);
+        assertEquals(UserDto.PreferredContact.EMAIL, preferredContact);
     }
 }

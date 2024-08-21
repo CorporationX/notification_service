@@ -13,12 +13,10 @@ public class EmailService implements NotificationService {
 
     @Override
     public void send(UserDto user, String message) {
-        var simpleMailMessage = new SimpleMailMessage();
-
-        simpleMailMessage.setTo(user.getEmail());
-        simpleMailMessage.setText(message);
-
-        mailSender.send(simpleMailMessage);
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setText(message);
+        mailSender.send(mailMessage);
     }
 
     @Override
