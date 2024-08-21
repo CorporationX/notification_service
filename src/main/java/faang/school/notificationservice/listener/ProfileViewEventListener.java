@@ -30,9 +30,10 @@ public class ProfileViewEventListener extends AbstractEventListener<ProfileViewE
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
+            log.info("redis message: " + message.toString());
             ProfileViewEventDto event = objectMapper.readValue(message.getBody(), ProfileViewEventDto.class);
             String messageText = getMessage(event, DEFAULT_LOCALE);
-            log.info("message text"+messageText);
+            log.info("message text: " + messageText);
             sentNotification(event.getAuthorId(), messageText);
         } catch (IOException e) {
             throw new RuntimeException(e);

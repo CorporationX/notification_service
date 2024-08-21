@@ -16,7 +16,7 @@ import java.util.Locale;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public abstract class AbstractEventListener<T>  implements MessageListener {
+public abstract class AbstractEventListener<T> implements MessageListener {
 
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
@@ -35,7 +35,6 @@ public abstract class AbstractEventListener<T>  implements MessageListener {
         UserDto user = userServiceClient.getUser(id);
         user.setPreference(UserDto.PreferredContact.EMAIL);
         user.setEmail(user.getEmail());
-        log.info(user.toString());
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
