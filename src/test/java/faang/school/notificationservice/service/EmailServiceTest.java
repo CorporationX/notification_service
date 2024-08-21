@@ -45,4 +45,3 @@ public class EmailServiceTest {
         assertEquals(UserDto.PreferredContact.EMAIL, preferredContact);
     }
 }
-
