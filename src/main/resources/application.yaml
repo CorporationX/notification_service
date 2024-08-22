@@ -1,4 +1,21 @@
 spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
   data:
     redis:
       port: 6379
@@ -7,6 +24,7 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         mentorship_accepted: mentorship_accepted_channel
+        like: like_channel
         recommendation_requested:
           name: recommendation_requested_channel
 
@@ -43,6 +61,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+
+telegram:
+  bot:
+    username: ${TELEGRAM_BOT_USERNAME}
+    token: ${TELEGRAM_BOT_TOKEN}
 
 twilio:
   account-sid: ${ACCOUNT_SID}
