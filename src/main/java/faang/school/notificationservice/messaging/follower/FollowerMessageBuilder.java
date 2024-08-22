@@ -23,7 +23,7 @@ public class FollowerMessageBuilder implements MessageBuilder<FollowerEvent> {
     }
 
     @Override
-    public String buildMessage(FollowerEvent event, Locale locale) {
+    public String buildMessage(FollowerEvent event, Locale locale, Object... args) {
         Long userId = event.getFollowerId();
         UserDto follower = userServiceClient.getUser(userId);
 

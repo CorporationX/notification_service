@@ -24,7 +24,7 @@ public class AchievementReceiveMessageBuilder implements MessageBuilder<Achievem
     }
 
     @Override
-    public String buildMessage(AchievementEvent event, Locale locale) {
+    public String buildMessage(AchievementEvent event, Locale locale, Object... args) {
 
         Long achievementId = event.getAchievementId();
         AchievementDto achievement = achievementServiceClient.getAchievement(achievementId);
