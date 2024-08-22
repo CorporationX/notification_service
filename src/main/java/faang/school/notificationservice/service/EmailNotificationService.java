@@ -3,26 +3,21 @@ package faang.school.notificationservice.service;
 import faang.school.notificationservice.dto.user.UserDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class EmailNotificationService implements NotificationService {
 
     private final JavaMailSender mailSender;
 
     private final String notificationServiceEmail;
 
-    public EmailNotificationService(
-            String notificationServiceEmail,
-            JavaMailSender mailSender
-    ) {
-        this.notificationServiceEmail = notificationServiceEmail;
-        this.mailSender = mailSender;
-    }
 
     @Override
     public void send(@NotNull UserDto user, @NotBlank String message) {
