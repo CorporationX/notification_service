@@ -33,7 +33,7 @@ public class EmailSenderConfig {
     @Value("${spring.mail.properties.mail.smtp.timeout}")
     private int timeout; // read timout
     @Value("${spring.mail.properties.mail.smtp.writetimeout}")
-    private int writetimeout;
+    private int writeTimeout;
 
     @Value("${spring.mail.properties.mail.smtp.debug}")
     private boolean debug;
@@ -63,7 +63,7 @@ public class EmailSenderConfig {
 
         props.put("mail.smtp.connectiontimeout", connectionTimeout);
         props.put("mail.smtp.timeout", timeout);
-        props.put("mail.smtp.writetimeout", writetimeout);
+        props.put("mail.smtp.writetimeout", writeTimeout);
 
         props.put("mail.smtp.debug", debug);
 
