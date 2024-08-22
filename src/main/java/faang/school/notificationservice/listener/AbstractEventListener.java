@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.messaging.MessageBuilder;
+import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
@@ -30,18 +30,16 @@ public abstract class AbstractEventListener<T> {
 
     protected String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
-                .filter(messageBuilder -> messageBuilder.supportEventType(event))
+                .filter(messageBuilder -> messageBuilder.getInstance().equals(event.getClass()))
                 .findFirst()
-                .map(messageBuilder -> messageBuilder.getMessage(event, locale))
-                .orElseThrow(() -> new IllegalArgumentException("No message found for the given event type " + event.getClass().getName()));
+                .orElseThrow(() -> new IllegalArgumentException("No message found for the given event type " + event.getClass().getName()))
+                .buildMessage(event, locale);
     }
 
     protected void sendNotification(Long id, String message) {
         UserDto user = userServiceClient.getUser(id);
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact().equals(user.getPreference()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(String.format("User %s doesn't have available notification service", id)))
-                .send(user, message);
+                .forEach(service -> service.send(user, message));
     }
 }
