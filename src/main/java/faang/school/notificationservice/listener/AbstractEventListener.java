@@ -29,8 +29,8 @@ public abstract class AbstractEventListener<T> {
             eventConsumer.accept(event);
         } catch (IOException e) {
             String errorMessage = "Failed to process event of type %s. Error details: %s".formatted(eventType, e.getMessage());
-            log.error(errMessage, e);
-            throw new RuntimeException(errMessage, e);
+            log.error(errorMessage, e);
+            throw new RuntimeException(errorMessage, e);
         }
     }
 
@@ -44,12 +44,12 @@ public abstract class AbstractEventListener<T> {
     }
 
     protected void sendNotification(long userId, String message) {
-        UserDto user = userServiceClient.getUser(userId);
+        UserDto userDto = userServiceClient.getUser(userId);
         notificationServices.stream()
-                .filter(service -> service.getPreferredContact() == user.getPreference())
+                .filter(service -> service.getPreferredContact() == userDto.getPreference())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No notification service found for preference: %s"
                         .formatted(userDto.getPreference())))
-                .send(user, message);
+                .send(userDto, message);
     }
 }
