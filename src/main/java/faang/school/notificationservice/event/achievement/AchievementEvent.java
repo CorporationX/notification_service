@@ -33,5 +33,5 @@ public class AchievementEvent implements Event {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private final LocalDateTime receiveAt;
+    private final LocalDateTime receivedAt;
 }
