@@ -1,9 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.AchievementEventListener;
-import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
-import faang.school.notificationservice.listener.PostLikeEventListener;
-import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
+import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,21 +26,8 @@ public class RedisConfiguration {
     @Value("${spring.data.redis.channel.achievement}")
     public String achievementChannelTopicName;
 
-    @Value("${spring.data.redis.channel.mentorshipAccepted}")
-    public String mentorshipAcceptedChannelTopicName;
-
-    @Bean
-    public ChannelTopic mentorshipAcceptedChannel() {
-        return new ChannelTopic(mentorshipAcceptedChannelTopicName);
-    }
-
-    @Bean
-    public MessageListenerAdapter mentorshipAcceptedListenerAdapter(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
-        return new MessageListenerAdapter(mentorshipAcceptedEventListener);
-    }
-
-    @Value("${spring.data.redis.channel.post-like}")
-    public String postLikeChannelTopicName;
+    @Value("${spring.data.redis.channel.mentorship_offered}")
+    private String mentorshipOfferedChannelName;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -65,8 +50,8 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public MessageListenerAdapter postLikeListener(PostLikeEventListener postLikeEventListener) {
-        return new MessageListenerAdapter(postLikeEventListener);
+    public MessageListenerAdapter mentorshipOfferedListener(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
+        return new MessageListenerAdapter(mentorshipOfferedEventListener);
     }
 
     @Bean
@@ -74,18 +59,18 @@ public class RedisConfiguration {
         return new ChannelTopic(achievementChannelTopicName);
     }
 
-    public ChannelTopic postLikeChannel() {return new ChannelTopic(postLikeChannelTopicName);}
-
+    @Bean
+    public ChannelTopic mentorshipOfferedChannelTopic() {
+        return new ChannelTopic(mentorshipOfferedChannelName);
+    }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(AchievementEventListener achievementEventListener,
-                                                        PostLikeEventListener postLikeEventListener,
-                                                        MessageListenerAdapter mentorshipAcceptedListenerAdapter) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter achievementListener,
+                                                        MessageListenerAdapter mentorshipOfferedListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(achievementListener(achievementEventListener), achievementChannel());
-        container.addMessageListener(postLikeListener(postLikeEventListener), postLikeChannel());
-        container.addMessageListener(mentorshipAcceptedListenerAdapter, mentorshipAcceptedChannel());
+        container.addMessageListener(achievementListener, achievementChannel());
+        container.addMessageListener(mentorshipOfferedListener, mentorshipOfferedChannelTopic());
         return container;
     }
 }

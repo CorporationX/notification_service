@@ -10,10 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UserDto {
-    private long id;
+
+    private Long id;
     private String username;
     private String email;
     private String phone;
+    private boolean isActive;
     private PreferredContact preference;
 
     public enum PreferredContact {

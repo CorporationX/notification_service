@@ -16,35 +16,35 @@ import java.util.function.Consumer;
 
 @RequiredArgsConstructor
 @Slf4j
-public abstract class AbstractEventListener<T> {
+public abstract class AbstractEventListener {
 
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
+    protected final List<MessageBuilder> messageBuilders;
     protected final List<NotificationService> notificationServices;
-    protected final List<MessageBuilder<T>> messageBuilders;
 
-    protected void handleEvent(Message message, Class<T> eventType, Consumer<T> eventConsumer) {
+    protected <T> void handleEvent(Message message, Class<T> eventType, Consumer<T> eventConsumer) {
         try {
             T event = objectMapper.readValue(message.getBody(), eventType);
             eventConsumer.accept(event);
         } catch (IOException e) {
-            String errorMessage = "Failed to process event of type %s. Error details: %s".formatted(eventType, e.getMessage());
+            String errorMessage = "Failed to process event of type %s. Error details: %s"
+                    .formatted(eventType, e.getMessage());
             log.error(errorMessage, e);
             throw new RuntimeException(errorMessage, e);
         }
     }
 
-    protected String getMessage(T event, Locale locale) {
+    protected <T> String getMessage(T event, UserDto userDto, Locale locale) {
         return messageBuilders.stream()
                 .filter(messageBuilder -> messageBuilder.getInstance() == event.getClass())
                 .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event, locale))
+                .map(messageBuilder -> messageBuilder.buildMessage(userDto, locale))
                 .orElseThrow(() -> new IllegalArgumentException("No message builder found for event type: %s"
                         .formatted(event.getClass().getName())));
     }
 
-    protected void sendNotification(long userId, String message) {
-        UserDto userDto = userServiceClient.getUser(userId);
+    protected void sendNotification(UserDto userDto, String message) {
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact() == userDto.getPreference())
                 .findFirst()

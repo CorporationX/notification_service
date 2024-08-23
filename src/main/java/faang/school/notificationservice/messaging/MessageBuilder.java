@@ -1,10 +1,12 @@
 package faang.school.notificationservice.messaging;
 
+import faang.school.notificationservice.dto.UserDto;
+
 import java.util.Locale;
 
-public interface MessageBuilder<T> {
+public interface MessageBuilder {
 
-    Class<T> getInstance();
+    Class<?> getInstance();
 
-    String buildMessage(T event, Locale locale);
+    String buildMessage(UserDto userDto, Locale locale);
 }
