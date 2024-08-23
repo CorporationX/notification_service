@@ -62,6 +62,11 @@ dependencies {
      */
     implementation("org.telegram:telegrambots:6.3.0")
 
+    /**
+     * Retryable
+     */
+    implementation("org.springframework.retry:spring-retry:2.0.2")
+
 }
 
 tasks.withType<Test> {

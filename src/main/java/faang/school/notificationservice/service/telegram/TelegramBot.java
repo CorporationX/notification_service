@@ -1,11 +1,17 @@
 package faang.school.notificationservice.service.telegram;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpServerErrorException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeoutException;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
@@ -31,7 +37,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         sendMessageByUserId(userId, "This bot is designed to send notifications!");
     }
 
-
+    @Retryable(value = {TimeoutException.class,
+            HttpServerErrorException.class, SocketTimeoutException.class},
+            backoff = @Backoff(delay = 2000))
     public void sendMessageByUserId(Long userId, String message) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(userId.toString());
