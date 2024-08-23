@@ -12,9 +12,9 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
     protected final ObjectMapper objectMapper;
-    protected final UserServiceClient userServiceClient;
-    protected final List<MessageBuilder<T>> messageBuilders;
-    protected final List<NotificationService> notificationServices;
+    private final UserServiceClient userServiceClient;
+    private final List<MessageBuilder<T>> messageBuilders;
+    private final List<NotificationService> notificationServices;
 
     protected String getMessage(T event, Locale userLocale){
         var messageBuilder = findMessageBuilder(event.getClass());

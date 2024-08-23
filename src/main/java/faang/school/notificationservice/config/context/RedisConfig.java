@@ -30,15 +30,15 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter achievementListener(AchievementEventListener listener){
+    public MessageListenerAdapter achievementListener(AchievementEventListener listener){
         return new MessageListenerAdapter(listener);
     }
     @Bean
-    ChannelTopic achievementTopic(){
+    public ChannelTopic achievementTopic(){
         return new ChannelTopic(achievementChannelName);
     }
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter achievementListener, RedisConnectionFactory redisConnectionFactory){
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter achievementListener, RedisConnectionFactory redisConnectionFactory){
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
         container.addMessageListener(achievementListener, achievementTopic());
