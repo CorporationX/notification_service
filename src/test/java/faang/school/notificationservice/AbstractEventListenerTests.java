@@ -9,7 +9,7 @@ import faang.school.notificationservice.listeners.MentorshipRequestListener;
 import faang.school.notificationservice.messaging.MentorshipOfferedMessageBuilder;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import faang.school.notificationservice.service.email.EmailService;
+import faang.school.notificationservice.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
