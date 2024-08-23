@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 
 @Data
 public class AchievementEvent {
-    Long id;
-    Long achievementId;
-    Long userId;
-    LocalDateTime achievementDttm;
+    private Long id;
+    private Long achievementId;
+    private Long userId;
+    private LocalDateTime achievementDttm;
 }
