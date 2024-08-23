@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.AchievementEventListener;
+import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,9 @@ public class RedisConfiguration {
     @Value("${spring.data.redis.channel.achievement}")
     public String achievementChannelTopicName;
 
+    @Value("${spring.data.redis.channel.mentorship_offered}")
+    private String mentorshipOfferedChannelName;
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
@@ -46,15 +50,27 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public MessageListenerAdapter mentorshipOfferedListener(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
+        return new MessageListenerAdapter(mentorshipOfferedEventListener);
+    }
+
+    @Bean
     public ChannelTopic achievementChannel() {
         return new ChannelTopic(achievementChannelTopicName);
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationListener) {
+    public ChannelTopic mentorshipOfferedChannelTopic() {
+        return new ChannelTopic(mentorshipOfferedChannelName);
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter achievementListener,
+                                                        MessageListenerAdapter mentorshipOfferedListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(recommendationListener, achievementChannel());
+        container.addMessageListener(achievementListener, achievementChannel());
+        container.addMessageListener(mentorshipOfferedListener, mentorshipOfferedChannelTopic());
         return container;
     }
 }

@@ -6,6 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        mentorship_offered: mentorship_offered_channel
 
   mail:
     host: smtp.gmail.com
@@ -24,6 +25,10 @@ spring:
 
   messages:
     basename: messages
+    default-encoding: UTF-8
+    builder:
+      event:
+        mentorship-offered: mentorship.offered
 
 server:
   port: 8083
