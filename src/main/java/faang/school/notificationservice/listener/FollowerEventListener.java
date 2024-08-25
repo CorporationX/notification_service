@@ -10,13 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Locale;
 
 @Slf4j
-@Service
+@Component
 public class FollowerEventListener extends AbstractEventListener<FollowerEvent> implements MessageListener {
 
     private final FollowerMessageBuilder followerMessageBuilder;
