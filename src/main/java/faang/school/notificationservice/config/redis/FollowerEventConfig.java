@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.context;
+package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.FollowerEventListener;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +25,8 @@ public class FollowerEventConfig {
     }
 
     @Bean
-    public Pair<MessageListenerAdapter, ChannelTopic> followerRequester(MessageListenerAdapter followerMessageListener) {
+    public Pair<MessageListenerAdapter, ChannelTopic> followerRequester(
+            MessageListenerAdapter followerMessageListener) {
         return Pair.of(followerMessageListener, followerEventTopic());
     }
 }

@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.context;
+package faang.school.notificationservice.config.redis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +27,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(List<Pair<MessageListenerAdapter, ChannelTopic>> requesters) {
+    public RedisMessageListenerContainer redisContainer(List<Pair<MessageListenerAdapter,
+            ChannelTopic>> requesters) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         for (Pair<MessageListenerAdapter, ChannelTopic> requester : requesters) {
