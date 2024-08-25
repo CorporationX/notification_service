@@ -6,6 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        profileView: profileView_channel
 
   mail:
     host: smtp.gmail.com
@@ -22,6 +23,8 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
+  subject:
+    profileView: View profile
   messages:
     basename: messages
 

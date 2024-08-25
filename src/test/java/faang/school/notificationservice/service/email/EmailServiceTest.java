@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -17,6 +18,9 @@ public class EmailServiceTest {
 
     @Mock
     private JavaMailSender mailSender;
+
+    @Value("${spring.subject.profileView}")
+    private String subject;
 
     @InjectMocks
     private EmailService emailService;
@@ -32,7 +36,7 @@ public class EmailServiceTest {
         userDto.setEmail("email@email.com");
 
         message.setTo(userDto.getEmail());
-        message.setSubject("subject");
+        message.setSubject(subject);
         message.setText(text);
 
         emailService.send(userDto, text);
