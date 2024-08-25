@@ -9,12 +9,12 @@ import faang.school.notificationservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Slf4j
-@Service
+@Component
 public class FollowerEventListener extends AbstractEventListener<FollowerEvent> {
 
     private final UserService userService;
