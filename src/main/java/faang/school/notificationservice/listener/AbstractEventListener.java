@@ -28,6 +28,7 @@ public abstract class AbstractEventListener<T> {
 
     protected void sendNotification(long userId, String message) {
         UserDto user = userServiceClient.getUser(userId);
+        user.setPreference(UserDto.PreferredContact.SMS);
         notificationServiceList.stream()
                 .filter(notificationService -> notificationService.getPreferredContact() == user.getPreference())
                 .findFirst()
