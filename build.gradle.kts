@@ -23,6 +23,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-mail:3.0.6")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
+    implementation("org.springframework.boot:spring-boot-starter-mail:3.3.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.springframework:spring-context-support:6.1.11")
     implementation("org.springframework.boot:spring-boot-starter-mail:3.3.2")
