@@ -7,7 +7,6 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,7 +15,7 @@ import java.util.Locale;
 
 @Component
 @Slf4j
-public class ProfileViewEventListener extends AbstractEventListener<ProfileViewEventDto>  {
+public class ProfileViewEventListener extends AbstractEventListener<ProfileViewEventDto> {
 
     private final Locale DEFAULT_LOCALE = Locale.US;
 

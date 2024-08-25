@@ -17,7 +17,7 @@ public class ProfileViewEventMessageBuilder implements MessageBuilder<ProfileVie
     private final MessageSource messageSource;
 
     @Override
-    public Class<?> getInstance() {
+    public Class<ProfileViewEventDto> getInstance() {
         return ProfileViewEventDto.class;
     }
 
