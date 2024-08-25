@@ -27,7 +27,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(List<Pair<MessageListenerAdapter, ChannelTopic>> requesters) {
+    public RedisMessageListenerContainer redisContainer(List<Pair<MessageListenerAdapter,
+            ChannelTopic>> requesters) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         for (Pair<MessageListenerAdapter, ChannelTopic> requester : requesters) {

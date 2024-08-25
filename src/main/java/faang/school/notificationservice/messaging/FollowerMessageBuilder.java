@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service;
+package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.dto.FollowerEvent;
 import faang.school.notificationservice.dto.UserDto;

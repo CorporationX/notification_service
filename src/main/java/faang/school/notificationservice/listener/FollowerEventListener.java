@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.FollowerEvent;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.FollowerMessageBuilder;
+import faang.school.notificationservice.messaging.FollowerMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;

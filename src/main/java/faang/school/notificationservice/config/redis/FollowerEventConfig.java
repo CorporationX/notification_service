@@ -25,7 +25,8 @@ public class FollowerEventConfig {
     }
 
     @Bean
-    public Pair<MessageListenerAdapter, ChannelTopic> followerRequester(MessageListenerAdapter followerMessageListener) {
+    public Pair<MessageListenerAdapter, ChannelTopic> followerRequester(
+            MessageListenerAdapter followerMessageListener) {
         return Pair.of(followerMessageListener, followerEventTopic());
     }
 }
