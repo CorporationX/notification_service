@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service;
 
+import faang.school.notificationservice.dto.FollowerEvent;
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -9,7 +10,7 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
-public class FollowerMessageBuilder implements MessageBuilder<UserDto> {
+public class FollowerMessageBuilder implements MessageBuilder<FollowerEvent> {
 
     private final MessageSource messageSource;
 
@@ -17,5 +18,10 @@ public class FollowerMessageBuilder implements MessageBuilder<UserDto> {
     public String buildMessage(UserDto follower, Locale locale) {
         Object[] args = {follower.getUsername()};
         return messageSource.getMessage("follower.new", args, locale);
+    }
+
+    @Override
+    public FollowerEvent getEvent(FollowerEvent followerEvent) {
+        return followerEvent;
     }
 }

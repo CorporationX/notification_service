@@ -2,11 +2,13 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailNotificationService implements NotificationService {
@@ -25,6 +27,7 @@ public class EmailNotificationService implements NotificationService {
         mailMessage.setSubject(subject);
         mailMessage.setText(message);
         mailSender.send(mailMessage);
+        log.info("Email sent to {}", user.getEmail());
     }
 
     @Override

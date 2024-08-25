@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
 
+import faang.school.notificationservice.dto.CommentEvent;
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -10,7 +11,7 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
-public class CommentMessageBuilder implements MessageBuilder<UserDto> {
+public class CommentMessageBuilder implements MessageBuilder<CommentEvent> {
 
     private final MessageSource messageSource;
 
@@ -18,5 +19,10 @@ public class CommentMessageBuilder implements MessageBuilder<UserDto> {
     public String buildMessage(UserDto commentAuthor, Locale locale) {
         Object[] args = {commentAuthor.getUsername()};
         return messageSource.getMessage("comment.new", args, locale);
+    }
+
+    @Override
+    public CommentEvent getEvent(CommentEvent commentEvent) {
+        return commentEvent;
     }
 }

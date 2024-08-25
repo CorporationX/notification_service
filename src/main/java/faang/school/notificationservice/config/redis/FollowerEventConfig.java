@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.context;
+package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.FollowerEventListener;
 import org.springframework.beans.factory.annotation.Value;

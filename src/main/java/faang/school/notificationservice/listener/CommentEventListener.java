@@ -13,22 +13,18 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Locale;
 
 @Slf4j
 @Service
 public class CommentEventListener extends AbstractEventListener<CommentEvent> implements MessageListener {
 
-    private final CommentMessageBuilder commentMessageBuilder;
-    private final List<NotificationService> notificationServices;
     private final UserService userService;
 
     public CommentEventListener(ObjectMapper objectMapper,
                                 CommentMessageBuilder commentMessageBuilder,
-                                List<NotificationService> notificationServices, UserService userService) {
-        super(objectMapper);
-        this.commentMessageBuilder = commentMessageBuilder;
-        this.notificationServices = notificationServices;
+                                List<NotificationService> notificationServices,
+                                UserService userService) {
+        super(objectMapper, notificationServices, commentMessageBuilder);
         this.userService = userService;
     }
 
@@ -36,12 +32,7 @@ public class CommentEventListener extends AbstractEventListener<CommentEvent> im
     public void onMessage(@NonNull Message message, byte[] pattern) {
         CommentEvent event = handleEvent(CommentEvent.class, message);
         UserDto commentAuthor = userService.getUser(event.getCommentAuthorId());
-        notificationServices.stream()
-                .filter(notificationService -> notificationService.getPreferredContact()
-                        .equals(UserDto.PreferredContact.EMAIL))
-                .findFirst()
-                .ifPresent(notificationService ->
-                        notificationService.send(commentAuthor, commentMessageBuilder
-                                .buildMessage(commentAuthor, Locale.getDefault())));
+        UserDto postAuthor = userService.getUser(event.getPostAuthorId());
+        handleNotification(postAuthor, commentAuthor);
     }
 }
