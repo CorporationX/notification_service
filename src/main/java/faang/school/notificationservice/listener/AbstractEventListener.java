@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Locale;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> implements MessageListener {
 

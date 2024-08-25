@@ -54,7 +54,7 @@ public class ProfileViewEventListenerTest {
         // Arrange
         byte[] pattern = new byte[0];
         ProfileViewEventDto event = new ProfileViewEventDto();
-        event.setAuthorId(1L);
+        event.setProfileId(1L);
         String messageBody = "{\"authorId\":1}";
         when(objectMapper.readValue(messageBody.getBytes(), ProfileViewEventDto.class)).thenReturn(event);
         when(messageBuilder.getInstance()).thenReturn(ProfileViewEventDto.class);
@@ -111,7 +111,7 @@ public class ProfileViewEventListenerTest {
         // Arrange
         byte[] pattern = new byte[0];
         ProfileViewEventDto event = new ProfileViewEventDto();
-        event.setAuthorId(1L);
+        event.setProfileId(1L);
         String messageBody = "{\"authorId\":1}";
         when(objectMapper.readValue(messageBody.getBytes(), ProfileViewEventDto.class)).thenReturn(event);
         when(messageBuilder.getInstance()).thenThrow(new IllegalArgumentException("No message builder found for " + ProfileViewEventDto.class.getName()));
