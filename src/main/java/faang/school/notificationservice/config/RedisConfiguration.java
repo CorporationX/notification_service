@@ -25,6 +25,10 @@ public class RedisConfiguration {
     @Value("${spring.data.redis.channel.achievement}")
     public String achievementChannelTopicName;
 
+    @Value("${spring.data.redis.channel.mentorshipAccepted}")
+    public String mentorshipAcceptedChannelTopicName;
+
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
