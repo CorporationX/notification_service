@@ -53,3 +53,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Ignore files with sensitive information
+.env

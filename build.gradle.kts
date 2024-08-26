@@ -56,6 +56,16 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    /**
+     * Telegrambots
+     */
+    implementation("org.telegram:telegrambots-spring-boot-starter:6.9.7.1")
+
+    /**
+     * Dotenv
+     */
+    implementation("io.github.cdimascio:java-dotenv:5.2.2")
 }
 
 tasks.withType<Test> {
