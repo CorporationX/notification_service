@@ -8,6 +8,7 @@ spring:
         achievement: achievement_channel
         mentorship_accepted: mentorship_accepted_channel
         recommendation_received: recommendation_received_channel
+        like: like_channel
         recommendation_requested:
           name: recommendation_requested_channel
 
