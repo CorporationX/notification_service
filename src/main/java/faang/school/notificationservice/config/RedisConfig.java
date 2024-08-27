@@ -46,6 +46,7 @@ public class RedisConfig {
         return new ChannelTopic(commentEventNameTopic);
     }
 
+    @Bean
     public MessageListenerAdapter commentEventListenerAdapter() {
         return new MessageListenerAdapter(commentEventListener);
     }
