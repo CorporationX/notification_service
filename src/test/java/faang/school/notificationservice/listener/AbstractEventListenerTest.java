@@ -81,7 +81,7 @@ class AbstractEventListenerTest {
         long userId = 1L;
         String message = "Notification message";
         UserDto userDto = new UserDto();
-        userDto.setPreference(UserDto.PreferredContact.EMAIL);
+        userDto.setContactPreference(UserDto.PreferredContact.EMAIL);
 
         when(userServiceClient.getUser(userId)).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
@@ -97,10 +97,10 @@ class AbstractEventListenerTest {
         long userId = 1L;
         String message = "Notification message";
         UserDto userDto = new UserDto();
-        userDto.setPreference(UserDto.PreferredContact.EMAIL);
+        userDto.setContactPreference(UserDto.PreferredContact.PHONE);
 
         when(userServiceClient.getUser(userId)).thenReturn(userDto);
-        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS);
+        when(notificationService.getPreferredContact()).thenReturn(null);
 
         assertThrows(IllegalArgumentException.class, () ->
                 eventListener.sendNotification(userId, message)
