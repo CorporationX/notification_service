@@ -62,6 +62,17 @@ dependencies {
      */
     testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
+
+    /**
+     * Telegram
+     */
+    implementation("org.telegram:telegrambots:6.3.0")
+
+    /**
+     * Retryable
+     */
+    implementation("org.springframework.retry:spring-retry:2.0.2")
+
 }
 
 tasks.withType<Test> {
