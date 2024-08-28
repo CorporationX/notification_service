@@ -6,6 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        like: like_channel
 
   mail:
     host: smtp.gmail.com
@@ -49,6 +50,9 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+post-service:
+    host: localhost
+    port: 8081
 
 notification:
   brand: Faang
