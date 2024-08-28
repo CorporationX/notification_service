@@ -1,9 +1,8 @@
 package faang.school.notificationservice.messaging.mentorship;
 
-import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.mentorship.request.MentorshipAcceptedEvent;
-import faang.school.notificationservice.exception.feign.UserServiceException;
+import faang.school.notificationservice.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
-import org.springframework.web.client.RestClientException;
 
 import java.util.Locale;
 import java.util.UUID;
@@ -28,7 +26,7 @@ class MentorshipAcceptedMessageBuilderTest {
     @Mock
     private MessageSource messageSource;
     @Mock
-    private UserServiceClient userServiceClient;
+    private UserService userService;
     @InjectMocks
     private MentorshipAcceptedMessageBuilder messageBuilder;
 
@@ -46,7 +44,7 @@ class MentorshipAcceptedMessageBuilderTest {
 
     @Test
     void buildMessageReturnsMessageForValidEvent() {
-        when(userServiceClient.getUser(anyLong())).thenReturn(receiver);
+        when(userService.fetchUser(anyLong())).thenReturn(receiver);
         when(messageSource.getMessage(eq("mentorship.accepted"), any(), eq(Locale.US)))
                 .thenReturn("Mentorship accepted message");
 
@@ -57,8 +55,8 @@ class MentorshipAcceptedMessageBuilderTest {
 
     @Test
     void buildMessageThrowsUserServiceException() {
-        when(userServiceClient.getUser(anyLong())).thenThrow(new RestClientException("User service error"));
+        when(userService.fetchUser(anyLong())).thenThrow(new RuntimeException("User service error"));
 
-        assertThrows(UserServiceException.class, () -> messageBuilder.buildMessage(event, Locale.US));
+        assertThrows(RuntimeException.class, () -> messageBuilder.buildMessage(event, Locale.US));
     }
 }
