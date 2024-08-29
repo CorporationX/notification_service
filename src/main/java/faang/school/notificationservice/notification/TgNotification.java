@@ -1,6 +1,6 @@
 package faang.school.notificationservice.notification;
 
-import faang.school.notificationservice.config.context.TgNotificationBot;
+import faang.school.notificationservice.config.tg.TgNotificationBot;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.TelegramChatService;

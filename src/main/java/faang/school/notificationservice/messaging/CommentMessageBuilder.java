@@ -16,7 +16,7 @@ public class CommentMessageBuilder implements MessageBuilder<CommentEvent> {
     private final MessageSource messageSource;
 
     @Override
-    public String buildMessage(UserDto commentAuthor, Locale locale) {
+    public String buildMessage(UserDto commentAuthor, Locale locale, Object[] additionData) {
         Object[] args = {commentAuthor.getUsername()};
         return messageSource.getMessage("comment.new", args, locale);
     }

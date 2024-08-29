@@ -1,6 +1,7 @@
-package faang.school.notificationservice.config.context;
+package faang.school.notificationservice.config.tg;
 
 import faang.school.notificationservice.exception.EntityNotFoundException;
+import faang.school.notificationservice.model.State;
 import faang.school.notificationservice.service.TelegramChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,31 +20,14 @@ import java.util.Map;
 @Slf4j
 public class TgNotificationBot extends TelegramLongPollingBot {
     private final TelegramChatService telegramChatService;
-    private final Map<Long, String> userStates = new HashMap<>();
+    private final TgSampleProperties tgSampleProperties;
+    private final Map<Long, State> userStates = new HashMap<>();
 
     @Value("${spring.telegram.name}")
     private String name;
 
     @Value("${spring.telegram.token}")
     private String token;
-
-    @Value("${message.ask-id}")
-    private String askId;
-
-    @Value("${message.invalid-id}")
-    private String incorrectId;
-
-    @Value("${message.already-registered}")
-    private String alreadyRegistered;
-
-    @Value("${message.stop}")
-    private String stop;
-
-    @Value("${message.stop.answer}")
-    private String answerStop;
-
-    @Value("${message.unknown-command}")
-    private String unknownCommand;
 
     @Override
     public String getBotUsername() {
@@ -66,42 +50,35 @@ public class TgNotificationBot extends TelegramLongPollingBot {
             String messageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
 
-            if (messageText.equalsIgnoreCase(stop)) {
+            if (messageText.equalsIgnoreCase(tgSampleProperties.getStop())) {
                 telegramChatService.deleteChatId(chatId);
                 userStates.remove(chatId);
-                sendTextMessage(chatId, answerStop);
+                sendTextMessage(chatId, tgSampleProperties.getAnswerStop());
                 return;
             }
 
             if (telegramChatService.checkTelegramChatIsAlive(chatId)) {
-                sendTextMessage(chatId, alreadyRegistered);
+                sendTextMessage(chatId, tgSampleProperties.getAlreadyRegistered());
                 return;
             }
 
-            String state = userStates.getOrDefault(chatId, "ASK_LOGIN");
+            State state = userStates.getOrDefault(chatId, State.ASK_LOGIN);
 
             switch (state) {
-                case "ASK_LOGIN":
-                    sendTextMessage(chatId, askId);
-                    userStates.put(chatId, "WAITING_FOR_ID");
+                case ASK_LOGIN:
+                    handleAskLogin(chatId);
                     break;
 
-                case "WAITING_FOR_ID":
-                    if (messageText.matches("\\d+")) {
-                        Long userId = Long.valueOf(messageText);
-                        sendTextMessage(chatId, telegramChatService.createChatId(chatId, userId));
-                        userStates.put(chatId, "REGISTERED");
-                    } else {
-                        sendTextMessage(chatId, incorrectId);
-                    }
+                case WAITING_FOR_ID:
+                    handleWaitingForId(chatId, messageText);
                     break;
 
-                case "REGISTERED":
-                    sendTextMessage(chatId, alreadyRegistered);
+                case REGISTERED:
+                    handleRegistered(chatId);
                     break;
 
                 default:
-                    sendTextMessage(chatId, unknownCommand);
+                    handleUnknownCommand(chatId);
                     break;
             }
         }
@@ -116,6 +93,29 @@ public class TgNotificationBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             throw new EntityNotFoundException("Failed to send message to chatId " + chatId);
         }
+    }
+
+    private void handleAskLogin(Long chatId) {
+        sendTextMessage(chatId, tgSampleProperties.getAskId());
+        userStates.put(chatId, State.WAITING_FOR_ID);
+    }
+
+    private void handleWaitingForId(Long chatId, String messageText) {
+        if (messageText.matches("\\d+")) {
+            Long userId = Long.valueOf(messageText);
+            sendTextMessage(chatId, telegramChatService.createChatId(chatId, userId));
+            userStates.put(chatId, State.REGISTERED);
+        } else {
+            sendTextMessage(chatId, tgSampleProperties.getIncorrectId());
+        }
+    }
+
+    private void handleRegistered(Long chatId) {
+        sendTextMessage(chatId, tgSampleProperties.getAlreadyRegistered());
+    }
+
+    private void handleUnknownCommand(Long chatId) {
+        sendTextMessage(chatId, tgSampleProperties.getUnknownCommand());
     }
 }
 
