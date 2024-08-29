@@ -16,7 +16,7 @@ public class TelegramService implements NotificationService {
     @Override
     public void send(UserDto user, String message) {
         log.info("The message: '{}' was sent to the user with id: '{}'", message, user.getId());
-        telegramBot.sendMessageByUserId(user.getId(), message);
+        telegramBot.sendMessageByUserId(user.getTelegramId(), message);
     }
 
     @Override
