@@ -18,5 +18,7 @@ public class CommentEvent {
     @NotNull
     private long commentId;
     @NotNull
+    private long postAuthorId;
+    @NotNull
     private String comment;
 }
