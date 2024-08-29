@@ -6,6 +6,7 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -14,13 +15,13 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public abstract class AbstractEventListener<T> {
+public abstract class AbstractEventListener<T> implements MessageListener {
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
     protected final List<NotificationService> notificationServices;
     protected final List<MessageBuilder<T>> messageBuilders;
 
-    public String getMessage(T eventType, Locale userLocale) {
+    private String getMessage(T eventType, Locale userLocale) {
         return messageBuilders.stream()
                 .filter(mb -> mb.supportsEvent() == eventType.getClass())
                 .findFirst()
@@ -28,7 +29,7 @@ public abstract class AbstractEventListener<T> {
                 .orElseThrow(() -> new IllegalArgumentException("No one message was found for the given event type " + eventType.getClass().getName()));
     }
 
-    public void sendNotification(long userId, String message) {
+    private void sendNotification(long userId, String message) {
         UserDto userDto = userServiceClient.getUser(userId);
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreference()))
@@ -41,7 +42,7 @@ public abstract class AbstractEventListener<T> {
         return eventType.getClass();
     }
 
-    public T constructEvent(byte[] message, Class<T> eventClass) {
+    protected T constructEvent(byte[] message, Class<T> eventClass) {
         try {
             return objectMapper.readValue(message, eventClass);
         } catch (IOException e) {
@@ -50,7 +51,7 @@ public abstract class AbstractEventListener<T> {
 
     }
 
-    public void sendMessage(T event, long receiverId, Locale userLocale) {
+    protected void sendMessage(T event, long receiverId, Locale userLocale) {
         String msg = getMessage(event, userLocale);
         sendNotification(receiverId, msg);
     }

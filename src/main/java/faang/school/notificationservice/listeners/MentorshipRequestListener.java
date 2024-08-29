@@ -7,12 +7,11 @@ import faang.school.notificationservice.listeners.general.AbstractEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
 
 import java.util.List;
 import java.util.Locale;
 
-public class MentorshipRequestListener extends AbstractEventListener<MentorshipOfferedEvent> implements MessageListener {
+public class MentorshipRequestListener extends AbstractEventListener<MentorshipOfferedEvent> {
 
     public MentorshipRequestListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
                                      List<MessageBuilder<MentorshipOfferedEvent>> messageBuilders,
