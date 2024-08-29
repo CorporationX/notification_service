@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.AchievementEventListener;
+import faang.school.notificationservice.listener.FollowerEventListener;
 import faang.school.notificationservice.listener.PostLikeEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,9 @@ public class RedisConfiguration {
     @Value("${spring.data.redis.channel.post-like}")
     public String postLikeChannelTopicName;
 
+    @Value("${spring.data.redis.channel.follow-user}")
+    private String followUserChannelTopicName;
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
@@ -50,6 +54,11 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public MessageListenerAdapter followUserListener(FollowerEventListener followerEventListener) {
+        return new MessageListenerAdapter(followerEventListener);
+    }
+
+    @Bean
     public MessageListenerAdapter postLikeListener(PostLikeEventListener postLikeEventListener) {
         return new MessageListenerAdapter(postLikeEventListener);
     }
@@ -59,14 +68,18 @@ public class RedisConfiguration {
         return new ChannelTopic(achievementChannelTopicName);
     }
 
-    public ChannelTopic postLikeChannel() {return new ChannelTopic(postLikeChannelTopicName);}
+    public ChannelTopic postLikeChannel() {
+        return new ChannelTopic(postLikeChannelTopicName);
+    }
 
     @Bean
     public RedisMessageListenerContainer redisContainer(AchievementEventListener achievementEventListener,
+                                                        FollowerEventListener followerEventListener,
                                                         PostLikeEventListener postLikeEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(achievementListener(achievementEventListener), achievementChannel());
+        container.addMessageListener(followUserListener(followerEventListener), new ChannelTopic(followUserChannelTopicName));
         container.addMessageListener(postLikeListener(postLikeEventListener), postLikeChannel());
         return container;
     }
