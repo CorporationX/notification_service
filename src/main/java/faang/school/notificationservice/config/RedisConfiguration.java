@@ -28,16 +28,16 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public MessageListenerAdapter likeEventListener(LikeEventListener likeEventListener) {
+    public MessageListenerAdapter redisLikeEventListener(LikeEventListener likeEventListener) {
         return new MessageListenerAdapter(likeEventListener);
     }
 
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(MessageListenerAdapter likeEventListener) {
+    public RedisMessageListenerContainer redisMessageListenerContainer(MessageListenerAdapter redisLikeEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory());
 
-        container.addMessageListener(likeEventListener, likeEventTopic());
+        container.addMessageListener(redisLikeEventListener, likeEventTopic());
 
         return container;
     }
