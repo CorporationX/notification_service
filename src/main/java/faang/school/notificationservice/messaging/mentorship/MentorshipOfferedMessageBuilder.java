@@ -1,6 +1,6 @@
 package faang.school.notificationservice.messaging.mentorship;
 
-import faang.school.notificationservice.event.mentorship.request.MentorshipAcceptedEvent;
+import faang.school.notificationservice.event.mentorship.request.MentorshipOfferedEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -11,20 +11,20 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class MentorshipAcceptedMessageBuilder implements MessageBuilder<MentorshipAcceptedEvent> {
-
+public class MentorshipOfferedMessageBuilder implements MessageBuilder<MentorshipOfferedEvent> {
     private final MessageSource messageSource;
     private final UserService userService;
 
     @Override
-    public Class<MentorshipAcceptedEvent> getInstance() {
-        return MentorshipAcceptedEvent.class;
+    public Class<MentorshipOfferedEvent> getInstance() {
+        return MentorshipOfferedEvent.class;
     }
 
     @Override
-    public String buildMessage(MentorshipAcceptedEvent event, Locale locale) {
+    public String buildMessage(MentorshipOfferedEvent event, Locale locale) {
         var receiver = userService.fetchUser(event.getRequesterId());
-        return messageSource.getMessage("mentorship.accepted", new Object[]{receiver.getUsername()}, locale);
+        return messageSource.getMessage("mentorship.offered",
+                new Object[]{receiver.getUsername()}, locale);
     }
 
 }
