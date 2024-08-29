@@ -6,6 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        comment: comment_channel
         like: like_channel
 
   datasource:
@@ -27,10 +28,10 @@ spring:
 
 
   mail:
-    host: smtp.gmail.com
+    host: smtp.yandex.ru
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: corp.x.mail@ya.ru #https://www.baeldung.com/spring-email
+    password: ovbjannklgshqzos #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
         smtp:
@@ -48,6 +49,9 @@ spring:
   messages:
     basename: messages
 
+  subjects:
+    subject: notification
+
 server:
   port: 8083
 
@@ -62,12 +66,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-  host: localhost
-  port: 8082
+    host: localhost
+    port: 8082
 user-service:
-  host: localhost
-  port: 8080
+    host: localhost
+    port: 8080
 post-service:
-  host: localhost
-  port: 8081
-
+    host: localhost
+    port: 8081
