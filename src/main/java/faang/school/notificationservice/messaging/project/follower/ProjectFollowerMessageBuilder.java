@@ -1,21 +1,17 @@
-package faang.school.notificationservice.builder;
+package faang.school.notificationservice.messaging.project.follower;
 
 import faang.school.notificationservice.dto.ProjectFollowerEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 
 @Component
+@RequiredArgsConstructor
 public class ProjectFollowerMessageBuilder implements MessageBuilder<ProjectFollowerEvent> {
     private final MessageSource messageSource;
-
-    @Autowired
-    public ProjectFollowerMessageBuilder(MessageSource messageSource) {
-        this.messageSource = messageSource;
-    }
 
     @Override
     public Class<?> getInstance() {

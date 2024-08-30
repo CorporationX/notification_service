@@ -2,6 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.ProjectFollowerEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -13,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.MissingFormatArgumentException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -44,8 +44,19 @@ class AbstractEventListenerTest {
                 objectMapper,
                 userServiceClient,
                 List.of(notificationService),
-                List.of(messageBuilder)
+                List.of(messageBuilder),
+                Object.class,
+                messageBuilder
         ) {
+            @Override
+            protected List<UserDto> getNotifiedUsers(Object event) {
+                return List.of();
+            }
+
+            @Override
+            protected Object[] getArgs(Object event) {
+                return new Object[0];
+            }
         };
     }
 
