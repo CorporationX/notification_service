@@ -1,5 +1,6 @@
 package faang.school.notificationservice.listener;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
@@ -20,6 +21,7 @@ public abstract class AbstractListener<T> implements MessageListener {
     private final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationServices;
     private final MessageBuilder<T> messageBuilder;
+    private final Class<T> eventType;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
@@ -29,6 +31,8 @@ public abstract class AbstractListener<T> implements MessageListener {
         } catch (IOException e) {
             throw new RuntimeException(e + "couldn't deserialize message");
         }
+        List<UserDto> users = getUsersToNotify(event);
+
     }
 
     public void sendNotification(long userId, String message) {
@@ -40,4 +44,6 @@ public abstract class AbstractListener<T> implements MessageListener {
         notificationServices.stream().filter(service -> service.getPreferredContact().equals(user.getPreference()))
                 .forEach(service -> service.send(user, message));
     }
+
+    protected abstract List<UserDto> getUsersToNotify(T event);
 }
