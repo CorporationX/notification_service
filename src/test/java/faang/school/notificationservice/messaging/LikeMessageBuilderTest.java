@@ -1,14 +1,13 @@
 package faang.school.notificationservice.messaging;
 
+import faang.school.notificationservice.config.MessageSourceConfig;
 import faang.school.notificationservice.dto.publishable.LikeEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -16,13 +15,10 @@ import java.util.ResourceBundle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest
+@SpringJUnitConfig
+@Import({MessageSourceConfig.class, LikeMessageBuilder.class})
+@ExtendWith(SpringExtension.class)
 public class LikeMessageBuilderTest {
-    @MockBean
-    private LettuceConnectionFactory mockConnectionFactory;
-    @MockBean
-    private RedisMessageListenerContainer mockListenerContainer;
     @Autowired
     private LikeMessageBuilder messageBuilder;
     private String receiverName = "Viet";
