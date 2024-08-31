@@ -26,10 +26,10 @@ public class CommentEventListenerConfig {
     }
 
     @Bean
-    public Pair<MessageListenerAdapter, ChannelTopic> profilePiclistenerTopicPair(
+    public Pair<ChannelTopic, MessageListenerAdapter> profilePiclistenerTopicPair(
             @Qualifier("commentEventListenerAdapter") MessageListenerAdapter commentEventListenerAdapter,
             @Qualifier("commentTopic") ChannelTopic commentTopic) {
 
-        return Pair.of(commentEventListenerAdapter, commentTopic);
+        return Pair.of(commentTopic, commentEventListenerAdapter);
     }
 }

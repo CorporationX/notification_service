@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.Topic;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.util.Pair;
 
@@ -29,11 +29,11 @@ public class RedisConfig {
 
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory redisConnectionFactory,
-                                                                       List<Pair<MessageListenerAdapter, ChannelTopic>> listenerTopicPairs) {
+                                                                       List<Pair<Topic, MessageListenerAdapter>> topicListenerPairs) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
 
-        listenerTopicPairs.forEach(channel -> container.addMessageListener(channel.getFirst(), channel.getSecond()));
+        topicListenerPairs.forEach(channel -> container.addMessageListener(channel.getSecond(), channel.getFirst()));
         return container;
     }
 }
