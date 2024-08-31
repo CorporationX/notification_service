@@ -7,6 +7,7 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         comment_channel: post_comment_channel
+        like: like_channel
 
   mail:
     host: smtp.yandex.ru
