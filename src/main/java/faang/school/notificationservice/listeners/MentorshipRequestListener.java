@@ -6,13 +6,10 @@ import faang.school.notificationservice.events.MentorshipOfferedEvent;
 import faang.school.notificationservice.listeners.general.AbstractEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
 
 import java.util.List;
-import java.util.Locale;
 
-public class MentorshipRequestListener extends AbstractEventListener<MentorshipOfferedEvent> implements MessageListener {
+public class MentorshipRequestListener extends AbstractEventListener<MentorshipOfferedEvent> {
 
     public MentorshipRequestListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
                                      List<MessageBuilder<MentorshipOfferedEvent>> messageBuilders,
@@ -21,8 +18,7 @@ public class MentorshipRequestListener extends AbstractEventListener<MentorshipO
     }
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
-        MentorshipOfferedEvent event = constructEvent(message.getBody(), MentorshipOfferedEvent.class);
-        sendMessage(event, event.getMentorId(), Locale.US);
+    protected Class<MentorshipOfferedEvent> getEventClassType() {
+        return MentorshipOfferedEvent.class;
     }
 }

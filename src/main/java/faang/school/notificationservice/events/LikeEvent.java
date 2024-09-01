@@ -9,8 +9,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LikeEvent {
+public class LikeEvent implements Notifiable {
     private Long postId;
     private Long authorId;
     private Long userId;
+
+    @Override
+    public long getReceiverId() {
+        return authorId;
+    }
 }
