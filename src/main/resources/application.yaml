@@ -11,6 +11,7 @@ spring:
         like: like_channel
         recommendation_requested:
           name: recommendation_requested_channel
+        comment: comment_channel
 
   mail:
     host: smtp.gmail.com
