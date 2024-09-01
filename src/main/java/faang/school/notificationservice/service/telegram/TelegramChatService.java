@@ -28,7 +28,7 @@ public class TelegramChatService {
     public void createChatBot(long userId, long chatId) {
         UserDto userDto = userService.getUser(userId);
         if (userDto == null) {
-            log.error("Пользователя с таким ID : {} нет", userId);
+            log.error("Пользователя с таким ID: {} нет", userId);
             throw new NoSuchElementException("Пользователя с таким ID нет");
         }
         TelegramChatBot newChat = TelegramChatBot.builder()
