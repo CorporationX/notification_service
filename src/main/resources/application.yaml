@@ -24,6 +24,8 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         mentorship_accepted: mentorship_accepted_channel
+        mentorship_offered: mentorship_offered_channel
+
         like: like_channel
         recommendation_requested:
           name: recommendation_requested_channel
