@@ -2,6 +2,8 @@ package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
+import faang.school.notificationservice.listener.PostLikeEventListener;
+import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +31,6 @@ public class RedisConfiguration {
     @Value("${spring.data.redis.channel.mentorshipAccepted}")
     public String mentorshipAcceptedChannelTopicName;
 
-
     @Bean
     public ChannelTopic mentorshipAcceptedChannel() {
         return new ChannelTopic(mentorshipAcceptedChannelTopicName);
@@ -39,6 +40,9 @@ public class RedisConfiguration {
     public MessageListenerAdapter mentorshipAcceptedListenerAdapter(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
         return new MessageListenerAdapter(mentorshipAcceptedEventListener);
     }
+
+    @Value("${spring.data.redis.channel.post-like}")
+    public String postLikeChannelTopicName;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -61,16 +65,26 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public MessageListenerAdapter postLikeListener(PostLikeEventListener postLikeEventListener) {
+        return new MessageListenerAdapter(postLikeEventListener);
+    }
+
+    @Bean
     public ChannelTopic achievementChannel() {
         return new ChannelTopic(achievementChannelTopicName);
     }
 
+    public ChannelTopic postLikeChannel() {return new ChannelTopic(postLikeChannelTopicName);}
+
+
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter achievementListener,
+    public RedisMessageListenerContainer redisContainer(AchievementEventListener achievementEventListener,
+                                                        PostLikeEventListener postLikeEventListener,
                                                         MessageListenerAdapter mentorshipAcceptedListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(achievementListener, achievementChannel());
+        container.addMessageListener(achievementListener(achievementEventListener), achievementChannel());
+        container.addMessageListener(postLikeListener(postLikeEventListener), postLikeChannel());
         container.addMessageListener(mentorshipAcceptedListenerAdapter, mentorshipAcceptedChannel());
         return container;
     }
