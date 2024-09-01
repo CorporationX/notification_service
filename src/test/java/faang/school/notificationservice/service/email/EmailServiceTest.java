@@ -28,7 +28,7 @@ public class EmailServiceTest {
         String text = "This is a test";
         SimpleMailMessage message = new SimpleMailMessage();
 
-        UserDto userDto = new UserDto();
+        UserDto userDto = UserDto.builder().build();
         userDto.setEmail("email@email.com");
 
         message.setTo(userDto.getEmail());
@@ -50,14 +50,14 @@ public class EmailServiceTest {
     @Test
     public void sendEmail_throwEmailTest() {
         String text = "This is a test";
-        UserDto userDto = new UserDto();
+        UserDto userDto = UserDto.builder().build();
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> emailService.send(userDto, text));
     }
 
     @Test
     public void sendEmail_throwTextTest() {
-        UserDto userDto = new UserDto();
+        UserDto userDto = UserDto.builder().build();
         userDto.setEmail("email@email.com");
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> emailService.send(userDto, null));
