@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.AchievementEventListener;
+import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,16 @@ public class RedisConfiguration {
 
 
     @Bean
+    public ChannelTopic mentorshipAcceptedChannel() {
+        return new ChannelTopic(mentorshipAcceptedChannelTopicName);
+    }
+
+    @Bean
+    public MessageListenerAdapter mentorshipAcceptedListenerAdapter(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
+        return new MessageListenerAdapter(mentorshipAcceptedEventListener);
+    }
+
+    @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
         return new JedisConnectionFactory(redisConfig);
@@ -55,10 +66,12 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationListener) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter achievementListener,
+                                                        MessageListenerAdapter mentorshipAcceptedListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(recommendationListener, achievementChannel());
+        container.addMessageListener(achievementListener, achievementChannel());
+        container.addMessageListener(mentorshipAcceptedListenerAdapter, mentorshipAcceptedChannel());
         return container;
     }
 }
