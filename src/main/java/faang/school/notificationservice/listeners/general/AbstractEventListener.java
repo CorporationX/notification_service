@@ -6,6 +6,7 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public abstract class AbstractEventListener<T> {
+public abstract class AbstractEventListener<T> implements MessageListener {
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
     protected final List<NotificationService> notificationServices;

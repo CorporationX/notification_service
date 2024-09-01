@@ -8,13 +8,14 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Locale;
 
+@Component
 @Slf4j
-public class MentorshipAcceptedListener extends AbstractEventListener<MentorshipAcceptedEvent> implements MessageListener {
+public class MentorshipAcceptedListener extends AbstractEventListener<MentorshipAcceptedEvent> {
 
     public MentorshipAcceptedListener(ObjectMapper objectMapper,
                                       UserServiceClient userServiceClient,
