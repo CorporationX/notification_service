@@ -7,10 +7,8 @@ import faang.school.notificationservice.listeners.general.AbstractEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.Message;
 
 import java.util.List;
-import java.util.Locale;
 
 @Configuration
 public class LikeEventListener extends AbstractEventListener<LikeEvent> {
@@ -24,8 +22,7 @@ public class LikeEventListener extends AbstractEventListener<LikeEvent> {
     }
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
-        LikeEvent event = constructEvent(message.getBody(), LikeEvent.class);
-        sendMessage(event, event.getAuthorId(), Locale.ENGLISH);
+    protected Class<LikeEvent> getEventClassType() {
+        return LikeEvent.class;
     }
 }

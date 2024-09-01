@@ -7,8 +7,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MentorshipOfferedEvent {
+public class MentorshipOfferedEvent implements Notifiable{
     private long authorId;
     private long mentorId;
     private long requestId;
+
+    @Override
+    public long getReceiverId() {
+        return mentorId;
+    }
 }
