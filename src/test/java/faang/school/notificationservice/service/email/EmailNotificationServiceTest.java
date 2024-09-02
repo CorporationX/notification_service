@@ -1,29 +1,33 @@
 package faang.school.notificationservice.service.email;
 
 import faang.school.notificationservice.dto.user.UserDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest
 public class EmailNotificationServiceTest {
 
-    @MockBean
+    @Mock
     private JavaMailSender mailSender;
 
-    @MockBean
     private EmailNotificationService notificationService;
 
-    @Autowired
-    private String notificationServiceEmail;
+    private String notificationServiceEmail = "some@gmail.com";
+
+    @BeforeEach
+    void setup(){
+        notificationService = new EmailNotificationService(
+                mailSender,
+                notificationServiceEmail
+        );
+    }
 
     @Test
     public void testSendNotification() {
@@ -39,7 +43,7 @@ public class EmailNotificationServiceTest {
 
         doNothing().when(mailSender).send(mail);
         notificationService.send(userDto, textNotification);
-        verify(notificationService, times(1)).send(userDto, textNotification);
+        verify(mailSender, timeout(1)).send(mail);
     }
 
     private SimpleMailMessage getMessage(UserDto user, String text) {
