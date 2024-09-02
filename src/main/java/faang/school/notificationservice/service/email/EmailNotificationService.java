@@ -1,6 +1,7 @@
-package faang.school.notificationservice.service;
+package faang.school.notificationservice.service.email;
 
 import faang.school.notificationservice.dto.user.UserDto;
+import faang.school.notificationservice.service.NotificationService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
