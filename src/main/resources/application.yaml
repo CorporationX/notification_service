@@ -40,6 +40,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
+telegram:
+  bot:
+    name: TheBestFaangSchoolBot
+    key: 6463177016:AAE8eyxkA4QTC-cWYsSO3UmRdVSI6f_FeZ0
+
 project-service:
     host: localhost
     port: 8082
@@ -50,3 +55,6 @@ user-service:
 achievement-service:
   host: localhost
   port: 8085
+
+notification:
+  brand: Faang

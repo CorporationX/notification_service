@@ -63,6 +63,17 @@ dependencies {
      * */
 //    implementation("org.springframework.boot:spring-boot-starter-mail:1.2.0.RELEASE")
     implementation("org.springframework.boot:spring-boot-starter-mail:3.3.2")
+
+    /**
+     * Telegram
+     */
+    implementation("org.telegram:telegrambots:6.3.0")
+
+    /**
+     * Retryable
+     */
+    implementation("org.springframework.retry:spring-retry:2.0.2")
+
 }
 
 tasks.withType<Test> {
