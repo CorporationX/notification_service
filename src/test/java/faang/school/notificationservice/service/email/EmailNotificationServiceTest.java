@@ -21,7 +21,7 @@ public class EmailNotificationServiceTest {
     private JavaMailSender mailSender;
 
     @MockBean
-    private NotificationService notificationService;
+    private EmailNotificationService notificationService;
 
     @Autowired
     private String notificationServiceEmail;
