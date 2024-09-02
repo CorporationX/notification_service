@@ -1,6 +1,7 @@
-package faang.school.notificationservice.service;
+package faang.school.notificationservice.service.email;
 
 import faang.school.notificationservice.dto.user.UserDto;
+import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
