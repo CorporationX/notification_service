@@ -2,6 +2,7 @@ package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.PostLikeEventListener;
+import faang.school.notificationservice.listener.ProfileViewEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,9 @@ public class RedisConfiguration {
     @Value("${spring.data.redis.channel.post-like}")
     public String postLikeChannelTopicName;
 
+    @Value("${spring.data.redis.channel.profile_view}")
+    public String profileViewTopicName;
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
@@ -55,19 +59,33 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public MessageListenerAdapter profileViewListener(ProfileViewEventListener profileViewTopicName) {
+        return new MessageListenerAdapter(profileViewTopicName);
+    }
+
+    @Bean
     public ChannelTopic achievementChannel() {
         return new ChannelTopic(achievementChannelTopicName);
     }
 
-    public ChannelTopic postLikeChannel() {return new ChannelTopic(postLikeChannelTopicName);}
+    public ChannelTopic postLikeChannel() {
+        return new ChannelTopic(postLikeChannelTopicName);
+    }
+
+    @Bean
+    public ChannelTopic profileViewChannel() {
+        return new ChannelTopic(profileViewTopicName);
+    }
 
     @Bean
     public RedisMessageListenerContainer redisContainer(AchievementEventListener achievementEventListener,
-                                                        PostLikeEventListener postLikeEventListener) {
+                                                        PostLikeEventListener postLikeEventListener,
+                                                        ProfileViewEventListener profileViewEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(achievementListener(achievementEventListener), achievementChannel());
         container.addMessageListener(postLikeListener(postLikeEventListener), postLikeChannel());
+        container.addMessageListener(profileViewListener(profileViewEventListener), profileViewChannel());
         return container;
     }
 }
