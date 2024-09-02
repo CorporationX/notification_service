@@ -14,6 +14,11 @@ repositories {
 
 dependencies {
     /**
+     * Others
+     */
+    implementation("org.telegram:telegrambots-client:7.9.1")
+
+    /**
      * Spring boot starters
      */
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
