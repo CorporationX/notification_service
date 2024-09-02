@@ -1,7 +1,6 @@
 package faang.school.notificationservice.service.sms;
 
 import com.vonage.client.VonageClient;
-import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsClient;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
