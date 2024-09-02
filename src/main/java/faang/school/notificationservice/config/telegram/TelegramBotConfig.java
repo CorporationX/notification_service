@@ -29,6 +29,5 @@ public class TelegramBotConfig {
                     + tgNotificationBot.getBotUsername(), e);
         }
         return telegramBotsApi;
-
     }
 }
