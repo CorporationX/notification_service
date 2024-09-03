@@ -75,7 +75,7 @@ class AchievementEventListenerTest {
         when(achievementMessageBuilder.buildMessage(eq(achievementEvent), eq(userLocale)))
                 .thenReturn(achievementMessage);
 
-        when(achievementMessageBuilder.supportEventType()).thenReturn(AchievementEvent.class);
+        when(achievementMessageBuilder.supportsEventType()).thenReturn(AchievementEvent.class);
 
         // when
         achievementEventListener.onMessage(message, null);

@@ -27,7 +27,7 @@ public class LikeEventMessageBuilder implements MessageBuilder<LikeEventV2> {
     }
 
     @Override
-    public Class<?> supportsEventType() {
+    public Class<LikeEventV2> supportsEventType() {
         return LikeEventV2.class;
     }
 }
