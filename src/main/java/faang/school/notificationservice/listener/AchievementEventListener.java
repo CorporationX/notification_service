@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.Locale;
 
 @Component
-public class AchievementEventListener extends AbstractEventListener implements MessageListener {
+public class AchievementEventListener extends AbstractEventListener<AchievementEvent> implements MessageListener {
 
 
     public AchievementEventListener(ObjectMapper objectMapper,
                                     UserServiceClient userServiceClient,
-                                    List<MessageBuilder> messageBuilders,
+                                    List<MessageBuilder<AchievementEvent>> messageBuilders,
                                     List<NotificationService> notificationServices) {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
@@ -28,7 +28,7 @@ public class AchievementEventListener extends AbstractEventListener implements M
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, AchievementEvent.class, event -> {
             UserDto userDto = userServiceClient.getUser(event.getReceiverId());
-            String notificationMessage = getMessage(event, userDto, Locale.UK);
+            String notificationMessage = getMessage(event, Locale.UK);
             sendNotification(userDto, notificationMessage);
         });
     }
