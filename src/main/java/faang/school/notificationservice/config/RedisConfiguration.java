@@ -77,7 +77,8 @@ public class RedisConfiguration {
 
     @Bean
     public RedisMessageListenerContainer redisContainer(AchievementEventListener achievementEventListener,
-                                                        PostLikeEventListener postLikeEventListener) {
+                                                        PostLikeEventListener postLikeEventListener,
+                                                        MessageListenerAdapter mentorshipOfferedListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(achievementListener(achievementEventListener), achievementChannel());

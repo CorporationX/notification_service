@@ -46,8 +46,7 @@ public abstract class AbstractEventListener<T> {
 
     protected void sendNotification(UserDto userDto, String message) {
         notificationServices.stream()
-//                .filter(service -> service.getPreferredContact() == userDto.getPreference())
-                .filter(service -> service.getPreferredContact() == UserDto.PreferredContact.EMAIL)
+                .filter(service -> service.getPreferredContact() == userDto.getPreference())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No notification service found for preference: %s"
                         .formatted(userDto.getPreference())))
