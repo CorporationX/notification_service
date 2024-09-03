@@ -17,11 +17,11 @@ import java.util.Locale;
 
 @Component
 @Slf4j
-public class MentorshipOfferedEventListener extends AbstractEventListener implements MessageListener {
+public class MentorshipOfferedEventListener extends AbstractEventListener<MentorshipOfferedEvent> implements MessageListener {
 
     public MentorshipOfferedEventListener(ObjectMapper objectMapper,
                                           UserServiceClient userServiceClient,
-                                          List<MessageBuilder> messageBuilders,
+                                          List<MessageBuilder<MentorshipOfferedEvent>> messageBuilders,
                                           List<NotificationService> notificationServices) {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
@@ -32,8 +32,7 @@ public class MentorshipOfferedEventListener extends AbstractEventListener implem
             MentorshipOfferedEvent mentorshipOfferedEvent =
                     objectMapper.readValue(message.getBody(), MentorshipOfferedEvent.class);
             UserDto receiver = userServiceClient.getUser(mentorshipOfferedEvent.getReceiverId());
-            UserDto requester = userServiceClient.getUser(mentorshipOfferedEvent.getRequesterId());
-            String notificationMessage = getMessage(mentorshipOfferedEvent, requester, Locale.UK);
+            String notificationMessage = getMessage(mentorshipOfferedEvent, Locale.UK);
             sendNotification(receiver, notificationMessage);
         } catch (IOException e) {
             log.error("Could not read event: {}", MentorshipOfferedEvent.class, e);

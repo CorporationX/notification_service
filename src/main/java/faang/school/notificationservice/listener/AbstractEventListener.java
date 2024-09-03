@@ -16,14 +16,14 @@ import java.util.function.Consumer;
 
 @RequiredArgsConstructor
 @Slf4j
-public abstract class AbstractEventListener {
+public abstract class AbstractEventListener<T> {
 
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
-    protected final List<MessageBuilder> messageBuilders;
+    protected final List<MessageBuilder<T>> messageBuilders;
     protected final List<NotificationService> notificationServices;
 
-    protected <T> void handleEvent(Message message, Class<T> eventType, Consumer<T> eventConsumer) {
+    protected void handleEvent(Message message, Class<T> eventType, Consumer<T> eventConsumer) {
         try {
             T event = objectMapper.readValue(message.getBody(), eventType);
             eventConsumer.accept(event);
@@ -35,18 +35,19 @@ public abstract class AbstractEventListener {
         }
     }
 
-    protected <T> String getMessage(T event, UserDto userDto, Locale locale) {
+    protected String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
                 .filter(messageBuilder -> messageBuilder.getInstance() == event.getClass())
                 .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(userDto, locale))
+                .map(messageBuilder -> messageBuilder.buildMessage(event, locale))
                 .orElseThrow(() -> new IllegalArgumentException("No message builder found for event type: %s"
                         .formatted(event.getClass().getName())));
     }
 
     protected void sendNotification(UserDto userDto, String message) {
         notificationServices.stream()
-                .filter(service -> service.getPreferredContact() == userDto.getPreference())
+//                .filter(service -> service.getPreferredContact() == userDto.getPreference())
+                .filter(service -> service.getPreferredContact() == UserDto.PreferredContact.EMAIL)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No notification service found for preference: %s"
                         .formatted(userDto.getPreference())))
