@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentEventListenerTest {
@@ -33,13 +34,12 @@ public class CommentEventListenerTest {
     private ObjectMapper objectMapper;
     @Mock
     private Message message;
-    @Spy
+    @Mock
     private CommentEventMessageBuilder commentEventMessageBuilder;
-    private MessageSource messageSource;
     private CommentEventListener commentEventListener;
     private List<NotificationService> notificationServices;
     private CommentEvent commentEvent;
-    private Byte[] bytes;
+    private byte[] bytes;
     private UserDto user;
     private String messageText;
 
@@ -47,10 +47,9 @@ public class CommentEventListenerTest {
     public void setUp() {
         notificationServices = new ArrayList<>();
         notificationServices.add(exampleService);
-        commentEventMessageBuilder = new CommentEventMessageBuilder(messageSource);
         commentEventListener = new CommentEventListener(objectMapper, notificationServices, commentEventMessageBuilder, userServiceClient);
-        bytes = new Byte[]{};
-        messageText = "message";
+        messageText = "new message";
+        bytes = messageText.getBytes();
         user = UserDto.builder()
                 .id(1L)
                 .username("test")
@@ -69,12 +68,15 @@ public class CommentEventListenerTest {
     @Test
     public void testOnMessage() throws IOException {
         Mockito.when(message.getBody()).thenReturn(messageText.getBytes(StandardCharsets.UTF_8));
+        Mockito.when(commentEventMessageBuilder.buildMessage(commentEvent, Locale.US)).thenReturn("new message");
         Mockito.when(userServiceClient.getUser(1L)).thenReturn(user);
         Mockito.when(notificationServices.get(0).getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
         Mockito.when(objectMapper.readValue(message.getBody(), CommentEvent.class)).thenReturn(commentEvent);
         Mockito.doNothing().when(notificationServices.get(0)).send(user, messageText);
-
-
+        commentEventListener.onMessage(message, bytes);
+        Mockito.verify(objectMapper, Mockito.times(1)).readValue(message.getBody(), CommentEvent.class);
+        Mockito.verify(userServiceClient, Mockito.times(2)).getUser(1L);
+        Mockito.verify(exampleService, Mockito.times(1)).send(user, messageText);
     }
 
 }
