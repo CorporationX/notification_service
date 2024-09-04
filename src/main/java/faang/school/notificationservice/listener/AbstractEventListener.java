@@ -49,9 +49,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
             throw new RuntimeException(e);
         }
 
-        List<UserDto> users = getNotifiedUsers(event);
-
-        users.forEach(user -> notificationServiceList.stream()
+        getNotifiedUsers(event).forEach(user -> notificationServiceList.stream()
                 .filter(notifier -> canBeNotified(notifier, user))
                 .forEach(notifier -> {
                     String msg = messageBuilder.buildMessage(event, Locale.US, getArgs(event));

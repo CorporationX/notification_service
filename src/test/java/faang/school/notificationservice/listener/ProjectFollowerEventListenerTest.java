@@ -44,6 +44,8 @@ class ProjectFollowerEventListenerTest {
 
     private UserDto userDto;
     private ProjectFollowerEvent event;
+    private Message message;
+    private byte[] messageBody;
 
     @BeforeEach
     void setUp() {
@@ -66,6 +68,9 @@ class ProjectFollowerEventListenerTest {
                 Collections.singletonList(messageBuilder),
                 messageBuilder
         );
+
+        messageBody = new byte[0];
+        message = mock(Message.class);
     }
 
     @Test
@@ -84,11 +89,9 @@ class ProjectFollowerEventListenerTest {
         event.setFollowerId(1L);
         event.setAuthorId(2L);
 
-        byte[] messageBody = new byte[0];
-        Message message = mock(Message.class);
         when(message.getBody()).thenReturn(messageBody);
 
-        when(objectMapper.readValue(messageBody, ProjectFollowerEvent.class))
+       when(objectMapper.readValue(messageBody, ProjectFollowerEvent.class))
                 .thenThrow(new IOException("Failed to read message"));
 
         RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
