@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service.telegram;
 
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.user.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,8 +25,9 @@ public class TelegramServiceTest {
         MockitoAnnotations.openMocks(this);
 
         telegramService = new TelegramService(telegramBot);
-        userDto = new UserDto();
-        userDto.setId(1L);
+        userDto = UserDto.builder()
+                .id(1L)
+                .build();
         message = "Hello world!";
     }
 
