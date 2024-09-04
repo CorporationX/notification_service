@@ -3,7 +3,10 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.ProjectFollowerEvent;
-import faang.school.notificationservice.dto.UserDto;
+
+
+import faang.school.notificationservice.dto.user.UserDto;
+import faang.school.notificationservice.listener.project.ProjectFollowerEventListener;
 import faang.school.notificationservice.messaging.project.follower.ProjectFollowerMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -43,17 +45,15 @@ class ProjectFollowerEventListenerTest {
     private ProjectFollowerEventListener eventListener;
 
     private UserDto userDto;
+
     private ProjectFollowerEvent event;
     private Message message;
     private byte[] messageBody;
 
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-
-        userDto = new UserDto();
-        userDto.setUsername("TestUser");
-        userDto.setPreference(UserDto.PreferredContact.SMS);
 
         event = new ProjectFollowerEvent();
         event.setProjectId(1L);
@@ -62,12 +62,16 @@ class ProjectFollowerEventListenerTest {
 
 
         eventListener = new ProjectFollowerEventListener(
+                List.of(notificationService),
                 objectMapper,
-                userServiceClient,
-                Collections.singletonList(notificationService),
-                Collections.singletonList(messageBuilder),
-                messageBuilder
+                messageBuilder,
+                userServiceClient
         );
+
+        userDto = UserDto.builder()
+                .username("TestUser")
+                .preference(UserDto.PreferredContact.SMS)
+                .build();
 
         messageBody = new byte[0];
         message = mock(Message.class);
@@ -91,12 +95,10 @@ class ProjectFollowerEventListenerTest {
 
         when(message.getBody()).thenReturn(messageBody);
 
-       when(objectMapper.readValue(messageBody, ProjectFollowerEvent.class))
+        when(objectMapper.readValue(messageBody, ProjectFollowerEvent.class))
                 .thenThrow(new IOException("Failed to read message"));
 
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
-            eventListener.onMessage(message, null);
-        });
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> eventListener.onMessage(message, null));
 
         assertEquals("java.io.IOException: Failed to read message", thrown.getMessage());
     }

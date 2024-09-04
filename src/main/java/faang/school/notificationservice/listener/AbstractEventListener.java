@@ -36,52 +36,21 @@ public abstract class AbstractEventListener<E> implements MessageListener {
         users.forEach(user -> notifiers.stream()
                 .filter(notifier -> canBeNotified(notifier, user))
                 .forEach(notifier -> {
-                    String msg = messageBuilder.buildMessage(event, Locale.US, new Object[]{});
-                    notifier.send(user, msg);
-                })
-        );
-    }
-
-    protected abstract List<UserDto> getNotifiedUsers(E event);
-
-    protected boolean canBeNotified(NotificationService notification, UserDto user) {
-        UserDto.PreferredContact preferred = user.getPreference();
-
-        if (preferred == null) {
-            return false;
-        }
-
-        return preferred == notification.getPreferredContact();
-    }
-
-    @Override
-    public void onMessage(Message message, byte[] pattern) {
-        T event;
-        try {
-            event = objectMapper.readValue(message.getBody(), eventType);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        getNotifiedUsers(event).forEach(user -> notificationServiceList.stream()
-                .filter(notifier -> canBeNotified(notifier, user))
-                .forEach(notifier -> {
                     String msg = messageBuilder.buildMessage(event, Locale.US, getArgs(event));
                     notifier.send(user, msg);
                 })
         );
     }
 
-    protected abstract List<UserDto> getNotifiedUsers(T event);
-    protected abstract Object[] getArgs(T event);
-
     protected boolean canBeNotified(NotificationService notification, UserDto user) {
         UserDto.PreferredContact preferred = user.getPreference();
-
         if (preferred == null) {
             return false;
         }
 
         return preferred == notification.getPreferredContact();
     }
+
+    protected abstract List<UserDto> getNotifiedUsers(E event);
+    protected abstract Object[] getArgs(E event);
 }

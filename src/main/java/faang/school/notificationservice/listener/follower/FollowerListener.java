@@ -37,4 +37,9 @@ public class FollowerListener extends AbstractEventListener<FollowerEvent> {
         );
         return List.of(followeeUser);
     }
+
+    @Override
+    protected Object[] getArgs(FollowerEvent event) {
+        return new Object[0];
+    }
 }

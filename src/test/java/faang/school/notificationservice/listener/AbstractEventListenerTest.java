@@ -74,6 +74,11 @@ class AbstractEventListenerTest {
             protected List<UserDto> getNotifiedUsers(Object event) {
                 return List.of(notifiedUser);
             }
+
+            @Override
+            protected Object[] getArgs(Object event) {
+                return new Object[0];
+            }
         };
 
         Message eventMsg = new DefaultMessage(new byte[]{}, new byte[]{});

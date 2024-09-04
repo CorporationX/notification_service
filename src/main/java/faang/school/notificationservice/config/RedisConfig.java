@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config;
 
-import faang.school.notificationservice.listener.ProjectFollowerEventListener;
+import faang.school.notificationservice.listener.project.ProjectFollowerEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
