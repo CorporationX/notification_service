@@ -2,3 +2,7 @@ spring:
   mail:
     username: test
     password: test
+
+telegram:
+  bot:
+    token: test
