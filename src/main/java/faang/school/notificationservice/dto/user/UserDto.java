@@ -1,8 +1,10 @@
-package faang.school.notificationservice.dto;
+package faang.school.notificationservice.dto.user;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder(toBuilder = true)
 public class UserDto {
     private long id;
     private String username;
