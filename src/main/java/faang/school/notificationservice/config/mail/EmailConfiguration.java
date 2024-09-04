@@ -21,12 +21,12 @@ public class EmailConfiguration {
     private String password;
     @Value("${spring.mail.properties.mail.protocol}")
     private String protocol;
-    @Value("${spring.mail.properties.mail.smtp.auth}")
-    private String auth;
-    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
-    private boolean enable;
     @Value("${spring.mail.properties.mail.debug}")
     private boolean debug;
+    @Value("${spring.mail.properties.mail.smtp.auth}")
+    private boolean auth;
+    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
+    private boolean enable;
 
     @Bean
     public JavaMailSender getJavaMailSender() {
