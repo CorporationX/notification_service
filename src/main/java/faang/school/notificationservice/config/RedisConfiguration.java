@@ -3,6 +3,7 @@ package faang.school.notificationservice.config;
 import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.PostLikeEventListener;
 import faang.school.notificationservice.listener.ProfileViewEventListener;
+import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,9 @@ public class RedisConfiguration {
 
     @Value("${spring.data.redis.channel.achievement}")
     public String achievementChannelTopicName;
+
+    @Value("${spring.data.redis.channel.mentorship_offered}")
+    private String mentorshipOfferedChannelName;
 
     @Value("${spring.data.redis.channel.post-like}")
     public String postLikeChannelTopicName;
@@ -64,6 +68,11 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public MessageListenerAdapter mentorshipOfferedListener(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
+        return new MessageListenerAdapter(mentorshipOfferedEventListener);
+    }
+
+    @Bean
     public ChannelTopic achievementChannel() {
         return new ChannelTopic(achievementChannelTopicName);
     }
@@ -78,14 +87,20 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public ChannelTopic mentorshipOfferedChannelTopic() {
+        return new ChannelTopic(mentorshipOfferedChannelName);
+    }
+
+    @Bean
     public RedisMessageListenerContainer redisContainer(AchievementEventListener achievementEventListener,
                                                         PostLikeEventListener postLikeEventListener,
-                                                        ProfileViewEventListener profileViewEventListener) {
+                                                        MessageListenerAdapter mentorshipOfferedListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(achievementListener(achievementEventListener), achievementChannel());
         container.addMessageListener(postLikeListener(postLikeEventListener), postLikeChannel());
         container.addMessageListener(profileViewListener(profileViewEventListener), profileViewChannel());
+        container.addMessageListener(mentorshipOfferedListener, mentorshipOfferedChannelTopic());
         return container;
     }
 }
