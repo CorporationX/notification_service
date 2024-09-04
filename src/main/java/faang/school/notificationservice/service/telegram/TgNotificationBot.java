@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service.telegram;
 
+import faang.school.notificationservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @RequiredArgsConstructor
 public class TgNotificationBot extends TelegramLongPollingBot {
-    private final TelegramChatService telegramChatService;
+    private final UserService userService;
     private final Map<Long, Boolean> awaitingUserId = new ConcurrentHashMap<>();
     @Value("${telegram.bot.username}")
     private String botName;
@@ -74,7 +75,7 @@ public class TgNotificationBot extends TelegramLongPollingBot {
 
     private void handleUserIdInput(long chatId, String userId) {
         awaitingUserId.put(chatId, false);
-        telegramChatService.createChatBot(Long.parseLong(userId), chatId);
+        userService.putChatIdInUser(Long.parseLong(userId), chatId);
         sendTextMessage(chatId, "Ваш ID сохранен: " + userId);
     }
 

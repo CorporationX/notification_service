@@ -10,12 +10,10 @@ import org.springframework.stereotype.Service;
 public class TelegramNotificationService implements NotificationService {
 
     private final TgNotificationBot tgNotificationBot;
-    private final TelegramChatService telegramChatService;
 
     @Override
     public void send(UserDto user, String message) {
-        long chatId = telegramChatService.findChatIdByUserId(user.getId());
-        tgNotificationBot.sendTextMessage(chatId, message);
+        tgNotificationBot.sendTextMessage(user.getChatId(), message);
     }
 
     @Override
