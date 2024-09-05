@@ -13,6 +13,4 @@ public interface UserServiceClient {
     @GetMapping("/users/{id}")
     UserDto getUser(@PathVariable long id);
 
-    @PutMapping("/users/{id}")
-    void putChatIdInUser(@PathVariable long id, @RequestParam("chatId") long chatId);
 }
