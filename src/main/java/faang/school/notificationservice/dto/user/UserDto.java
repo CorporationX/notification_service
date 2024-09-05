@@ -11,6 +11,10 @@ public class UserDto {
     private String email;
     private String phone;
     private PreferredContact preference;
+    private String password;
+    private boolean active;
+    private String aboutMe;
+    private String countryTitle;
 
     public enum PreferredContact {
         EMAIL, SMS, TELEGRAM

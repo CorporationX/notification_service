@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AbstractEventListenerTest {
-    
+
     private AbstractEventListener<Object> eventListener;
 
     @Mock
@@ -72,6 +73,11 @@ class AbstractEventListenerTest {
             @Override
             protected List<UserDto> getNotifiedUsers(Object event) {
                 return List.of(notifiedUser);
+            }
+
+            @Override
+            protected Object[] getArgs(Object event) {
+                return new Object[0];
             }
         };
 

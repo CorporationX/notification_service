@@ -39,4 +39,9 @@ public class AchievementListener extends AbstractEventListener<AchievementEvent>
 
         return List.of(notifiedUser);
     }
+
+    @Override
+    protected Object[] getArgs(AchievementEvent event) {
+        return new Object[0];
+    }
 }

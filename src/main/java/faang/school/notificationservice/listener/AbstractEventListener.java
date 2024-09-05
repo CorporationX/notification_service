@@ -36,21 +36,21 @@ public abstract class AbstractEventListener<E> implements MessageListener {
         users.forEach(user -> notifiers.stream()
                 .filter(notifier -> canBeNotified(notifier, user))
                 .forEach(notifier -> {
-                    String msg = messageBuilder.buildMessage(event, Locale.US, new Object[]{});
+                    String msg = messageBuilder.buildMessage(event, Locale.US, getArgs(event));
                     notifier.send(user, msg);
                 })
         );
     }
 
-    protected abstract List<UserDto> getNotifiedUsers(E event);
-
     protected boolean canBeNotified(NotificationService notification, UserDto user) {
         UserDto.PreferredContact preferred = user.getPreference();
-
         if (preferred == null) {
             return false;
         }
 
         return preferred == notification.getPreferredContact();
     }
+
+    protected abstract List<UserDto> getNotifiedUsers(E event);
+    protected abstract Object[] getArgs(E event);
 }
