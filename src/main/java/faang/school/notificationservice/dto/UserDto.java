@@ -15,6 +15,7 @@ public class UserDto {
     private String username;
     private String email;
     private String phone;
+    private Long chatId;
     private PreferredContact preference;
 
     public enum PreferredContact {

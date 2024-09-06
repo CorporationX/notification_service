@@ -8,6 +8,7 @@ spring:
         achievement: achievement_channel
         mentorship_accepted: mentorship_accepted_channel
         mentorship_offered: mentorship_offered_channel
+
         like: like_channel
         recommendation_requested:
           name: recommendation_requested_channel
@@ -46,6 +47,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+
+telegram:
+  bot:
+    username: ${TELEGRAM_BOT_USERNAME}
+    token: ${TELEGRAM_BOT_TOKEN}
 
 twilio:
   account-sid: ${ACCOUNT_SID}
