@@ -1,7 +1,10 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.like.LikeEventListener;
 import faang.school.notificationservice.listener.achievement.AchievementListener;
 import faang.school.notificationservice.listener.follower.FollowerListener;
+import faang.school.notificationservice.listener.project.ProjectFollowerEventListener;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +20,9 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@RequiredArgsConstructor
 public class RedisMQConfig {
+    private final RedisProperties redisProperties;
     @Value("${spring.data.redis.channel.achievement}")
     private String achievementTopicName;
     @Value("${spring.data.redis.channel.follower}")
@@ -28,7 +33,8 @@ public class RedisMQConfig {
     private int port;
     @Value("${spring.data.redis.connection_factory}")
     private String factoryType;
-
+    @Value("${spring.data.redis.channel.project_follower}")
+    private String projectFollowerTopicName;
 
     @Bean
     @Lazy
@@ -75,20 +81,41 @@ public class RedisMQConfig {
     }
 
     @Bean
-    MessageListenerAdapter achievementListenerAdapter(AchievementListener achievementListener) {
+    public MessageListenerAdapter achievementListenerAdapter(AchievementListener achievementListener) {
         return new MessageListenerAdapter(achievementListener);
     }
 
     @Bean
-    MessageListenerAdapter followerListenerAdapter(FollowerListener followerListener){
+    public MessageListenerAdapter followerListenerAdapter(FollowerListener followerListener) {
         return new MessageListenerAdapter(followerListener);
+    }
+
+    @Bean
+    public ChannelTopic likeEventTopic() {
+        return new ChannelTopic(redisProperties.getChannel().getLike());
+    }
+
+    @Bean
+    public MessageListenerAdapter redisLikeEventListener(LikeEventListener likeEventListener) {
+        return new MessageListenerAdapter(likeEventListener);
+    }
+
+    @Bean
+    ChannelTopic projectFollowerTopic() {
+        return new ChannelTopic(projectFollowerTopicName);
+    }
+
+    @Bean
+    MessageListenerAdapter projectFollowerListener(ProjectFollowerEventListener projectFollowerEventListener) {
+        return new MessageListenerAdapter(projectFollowerEventListener);
     }
 
     @Bean
     RedisMessageListenerContainer redisContainer(
             MessageListenerAdapter achievementListenerAdapter,
-            MessageListenerAdapter followerListenerAdapter
-    ) {
+            MessageListenerAdapter followerListenerAdapter,
+            MessageListenerAdapter redisLikeEventListener,
+            MessageListenerAdapter projectFollowerListener) {
         RedisMessageListenerContainer container =
                 new RedisMessageListenerContainer();
 
@@ -96,6 +123,8 @@ public class RedisMQConfig {
 
         container.addMessageListener(achievementListenerAdapter, achievementTopic());
         container.addMessageListener(followerListenerAdapter, followerTopic());
+        container.addMessageListener(redisLikeEventListener, likeEventTopic());
+        container.addMessageListener(projectFollowerListener, projectFollowerTopic());
 
         return container;
     }

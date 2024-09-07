@@ -1,9 +1,10 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.listener.like;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.dto.publishable.LikeEvent;
+import faang.school.notificationservice.listener.like.LikeEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,8 +35,8 @@ public class LikeEventListenerTest {
     private long receiverId = 2L;
     private String actorName = "Gena";
     private String receiverName = "Viet";
-    private UserDto actor = new UserDto();
-    private UserDto receiver = new UserDto();
+    private UserDto actor = UserDto.builder().build();
+    private UserDto receiver = UserDto.builder().build();
     private LikeEvent event = LikeEvent.builder()
             .actorId(actorId)
             .receiverId(receiverId)

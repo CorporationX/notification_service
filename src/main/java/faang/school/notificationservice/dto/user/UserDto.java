@@ -2,6 +2,7 @@ package faang.school.notificationservice.dto.user;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder(toBuilder = true)
