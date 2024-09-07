@@ -5,6 +5,7 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+@Slf4j
 @RequiredArgsConstructor
 public abstract class AbstractEventListenerByDima<E> implements MessageListener {
     private final List<NotificationService> notifiers;
@@ -29,6 +31,7 @@ public abstract class AbstractEventListenerByDima<E> implements MessageListener 
         }
 
         List<UserDto> users = getNotifiedUsers(event);
+        log.info(users + " notified successfully about event:" + event);
 
         users.forEach(user -> notifiers.stream()
                 .filter(notifier -> canBeNotified(notifier, user))
