@@ -3,9 +3,11 @@ spring:
     redis:
       port: 6379
       host: localhost
+      connection_factory: jedis # `jedis` or `lettuce`
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        project_follower: project_follower_channel
         like: like_channel
 
   mail:
@@ -22,6 +24,7 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+          debug: true
 
   messages:
     basename: messages
@@ -53,6 +56,9 @@ user-service:
 post-service:
     host: localhost
     port: 8081
+achievement-service:
+  host: localhost
+  port: 8085
 
 notification:
   brand: Faang

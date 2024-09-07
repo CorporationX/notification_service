@@ -1,8 +1,7 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,10 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.connection.DefaultMessage;
+import org.springframework.data.redis.connection.Message;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.MissingFormatArgumentException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,87 +24,73 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AbstractEventListenerTest {
 
-    @Mock
-    private ObjectMapper objectMapper;
-
-    @Mock
-    private UserServiceClient userServiceClient;
-
-    @Mock
-    private NotificationService notificationService;
-
-    @Mock
-    private MessageBuilder<Object> messageBuilder;
-
     private AbstractEventListener<Object> eventListener;
 
-
-    @BeforeEach
-    void setUp() {
-        eventListener = new AbstractEventListener<Object>(
-                objectMapper,
-                userServiceClient,
-                List.of(notificationService),
-                List.of(messageBuilder)
-        ) {
-        };
-    }
+    @Mock
+    ObjectMapper objectMapper;
 
     @Test
-    void testGetMessageSuccess() {
-        Object event = new Object();
-        Locale locale = Locale.ENGLISH;
+    void testSendMessageSuccess() throws IOException {
+
+        UserDto notifiedUser = UserDto.builder()
+                .id(1L)
+                .preference(UserDto.PreferredContact.EMAIL)
+                .build();
+
+        StringBuilder actual = new StringBuilder();
+
         String expectedMessage = "Test message";
 
-        when(messageBuilder.getInstance()).thenReturn((Class) event.getClass());
-        when(messageBuilder.buildMessage(event, locale, null)).thenReturn(expectedMessage);
+        AbstractEventListener<Object> abstractEventListener = new AbstractEventListener<Object>(
+                List.of(
+                        new NotificationService() {
+                            @Override
+                            public void send(UserDto user, String message) {
+                                actual.append(message);
+                            }
 
-        String message = eventListener.getMessage(event, locale, null);
+                            @Override
+                            public UserDto.PreferredContact getPreferredContact() {
+                                return UserDto.PreferredContact.EMAIL;
+                            }
+                        }
+                ),
+                objectMapper,
+                new MessageBuilder<>() {
+                    @Override
+                    public Class<?> getInstance() {
+                        return Object.class;
+                    }
 
-        assertEquals(expectedMessage, message);
-        verify(messageBuilder).buildMessage(event, locale, null);
-    }
+                    @Override
+                    public String buildMessage(Object event, Locale locale, Object[] args) {
+                        return expectedMessage;
+                    }
+                },
+                Object.class
 
-    @Test
-    void testGetMessageThrowsExceptionWhenBuilderNotFound() {
+        ) {
+            @Override
+            protected List<UserDto> getNotifiedUsers(Object event) {
+                return List.of(notifiedUser);
+            }
+
+            @Override
+            protected Object[] getArgs(Object event) {
+                return new Object[0];
+            }
+        };
+
+        Message eventMsg = new DefaultMessage(new byte[]{}, new byte[]{});
+
         Object event = new Object();
-        Locale locale = Locale.ENGLISH;
 
-        when(messageBuilder.getInstance()).thenReturn((Class) String.class);
-
-        assertThrows(IllegalArgumentException.class, () ->
-                eventListener.getMessage(event, locale, null)
+        when(objectMapper.readValue(eventMsg.getBody(), Object.class)).thenReturn(
+                event
         );
-    }
 
-    @Test
-    void testSendNotificationSuccess() {
-        long userId = 1L;
-        String message = "Notification message";
-        UserDto userDto = new UserDto();
-        userDto.setPreference(UserDto.PreferredContact.EMAIL);
+        abstractEventListener.onMessage(eventMsg, new byte[]{});
 
-        when(userServiceClient.getUser(userId)).thenReturn(userDto);
-        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
-
-        eventListener.sendNotification(userId, message);
-
-        verify(userServiceClient).getUser(userId);
-        verify(notificationService).send(userDto, message);
-    }
-
-    @Test
-    void testSendNotificationThrowsExceptionWhenServiceNotFound() {
-        long userId = 1L;
-        String message = "Notification message";
-        UserDto userDto = new UserDto();
-        userDto.setPreference(UserDto.PreferredContact.EMAIL);
-
-        when(userServiceClient.getUser(userId)).thenReturn(userDto);
-        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS);
-
-        assertThrows(IllegalArgumentException.class, () ->
-                eventListener.sendNotification(userId, message)
-        );
+        assertEquals(expectedMessage, actual.toString());
     }
 }
