@@ -1,6 +1,5 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;

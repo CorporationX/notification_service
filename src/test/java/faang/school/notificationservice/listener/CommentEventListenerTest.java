@@ -1,6 +1,5 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.CommentEvent;
@@ -13,9 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.MessageSource;
 import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
