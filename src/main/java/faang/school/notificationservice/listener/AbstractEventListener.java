@@ -12,6 +12,7 @@ import org.springframework.data.redis.connection.Message;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,9 +22,10 @@ public abstract class AbstractEventListener<T> {
     private final List<NotificationService> notificationServices;
     private final List<MessageBuilder<T>> messageBuilders;
 
-    protected void handleEvent(Message message, Class<T> type) {
+    protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
         try {
             T event = objectMapper.readValue(message.getBody(), type);
+            consumer.accept(event);
         } catch (IOException e) {
             String msg = "Exception occurred while parsing event message";
             log.error(msg, e);
