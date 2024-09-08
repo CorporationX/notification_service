@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 @RequiredArgsConstructor
-public class AbstractEventListener<T> {
+public abstract class AbstractEventListener<T> {
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
     protected final List<MessageBuilder<T>> messageBuilders;

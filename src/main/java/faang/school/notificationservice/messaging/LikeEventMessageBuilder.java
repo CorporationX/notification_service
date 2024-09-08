@@ -19,8 +19,8 @@ public class LikeEventMessageBuilder implements MessageBuilder<LikeEventV2> {
     public String buildMessage(LikeEventV2 eventType, Locale locale) {
         UserDto likeAuthor = userServiceClient.getUser(eventType.getLikeAuthorId());
         return messageSource.getMessage("like_event.new", new Object[]{
-                        likeAuthor.getUsername(),
                         eventType.getLikedPostId(),
+                        likeAuthor.getUsername(),
                         eventType.getLikeDateTime()
                 }
                 , locale);
