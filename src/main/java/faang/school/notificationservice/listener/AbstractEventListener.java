@@ -22,9 +22,9 @@ public abstract class AbstractEventListener<T> {
         return messageBuilder.buildMessage(event, userLocale);
     }
 
-    private MessageBuilder<T> findMessageBuilder(Class<?> eventType){
+    public MessageBuilder<T> findMessageBuilder(Class<?> eventType){
         return messageBuilders.stream()
-                .filter(messageBuilder -> messageBuilder.supportEventType().equals(eventType))
+                .filter(messageBuilder -> messageBuilder.supportsEventType().equals(eventType))
                 .findFirst()
                 .orElseThrow(() ->
                     new IllegalArgumentException("No message builder found for the given type: " + eventType.getName()));

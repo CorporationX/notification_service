@@ -39,9 +39,11 @@ class AchievementEventListenerTest {
     private AchievementMessageBuilder achievementMessageBuilder;
     @Mock
     private Message message;
+
     @BeforeEach
     void setUp() {
-        List<MessageBuilder<AchievementEvent>> messageBuilderList = List.of(achievementMessageBuilder);
+        List<MessageBuilder<AchievementEvent>> messageBuilderList
+                = List.of(achievementMessageBuilder);
         List<NotificationService> notificationServiceList = List.of(notificationService);
 
         achievementEventListener = new AchievementEventListener(
@@ -75,7 +77,7 @@ class AchievementEventListenerTest {
         when(achievementMessageBuilder.buildMessage(eq(achievementEvent), eq(userLocale)))
                 .thenReturn(achievementMessage);
 
-        when(achievementMessageBuilder.supportEventType()).thenReturn(AchievementEvent.class);
+        when(achievementMessageBuilder.supportsEventType()).thenReturn(AchievementEvent.class);
 
         // when
         achievementEventListener.onMessage(message, null);
