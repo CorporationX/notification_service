@@ -1,6 +1,6 @@
 package faang.school.notificationservice.messaging;
 
-import faang.school.notificationservice.dto.EventStartEvent;
+import faang.school.notificationservice.dto.publishable.EventStartEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;

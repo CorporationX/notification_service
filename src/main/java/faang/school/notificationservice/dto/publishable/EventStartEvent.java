@@ -1,4 +1,4 @@
-package faang.school.notificationservice.dto;
+package faang.school.notificationservice.dto.publishable;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
