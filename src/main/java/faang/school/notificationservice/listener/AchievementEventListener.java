@@ -23,14 +23,14 @@ public class AchievementEventListener extends AbstractEventListener<AchievementE
                                     UserServiceClient userServiceClient,
                                     List<NotificationService> notificationServices,
                                     List<MessageBuilder<AchievementEvent>> messageBuilders) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+        super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        AchievementEvent achievementEvent = handleMessage(message, AchievementEvent.class);
+        AchievementEvent achievementEvent = handleEvent(message, AchievementEvent.class);
         UserDto user = userServiceClient.getUser(achievementEvent.getUserId());
-        String msg = getMessage(achievementEvent, user.getPreferredLocale());
-        sendNotification(user, msg);
+        String msg = getMessage(achievementEvent, user.getLocale());
+        sendNotification(user.getId(), msg);
     }
 }

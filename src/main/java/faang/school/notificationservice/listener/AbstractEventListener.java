@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.messaging.MessageBuilder;
+import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
@@ -20,7 +20,7 @@ public abstract class AbstractEventListener<T> {
     private final List<MessageBuilder<T>> messageBuilders;
     private final List<NotificationService> notificationServices;
 
-    protected T handleEvent(Class<T> type, Message message) {
+    protected T handleEvent(Message message, Class<T> type) {
         try {
             return objectMapper.readValue(message.getBody(), type);
         } catch (IOException e) {
@@ -30,9 +30,9 @@ public abstract class AbstractEventListener<T> {
 
     protected String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
-                .filter(messageBuilder -> messageBuilder.supportEventType(event))
+                .filter(messageBuilder -> messageBuilder.getInstance().equals((event.getClass())))
                 .findFirst()
-                .map(messageBuilder -> messageBuilder.getMessage(event, locale))
+                .map(messageBuilder -> messageBuilder.buildMessage(event, locale))
                 .orElseThrow(() -> new IllegalArgumentException("No message found for the given event type " + event.getClass().getName()));
     }
 
