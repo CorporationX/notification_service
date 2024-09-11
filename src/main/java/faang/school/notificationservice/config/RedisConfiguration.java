@@ -77,6 +77,7 @@ public class RedisConfiguration {
         return new ChannelTopic(achievementChannelTopicName);
     }
 
+    @Bean
     public ChannelTopic postLikeChannel() {
         return new ChannelTopic(postLikeChannelTopicName);
     }

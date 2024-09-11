@@ -21,15 +21,16 @@ public class MentorshipAcceptedEventListener extends AbstractEventListener<Mento
                                     UserServiceClient userServiceClient,
                                     List<NotificationService> notificationServices,
                                     List<MessageBuilder<MentorshipAcceptedEvent>> messageBuilders) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+        super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, MentorshipAcceptedEvent.class, event -> {
-            UserDto userDto = userServiceClient.getUser(event.getAuthorId());
             String notificationMessage = getMessage(event, Locale.UK);
-            sendNotification(userDto.getId(), notificationMessage);
+            UserDto userDto = userServiceClient.getUser(event.getRequestReceiverId());
+            sendNotification(userDto, notificationMessage);
         });
+        System.out.println("succcceeess " + Arrays.toString(message.getBody()));
     }
 }
