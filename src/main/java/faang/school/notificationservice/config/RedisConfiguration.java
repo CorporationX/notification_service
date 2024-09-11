@@ -77,13 +77,9 @@ public class RedisConfiguration {
         return new ChannelTopic(achievementChannelTopicName);
     }
 
+    @Bean
     public ChannelTopic postLikeChannel() {
         return new ChannelTopic(postLikeChannelTopicName);
-    }
-
-    @Bean
-    public ChannelTopic mentorshipOfferedChannelTopic() {
-        return new ChannelTopic(mentorshipOfferedChannelName);
     }
 
     @Bean
@@ -91,6 +87,10 @@ public class RedisConfiguration {
         return new ChannelTopic(commentEventNameTopic);
     }
 
+    @Bean
+    public ChannelTopic mentorshipOfferedChannelTopic() {
+        return new ChannelTopic(mentorshipOfferedChannelName);
+    }
 
     @Bean
     public RedisMessageListenerContainer redisContainer(AchievementEventListener achievementEventListener,
