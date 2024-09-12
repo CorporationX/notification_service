@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.AchievementEventListener;
+import faang.school.notificationservice.listener.LikePostEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,14 +27,27 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.achievement}")
     private String achievementChannelTopic;
 
+    @Value("${spring.data.redis.channel.post-like}")
+    private String postLikeEventChannelTopic;
+
     @Bean
     MessageListenerAdapter achievementListener(AchievementEventListener listener) {
         return new MessageListenerAdapter(listener);
     }
 
     @Bean
+    MessageListenerAdapter postLikeEventListener(LikePostEventListener listener) {
+        return new MessageListenerAdapter(listener);
+    }
+
+    @Bean
     ChannelTopic achievementChannelTopic() {
         return new ChannelTopic(achievementChannelTopic);
+    }
+
+    @Bean
+    ChannelTopic postLikeEventChannelTopic() {
+        return new ChannelTopic(postLikeEventChannelTopic);
     }
 
     @Bean
@@ -52,10 +66,12 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(MessageListenerAdapter achievementListener) {
+    public RedisMessageListenerContainer redisMessageListenerContainer(MessageListenerAdapter achievementListener,
+                                                                       MessageListenerAdapter postLikeEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(achievementListener, achievementChannelTopic());
+        container.addMessageListener(postLikeEventListener, postLikeEventChannelTopic());
         return container;
     }
 }
