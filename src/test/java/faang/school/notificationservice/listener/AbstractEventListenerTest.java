@@ -34,12 +34,12 @@ class AbstractEventListenerTest {
     @Mock
     private MessageBuilder<Object> messageBuilder;
 
-    private AbstractEventListener<Object> eventListener;
+    private AbstractEventListenerTwo<Object> eventListener;
 
 
     @BeforeEach
     void setUp() {
-        eventListener = new AbstractEventListener<Object>(
+        eventListener = new AbstractEventListenerTwo<Object>(
                 objectMapper,
                 userServiceClient,
                 List.of(notificationService),

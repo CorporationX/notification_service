@@ -1,9 +1,10 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.listener.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.EventDto;
 import faang.school.notificationservice.dto.publishable.EventStartEvent;
+import faang.school.notificationservice.listener.AbstractEventListenerTwo;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.util.TimeUtils;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Component
-public class EventStartEventListener extends AbstractEventListener<EventStartEvent> implements MessageListener {
+public class EventStartEventListener extends AbstractEventListenerTwo<EventStartEvent> implements MessageListener {
 
     public EventStartEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient, List<NotificationService> notificationServiceList, List<MessageBuilder<EventStartEvent>> messageBuilders) {
         super(objectMapper, userServiceClient, notificationServiceList, messageBuilders);
