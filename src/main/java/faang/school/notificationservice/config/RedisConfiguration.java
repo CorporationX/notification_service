@@ -3,6 +3,7 @@ package faang.school.notificationservice.config;
 import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.PostLikeEventListener;
+import faang.school.notificationservice.listener.ProfileViewEventListener;
 import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +37,9 @@ public class RedisConfiguration {
 
     @Value("${spring.data.redis.channel.comment}")
     private String commentEventNameTopic;
+
+    @Value("${spring.data.redis.channel.profile_view}")
+    public String profileViewTopicName;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -73,6 +77,11 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public MessageListenerAdapter profileViewListener(ProfileViewEventListener profileViewTopicName) {
+        return new MessageListenerAdapter(profileViewTopicName);
+    }
+
+    @Bean
     public ChannelTopic achievementChannel() {
         return new ChannelTopic(achievementChannelTopicName);
     }
@@ -93,17 +102,23 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public ChannelTopic profileViewChannel() {
+        return new ChannelTopic(profileViewTopicName);
+    }
+
+    @Bean
     public RedisMessageListenerContainer redisContainer(AchievementEventListener achievementEventListener,
                                                         PostLikeEventListener postLikeEventListener,
                                                         MessageListenerAdapter mentorshipOfferedListener,
-                                                        CommentEventListener commentEventListener
-    ) {
+                                                        CommentEventListener commentEventListener,
+                                                        ProfileViewEventListener profileViewEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(achievementListener(achievementEventListener), achievementChannel());
         container.addMessageListener(postLikeListener(postLikeEventListener), postLikeChannel());
         container.addMessageListener(mentorshipOfferedListener, mentorshipOfferedChannelTopic());
         container.addMessageListener(commentListener(commentEventListener),commentEventTopic());
+        container.addMessageListener(profileViewListener(profileViewEventListener), profileViewChannel());
         return container;
     }
 }

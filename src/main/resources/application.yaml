@@ -9,6 +9,7 @@ spring:
         mentorship_offered: mentorship_offered_channel
         post-like: post_like_channel
         comment: comment_channel
+        profile_view: profile_view_channel
 
   mail:
     host: smtp.gmail.com
