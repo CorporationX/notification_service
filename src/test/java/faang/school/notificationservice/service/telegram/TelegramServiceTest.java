@@ -25,9 +25,9 @@ public class TelegramServiceTest {
         MockitoAnnotations.openMocks(this);
 
         telegramService = new TelegramService(telegramBot);
-        userDto = UserDto.builder()
-                .id(1L)
-                .build();
+        userDto = new UserDto();
+        userDto.setId(1L);
+        userDto.setTelegramId(12345678L);
         message = "Hello world!";
     }
 
@@ -36,7 +36,7 @@ public class TelegramServiceTest {
 
         telegramService.send(userDto, message);
 
-        verify(telegramBot).sendMessageByUserId(userDto.getId(), message);
+        verify(telegramBot).sendMessageByUserId(userDto.getTelegramId(), message);
     }
 
 }

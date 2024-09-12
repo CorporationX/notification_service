@@ -65,6 +65,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail:3.3.2")
 
     /**
+     * jackson-datatype-jsr310
+     */
+    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
+
+    /**
      * Telegram
      */
     implementation("org.telegram:telegrambots:6.3.0")

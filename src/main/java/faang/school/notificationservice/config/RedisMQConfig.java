@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.achievement.AchievementListener;
+import faang.school.notificationservice.listener.event.EventStartEventListener;
 import faang.school.notificationservice.listener.follower.FollowerListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisMQConfig {
+    @Value("${spring.data.redis.channel.event-start}")
+    private String eventStartTopicName;
     @Value("${spring.data.redis.channel.achievement}")
     private String achievementTopicName;
     @Value("${spring.data.redis.channel.follower}")
@@ -54,6 +57,11 @@ public class RedisMQConfig {
     }
 
     @Bean
+    public ChannelTopic eventStartTopic() {
+        return new ChannelTopic(eventStartTopicName);
+    }
+
+    @Bean
     public ChannelTopic achievementTopic() {
         return new ChannelTopic(achievementTopicName);
     }
@@ -75,6 +83,11 @@ public class RedisMQConfig {
     }
 
     @Bean
+    public MessageListenerAdapter eventStartListener(EventStartEventListener eventStartEventListener) {
+        return new MessageListenerAdapter(eventStartEventListener);
+    }
+
+    @Bean
     MessageListenerAdapter achievementListenerAdapter(AchievementListener achievementListener) {
         return new MessageListenerAdapter(achievementListener);
     }
@@ -86,6 +99,7 @@ public class RedisMQConfig {
 
     @Bean
     RedisMessageListenerContainer redisContainer(
+            MessageListenerAdapter eventStartListener,
             MessageListenerAdapter achievementListenerAdapter,
             MessageListenerAdapter followerListenerAdapter
     ) {
@@ -94,6 +108,7 @@ public class RedisMQConfig {
 
         container.setConnectionFactory(jedisConnectionFactory());
 
+        container.addMessageListener(eventStartListener, eventStartTopic());
         container.addMessageListener(achievementListenerAdapter, achievementTopic());
         container.addMessageListener(followerListenerAdapter, followerTopic());
 

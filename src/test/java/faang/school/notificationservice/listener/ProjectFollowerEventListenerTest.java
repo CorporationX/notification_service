@@ -70,7 +70,7 @@ class ProjectFollowerEventListenerTest {
 
         userDto = UserDto.builder()
                 .username("TestUser")
-                .preference(UserDto.PreferredContact.SMS)
+                .preference(UserDto.PreferredContact.PHONE)
                 .build();
 
         messageBody = new byte[0];

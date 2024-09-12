@@ -1,15 +1,23 @@
 package faang.school.notificationservice.dto.user;
 
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder(toBuilder = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserDto {
     private long id;
     private String username;
     private String email;
     private String phone;
+    private Long telegramId;
+    private PreferredContact contactPreference;
     private PreferredContact preference;
     private String password;
     private boolean active;
@@ -17,6 +25,7 @@ public class UserDto {
     private String countryTitle;
 
     public enum PreferredContact {
-        EMAIL, SMS, TELEGRAM
+        EMAIL, PHONE, TELEGRAM
     }
+
 }

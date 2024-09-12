@@ -34,6 +34,6 @@ public class SmsService implements NotificationService {
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.SMS;
+        return UserDto.PreferredContact.PHONE;
     }
 }
