@@ -1,12 +1,16 @@
 package faang.school.notificationservice.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
-@Builder(toBuilder = true)
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserDto {
     private long id;
     private String username;
