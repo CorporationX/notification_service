@@ -39,8 +39,9 @@ class SmsServiceTest {
 
     @BeforeEach
     void setUp() {
-        userDto = new UserDto();
-        userDto.setPhone("1234567890");
+        userDto = UserDto.builder()
+                .phone("1234567890")
+                .build();
         ReflectionTestUtils.setField(smsService, "brand", "MyBrand");
     }
 
