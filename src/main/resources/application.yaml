@@ -15,6 +15,8 @@ spring:
     password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
+        protocol: smtp
+        debug: true
         smtp:
           auth: true
           starttls:
@@ -22,8 +24,6 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-        debug: true
-    protocol: smtp
 
   messages:
     basename: messages

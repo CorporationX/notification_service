@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -23,14 +23,14 @@ public class AchievementEventListener extends AbstractEventListener<AchievementE
                                     UserServiceClient userServiceClient,
                                     List<NotificationService> notificationServices,
                                     List<MessageBuilder<AchievementEvent>> messageBuilders) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+        super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        AchievementEvent achievementEvent = handleMessage(message, AchievementEvent.class);
+        AchievementEvent achievementEvent = handleEvent(message, AchievementEvent.class);
         UserDto user = userServiceClient.getUser(achievementEvent.getUserId());
-        String msg = getMessage(achievementEvent, user.getPreferredLocale());
-        sendNotification(user, msg);
+        String msg = getMessage(achievementEvent, user.getLocale());
+        sendNotification(user.getId(), msg);
     }
 }

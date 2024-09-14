@@ -19,7 +19,7 @@ public class RedisCommentConfig {
 
     @Bean
     ChannelTopic commentChannel() {
-        return new ChannelTopic("${channelCommentName}");
+        return new ChannelTopic(channelCommentName);
     }
 
     @Bean
