@@ -14,7 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @Builder
 public class UserDto {
-    private long id;
+
+    private Long id;
     private String username;
     @NotBlank
     @Size(min = 8, max = 128)

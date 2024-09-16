@@ -2,7 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.LikeEvent;
+import faang.school.notificationservice.dto.CommentEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -14,22 +14,21 @@ import java.util.List;
 import java.util.Locale;
 
 @Component
-public class PostLikeEventListener extends AbstractEventListener<LikeEvent> implements MessageListener {
+public class CommentEventListener extends AbstractEventListener<CommentEvent> implements MessageListener {
 
-    public PostLikeEventListener(ObjectMapper objectMapper,
-                                 UserServiceClient userServiceClient,
-                                 List<NotificationService> notificationServices,
-                                 List<MessageBuilder<LikeEvent>> messageBuilders) {
+    public CommentEventListener(ObjectMapper objectMapper,
+                                UserServiceClient userServiceClient,
+                                List<NotificationService> notificationServices,
+                                List<MessageBuilder<CommentEvent>> messageBuilders) {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        handleEvent(message, LikeEvent.class, event -> {
-            UserDto userDto = userServiceClient.getUser(event.getAuthorPostId());
-            String notificationMessage = getMessage(event, Locale.UK);
-            sendNotification(userDto, notificationMessage);
+        handleEvent(message, CommentEvent.class, event -> {
+            String text = getMessage(event, Locale.getDefault());
+            UserDto userDto = userServiceClient.getUser(event.getPostAuthorId());
+            sendNotification(userDto, text);
         });
-
     }
 }

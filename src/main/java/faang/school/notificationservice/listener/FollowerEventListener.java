@@ -2,6 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.FollowerEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -15,18 +16,17 @@ import java.util.Locale;
 @Component
 public class FollowerEventListener extends AbstractEventListener<FollowerEvent> implements MessageListener {
 
-    public FollowerEventListener(ObjectMapper objectMapper,
-                                 UserServiceClient userServiceClient,
-                                 List<NotificationService> notificationServices,
-                                 List<MessageBuilder<FollowerEvent>> messageBuilders) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+
+    public FollowerEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient, List<MessageBuilder<FollowerEvent>> messageBuilders, List<NotificationService> notificationServices) {
+        super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, FollowerEvent.class, event -> {
             String notificationMessage = getMessage(event, Locale.UK);
-            sendNotification(event.getVisitedId(), notificationMessage);
+            UserDto userDto = userServiceClient.getUser(event.getVisitedId());
+            sendNotification(userDto, notificationMessage);
         });
     }
 }
