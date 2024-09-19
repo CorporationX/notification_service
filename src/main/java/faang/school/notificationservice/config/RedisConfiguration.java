@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.AchievementEventListener;
+import faang.school.notificationservice.listener.FollowerEventListener;
 import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.PostLikeEventListener;
 import faang.school.notificationservice.listener.ProfileViewEventListener;
@@ -35,6 +36,9 @@ public class RedisConfiguration {
     @Value("${spring.data.redis.channel.post-like}")
     public String postLikeChannelTopicName;
 
+    @Value("${spring.data.redis.channel.follow-user}")
+    private String followUserChannelTopicName;
+
     @Value("${spring.data.redis.channel.comment}")
     private String commentEventNameTopic;
 
@@ -59,6 +63,11 @@ public class RedisConfiguration {
     @Bean
     public MessageListenerAdapter achievementListener(AchievementEventListener achievementEventListener) {
         return new MessageListenerAdapter(achievementEventListener);
+    }
+
+    @Bean
+    public MessageListenerAdapter followUserListener(FollowerEventListener followerEventListener) {
+        return new MessageListenerAdapter(followerEventListener);
     }
 
     @Bean
@@ -108,6 +117,7 @@ public class RedisConfiguration {
 
     @Bean
     public RedisMessageListenerContainer redisContainer(AchievementEventListener achievementEventListener,
+                                                        FollowerEventListener followerEventListener,
                                                         PostLikeEventListener postLikeEventListener,
                                                         MessageListenerAdapter mentorshipOfferedListener,
                                                         CommentEventListener commentEventListener,
@@ -115,6 +125,7 @@ public class RedisConfiguration {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(achievementListener(achievementEventListener), achievementChannel());
+        container.addMessageListener(followUserListener(followerEventListener), new ChannelTopic(followUserChannelTopicName));
         container.addMessageListener(postLikeListener(postLikeEventListener), postLikeChannel());
         container.addMessageListener(mentorshipOfferedListener, mentorshipOfferedChannelTopic());
         container.addMessageListener(commentListener(commentEventListener),commentEventTopic());
