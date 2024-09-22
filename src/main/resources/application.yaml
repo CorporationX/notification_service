@@ -55,5 +55,9 @@ user-service:
     host: localhost
     port: 8080
 
+achievement-service:
+  host: localhost
+  port: 8085
+
 notification:
   brand: Faang
