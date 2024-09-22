@@ -29,17 +29,13 @@ public class RedisConfig {
     private final ProjectFollowerEventListener projectFollowerEventListener;
 
     @Autowired
-    public RedisConfig(CommentEventListener commentEventListener) {
+    public RedisConfig(CommentEventListener commentEventListener, ProjectFollowerEventListener projectFollowerEventListener) {
         this.commentEventListener = commentEventListener;
-    }
-  
-    @Autowired
-    public RedisConfig(ProjectFollowerEventListener projectFollowerEventListener) {
         this.projectFollowerEventListener = projectFollowerEventListener;
     }
 
     @Bean
-    MessageListenerAdapter commentEventListenerListener(CommentEventListener commentEventListener) {
+    MessageListenerAdapter commentEventListener(CommentEventListener commentEventListener) {
         return new MessageListenerAdapter(commentEventListener);
     }
     
@@ -52,7 +48,7 @@ public class RedisConfig {
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(commentEventListener, new ChannelTopic(commentChannelName));
+        container.addMessageListener(commentEventListener(commentEventListener), commentTopic());
         container.addMessageListener(projectFollowerListener(projectFollowerEventListener), projectFollowerTopic());
 
         return container;
