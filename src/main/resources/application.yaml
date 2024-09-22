@@ -9,6 +9,7 @@ spring:
         achievement: achievement_channel
         event-start: event_start_channel
         project_follower: project_follower_channel
+        comment: comment_channel
 
   mail:
     host: smtp.gmail.com
