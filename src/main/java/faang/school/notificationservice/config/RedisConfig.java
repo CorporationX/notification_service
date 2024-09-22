@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config;
 
-import faang.school.notificationservice.listener.CommentEventListener;
+import faang.school.notificationservice.listener.comment.CommentEventEventListener;
 import lombok.extern.slf4j.Slf4j;
 import faang.school.notificationservice.listener.project.ProjectFollowerEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,17 +25,17 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.project_follower}")
     private String projectFollowerTopicName;
   
-    private final CommentEventListener commentEventListener;
+    private final CommentEventEventListener commentEventListener;
     private final ProjectFollowerEventListener projectFollowerEventListener;
 
     @Autowired
-    public RedisConfig(CommentEventListener commentEventListener, ProjectFollowerEventListener projectFollowerEventListener) {
+    public RedisConfig(CommentEventEventListener commentEventListener, ProjectFollowerEventListener projectFollowerEventListener) {
         this.commentEventListener = commentEventListener;
         this.projectFollowerEventListener = projectFollowerEventListener;
     }
 
     @Bean
-    MessageListenerAdapter commentEventListener(CommentEventListener commentEventListener) {
+    MessageListenerAdapter commentEventListener(CommentEventEventListener commentEventListener) {
         return new MessageListenerAdapter(commentEventListener);
     }
     

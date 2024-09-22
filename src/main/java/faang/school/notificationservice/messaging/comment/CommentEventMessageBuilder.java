@@ -1,6 +1,7 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.messaging.comment;
 
 import faang.school.notificationservice.dto.CommentEvent;
+import faang.school.notificationservice.messaging.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -19,8 +20,7 @@ public class CommentEventMessageBuilder implements MessageBuilder<CommentEvent> 
     }
 
     @Override
-    public String buildMessage(CommentEvent event, Locale locale) {
-        Object[] args = {event.getPostAuthorId(), event.getPostId(), event.getAuthorId(), event.getComment()};
+    public String buildMessage(CommentEvent event, Locale locale, Object[] args) {
         return messageSource.getMessage("new comment", args, locale);
     }
 }
