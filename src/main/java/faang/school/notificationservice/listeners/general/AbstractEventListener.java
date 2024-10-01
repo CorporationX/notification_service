@@ -3,19 +3,28 @@ package faang.school.notificationservice.listeners.general;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.events.Notifiable;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.connection.MessageListener;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public abstract class AbstractEventListener<T> implements MessageListener {
+
+public abstract class AbstractEventListener<T extends Notifiable> implements MessageListener {
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
     protected final List<NotificationService> notificationServices;
@@ -23,13 +32,27 @@ public abstract class AbstractEventListener<T> implements MessageListener {
 
     public String getMessage(T eventType, Locale userLocale) {
         return messageBuilders.stream()
-                .filter(mb -> mb.supportsEvent() == eventType.getClass())
+                .filter(mb -> mb.supportsEvent().equals(typedEvent.getClass()))
                 .findFirst()
                 .map(mb -> mb.buildMessage(eventType, userLocale))
                 .orElseThrow(() -> new IllegalArgumentException("No one message was found for the given event type " + eventType.getClass().getName()));
     }
 
-    public void sendNotification(long userId, String message) {
+    @Override
+    public void onMessage(@Nonnull Message message, byte[] pattern) {
+        log.info("{} received message from Redis: {}", this.getClass().getName(), message);
+        log.debug("Channel: {}", new String(pattern, StandardCharsets.UTF_8));
+
+        T typedEvent = constructEvent(message.getBody(), getEventClassType());
+        sendMessage(typedEvent, typedEvent.getReceiverId(), Locale.US);
+    }
+
+    protected abstract Class<T> getEventClassType();
+
+    private String getMessage(T typedEvent, Locale userLocale) {
+        return messageBuilders.stream()
+
+    private void sendNotification(long userId, String message) {
         UserDto userDto = userServiceClient.getUser(userId);
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreference()))
@@ -51,7 +74,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
 
     }
 
-    public void sendMessage(T event, long receiverId, Locale userLocale) {
+    private void sendMessage(T event, long receiverId, Locale userLocale) {
         String msg = getMessage(event, userLocale);
         sendNotification(receiverId, msg);
     }

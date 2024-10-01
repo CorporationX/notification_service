@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -54,21 +55,21 @@ public class AbstractEventListenerTests {
     @Test
     public void testGetMessageSuccess() {
         String str = initGetMessage();
-        String result = mentorshipRequestListener.getMessage(new MentorshipOfferedEvent(), Locale.US);
+        String result = ReflectionTestUtils.invokeMethod(mentorshipRequestListener, "getMessage",new MentorshipOfferedEvent(), Locale.US);
         assertEquals(str, result);
     }
 
     @Test
     public void testGetMessageFailure() {
         when(messageBuilders.get(0).supportsEvent()).thenCallRealMethod();
-        assertThrows(IllegalArgumentException.class, () -> mentorshipRequestListener.getMessage(new MentorshipOfferedEvent(), Locale.US));
+        assertThrows(IllegalArgumentException.class, () -> ReflectionTestUtils.invokeMethod(mentorshipRequestListener, "getMessage", new MentorshipOfferedEvent(), Locale.US));
     }
 
     @Test
     public void testSendNotificationSuccess() {
         String msg = "Test message";
         UserDto dto = initSendNotification();
-        mentorshipRequestListener.sendNotification(1L, msg);
+        ReflectionTestUtils.invokeMethod(mentorshipRequestListener, "sendNotification", 1L, msg);
         verify(notificationService.get(0)).send(dto, msg);
     }
 
@@ -79,7 +80,7 @@ public class AbstractEventListenerTests {
         when(notificationService.get(0).getPreferredContact()).thenReturn(dto.getPreference());
         when(userServiceClient.getUser(1L)).thenReturn(dto);
         when(notificationService.get(0).getPreferredContact()).thenCallRealMethod();
-        assertThrows(IllegalArgumentException.class, () -> mentorshipRequestListener.sendNotification(1L, msg));
+        assertThrows(IllegalArgumentException.class, () -> ReflectionTestUtils.invokeMethod(mentorshipRequestListener, "sendNotification", 1L, msg));
     }
 
     @Test
@@ -90,7 +91,7 @@ public class AbstractEventListenerTests {
         event.setRequestId(1);
         String json = "{\"authorId\" : 1 , \"mentorId\" : 2, \"requestId\" : 1}";
         byte[] msg = json.getBytes();
-        MentorshipOfferedEvent parsedEvent = mentorshipRequestListener.constructEvent(msg, MentorshipOfferedEvent.class);
+        MentorshipOfferedEvent parsedEvent = ReflectionTestUtils.invokeMethod(mentorshipRequestListener, "constructEvent", msg, MentorshipOfferedEvent.class);
         assertEquals(event, parsedEvent);
     }
 
@@ -98,14 +99,16 @@ public class AbstractEventListenerTests {
     public void testConstructEventFailure() {
         String json = "{\"authorId\" : 1 , \"mentorId\" : 2, \"requestId\" : 1}";
         byte[] msg = json.getBytes();
-        assertThrows(IllegalArgumentException.class, () -> mentorshipRequestListener.constructEvent(msg, null));
+        assertThrows(IllegalArgumentException.class, () ->
+                ReflectionTestUtils.invokeMethod(mentorshipRequestListener,
+                        "constructEvent", msg, null));
     }
 
     @Test
     public void testSendMessageSuccess() {
         String str = initGetMessage();
         UserDto dto = initSendNotification();
-        mentorshipRequestListener.sendMessage(new MentorshipOfferedEvent(), 1L, Locale.US);
+        ReflectionTestUtils.invokeMethod(mentorshipRequestListener, "sendMessage", new MentorshipOfferedEvent(), 1L, Locale.US);
         verify(notificationService.get(0)).send(dto, str);
     }
 

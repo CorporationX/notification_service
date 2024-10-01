@@ -7,6 +7,8 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         mentorship_accepted_channel: mentorship_accepted_channel
+        comment_channel: post_comment_channel
+        like: like_channel
 
   mail:
     host: smtp.yandex.ru
@@ -32,6 +34,10 @@ server:
 logging:
   level:
     root: info
+
+telegram:
+  bot:
+    token: ${TG_TOKEN}
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
