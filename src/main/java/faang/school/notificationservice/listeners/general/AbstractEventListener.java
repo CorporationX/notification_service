@@ -27,6 +27,14 @@ public abstract class AbstractEventListener<T extends Notifiable> implements Mes
     protected final List<NotificationService> notificationServices;
     protected final List<MessageBuilder<T>> messageBuilders;
 
+    public String getMessage(T eventType, Locale userLocale) {
+        return messageBuilders.stream()
+                .filter(mb -> mb.supportsEvent().equals(eventType.getClass()))
+                .findFirst()
+                .map(mb -> mb.buildMessage(eventType, userLocale))
+                .orElseThrow(() -> new IllegalArgumentException("No one message was found for the given event type " + eventType.getClass().getName()));
+    }
+
     @Override
     public void onMessage(@Nonnull Message message, byte[] pattern) {
         log.info("{} received message from Redis: {}", this.getClass().getName(), message);
@@ -38,15 +46,7 @@ public abstract class AbstractEventListener<T extends Notifiable> implements Mes
 
     protected abstract Class<T> getEventClassType();
 
-    private String getMessage(T typedEvent, Locale userLocale) {
-        return messageBuilders.stream()
-                .filter(mb -> mb.supportsEvent().equals(typedEvent.getClass()))
-                .findFirst()
-                .map(mb -> mb.buildMessage(typedEvent, userLocale))
-                .orElseThrow(() -> new IllegalArgumentException("No one message was found for the given event type " + typedEvent.getClass().getName()));
-    }
-
-    private void sendNotification(long userId, String message) {
+    public void sendNotification(long userId, String message) {
         UserDto userDto = userServiceClient.getUser(userId);
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreference()))
@@ -55,16 +55,19 @@ public abstract class AbstractEventListener<T extends Notifiable> implements Mes
                 .send(userDto, message);
     }
 
-    private T constructEvent(byte[] messageBody, Class<T> eventClass) {
+    private Class<?> getEventClass(T eventType) {
+        return eventType.getClass();
+    }
+
+    public T constructEvent(byte[] message, Class<T> eventClass) {
         try {
-            return objectMapper.readValue(messageBody, eventClass);
+            return objectMapper.readValue(message, eventClass);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
-    private void sendMessage(T event, long receiverId, Locale userLocale) {
+    public void sendMessage(T event, long receiverId, Locale userLocale) {
         String msg = getMessage(event, userLocale);
         sendNotification(receiverId, msg);
     }

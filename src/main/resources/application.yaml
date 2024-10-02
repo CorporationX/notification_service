@@ -6,6 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        mentorship_accepted_channel: mentorship_accepted_channel
         comment_channel: post_comment_channel
         like: like_channel
 
