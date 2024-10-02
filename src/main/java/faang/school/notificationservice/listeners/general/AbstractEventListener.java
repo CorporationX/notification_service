@@ -8,7 +8,6 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.connection.MessageListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -22,8 +21,6 @@ import java.util.Locale;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public abstract class AbstractEventListener<T> implements MessageListener {
-
 public abstract class AbstractEventListener<T extends Notifiable> implements MessageListener {
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
@@ -32,7 +29,7 @@ public abstract class AbstractEventListener<T extends Notifiable> implements Mes
 
     public String getMessage(T eventType, Locale userLocale) {
         return messageBuilders.stream()
-                .filter(mb -> mb.supportsEvent().equals(typedEvent.getClass()))
+                .filter(mb -> mb.supportsEvent().equals(eventType.getClass()))
                 .findFirst()
                 .map(mb -> mb.buildMessage(eventType, userLocale))
                 .orElseThrow(() -> new IllegalArgumentException("No one message was found for the given event type " + eventType.getClass().getName()));
@@ -49,10 +46,7 @@ public abstract class AbstractEventListener<T extends Notifiable> implements Mes
 
     protected abstract Class<T> getEventClassType();
 
-    private String getMessage(T typedEvent, Locale userLocale) {
-        return messageBuilders.stream()
-
-    private void sendNotification(long userId, String message) {
+    public void sendNotification(long userId, String message) {
         UserDto userDto = userServiceClient.getUser(userId);
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreference()))
@@ -71,10 +65,9 @@ public abstract class AbstractEventListener<T extends Notifiable> implements Mes
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
-    private void sendMessage(T event, long receiverId, Locale userLocale) {
+    public void sendMessage(T event, long receiverId, Locale userLocale) {
         String msg = getMessage(event, userLocale);
         sendNotification(receiverId, msg);
     }

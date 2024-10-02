@@ -15,19 +15,19 @@ public class MentorshipAcceptedListenerConfig {
     private String channelTopic;
 
     @Bean
-    public MessageListenerAdapter mentorshipAcceptedListenerAdapter(MentorshipAcceptedListener mentorshipAcceptedListener) {
-        return new MessageListenerAdapter(mentorshipAcceptedListener);
-    }
-
-    @Bean
     public ChannelTopic mentorshipAcceptedTopic() {
         return new ChannelTopic(channelTopic);
     }
 
     @Bean
-    public Pair<MessageListenerAdapter, ChannelTopic> mentorshipAcceptedListenerChannelPair(
-            MessageListenerAdapter mentorshipAcceptedListenerAdapter,
-            ChannelTopic mentorshipAcceptedTopic) {
-        return Pair.of(mentorshipAcceptedListenerAdapter, mentorshipAcceptedTopic);
+    public MessageListenerAdapter mentorshipAcceptedListenerAdapter(MentorshipAcceptedListener mentorshipAcceptedListener) {
+        return new MessageListenerAdapter(mentorshipAcceptedListener);
+    }
+
+    @Bean
+    public Pair<ChannelTopic, MessageListenerAdapter> mentorshipAcceptedListenerChannelPair(
+            ChannelTopic mentorshipAcceptedTopic,
+            MessageListenerAdapter mentorshipAcceptedListenerAdapter) {
+        return Pair.of(mentorshipAcceptedTopic, mentorshipAcceptedListenerAdapter);
     }
 }

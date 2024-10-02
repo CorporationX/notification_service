@@ -1,15 +1,17 @@
 package faang.school.notificationservice.events;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class MentorshipAcceptedEvent {
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class MentorshipAcceptedEvent implements Notifiable {
 
     private long requesterId;
 
@@ -17,5 +19,9 @@ public class MentorshipAcceptedEvent {
 
     private long mentorshipRequestId;
 
-    private LocalDateTime sendAt;
+    @Override
+    public long getReceiverId() {
+        return requesterId;
+    }
+
 }
