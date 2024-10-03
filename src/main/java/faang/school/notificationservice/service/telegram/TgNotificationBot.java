@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service.telegram;
 
+import faang.school.notificationservice.exception.ExceptionMessages;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,7 +32,7 @@ public class TgNotificationBot extends DefaultAbsSender {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            log.error("Ошибка при отправке сообщения: {}", e.getMessage());
+            log.error(ExceptionMessages.TELEGRAM_SENDING_ERROR, e.getMessage());
         }
     }
 }
