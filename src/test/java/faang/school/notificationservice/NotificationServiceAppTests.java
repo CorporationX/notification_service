@@ -3,7 +3,6 @@ package faang.school.notificationservice;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-
 class NotificationServiceAppTests {
     @Test
     void contextLoads() {
