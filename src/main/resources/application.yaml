@@ -25,6 +25,10 @@ spring:
   messages:
     basename: messages
 
+  tg:
+    name: UnicornCorpX_bot
+    token:
+
 server:
   port: 8083
 
