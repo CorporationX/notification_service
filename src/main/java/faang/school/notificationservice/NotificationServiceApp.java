@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 @EnableFeignClients("faang.school.notificationservice.client")
 public class NotificationServiceApp {
     public static void main(String[] args) {
+
         new SpringApplicationBuilder(NotificationServiceApp.class)
                 .bannerMode(Banner.Mode.OFF)
                 .run(args);
