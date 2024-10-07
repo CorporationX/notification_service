@@ -19,7 +19,7 @@ public class EmailController {
     public String sendEmail(@RequestBody EmailRequestDto emailRequest) {
         UserDto user = new UserDto();
         user.setEmail(emailRequest.getEmail());
-        emailService.send(user, emailRequest.getText());
+        emailService.send(user, emailRequest.getText(), emailRequest.getSubject());
         return "Email sent successfully";
     }
 }

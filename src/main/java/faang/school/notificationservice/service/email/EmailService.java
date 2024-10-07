@@ -19,9 +19,13 @@ public class EmailService implements NotificationService {
 
     @Override
     public void send(UserDto user, String text) {
+        send(user, text, "subject");
+    }
+
+    public void send(UserDto user, String text, String subject) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
-        message.setSubject("subject");
+        message.setSubject(subject);
         message.setText(text);
         mailSender.send(message);
     }
