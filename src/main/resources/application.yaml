@@ -3,9 +3,6 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
 
   mail:
     host: smtp.gmail.com
@@ -44,3 +41,10 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+redis:
+  channel:
+    follower: follower
+    achievement: achievement
+    goal-completed: goal_completed
+
