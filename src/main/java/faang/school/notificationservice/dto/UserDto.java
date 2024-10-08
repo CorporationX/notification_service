@@ -1,11 +1,14 @@
 package faang.school.notificationservice.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Locale;
 
 @Data
+@Builder
 @NoArgsConstructor
 public class UserDto {
     private long id;
