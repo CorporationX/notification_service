@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.subscriber.RedisMessageSubscriber;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -22,10 +24,17 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.event-starter}")
     private String eventStarter;
 
+    @Value("${spring.data.redis.channel.profile-view}")
+    private String profileView;
+
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
         return new JedisConnectionFactory(config);
+    }
+    @Bean
+    public MessageListenerAdapter messageListener() {
+        return new MessageListenerAdapter(new RedisMessageSubscriber());
     }
 
     @Bean
@@ -44,8 +53,12 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 
         container.setConnectionFactory(redisConnectionFactory());
-
+        container.addMessageListener(messageListener(),topic());
         return container;
+    }
+    @Bean
+    public ChannelTopic topic() {
+        return new ChannelTopic(profileView);
     }
 
     @Bean
