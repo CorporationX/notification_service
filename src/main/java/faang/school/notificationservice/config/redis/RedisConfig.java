@@ -1,5 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.EventStartEventListener;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,10 +11,14 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
+
+    private final EventStartEventListener eventStartEventListener;
 
     @Value("${spring.data.redis.host}")
     private String host;
@@ -40,12 +46,18 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer() {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 
         container.setConnectionFactory(redisConnectionFactory());
+        container.addMessageListener(eventStartListenerAdapter, eventStarter());
 
         return container;
+    }
+
+    @Bean
+    MessageListenerAdapter eventStartListenerAdapter(){
+        return new MessageListenerAdapter(eventStartEventListener);
     }
 
     @Bean
