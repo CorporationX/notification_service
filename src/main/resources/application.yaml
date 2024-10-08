@@ -41,6 +41,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
 bot:
   name: PhoenixTestMessage
   token: 7635777006:AAEfw7L9OftwV3EKMYk8u83UArjzVe5DrC8
+  chatId: 1
 
 project-service:
     host: localhost
