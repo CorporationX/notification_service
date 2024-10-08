@@ -37,6 +37,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+    sender: faang.school
 
 project-service:
     host: localhost
