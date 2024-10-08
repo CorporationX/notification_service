@@ -1,11 +1,15 @@
 spring:
   data:
     redis:
-      port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
+      port: 6379
+      channel-topics:
+        mentorship:
+          name: mentorship_topic
+        follower-event:
+          name: follower_event_topic
+        event-start:
+          name: event_start_topic
 
   mail:
     host: smtp.gmail.com
