@@ -28,6 +28,7 @@ dependencies {
     /**
      * Database
      */
+    implementation("org.liquibase:liquibase-core")
     implementation("redis.clients:jedis:4.3.2")
     runtimeOnly("org.postgresql:postgresql")
 
@@ -42,6 +43,11 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
     implementation("com.vonage:client:7.3.0")
+
+    /**
+     * Telegram bot
+     */
+    implementation("org.telegram:telegrambots-spring-boot-starter:6.9.7.1")
 
     /**
      * Test containers

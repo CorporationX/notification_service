@@ -6,6 +6,21 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
   mail:
     host: smtp.gmail.com
@@ -44,3 +59,8 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+telegram:
+  bot:
+    username: werewolf_proger_bot
+    token: 8094892038:AAGqH3CFZcqPzR_zUIo_8H9M1I-26AlEbjI
