@@ -18,10 +18,12 @@ import java.util.Locale;
 @Slf4j
 @Component
 public class CommentEventListener extends AbstractEventListener<CommentEventDto> implements MessageListener {
-    public CommentEventListener(ObjectMapper objectMapper,
-                                UserServiceClient userServiceClient,
-                                List<MessageBuilder<CommentEventDto>> messageBuilders,
-                                List<NotificationService> notificationServices) {
+    public CommentEventListener(
+            ObjectMapper objectMapper,
+            UserServiceClient userServiceClient,
+            List<MessageBuilder<CommentEventDto>> messageBuilders,
+            List<NotificationService> notificationServices
+    ) {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
@@ -29,7 +31,7 @@ public class CommentEventListener extends AbstractEventListener<CommentEventDto>
     public void onMessage(Message message, byte[] pattern) {
         CommentEventDto commentEvent;
         String messageBody = new String(message.getBody());
-        log.info("MessageBody: " + messageBody);
+        log.info("Received messageBody: " + messageBody);
 
         try {
             commentEvent = objectMapper.readValue(messageBody, CommentEventDto.class);
@@ -39,9 +41,9 @@ public class CommentEventListener extends AbstractEventListener<CommentEventDto>
         }
 
         String notificationMsg = getMessage(commentEvent, Locale.getDefault());
-        log.info("Received new message: " + notificationMsg);
+        log.info("Successful message receipt.");
 
         sendNotification(commentEvent.getPostAuthorId(), notificationMsg);
-        log.info("Sending notification: " + notificationMsg);
+        log.info("Successful notification sending.");
     }
 }

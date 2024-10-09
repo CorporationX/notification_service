@@ -15,9 +15,8 @@ import java.util.Objects;
 public abstract class AbstractEventListener<T> {
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
-    private final List<MessageBuilder<T>> messageBuilders;
-    private final List<NotificationService> notificationServices;
-
+    protected final List<MessageBuilder<T>> messageBuilders;
+    protected final List<NotificationService> notificationServices;
 
     protected String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
