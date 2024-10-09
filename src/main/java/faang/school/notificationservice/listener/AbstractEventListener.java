@@ -3,6 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,11 @@ public class AbstractEventListener<T> {
     private final MessageBuilder<T> messageBuilder;
     private final List<NotificationService> notificationServices;
 
-    public T handlerEvent(Message message, Class<T> type) {
+    public T handleEvent(Message message, Class<T> type) {
         try {
             return objectMapper.readValue(message.getBody(), type);
         } catch (IOException ex) {
-            throw new RuntimeException();
+            throw new DataValidationException("Error during reading message from redis topic", ex);
         }
     }
 
@@ -31,13 +32,12 @@ public class AbstractEventListener<T> {
         return messageBuilder.buildMessage(event, locale);
     }
 
-    public void sendNotification(Long id, String message) {
+    public void sendNotification(long id, String message) {
         UserDto user = userServiceClient.getUser(id);
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(""))
+                .orElseThrow(() -> new IllegalArgumentException("Notification type was not found in existing options"))
                 .send(user, message);
     }
-
 }

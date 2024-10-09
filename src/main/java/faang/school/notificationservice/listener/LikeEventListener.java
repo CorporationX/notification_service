@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Locale;
+
 @Component
 public class LikeEventListener extends AbstractEventListener<LikeEventDto> implements MessageListener {
 
@@ -26,7 +27,7 @@ public class LikeEventListener extends AbstractEventListener<LikeEventDto> imple
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        LikeEventDto likeEvent = handlerEvent(message, LikeEventDto.class);
+        LikeEventDto likeEvent = handleEvent(message, LikeEventDto.class);
         String text = getMessage(likeEvent, Locale.getDefault());
         sendNotification(likeEvent.postAuthorId(), text);
     }

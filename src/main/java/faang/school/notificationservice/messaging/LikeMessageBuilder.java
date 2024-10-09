@@ -12,7 +12,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class LikeMessageBuilder implements MessageBuilder<LikeEventDto> {
     private final MessageSource messageSource;
-    private UserServiceClient userServiceClient;
+    private final UserServiceClient userServiceClient;
 
     @Override
     public String buildMessage(LikeEventDto event, Locale locale) {
