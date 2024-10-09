@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
-import faang.school.notificationservice.subscriber.RedisMessageSubscriber;
+import faang.school.notificationservice.subscriber.ProfileViewEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,37 +32,31 @@ public class RedisConfig {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
         return new JedisConnectionFactory(config);
     }
+
     @Bean
-    public MessageListenerAdapter messageListener() {
-        return new MessageListenerAdapter(new RedisMessageSubscriber());
+    public MessageListenerAdapter messageListener(ProfileViewEventListener profileViewEventListener) {
+        return new MessageListenerAdapter(profileViewEventListener);
     }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
-
         return redisTemplate;
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer() {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter profileViewEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-
         container.setConnectionFactory(redisConnectionFactory());
-        container.addMessageListener(messageListener(),topic());
+        container.addMessageListener(profileViewEventListener, topic());
         return container;
     }
+
     @Bean
     public ChannelTopic topic() {
         return new ChannelTopic(profileView);
-    }
-
-    @Bean
-    public ChannelTopic eventStarter(){
-        return new ChannelTopic(eventStarter);
     }
 }
