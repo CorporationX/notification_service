@@ -6,7 +6,7 @@ import com.vonage.client.sms.SmsClient;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.SmsSubmissionResponseMessage;
 import com.vonage.client.sms.messages.TextMessage;
-import faang.school.notificationservice.config.sms.SmsConfig;
+import faang.school.notificationservice.config.sms.VonageConfigurationProperties;
 import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.service.sms.SmsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +48,7 @@ class SmsServiceTest {
     private SmsSubmissionResponse response;
 
     @Mock
-    private SmsConfig smsConfig;
+    private VonageConfigurationProperties vonageConfigurationProperties;
 
     private UserDto userDto;
 

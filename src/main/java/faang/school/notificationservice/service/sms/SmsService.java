@@ -4,7 +4,7 @@ import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
-import faang.school.notificationservice.config.sms.SmsConfig;
+import faang.school.notificationservice.config.sms.VonageConfigurationProperties;
 import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +17,11 @@ import org.springframework.stereotype.Service;
 public class SmsService implements NotificationService {
 
     private final VonageClient vonageClient;
-    private final SmsConfig smsConfig;
+    private final VonageConfigurationProperties vonageConfigurationProperties;
 
     @Override
     public void send(UserDto user, String message) {
-        log.info("Sending message: {} to userId = {}", message, user.getId());
+        log.debug("Sending message: {} to userId = {}", message, user.getId());
 
         TextMessage textMessage = createTextMessage(user, message);
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(textMessage);
@@ -36,7 +36,7 @@ public class SmsService implements NotificationService {
 
     private TextMessage createTextMessage(UserDto user, String message) {
         return new TextMessage(
-                smsConfig.getSender(),
+                vonageConfigurationProperties.getSender(),
                 user.getPhone(),
                 message
         );
@@ -55,7 +55,7 @@ public class SmsService implements NotificationService {
 
         response.getMessages().forEach(message -> {
             if (message.getStatus() == MessageStatus.OK) {
-                log.info("Message sent successfully to {}.", message.getTo());
+                log.debug("Message sent successfully to {}.", message.getTo());
             } else {
                 log.error("Message failed with error: {} (Code: {})", message.getErrorText(), message.getStatus().name());
             }
