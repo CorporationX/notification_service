@@ -24,7 +24,7 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.event-starter}")
     private String eventStarter;
 
-    @Value("${spring.data.redis.channel.profile-view}")
+    @Value("${spring.data.redis.channel.profile}")
     private String profileView;
 
     @Bean
@@ -34,7 +34,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public MessageListenerAdapter messageListener(ProfileViewEventListener profileViewEventListener) {
+    public MessageListenerAdapter profileViewListener(ProfileViewEventListener profileViewEventListener) {
         return new MessageListenerAdapter(profileViewEventListener);
     }
 
@@ -48,10 +48,10 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter profileViewEventListener) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter profileViewListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
-        container.addMessageListener(profileViewEventListener, topic());
+        container.addMessageListener(profileViewListener, topic());
         return container;
     }
 

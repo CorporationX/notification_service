@@ -1,6 +1,7 @@
 package faang.school.notificationservice.subscriber;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.DataValidationException;
@@ -22,6 +23,7 @@ public class AbstractEventListener<T> {
 
     public T handleEvent(Message message, Class<T> type) {
         try {
+            objectMapper.registerModule(new JavaTimeModule());
             return objectMapper.readValue(message.getBody(), type);
         } catch (IOException ex) {
             throw new DataValidationException("Error during reading message from redis topic", ex);
@@ -34,6 +36,7 @@ public class AbstractEventListener<T> {
 
     public void sendNotification(long id, String message) {
         UserDto user = userServiceClient.getUser(id);
+        System.out.println("message is " + message);
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
                 .findFirst()

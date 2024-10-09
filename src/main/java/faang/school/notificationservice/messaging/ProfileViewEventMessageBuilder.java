@@ -10,13 +10,13 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class ProfileViewEventMessageBuilder implements MessageBuilder<ProfileViewEventDto>{
+public class ProfileViewEventMessageBuilder implements MessageBuilder<ProfileViewEventDto> {
     private final MessageSource messageSource;
     private final UserServiceClient userServiceClient;
 
     @Override
     public String buildMessage(ProfileViewEventDto event, Locale locale) {
         return messageSource.getMessage("profile.view",
-                new Object[]{event.getReceiver_id(), event.getSender_id()}, locale);
+                new Object[]{event.getReceiverId(), event.getSenderId()}, locale);
     }
 }

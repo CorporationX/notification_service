@@ -35,6 +35,6 @@ public class ProfileViewEventListener extends AbstractEventListener<ProfileViewE
     public void onMessage(Message message, byte[] pattern) {
         ProfileViewEventDto profileViewEvent = handleEvent(message, ProfileViewEventDto.class);
         String text = getMessage(profileViewEvent, Locale.getDefault());
-        sendNotification(profileViewEvent.getReceiver_id(), text);
+        sendNotification(profileViewEvent.getReceiverId(), text);
     }
 }
