@@ -29,7 +29,13 @@ public class TelegramBot extends TelegramLongPollingBot {
                     .text(message_text)
                     .build();
 
-            executeOperation(message);
+            try {
+                execute(message);
+                log.info("Message was sent to user {} device!", message.getChatId());
+            } catch (TelegramApiException e) {
+                log.error("Error during sending telegram notification to user: {}", e);
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -41,24 +47,5 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public String getBotToken() {
         return botToken;
-    }
-
-    public void sendNotification(long userId, String messageText) {
-        SendMessage message = SendMessage.builder()
-                .chatId(userId)
-                .text(messageText)
-                .build();
-
-        executeOperation(message);
-    }
-
-    private void executeOperation(SendMessage message) {
-        try {
-            execute(message);
-            log.info("Message was sent to user {} device!", message.getChatId());
-        } catch (TelegramApiException e) {
-            log.error("Error during sending telegram notification to user: {}", e);
-            throw new RuntimeException(e);
-        }
     }
 }
