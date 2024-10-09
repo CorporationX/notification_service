@@ -1,4 +1,4 @@
-package faang.school.notificationservice.dto;
+package faang.school.notificationservice.dto.event;
 
 public record GoalCompletedEventDto(
         long userId,
