@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.Mockito.verify;
 
@@ -23,17 +24,20 @@ class EmailServiceTest {
 
     private static final String EMAIL = "stepnova.varya@yandex.ru";
     private static final String MESSAGE = "message";
+    private static final String SUBJECT = "subject";
 
     private UserDto user;
     private SimpleMailMessage mailMessage;
 
     @BeforeEach
     public void init() {
+        ReflectionTestUtils.setField(emailService, "subject", SUBJECT);
         user = new UserDto();
         user.setEmail(EMAIL);
 
         mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
+        mailMessage.setSubject(SUBJECT);
         mailMessage.setText(MESSAGE);
     }
 
