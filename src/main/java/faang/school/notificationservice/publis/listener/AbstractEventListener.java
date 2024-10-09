@@ -23,7 +23,7 @@ public abstract class AbstractEventListener<T> {
                 .filter(messageBuilder -> Objects.equals(messageBuilder.getInstance(), event.getClass()))
                 .findFirst()
                 .map(messageBuilder -> messageBuilder.buildMessage(event, locale))
-                .orElseThrow(() -> new IllegalArgumentException("No matched event type"));
+                .orElseThrow(() -> new IllegalArgumentException("No matched event type or no message builder found for this event type"));
     }
 
     protected void sendNotification(Long userId, String message) {
