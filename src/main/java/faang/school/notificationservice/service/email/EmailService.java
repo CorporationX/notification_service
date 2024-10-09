@@ -16,6 +16,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 @Slf4j
 public class EmailService implements NotificationService {
+    private static final String EMAIL_SUBJECT_CODE = "email.subject";
     private final JavaMailSender mailSender;
     private final MessageSource messageSource;
 
@@ -26,19 +27,21 @@ public class EmailService implements NotificationService {
 
     @Override
     public void send(UserDto user, String text) {
-        send(user, text, "email.subject", Locale.ENGLISH);
+        send(user, text, EMAIL_SUBJECT_CODE, Locale.ENGLISH);
     }
 
     public void send(UserDto user, String text, String subjectCode, Locale locale) {
-        String subject = messageSource.getMessage(subjectCode, null, locale);
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject(subject);
-        message.setText(text);
         try {
+            String subject = messageSource.getMessage(subjectCode, null, locale);
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(user.getEmail());
+            message.setSubject(subject);
+            message.setText(text);
             mailSender.send(message);
-        }catch (MailException e){
+        } catch (MailException e) {
             log.error("Failed to send email to user: {}", user.getEmail(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error occurred while sending email to user: {}", user.getEmail(), e);
         }
     }
 }
