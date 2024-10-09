@@ -101,7 +101,7 @@ class AbstractEventListenerTest {
                     () -> abstractEventListener.getMessage(event, locale)
             );
 
-            assertEquals("No matched event type", exception.getMessage());
+            assertEquals("No matched event type or no message builder found for this event type", exception.getMessage());
         }
 
         @Test

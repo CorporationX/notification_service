@@ -6,26 +6,24 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-@Component
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
-    private final List<NotificationService> notificationServices;
-    private final List<MessageBuilder<T>> messageBuilders;
+    protected final List<NotificationService> notificationServices;
+    protected final List<MessageBuilder<T>> messageBuilders;
 
     protected String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
                 .filter(messageBuilder -> Objects.equals(messageBuilder.getInstance(), event.getClass()))
                 .findFirst()
                 .map(messageBuilder -> messageBuilder.buildMessage(event, locale))
-                .orElseThrow(() -> new IllegalArgumentException("No matched event type"));
+                .orElseThrow(() -> new IllegalArgumentException("No matched event type or no message builder found for this event type"));
     }
 
     protected void sendNotification(Long userId, String message) {
