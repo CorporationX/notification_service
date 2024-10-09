@@ -40,6 +40,7 @@ class SmsServiceTest {
     private SmsService smsService;
 
     private UserDto userDto;
+
     @BeforeEach
     void setUp() {
         userDto = new UserDto();

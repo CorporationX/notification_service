@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class SmsException extends RuntimeException {
     private MessageStatus messageStatus;
+
     public SmsException(String message, MessageStatus messageStatus) {
         super(message);
         this.messageStatus = messageStatus;

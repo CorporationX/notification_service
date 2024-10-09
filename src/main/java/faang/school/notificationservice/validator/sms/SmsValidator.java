@@ -10,18 +10,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class SmsValidator {
 
-    public void validateMessage (String message) {
-        if(message.isBlank() || message.isEmpty()){
+    public void validateMessage(String message) {
+        if (message.isBlank() || message.isEmpty()) {
             throw new DataValidationException("The message is missing");
         }
     }
 
-    public void validateResponse (SmsSubmissionResponse response) {
-       for (SmsSubmissionResponseMessage responseMessage: response.getMessages()){
-           if(responseMessage.getStatus() != MessageStatus.OK){
-               throw new SmsException("Message failed with error: " + response.getMessages().get(0).getErrorText(),
-                       response.getMessages().get(0).getStatus());
-           }
-       }
+    public void validateResponse(SmsSubmissionResponse response) {
+        for (SmsSubmissionResponseMessage responseMessage : response.getMessages()) {
+            if (responseMessage.getStatus() != MessageStatus.OK) {
+                throw new SmsException("Message failed with error: " + response.getMessages().get(0).getErrorText(),
+                        response.getMessages().get(0).getStatus());
+            }
+        }
     }
 }
