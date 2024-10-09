@@ -1,22 +1,59 @@
 package faang.school.notificationservice.service.telegram;
 
 import faang.school.notificationservice.config.context.BotConfig;
-import faang.school.notificationservice.service.telegram.command.BotCommands;
-import jakarta.validation.constraints.NotNull;
+import faang.school.notificationservice.service.telegram.command.CommandExecutor;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class TelegramBot extends TelegramLongPollingBot implements BotCommands {
+public class TelegramBot extends TelegramLongPollingBot {
+    private static final char COMMAND_ANNOUNCE = '/';
 
     private final BotConfig config;
+    private final CommandExecutor commandExecutor;
+
+    @Override
+    public void onUpdateReceived(Update update) {
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            String messageText = update.getMessage().getText();
+            long chatId = update.getMessage().getChatId();
+            String firstName = update.getMessage().getFrom().getFirstName();
+
+            if (checkMessage(messageText)) {
+                SendMessage sendMessage = commandExecutor.executeCommand(chatId, firstName, messageText);
+                try {
+                    execute(sendMessage);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+    }
+
+    @PostConstruct
+    public void init() {
+        try {
+            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+            telegramBotsApi.registerBot(this);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    private boolean checkMessage(String messageText) {
+        return COMMAND_ANNOUNCE == messageText.charAt(0);
+    }
 
     @Override
     public String getBotUsername() {
@@ -26,71 +63,5 @@ public class TelegramBot extends TelegramLongPollingBot implements BotCommands {
     @Override
     public String getBotToken() {
         return config.getToken();
-    }
-
-    @Override
-    public void onUpdateReceived(@NotNull Update update) {
-        long chatId1 = 0;
-        long userId1 = 0; //это нам понадобится позже
-        String userName = null;
-        String receivedMessage;
-
-        //если получено сообщение текстом
-        if(update.hasMessage()) {
-            chatId1 = update.getMessage().getChatId();
-            userId1 = update.getMessage().getFrom().getId();
-            userName = update.getMessage().getFrom().getFirstName();
-
-            if (update.getMessage().hasText()) {
-                receivedMessage = update.getMessage().getText();
-                botAnswerUtils(receivedMessage, chatId1, userName);
-            }
-
-            //если нажата одна из кнопок бота
-        } else if (update.hasCallbackQuery()) {
-            chatId1 = update.getCallbackQuery().getMessage().getChatId();
-            userId1 = update.getCallbackQuery().getFrom().getId();
-            userName = update.getCallbackQuery().getFrom().getFirstName();
-            receivedMessage = update.getCallbackQuery().getData();
-
-            botAnswerUtils(receivedMessage, chatId1, userName);
-        }
-    }
-
-    private void start(long chatId, String userName) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText("Hello, " + userName + "! I'm a Telegram bot.");
-
-        try {
-            execute(message);
-            log.info("Reply sent");
-        } catch (TelegramApiException e){
-            log.error(e.getMessage());
-        }
-    }
-    private void botAnswerUtils(String receivedMessage, long chatId, String userName) {
-        switch (receivedMessage){
-            case "/start":
-                start(chatId, userName);
-                break;
-            case "/help":
-                sendHelpText(chatId, HELP_TEXT);
-                break;
-            default: break;
-        }
-    }
-
-    private void sendHelpText(long chatId, String textToSend){
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText(textToSend);
-
-        try {
-            execute(message);
-            log.info("Reply sent");
-        } catch (TelegramApiException e){
-            log.error(e.getMessage());
-        }
     }
 }
