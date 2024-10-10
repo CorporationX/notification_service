@@ -35,15 +35,14 @@ logging:
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
+  sender-name: CorporationX
   api:
-    key: whatever
-    secret: whatever
+    key: 1728ba10
+    secret: T7vhMPVQcNZj9BEU
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
-
-
+  host: localhost
+  port: 8080
