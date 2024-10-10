@@ -2,9 +2,9 @@ package faang.school.notificationservice.messaging;
 
 import java.util.Locale;
 
-public interface MessageBuilder<T> {
+public interface MessageBuilder<E, M> {
 
-    Class<?> getInstance();
+    Class<E> getInstance();
 
-    String buildMessage(T event, Locale locale);
+    M buildMessage(E event, Locale locale);
 }

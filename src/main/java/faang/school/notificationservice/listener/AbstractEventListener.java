@@ -12,34 +12,36 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public abstract class AbstractEventListener<T> implements MessageListener {
+public abstract class AbstractEventListener<E, M> implements MessageListener {
 
     protected final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
-    private final List<NotificationService> notificationServices;
-    private final List<MessageBuilder<T>> messageBuilders;
+    private final List<NotificationService<M>> notificationServices;
+    private final List<MessageBuilder<E, M>> messageBuilders;
 
-    protected String getMessage(T event, Locale locale) {
-        return messageBuilders.stream()
+    protected M getMessage(E event, Locale locale) {
+        Optional<MessageBuilder<E, M>> messageBuilder = messageBuilders.stream()
                 .filter(builder -> builder.getInstance().equals(event.getClass()))
-                .findFirst()
+                .findFirst();
+        return messageBuilder
                 .map(builder -> builder.buildMessage(event, locale))
                 .orElseThrow(() -> new IllegalArgumentException("No such event handler for " + event.getClass().getSimpleName()));
     }
 
-    protected void sendNotification(long userId, String text) {
-        UserDto user = userServiceClient.getUser(userId);
-        notificationServices.stream()
+    protected void sendNotification(long userId, M message) {
+        UserDto user = userServiceClient.tryGetUser(userId);
+        Optional<NotificationService<M>> optionalService = notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
-                .findFirst()
-                .ifPresentOrElse(notificationService -> notificationService.send(user, text), () -> {
-                    String message = "Notification service not found for user %d".formatted(userId);
-                    log.info(message, userId);
-                    throw new IllegalArgumentException(message);
-                });
+                .findFirst();
+        optionalService.ifPresentOrElse(notificationService -> notificationService.send(user, message), () -> {
+            String errorMessage = "Notification service not found for user %d".formatted(userId);
+            log.info(errorMessage, userId);
+            throw new IllegalArgumentException(errorMessage);
+        });
     }
 }

@@ -1,7 +1,10 @@
 package faang.school.notificationservice.client;
 
 import faang.school.notificationservice.dto.UserDto;
+import feign.FeignException;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -10,4 +13,11 @@ public interface UserServiceClient {
 
     @GetMapping("/users/{id}")
     UserDto getUser(@PathVariable long id);
+
+    @Retryable(retryFor = FeignException.class,
+            maxAttemptsExpression = "${user-service.retry.max-attempts}",
+            backoff = @Backoff(delayExpression = "${user-service.retry.backoff}"))
+    default UserDto tryGetUser(long id) {
+        return getUser(id);
+    }
 }
