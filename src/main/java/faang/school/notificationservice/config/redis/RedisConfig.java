@@ -19,8 +19,8 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int port;
 
-    @Value("${spring.data.redis.channel.event-starter}")
-    private String eventStarter;
+    @Value("${spring.data.redis.channels.follow-project-channel}")
+    private String followProjectTopic;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -49,7 +49,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic eventStarter(){
-        return new ChannelTopic(eventStarter);
+    public ChannelTopic followProjectTopic(){
+        return new ChannelTopic(followProjectTopic);
     }
 }
