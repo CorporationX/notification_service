@@ -35,12 +35,17 @@ class AbstractEventListenerTest {
     @Mock
     private NotificationService notificationService;
     @Mock
+    private NotificationService notificationService2;
+    @Mock
     private List<MessageBuilder<Object>> messageBuilders;
     @Mock
     private MessageBuilder<Object> messageBuilder;
+    @Mock
+    private MessageBuilder<Object> messageBuilder2;
     private AbstractEventListener<Object> abstractEventListener;
 
     private UserDto userDto;
+    private UserDto userDto2;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +59,7 @@ class AbstractEventListenerTest {
 
         TestDataUser testDataUser = new TestDataUser();
         userDto = testDataUser.getUserDto();
+        userDto2 = testDataUser.getUserDto2();
     }
 
     @Nested
@@ -114,6 +120,22 @@ class AbstractEventListenerTest {
         }
 
         @Test
+        public void testGetMessage_SeveralMatchingType_throwDataValidationException() {
+            Object event = new Object();
+            Locale locale = Locale.getDefault();
+
+            when(messageBuilder.getInstance()).thenReturn((Class) event.getClass());
+            when(messageBuilder2.getInstance()).thenReturn((Class) event.getClass());
+            when(messageBuilders.stream()).thenReturn(Stream.of(messageBuilder, messageBuilder2));
+
+            var exception = assertThrows(IllegalArgumentException.class,
+                    () -> abstractEventListener.getMessage(event, locale)
+            );
+
+            assertEquals("Several matched event types for: " + event.getClass(), exception.getMessage());
+        }
+
+        @Test
         public void testGetMessage_noMatchingType_throwDataValidationException() {
             Object event = new Object();
             Locale locale = Locale.getDefault();
@@ -125,6 +147,22 @@ class AbstractEventListenerTest {
             );
 
             assertEquals("No matched event type for: " + event.getClass(), exception.getMessage());
+        }
+
+        @Test
+        public void testSendNotification_severalMatchingPreference_throwDataValidationException() {
+            String expectedMessage = "Test";
+
+            when(userServiceClient.getUser(userDto.getId())).thenReturn(userDto);
+            when(notificationServices.stream()).thenReturn(Stream.of(notificationService, notificationService2));
+            when(notificationService.getPreferredContact()).thenReturn(userDto.getPreference());
+            when(notificationService2.getPreferredContact()).thenReturn(userDto2.getPreference());
+
+            var exception = assertThrows(IllegalArgumentException.class,
+                    () -> abstractEventListener.sendNotification(userDto.getId(), expectedMessage)
+            );
+
+            assertEquals("Several matched preference contact for: " + userDto.getPreference(), exception.getMessage());
         }
 
         @Test

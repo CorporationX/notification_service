@@ -14,4 +14,13 @@ public class TestDataUser {
                 .preference(UserDto.PreferredContact.EMAIL)
                 .build();
     }
+    public UserDto getUserDto2() {
+        return UserDto.builder()
+                .id(2L)
+                .username("User2")
+                .email("user2@mail.com")
+                .phone("8-800-555-35-35")
+                .preference(UserDto.PreferredContact.EMAIL)
+                .build();
+    }
 }
