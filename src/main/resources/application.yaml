@@ -45,3 +45,8 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+telegram:
+  bot:
+    name: CorporationX
+    token: 8167229648:AAFcS_pIvH9qvgNloxDSbHPfjCQJF6O-go4
