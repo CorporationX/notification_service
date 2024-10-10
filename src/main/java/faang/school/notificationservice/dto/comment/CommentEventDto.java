@@ -15,15 +15,4 @@ public class CommentEventDto {
     private Long postId;
     private Long postAuthorId;
     private String commentContent;
-
-    @Override
-    public String toString() {
-        return "{" +
-               "\"commentId\":" + commentId + "," +
-               "\"commentAuthorId\":" + commentAuthorId + "," +
-               "\"postId\":" + postId + "," +
-               "\"postAuthorId\":" + postAuthorId + "," +
-               "\"commentContent\":\"" + commentContent + "\"" +
-               "}";
-    }
 }

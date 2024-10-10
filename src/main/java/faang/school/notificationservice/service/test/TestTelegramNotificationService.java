@@ -13,7 +13,7 @@ public class TestTelegramNotificationService implements NotificationService {
     @Override
     public void send(UserDto user, String message) {
         UserDto.PreferredContact userPreferredContact = user.getPreference();
-        log.info("Notification from: " + this.getClass().getSimpleName() + " by user preference: " + userPreferredContact);
+        log.info("Notification by user preference: " + userPreferredContact);
         log.info("Notification message: " + message);
     }
 
