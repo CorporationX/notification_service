@@ -1,5 +1,6 @@
 package faang.school.notificationservice.publis.listener;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
@@ -19,7 +20,6 @@ import java.util.stream.Stream;
 
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,8 +47,8 @@ class AbstractEventListenerTest {
         abstractEventListener = new AbstractEventListener<>(
                 objectMapper,
                 userServiceClient,
-                notificationServices,
-                messageBuilders
+                messageBuilders,
+                notificationServices
         ) {
         };
 
@@ -58,6 +58,19 @@ class AbstractEventListenerTest {
 
     @Nested
     class PositiveTests {
+        @Test
+        void testMapToEvent_Success() throws Exception {
+            Object event = new Object();
+            String messageBody = "Test";
+            Class<Object> eventType = Object.class;
+
+            when(objectMapper.readValue(messageBody, eventType)).thenReturn(event);
+
+            Object result = abstractEventListener.mapToEvent(messageBody, eventType);
+
+            assertEquals(event, result);
+        }
+
         @Test
         void testGetMessage_Success() {
             Object event = new Object();
@@ -91,9 +104,19 @@ class AbstractEventListenerTest {
     @Nested
     class NegativeTest {
         @Test
-        public void testGetMessage_NoMatchingBuilder_throwDataValidationException() {
+        void testMapToEvent_invalidParse_throwsRuntimeException() throws JsonProcessingException {
+            String messageBody = "Test";
+            Class<Object> eventType = Object.class;
+
+            when(objectMapper.readValue(messageBody, eventType)).thenThrow(JsonProcessingException.class);
+
+            assertThrows(RuntimeException.class, () -> abstractEventListener.mapToEvent(messageBody, eventType));
+        }
+
+        @Test
+        public void testGetMessage_noMatchingType_throwDataValidationException() {
             Object event = new Object();
-            Locale locale = Locale.ENGLISH;
+            Locale locale = Locale.getDefault();
 
             when(messageBuilders.stream()).thenReturn(Stream.empty());
 
@@ -101,18 +124,21 @@ class AbstractEventListenerTest {
                     () -> abstractEventListener.getMessage(event, locale)
             );
 
-            assertEquals("No matched event type or no message builder found for this event type", exception.getMessage());
+            assertEquals("No matched event type for: " + event.getClass(), exception.getMessage());
         }
 
         @Test
-        public void testSendNotification_NoMatchingPreference_throwDataValidationException() {
+        public void testSendNotification_noMatchingPreference_throwDataValidationException() {
+            String expectedMessage = "Test";
+
+            when(userServiceClient.getUser(userDto.getId())).thenReturn(userDto);
             when(notificationServices.stream()).thenReturn(Stream.empty());
 
             var exception = assertThrows(IllegalArgumentException.class,
-                    () -> abstractEventListener.sendNotification(userDto.getId(), anyString())
+                    () -> abstractEventListener.sendNotification(userDto.getId(), expectedMessage)
             );
 
-            assertEquals("No matched preference contact", exception.getMessage());
+            assertEquals("No matched preference contact for: " + userDto.getPreference(), exception.getMessage());
         }
     }
 }
