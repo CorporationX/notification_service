@@ -14,7 +14,7 @@ import java.util.Locale;
 public class GoalCompletedMessageBuilder implements MessageBuilder<GoalCompletedEventDto> {
 
     private final MessageSource messageSource;
-    UserServiceClient userService;
+    private final UserServiceClient userService;
 
     @Override
     public String buildMessage(GoalCompletedEventDto event, Locale locale) {
