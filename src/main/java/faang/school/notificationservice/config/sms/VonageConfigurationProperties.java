@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Setter
 @Getter
+@Setter
 @ConfigurationProperties(prefix = "vonage.api")
 public class VonageConfigurationProperties {
 
