@@ -37,7 +37,6 @@ public class TelegramService extends TelegramLongPollingBot implements Notificat
 
             switch (messageText) {
                 case "/start":
-                    //TODO: Somehow update user in DB to get his correct userId
                     startCommandReceived(chatId, update.getMessage().getChat().getFirstName());
                     break;
                 default:
