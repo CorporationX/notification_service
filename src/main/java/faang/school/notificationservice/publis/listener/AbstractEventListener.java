@@ -31,31 +31,51 @@ public abstract class AbstractEventListener<T> {
     }
 
     protected String getMessage(T event, Locale locale) {
-        MessageBuilder<T> tMessageBuilder = messageBuilders.stream()
+        List<MessageBuilder<T>> eventMessageBuilders = messageBuilders.stream()
                 .filter(messageBuilder -> Objects.equals(messageBuilder.getInstance(), event.getClass()))
-                .findFirst()
-                .orElseThrow(() -> {
-                    String e = String.format("No matched event type for: " + event.getClass());
-                    log.error(e);
-                    throw new IllegalArgumentException(e);
-                });
+                .toList();
 
-        return tMessageBuilder.buildMessage(event, locale);
+        messageBuilderSizeValidation(event, eventMessageBuilders);
+
+        MessageBuilder<T> eventMessageBuilder = eventMessageBuilders.get(0);
+        return eventMessageBuilder.buildMessage(event, locale);
     }
 
     protected void sendNotification(Long userId, String message) {
         UserDto user = userServiceClient.getUser(userId);
         log.info("Get User: " + user);
 
-        NotificationService notificationService = notificationServices.stream()
+        List<NotificationService> eventNotificationServices = notificationServices.stream()
                 .filter(service -> Objects.equals(service.getPreferredContact(), user.getPreference()))
-                .findFirst()
-                .orElseThrow(() -> {
-                    String e = String.format("No matched preference contact for" + user.getPreference());
-                    log.error(e);
-                    throw new IllegalArgumentException(e);
-                });
+                .toList();
 
+        notificationServiceSizeValidation(user, eventNotificationServices);
+
+        NotificationService notificationService = eventNotificationServices.get(0);
         notificationService.send(user, message);
+    }
+
+    private void messageBuilderSizeValidation(T event, List<MessageBuilder<T>> eventMessageBuilders) {
+        if (eventMessageBuilders.size() > 1) {
+            String e = String.format("Several matched event types for: " + event.getClass());
+            log.error(e, eventMessageBuilders);
+            throw new IllegalArgumentException(e);
+        } else if (eventMessageBuilders.isEmpty()) {
+            String e = String.format("No matched event type for: " + event.getClass());
+            log.error(e);
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private void notificationServiceSizeValidation(UserDto user, List<NotificationService> eventNotificationServices) {
+        if (eventNotificationServices.size() > 1) {
+            String e = String.format("Several matched preference contact for: " + user.getPreference());
+            log.error(e, eventNotificationServices);
+            throw new IllegalArgumentException(e);
+        } else if (eventNotificationServices.isEmpty()) {
+            String e = String.format("No matched preference contact for: " + user.getPreference());
+            log.error(e);
+            throw new IllegalArgumentException(e);
+        }
     }
 }

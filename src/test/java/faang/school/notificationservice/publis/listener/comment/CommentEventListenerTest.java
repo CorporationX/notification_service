@@ -9,7 +9,6 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.test_data.comment.TestDataCommentEvent;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -56,24 +55,22 @@ class CommentEventListenerTest {
         commentEventDto = testDataCommentEvent.getCommentEventDto();
     }
 
-    @Nested
-    class PositiveTests {
-        @Test
-        void testOnMessage_Success() throws JsonProcessingException {
-            String messageBody = commentEventDto.toString();
-            byte[] pattern = {};
-            String notificationContent = "Test comment notification";
+    @Test
+    void testOnMessage_Success() throws JsonProcessingException {
+        String messageBody = commentEventDto.toString();
+        byte[] pattern = {};
+        String notificationContent = "Test comment notification";
 
-            when(message.getBody()).thenReturn(messageBody.getBytes());
-            when(objectMapper.readValue(messageBody, CommentEventDto.class)).thenReturn(commentEventDto);
-            when(messageBuilder.getInstance()).thenReturn((Class) CommentEventDto.class);
-            when(messageBuilder.buildMessage(commentEventDto, Locale.getDefault())).thenReturn(notificationContent);
-            when(userServiceClient.getUser(postAuthor.getId())).thenReturn(postAuthor);
-            when(notificationService.getPreferredContact()).thenReturn(postAuthor.getPreference());
+        when(message.getBody()).thenReturn(messageBody.getBytes());
+        when(objectMapper.readValue(messageBody, CommentEventDto.class)).thenReturn(commentEventDto);
+        when(messageBuilder.getInstance()).thenReturn((Class) CommentEventDto.class);
+        when(messageBuilder.buildMessage(commentEventDto, Locale.getDefault())).thenReturn(notificationContent);
+        when(userServiceClient.getUser(postAuthor.getId())).thenReturn(postAuthor);
+        when(notificationService.getPreferredContact()).thenReturn(postAuthor.getPreference());
 
-            commentEventListener.onMessage(message, pattern);
+        commentEventListener.onMessage(message, pattern);
 
-            verify(objectMapper, atLeastOnce()).readValue(messageBody, CommentEventDto.class);
-        }
+        verify(objectMapper, atLeastOnce()).readValue(messageBody, CommentEventDto.class);
     }
+
 }

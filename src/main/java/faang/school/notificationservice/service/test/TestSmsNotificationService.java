@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.comment;
+package faang.school.notificationservice.service.test;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.NotificationService;
@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class CommentSmsNotificationService implements NotificationService {
+public class TestSmsNotificationService implements NotificationService {
+    // Murzin34 Данный класс: заглушка для задачи "Уведомление о получении комментария"
+    // При написании нормального сервиса, этот надо удалить
     @Override
     public void send(UserDto user, String message) {
         UserDto.PreferredContact userPreferredContact = user.getPreference();
