@@ -6,6 +6,7 @@ spring:
       channels:
         follower: follower_channel
         achievement: achievement_channel
+        event-starter: event_start_channel
         follow-project: follow-project-channel
 
   mail:
@@ -45,3 +46,8 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+telegram:
+  bot:
+    name: CorporationX
+    token: 8167229648:AAFcS_pIvH9qvgNloxDSbHPfjCQJF6O-go4
