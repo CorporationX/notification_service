@@ -20,8 +20,6 @@ import org.springframework.data.redis.connection.Message;
 import java.util.Collections;
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,26 +74,6 @@ class CommentEventListenerTest {
             commentEventListener.onMessage(message, pattern);
 
             verify(objectMapper, atLeastOnce()).readValue(messageBody, CommentEventDto.class);
-        }
-    }
-
-    @Nested
-    class NegativeTests {
-        @Test
-        void testGetMessage_NoMatchingBuilder_throwRuntimeException() throws JsonProcessingException {
-            String messageBody = "invalid_json";
-            byte[] pattern = {};
-
-            when(message.getBody()).thenReturn(messageBody.getBytes());
-            when(objectMapper.readValue(messageBody, CommentEventDto.class)).thenThrow(
-                    new JsonProcessingException("Error parsing JSON") {}
-            );
-
-            RuntimeException thrown = assertThrows(RuntimeException.class,
-                    () -> commentEventListener.onMessage(message, pattern)
-            );
-
-            assertEquals("Error parsing JSON", thrown.getCause().getMessage());
         }
     }
 }

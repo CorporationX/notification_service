@@ -1,6 +1,5 @@
 package faang.school.notificationservice.publis.listener.comment;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.comment.CommentEventDto;
@@ -29,16 +28,9 @@ public class CommentEventListener extends AbstractEventListener<CommentEventDto>
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        CommentEventDto commentEvent;
         String messageBody = new String(message.getBody());
         log.info("Received messageBody: " + messageBody);
-
-        try {
-            commentEvent = objectMapper.readValue(messageBody, CommentEventDto.class);
-        } catch (JsonProcessingException e) {
-            log.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        }
+        CommentEventDto commentEvent = mapToEvent(messageBody, CommentEventDto.class);
 
         String notificationMsg = getMessage(commentEvent, Locale.getDefault());
         log.info("Successful message receipt.");
