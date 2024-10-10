@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service.email;
 
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.user.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,8 +32,9 @@ class EmailServiceTest {
     @BeforeEach
     public void init() {
         ReflectionTestUtils.setField(emailService, "subject", SUBJECT);
-        user = new UserDto();
-        user.setEmail(EMAIL);
+        user = UserDto.builder()
+                .email(EMAIL)
+                .build();
 
         mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
