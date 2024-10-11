@@ -58,7 +58,7 @@ class SmsServiceTest {
                 .username(USERNAME)
                 .email(EMAIL)
                 .phone(PHONE)
-                .preference(UserDto.PreferredContact.SMS)
+                .notifyPreference(UserDto.PreferredContact.PHONE)
                 .build();
     }
 
@@ -98,7 +98,7 @@ class SmsServiceTest {
         @Test
         @DisplayName("Should return SMS as the preferred contact method")
         void returnsSmsAsPreferredContactMethod() {
-            assertEquals(UserDto.PreferredContact.SMS, smsService.getPreferredContact());
+            assertEquals(UserDto.PreferredContact.PHONE, smsService.getPreferredContact());
         }
     }
 }
