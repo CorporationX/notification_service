@@ -1,9 +1,7 @@
 package faang.school.notificationservice.exception;
 
 import com.vonage.client.sms.MessageStatus;
-import lombok.Data;
 
-@Data
 public class SmsException extends RuntimeException {
     private MessageStatus messageStatus;
 
@@ -11,6 +9,4 @@ public class SmsException extends RuntimeException {
         super(message);
         this.messageStatus = messageStatus;
     }
-
-
 }
