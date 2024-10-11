@@ -18,7 +18,7 @@ public class SmsService implements NotificationService {
     private final VonageClient vonageClient;
     private final SmsValidator smsValidator;
     @Value("${vonage.api.band}")
-    private final String bandName;
+    private String bandName;
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {
