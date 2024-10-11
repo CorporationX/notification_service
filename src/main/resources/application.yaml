@@ -7,7 +7,7 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         event-starter: event_start_channel
-        follow-project: follow-project-channel
+        follow-project: project_subscription_event
 
   mail:
     host: smtp.gmail.com

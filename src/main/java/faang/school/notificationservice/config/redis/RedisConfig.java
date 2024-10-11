@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.EventStartEventListener;
+import faang.school.notificationservice.listener.ProjectFollowerEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,15 +20,16 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     private final EventStartEventListener eventStartEventListener;
+    private final ProjectFollowerEventListener projectFollowerEventListener;
 
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
     private int port;
 
-    @Value("${spring.data.redis.channel.event-starter}")
+    @Value("${spring.data.redis.channels.event-starter}")
     private String eventStarter;
-    @Value("${spring.data.redis.channels.follow-project-channel}")
+    @Value("${spring.data.redis.channels.follow-project}")
     private String followProjectTopic;
 
     @Bean
@@ -48,27 +50,34 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter,
+                                                        MessageListenerAdapter projectFollowerListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(eventStartListenerAdapter, eventStarter());
+        container.addMessageListener(projectFollowerListenerAdapter, followProjectTopic());
 
         return container;
     }
 
     @Bean
-    MessageListenerAdapter eventStartListenerAdapter(){
+    MessageListenerAdapter eventStartListenerAdapter() {
         return new MessageListenerAdapter(eventStartEventListener);
     }
 
     @Bean
-    public ChannelTopic eventStarter(){
+    MessageListenerAdapter projectFollowerListenerAdapter() {
+        return new MessageListenerAdapter(projectFollowerEventListener);
+    }
+
+    @Bean
+    public ChannelTopic eventStarter() {
         return new ChannelTopic(eventStarter);
     }
 
     @Bean
-    public ChannelTopic followProjectTopic(){
+    public ChannelTopic followProjectTopic() {
         return new ChannelTopic(followProjectTopic);
     }
 }

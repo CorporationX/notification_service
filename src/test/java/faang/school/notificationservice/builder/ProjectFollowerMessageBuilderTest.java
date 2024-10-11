@@ -8,6 +8,8 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.messaging.ProjectFollowerMessageBuilder;
 import faang.school.notificationservice.model.event.ProjectFollowerEvent;
 import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.telegram.TelegramBot;
+import faang.school.notificationservice.service.telegram.TelegramService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,10 +40,10 @@ public class ProjectFollowerMessageBuilderTest {
     private ProjectFollowerMessageBuilder messageBuilder;
 
     @Mock
-    private List<NotificationService> notifications;
+    private Message message;
 
     @Mock
-    private Message message;
+    private TelegramService telegramService;
 
     @InjectMocks
     private ProjectFollowerEventListener eventListener;
@@ -50,24 +51,33 @@ public class ProjectFollowerMessageBuilderTest {
     private ProjectFollowerEvent event;
     private UserDto user;
     private Locale locale = Locale.getDefault();
+    private String jsonProjectFollowerEvent;
 
     @BeforeEach
-    void setup(){
-        event = ProjectFollowerEvent.builder().build();
-        user = UserDto.builder().id(1L).build();
-        notifications = new ArrayList<>();
+    void setup() {
+        jsonProjectFollowerEvent = "{ \"ownerId\": 1, \"followerId\": 2, \"projectId\": 3 }";
+        user = UserDto.builder().id(1L).preference(UserDto.PreferredContact.TELEGRAM).build();
+        eventListener = new ProjectFollowerEventListener(objectMapper, userServiceClient, messageBuilder, List.of(telegramService));
+
+        event = ProjectFollowerEvent.builder()
+                .ownerId(1L)
+                .followerId(2L)
+                .projectId(3L)
+                .build();
     }
 
-//    @Test
-//    void testOnMessageOk() throws IOException {
-//        when(objectMapper.readValue(message.getBody(), ProjectFollowerEvent.class)).thenReturn(event);
-//        when(messageBuilder.buildMessage(event, locale)).thenReturn("babushka");
-//        when(userServiceClient.getUser(anyLong())).thenReturn(user);
-//
-//        eventListener.onMessage(message, new byte[0]);
-//
-//        verify(objectMapper).readValue(message.getBody(), ProjectFollowerEvent.class);
-//        verify(messageBuilder).buildMessage(any(), any());
-//        verify(userServiceClient).getUser(anyLong());
-//    }
+    @Test
+    void testOnMessageOk() throws IOException {
+        when(message.getBody()).thenReturn(jsonProjectFollowerEvent.getBytes());
+        when(objectMapper.readValue(jsonProjectFollowerEvent.getBytes(), ProjectFollowerEvent.class)).thenReturn(event);
+        when(messageBuilder.buildMessage(event, locale)).thenReturn("babushka");
+        when(userServiceClient.getUser(anyLong())).thenReturn(user);
+        when(telegramService.getPreferredContact()).thenReturn(UserDto.PreferredContact.TELEGRAM);
+
+        eventListener.onMessage(message, new byte[0]);
+
+        verify(objectMapper).readValue(message.getBody(), ProjectFollowerEvent.class);
+        verify(messageBuilder).buildMessage(any(), any());
+        verify(userServiceClient).getUser(anyLong());
+    }
 }
