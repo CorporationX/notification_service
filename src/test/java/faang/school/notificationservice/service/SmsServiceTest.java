@@ -43,7 +43,7 @@ class SmsServiceTest {
 
     @BeforeEach
     void setUp() {
-        userDto = new UserDto();
+        userDto = UserDto.builder().id(1L).build();
         userDto.setPreference(UserDto.PreferredContact.SMS);
     }
 
