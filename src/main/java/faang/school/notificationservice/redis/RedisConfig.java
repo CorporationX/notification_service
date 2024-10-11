@@ -1,6 +1,5 @@
 package faang.school.notificationservice.redis;
 
-import faang.school.notificationservice.dto.LikeEvent;
 import faang.school.notificationservice.listener.LikeEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

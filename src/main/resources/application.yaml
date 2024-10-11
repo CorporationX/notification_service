@@ -40,9 +40,9 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 bot:
-  name: PhoenixTestMessage
-  token: 7635777006:AAEfw7L9OftwV3EKMYk8u83UArjzVe5DrC8
-
+  name:
+  token:
+  chat-id: 701889614L
 project-service:
     host: localhost
     port: 8082

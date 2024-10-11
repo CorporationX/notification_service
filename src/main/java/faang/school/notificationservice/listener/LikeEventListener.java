@@ -2,7 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.LikeEvent;
+import faang.school.notificationservice.event.LikeEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -28,14 +28,8 @@ public class LikeEventListener implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
         try {
             LikeEvent event = mapper.readValue(message.getBody(), LikeEvent.class);
-//            UserDto likingUser = userServiceClient.getUser(event.getLikingUserId());
-//            UserDto likedUser = userServiceClient.getUser(event.getLikedUserId());
-            UserDto likingUser = new UserDto();
-            likingUser.setPreference(UserDto.PreferredContact.TELEGRAM);
-            likingUser.getTelegramChatId();
-            UserDto likedUser = new UserDto();
-            likedUser.setPreference(UserDto.PreferredContact.TELEGRAM);
-            likedUser.getTelegramChatId();
+            UserDto likingUser = userServiceClient.getUser(event.getLikingUserId());
+            UserDto likedUser = userServiceClient.getUser(event.getLikedUserId());
             String text = messageBuilders.stream()
                     .filter(messageBuilder -> messageBuilder.getInstance() == event.getClass())
                     .findFirst()
