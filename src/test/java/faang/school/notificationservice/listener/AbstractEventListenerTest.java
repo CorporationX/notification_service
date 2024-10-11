@@ -33,17 +33,17 @@ class AbstractEventListenerTest {
     private UserServiceClient userServiceClient;
 
     @Mock
-    private NotificationService<TestMessage> notificationService;
+    private NotificationService notificationService;
 
     @Mock
-    private MessageBuilder<TestEvent, TestMessage> messageBuilder;
+    private MessageBuilder<TestEvent> messageBuilder;
 
     @InjectMocks
     private TestEventListener eventListener;
 
     private final Locale locale = Locale.ENGLISH;
     private final TestEvent event = new TestEvent();
-    private final TestMessage message = new TestMessage();
+    private final String message = "MESSAGE";
     private final long userId = 1L;
 
     @BeforeEach
@@ -58,13 +58,12 @@ class AbstractEventListenerTest {
 
     @Test
     void getMessage_ValidEvent_ReturnsMessage() {
-        TestMessage expectedMessage = new TestMessage();
         when(messageBuilder.getInstance()).thenReturn(TestEvent.class);
-        when(messageBuilder.buildMessage(event, locale)).thenReturn(expectedMessage);
+        when(messageBuilder.buildMessage(event, locale)).thenReturn(message);
 
-        TestMessage actualMessage = eventListener.getMessage(event, locale);
+        String actualMessage = eventListener.getMessage(event, locale);
 
-        assertEquals(expectedMessage, actualMessage);
+        assertEquals(message, actualMessage);
         verify(messageBuilder).buildMessage(event, locale);
     }
 
@@ -118,10 +117,8 @@ class AbstractEventListenerTest {
         assertEquals(correctMessage, exception.getMessage());
     }
 
-    private static class TestEventListener extends AbstractEventListener<TestEvent, TestMessage> {
-        public TestEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
-                                 List<NotificationService<TestMessage>> notificationServices,
-                                 List<MessageBuilder<TestEvent, TestMessage>> messageBuilders) {
+    private static class TestEventListener extends AbstractEventListener<TestEvent> {
+        public TestEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient, List<NotificationService> notificationServices, List<MessageBuilder<TestEvent>> messageBuilders) {
             super(objectMapper, userServiceClient, notificationServices, messageBuilders);
         }
 

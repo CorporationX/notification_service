@@ -8,12 +8,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class EmailService implements NotificationService<SimpleMailMessage> {
+public class EmailService implements NotificationService {
 
     private final JavaMailSender mailService;
 
     @Override
-    public void send(UserDto user, SimpleMailMessage message) {
+    public void send(UserDto user, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Hello, " + user.getUsername());
+        message.setText(text);
         mailService.send(message);
     }
 

@@ -4,6 +4,8 @@ import faang.school.notificationservice.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,27 +24,33 @@ class EmailServiceTest {
     @Mock
     private JavaMailSender mailService;
 
+    @Captor
+    private ArgumentCaptor<SimpleMailMessage> messageCaptor;
+
     private UserDto user;
-    private SimpleMailMessage message;
+    private SimpleMailMessage correct;
 
     @BeforeEach
     void setUp() {
         user = UserDto.builder()
                 .id(1L)
+                .username("username")
                 .email("test@domain.com")
                 .build();
 
-        message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("Test Subject");
-        message.setText("Test Text");
+        correct = new SimpleMailMessage();
+        correct.setTo(user.getEmail());
+        correct.setSubject("Hello, " + "username");
+        correct.setText("Test Text");
     }
 
     @Test
     void send_Success() {
-        emailService.send(user, message);
+        emailService.send(user, "Test Text");
 
-        verify(mailService).send(message);
+        verify(mailService).send(messageCaptor.capture());
+        SimpleMailMessage result = messageCaptor.getValue();
+        assertEquals(correct, result);
     }
 
     @Test
