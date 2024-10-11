@@ -2,10 +2,7 @@ package faang.school.notificationservice;
 
 import faang.school.notificationservice.bot.TelegramBot;
 import faang.school.notificationservice.model.dto.UserDto;
-import faang.school.notificationservice.model.entity.TelegramUser;
-import faang.school.notificationservice.repository.TelegramUserRepository;
 import faang.school.notificationservice.service.impl.TelegramService;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,61 +11,62 @@ import org.mockito.MockitoAnnotations;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-class TelegramServiceTest {
+public class TelegramServiceTest {
 
     @Mock
     private TelegramBot telegramBot;
-
-    @Mock
-    private TelegramUserRepository telegramUserRepository;
 
     @InjectMocks
     private TelegramService telegramService;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testSendSuccess() throws TelegramApiException {
+    public void testSend_Success() throws TelegramApiException {
         UserDto user = new UserDto();
-        user.setId(1L);
-        TelegramUser telegramUser = new TelegramUser();
-        telegramUser.setTelegramUserId(123456789L);
-        telegramUser.setUserName("TestUser");
-        when(telegramUserRepository.findByUserId(1L)).thenReturn(Optional.of(telegramUser));
+        user.setTelegramUserId("123456");
+        user.setTelegramUsername("testUser");
+        String message = "Test message";
 
-        telegramService.send(user, "Hello!");
+        telegramService.send(user, message);
 
-        verify(telegramBot, times(1)).execute(any(SendMessage.class));
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId("123456");
+        sendMessage.setText(message);
+
+        verify(telegramBot, times(1)).execute(sendMessage);
     }
 
     @Test
-    void testSendUserNotFound() throws TelegramApiException {
+    public void testSend_TelegramApiException() throws TelegramApiException {
         UserDto user = new UserDto();
-        user.setId(1L);
-        when(telegramUserRepository.findByUserId(1L)).thenReturn(Optional.empty());
+        user.setTelegramUserId("123456");
+        user.setTelegramUsername("testUser");
+        String message = "Test message";
 
-        try {
-            telegramService.send(user, "Hello!");
-        } catch (EntityNotFoundException e) {
-            assertEquals("Telegram user with id = 1 not found", e.getMessage());
-        }
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId("123456");
+        sendMessage.setText(message);
 
-        verify(telegramBot, never()).execute(any(SendMessage.class));
+        doThrow(new TelegramApiException("Test Exception")).when(telegramBot).execute(sendMessage);
+
+        telegramService.send(user, message);
+
+        verify(telegramBot, times(1)).execute(sendMessage);
     }
 
     @Test
-    void testGetPreferredContact() {
-        UserDto.PreferredContact result = telegramService.getPreferredContact();
+    public void testGetPreferredContact() {
+        UserDto.PreferredContact preferredContact = telegramService.getPreferredContact();
 
-        assertEquals(UserDto.PreferredContact.TELEGRAM, result);
+        assertEquals(UserDto.PreferredContact.TELEGRAM, preferredContact);
     }
 }

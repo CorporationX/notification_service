@@ -1,7 +1,6 @@
 package faang.school.notificationservice.bot;
 
-import faang.school.notificationservice.model.entity.TelegramUser;
-import faang.school.notificationservice.repository.TelegramUserRepository;
+import faang.school.notificationservice.client.UserServiceClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +13,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.Optional;
-
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -27,7 +24,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Value("${telegram.bot.token}")
     private String botToken;
 
-    private final TelegramUserRepository telegramUserRepository;
+    private final UserServiceClient userServiceClient;
 
     @Override
     public String getBotUsername() {
@@ -47,22 +44,12 @@ public class TelegramBot extends TelegramLongPollingBot {
             if (chat.isGroupChat()) {
                 log.warn("Attempt to use bot from group chat, chat id = {}", chat.getId());
                 sendGroupChatWarning(updateMessage.getChatId().toString());
-                return;
             }
 
             User messageFrom = updateMessage.getFrom();
             String telegramUserId = messageFrom.getId().toString();
-            String userName = messageFrom.getUserName();
-            String firstName = messageFrom.getFirstName();
-            String lastName = messageFrom.getLastName();
-
-            Optional<TelegramUser> existingUser = telegramUserRepository.findById(Long.parseLong(telegramUserId));
-
-            if (existingUser.isPresent()) {
-                updateUserIfChanged(existingUser.get(), userName, firstName, lastName);
-            } else {
-                createNewTelegramUser(telegramUserId, userName, firstName, lastName);
-            }
+            String telegramUserName = messageFrom.getUserName();
+            userServiceClient.updateTelegramUserId(telegramUserName, telegramUserId);
         }
     }
 
@@ -75,36 +62,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             log.error("TelegramApiException was occurred while send warn to group chat", e);
         }
-    }
-
-    private void updateUserIfChanged(TelegramUser user, String userName, String firstName, String lastName) {
-        boolean updated = false;
-
-        if (userName != null && !userName.equals(user.getUserName())) {
-            user.setUserName(userName);
-            updated = true;
-        }
-        if (firstName != null && !firstName.equals(user.getFirstName())) {
-            user.setFirstName(firstName);
-            updated = true;
-        }
-        if (lastName != null && !lastName.equals(user.getLastName())) {
-            user.setLastName(lastName);
-            updated = true;
-        }
-
-        if (updated) {
-            telegramUserRepository.save(user);
-        }
-    }
-
-    private void createNewTelegramUser(String telegramUserId, String userName, String firstName, String lastName) {
-        TelegramUser newUser = new TelegramUser();
-        newUser.setTelegramUserId(Long.parseLong(telegramUserId));
-        newUser.setUserName(userName);
-        newUser.setFirstName(firstName);
-        newUser.setLastName(lastName);
-        telegramUserRepository.save(newUser);
     }
 }
 
