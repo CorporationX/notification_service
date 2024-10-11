@@ -17,15 +17,15 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public abstract class AbstractEventListener<E, M> implements MessageListener {
+public abstract class AbstractEventListener<E> implements MessageListener {
 
     protected final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
-    private final List<NotificationService<M>> notificationServices;
-    private final List<MessageBuilder<E, M>> messageBuilders;
+    private final List<NotificationService> notificationServices;
+    private final List<MessageBuilder<E>> messageBuilders;
 
-    protected M getMessage(E event, Locale locale) {
-        Optional<MessageBuilder<E, M>> messageBuilder = messageBuilders.stream()
+    protected String getMessage(E event, Locale locale) {
+        Optional<MessageBuilder<E>> messageBuilder = messageBuilders.stream()
                 .filter(builder -> builder.getInstance().equals(event.getClass()))
                 .findFirst();
         return messageBuilder
@@ -33,9 +33,9 @@ public abstract class AbstractEventListener<E, M> implements MessageListener {
                 .orElseThrow(() -> new IllegalArgumentException("No such event handler for " + event.getClass().getSimpleName()));
     }
 
-    protected void sendNotification(long userId, M message) {
+    protected void sendNotification(long userId, String message) {
         UserDto user = userServiceClient.tryGetUser(userId);
-        Optional<NotificationService<M>> optionalService = notificationServices.stream()
+        Optional<NotificationService> optionalService = notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
                 .findFirst();
         optionalService.ifPresentOrElse(notificationService -> notificationService.send(user, message), () -> {
