@@ -1,6 +1,7 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.client.PostServiceClient;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
@@ -25,6 +26,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
 
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
+    protected final PostServiceClient postServiceClient;
     protected final Map<Class<?>, MessageBuilder<?>> messageBuilders;
     protected final Map<UserDto.PreferredContact, NotificationService> notificationServices;
 

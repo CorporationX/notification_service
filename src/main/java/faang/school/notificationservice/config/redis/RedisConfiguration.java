@@ -3,6 +3,7 @@ package faang.school.notificationservice.config.redis;
 import faang.school.notificationservice.listener.LikePostEventListener;
 import faang.school.notificationservice.listener.goal.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.follower.FollowerMessageListener;
+import faang.school.notificationservice.listener.NewCommentEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -43,9 +44,17 @@ public class RedisConfiguration {
         return new ChannelTopic(redisProperties.getChannels().getGoalCompletedEvent());
     }
 
+    ChannelTopic newCommentEventTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getNewComment());
+    }
+
     @Bean
     MessageListenerAdapter goalCompletedMessageListener(GoalCompletedEventListener goalCompletedEventListener) {
         return new MessageListenerAdapter(goalCompletedEventListener);
+    }
+
+    MessageListenerAdapter goalCompletedEvent(NewCommentEventListener newCommentEventListener) {
+        return new MessageListenerAdapter(newCommentEventListener);
     }
 
     @Bean
@@ -75,12 +84,14 @@ public class RedisConfiguration {
             MessageListenerAdapter goalCompletedMessageListener,
             ChannelTopic goalCompletedEventTopic,
             MessageListenerAdapter likePostMessageListener,
-            ChannelTopic likePostTopic)
-    {
+            ChannelTopic likePostTopic,
+            MessageListenerAdapter goalCompletedEvent,
+            ChannelTopic newCommentEventTopic) {
         return List.of(
                 Pair.of(followerMessageListener, followerTopic),
                 Pair.of(goalCompletedMessageListener, goalCompletedEventTopic),
-                Pair.of(likePostMessageListener, likePostTopic)
+                Pair.of(likePostMessageListener, likePostTopic),
+                Pair.of(goalCompletedEvent, newCommentEventTopic)
         );
     }
 }

@@ -17,5 +17,4 @@ public class Messages {
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
-
 }
