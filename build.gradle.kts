@@ -25,18 +25,12 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.telegram:telegrambots-spring-boot-starter:6.1.0")
-    implementation("org.telegram:telegrambots-springboot-longpolling-starter:7.10.0")
 
     /**
      * Telegram
      */
-    implementation("org.telegram:telegrambotsextensions:6.8.0")
-    implementation("org.telegram:telegrambots:6.1.0")
-    implementation("org.telegram:telegrambots-abilities:7.10.0")
-    implementation("org.telegram:telegrambots-longpolling:7.10.0")
-    implementation("org.telegram:telegrambots-meta:7.10.0")
-    implementation("org.telegram:telegrambots-client:7.10.0")
-    implementation("org.telegram:telegrambots-webhook:7.10.0")
+    implementation("org.telegram:telegrambots:6.7.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.2")
 
     /**
      * Database

@@ -6,6 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        like: like_channel
 
   mail:
     host: smtp.gmail.com
@@ -39,8 +40,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 bot:
-  name: TestBot
-  token:
+  name: PhoenixTestMessage
+  token: 7635777006:AAEfw7L9OftwV3EKMYk8u83UArjzVe5DrC8
 
 project-service:
     host: localhost
