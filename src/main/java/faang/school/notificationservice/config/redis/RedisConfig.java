@@ -55,7 +55,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public MessageListenerAdapter mentorshipAcceptedListener(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
+    public MessageListenerAdapter mentorshipAcceptedListener(
+            MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
         return new MessageListenerAdapter(mentorshipAcceptedEventListener, "onMessage");
     }
 }

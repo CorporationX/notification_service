@@ -46,4 +46,4 @@ redis:
   channel:
     follower: follower_channel
     achievement: achievement_channel
-    mentorship-accepted: mentorship_accpted
+    mentorship-accepted: mentorship_accepted

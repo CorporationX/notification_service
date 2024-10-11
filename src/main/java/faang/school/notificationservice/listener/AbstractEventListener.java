@@ -36,6 +36,7 @@ public abstract class AbstractEventListener<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected String getMessage(T event, Locale locale) {
         for (MessageBuilder<?> messageBuilder : messageBuilders) {
             if (messageBuilder.getInstance().isAssignableFrom(event.getClass())) {
