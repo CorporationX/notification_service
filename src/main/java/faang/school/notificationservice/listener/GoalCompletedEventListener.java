@@ -27,10 +27,10 @@ public class GoalCompletedEventListener extends AbstractEventListener<GoalComple
     @Override
     public void onMessage(Message message, byte[] pattern) {
         GoalCompletedEventDto goalCompletedEventDto = handleEvent(message, GoalCompletedEventDto.class);
-        log.info("Handle Event: {}", goalCompletedEventDto);
+        log.debug("Handle Event: {}", goalCompletedEventDto);
         String text = getMessage(goalCompletedEventDto, Locale.ENGLISH);
-        log.info("Message: {}", text);
+        log.debug("Message: {}", text);
         sendNotification(goalCompletedEventDto.userId(), text);
-        log.info("Send Notification");
+        log.debug("Send Notification");
     }
 }
