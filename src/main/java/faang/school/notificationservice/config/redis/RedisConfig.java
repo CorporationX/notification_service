@@ -30,7 +30,7 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.event-starter}")
     private String eventStarter;
 
-    @Value("${spring.data.redis.channel.mentorship-offered-channel.name}")
+    @Value("${spring.data.redis.channel.mentorship-offered}")
     private String mentorshipOfferedTopic;
 
     @Bean
