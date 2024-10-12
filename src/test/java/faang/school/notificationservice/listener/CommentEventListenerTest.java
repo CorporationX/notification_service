@@ -22,7 +22,6 @@ import java.util.Locale;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -53,7 +52,6 @@ class CommentEventListenerTest {
 
     private CommentEvent event;
     private UserDto user;
-    private final Locale locale = Locale.getDefault();
 
     @BeforeEach
     void setup() {
@@ -82,7 +80,7 @@ class CommentEventListenerTest {
 
         doReturn(messageBody).when(message).getBody();
         doReturn(event).when(objectMapper).readValue(messageBody, CommentEvent.class);
-        doReturn("some message").when(messageBuilder).buildMessage(any(CommentEvent.class), eq(locale));
+        doReturn("some message").when(messageBuilder).buildMessage(any(CommentEvent.class), any(Locale.class));
         doReturn(user).when(userServiceClient).getUser(anyLong());
         doNothing().when(telegramService).send(any(UserDto.class), anyString());
         doReturn(UserDto.PreferredContact.TELEGRAM).when(telegramService).getPreferredContact();
