@@ -28,6 +28,10 @@ spring:
   messages:
     basename: messages
 
+  tg:
+    name: UnicornCorpX_bot
+    token:
+
 server:
   port: 8083
 
@@ -40,6 +44,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+    sender: faang.school
 
 project-service:
     host: localhost
