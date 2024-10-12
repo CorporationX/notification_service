@@ -20,7 +20,13 @@ public class CommentMessageBuilder implements MessageBuilder<CommentEventDto> {
 
     @Override
     public String buildMessage(CommentEventDto event, Locale locale) {
-        Object[] args = {event.getCommentAuthorId(), event.getPostId()};
+        Object[] args = {
+                event.getPostAuthorId(),
+                event.getCommentAuthorId(),
+                event.getPostId(),
+                event.getCommentContent()
+        };
+
         return messageSource.getMessage("comment.new", args, locale);
     }
 }

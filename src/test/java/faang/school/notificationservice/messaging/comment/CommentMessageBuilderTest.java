@@ -41,11 +41,14 @@ class CommentMessageBuilderTest {
 
     @Test
     void testBuildMessage_Success() {
-        Long commentAuthorId = event.getCommentAuthorId();
-        Long postId = event.getPostId();
-        Object[] args = new Object[]{commentAuthorId, postId};
+        Object[] args = {
+                event.getPostAuthorId(),
+                event.getCommentAuthorId(),
+                event.getPostId(),
+                event.getCommentContent()
+        };
         Locale locale = Locale.getDefault();
-        String expectedMessage = "User with ID: {0} left a new comment in your post with ID: {1}!";
+        String expectedMessage = "Hey User(userID: {0})! Someone(userID: {1}) left a new comment in your Post (postID: {2})! Comment: {3}";
 
         when(messageSource.getMessage("comment.new", args, locale)).thenReturn(expectedMessage);
 
