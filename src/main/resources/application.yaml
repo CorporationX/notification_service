@@ -6,6 +6,8 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        like:
+          post_channel: like_post_channel
 
   mail:
     host: smtp.gmail.com

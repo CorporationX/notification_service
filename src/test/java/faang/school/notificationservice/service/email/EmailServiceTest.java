@@ -32,8 +32,9 @@ class EmailServiceTest {
     @BeforeEach
     public void init() {
         ReflectionTestUtils.setField(emailService, "subject", SUBJECT);
-        user = new UserDto();
-        user.setEmail(EMAIL);
+        user = UserDto.builder()
+                .email(EMAIL)
+                .build();
 
         mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
