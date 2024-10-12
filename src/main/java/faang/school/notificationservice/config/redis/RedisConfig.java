@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.EventStartEventListener;
+import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,8 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.channel.event-starter}")
     private String eventStarter;
+    @Value("${spring.data.redis.channel.recommendation-received}")
+    private String recommendationReceived;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -46,22 +49,34 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter,
+                                                        MessageListenerAdapter recommendationReceivedListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(eventStartListenerAdapter, eventStarter());
+        container.addMessageListener(recommendationReceivedListenerAdapter, recommendationReceived());
 
         return container;
     }
 
     @Bean
-    MessageListenerAdapter eventStartListenerAdapter(){
+    MessageListenerAdapter eventStartListenerAdapter() {
         return new MessageListenerAdapter(eventStartEventListener);
     }
 
     @Bean
-    public ChannelTopic eventStarter(){
+    MessageListenerAdapter recommendationReceivedListenerAdapter(RecommendationReceivedEventListener recommendationReceivedEventListener) {
+        return new MessageListenerAdapter(recommendationReceivedEventListener);
+    }
+
+    @Bean
+    public ChannelTopic eventStarter() {
         return new ChannelTopic(eventStarter);
+    }
+
+    @Bean
+    public ChannelTopic recommendationReceived() {
+        return new ChannelTopic(recommendationReceived);
     }
 }
