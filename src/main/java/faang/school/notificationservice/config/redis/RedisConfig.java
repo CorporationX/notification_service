@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.EventStartEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.event-starter}")
     private String eventStarter;
 
+    @Value("${spring.data.redis.channel.comment-receiving.name}")
+    private String commentReceivingTopic;
+
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
@@ -46,22 +50,33 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter,
+                                                        MessageListenerAdapter commentReceivingListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(eventStartListenerAdapter, eventStarter());
+        container.addMessageListener(commentReceivingListenerAdapter, commentTopic());
 
         return container;
     }
 
     @Bean
-    MessageListenerAdapter eventStartListenerAdapter(){
+    MessageListenerAdapter eventStartListenerAdapter() {
         return new MessageListenerAdapter(eventStartEventListener);
     }
 
+    @Bean MessageListenerAdapter commentReceivingListenerAdapter(CommentEventListener commentEventListener) {
+        return new MessageListenerAdapter(commentEventListener);
+    }
+
     @Bean
-    public ChannelTopic eventStarter(){
+    public ChannelTopic eventStarter() {
         return new ChannelTopic(eventStarter);
+    }
+
+    @Bean
+    public ChannelTopic commentTopic() {
+        return new ChannelTopic(commentReceivingTopic);
     }
 }
