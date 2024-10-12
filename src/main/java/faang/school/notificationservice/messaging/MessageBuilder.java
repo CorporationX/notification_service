@@ -1,10 +1,15 @@
 package faang.school.notificationservice.messaging;
 
-import java.util.Locale;
+import faang.school.notificationservice.dto.UserDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 
-public interface MessageBuilder<E> {
+@RequiredArgsConstructor
+public abstract class MessageBuilder<E> {
 
-    Class<E> getInstance();
+    protected final MessageSource messageSource;
 
-    String buildMessage(E event, Locale locale);
+    public abstract Class<E> getInstance();
+
+    public abstract String buildMessage(UserDto userDto, E event);
 }

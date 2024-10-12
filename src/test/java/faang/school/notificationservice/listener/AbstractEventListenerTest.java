@@ -83,7 +83,7 @@ class AbstractEventListenerTest {
         UserDto userDto = UserDto.builder()
                 .id(userId)
                 .email("test@example.com")
-                .preference(UserDto.PreferredContact.EMAIL)
+                .preferredContact(UserDto.PreferredContact.EMAIL)
                 .build();
 
         when(userServiceClient.tryGetUser(userId)).thenReturn(userDto);
@@ -106,7 +106,7 @@ class AbstractEventListenerTest {
     @Test
     void sendNotification_NoPreferredService_ThrowsException() {
         String correctMessage = "Notification service not found for user " + userId;
-        UserDto userDto = UserDto.builder().preference(UserDto.PreferredContact.SMS).build();
+        UserDto userDto = UserDto.builder().preferredContact(UserDto.PreferredContact.SMS).build();
         ReflectionTestUtils.setField(eventListener, "notificationServices", Collections.emptyList());
 
         when(userServiceClient.tryGetUser(userId)).thenReturn(userDto);
@@ -129,9 +129,6 @@ class AbstractEventListenerTest {
     }
 
     private static class TestEvent {
-    }
-
-    private static class TestMessage {
     }
 
     private static class SomeOtherEvent {
