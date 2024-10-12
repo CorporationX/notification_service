@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.EventStartEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     private final EventStartEventListener eventStartEventListener;
+    private final AchievementEventListener achievementEventListener;
 
     @Value("${spring.data.redis.host}")
     private String host;
@@ -27,6 +29,9 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.channel.event-starter}")
     private String eventStarter;
+
+    @Value("${spring.data.redis.channel.achievement}")
+    private String achievementEventTopic;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -46,22 +51,34 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter,
+                                                        MessageListenerAdapter achievementEventListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(eventStartListenerAdapter, eventStarter());
+        container.addMessageListener(achievementEventListenerAdapter, achievementTopic());
 
         return container;
     }
 
     @Bean
-    MessageListenerAdapter eventStartListenerAdapter(){
+    MessageListenerAdapter eventStartListenerAdapter() {
         return new MessageListenerAdapter(eventStartEventListener);
     }
 
     @Bean
-    public ChannelTopic eventStarter(){
+    MessageListenerAdapter achievementEventListenerAdapter() {
+        return new MessageListenerAdapter(achievementEventListener);
+    }
+
+    @Bean
+    public ChannelTopic eventStarter() {
         return new ChannelTopic(eventStarter);
+    }
+
+    @Bean
+    public ChannelTopic achievementTopic() {
+        return new ChannelTopic(achievementEventTopic);
     }
 }
