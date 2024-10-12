@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.EventStartEventListener;
 import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,9 +26,17 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.goal}")
     private String goalCompletedTopic;
 
+    @Value("${spring.data.redis.channel.event")
+    private String eventTopic;
+
     @Bean
     MessageListenerAdapter goalListenerAdapter(GoalCompletedEventListener goalCompletedEventListener) {
         return new MessageListenerAdapter(goalCompletedEventListener);
+    }
+
+    @Bean
+    MessageListenerAdapter eventListenerAdapter(EventStartEventListener eventStartEventListener) {
+        return new MessageListenerAdapter(eventStartEventListener);
     }
 
     @Bean
@@ -39,10 +48,12 @@ public class RedisConfig {
 
     @Bean
     RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory,
-                                                 MessageListenerAdapter goalListenerAdapter) {
+                                                 MessageListenerAdapter goalListenerAdapter,
+                                                 MessageListenerAdapter eventListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(goalListenerAdapter, goalCompletedTopic());
+        container.addMessageListener(eventListenerAdapter, eventTopic());
         return container;
     }
 
@@ -58,5 +69,10 @@ public class RedisConfig {
     @Bean
     public ChannelTopic goalCompletedTopic() {
         return new ChannelTopic(goalCompletedTopic);
+    }
+
+    @Bean
+    public ChannelTopic eventTopic() {
+        return new ChannelTopic(eventTopic);
     }
 }
