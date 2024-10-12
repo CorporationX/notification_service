@@ -1,7 +1,7 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.event.SkillAcquiredEvent;
+import faang.school.notificationservice.model.dto.SkillAcquiredEvent;
 import faang.school.notificationservice.model.dto.SkillDto;
 import faang.school.notificationservice.model.dto.UserDto;
 import lombok.RequiredArgsConstructor;
