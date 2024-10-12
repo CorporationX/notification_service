@@ -32,11 +32,10 @@ logging:
   level:
     root: info
 
-#Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
-vonage: #https://dashboard.nexmo.com/getting-started/sms
-  api:
-    key: whatever
-    secret: whatever
+mts_exolve:
+  apikey: some_apikey
+  uri: https://api.exolve.ru/messaging/v1/SendSMS
+  sender_number: some_sender_number
 
 project-service:
     host: localhost
