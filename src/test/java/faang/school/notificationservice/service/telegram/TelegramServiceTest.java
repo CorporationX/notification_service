@@ -20,9 +20,6 @@ class TelegramServiceTest {
 
     @Mock
     TelegramBot bot;
-    @Mock
-    BotConfig config;
-
 
     @Test
     void send() throws TelegramApiException {

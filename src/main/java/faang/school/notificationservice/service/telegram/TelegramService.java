@@ -4,15 +4,16 @@ import faang.school.notificationservice.config.context.BotConfig;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TelegramService implements NotificationService {
     private final TelegramBot bot;
-    private final BotConfig config;
 
     @Override
     public void send(UserDto user, String message) {
@@ -21,6 +22,7 @@ public class TelegramService implements NotificationService {
         sendMessage.setText(message);
         try {
             bot.execute(sendMessage);
+            log.info("Message successfully sent from user with {} id", user.getId());
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
