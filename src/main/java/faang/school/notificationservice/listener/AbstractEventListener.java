@@ -13,10 +13,10 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class AbstractEventListener<T> {
+public abstract class AbstractEventListener<T> {
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
-    protected final List<MessageBuilder> messageBuilders;
+    protected final List<MessageBuilder<T>> messageBuilders;
     protected final List<NotificationService> notificationServices;
 
     protected String buildMessage(T event, Locale locale) {
@@ -31,7 +31,7 @@ public class AbstractEventListener<T> {
         UserDto userDto = userServiceClient.getUser(userId);
 
         notificationServices.stream()
-                .filter(notificationService -> userDto.getPreference() == notificationService.getPreferredContact())
+                .filter(notificationService -> userDto.getPreference().equals(notificationService.getPreferredContact()))
                 .findFirst()
                 .ifPresent(notificationService -> notificationService.send(userDto, message));
     }
