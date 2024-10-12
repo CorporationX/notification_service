@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record AchievementEvent(
         long userId,
-        String message
+        long achievementId,
+        String title
 ) {
 }
