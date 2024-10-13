@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.EventStartEventListener;
+import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
 import faang.school.notificationservice.listener.SKillAcquiredEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,8 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.channel.event-starter}")
     private String eventStarter;
+    @Value("${spring.data.redis.channel.mentorship-offered}")
+    private String mentorshipOfferedTopic;
     @Value("${spring.data.redis.channel.skill-acquired}")
     private String skillAcquired;
 
@@ -46,27 +49,39 @@ public class RedisConfig {
 
     @Bean
     public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter,
+                                                        MessageListenerAdapter mentorshipOfferedEventListenerAdapter,
                                                         MessageListenerAdapter skillAcquiredListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(eventStartListenerAdapter, eventStarter());
+        container.addMessageListener(mentorshipOfferedEventListenerAdapter, mentorshipOffered());
         container.addMessageListener(skillAcquiredListenerAdapter, skillAcquired());
         return container;
     }
 
     @Bean
-    MessageListenerAdapter eventStartListenerAdapter(EventStartEventListener eventStartEventListener) {
+    public MessageListenerAdapter eventStartListenerAdapter(EventStartEventListener eventStartEventListener) {
         return new MessageListenerAdapter(eventStartEventListener);
     }
 
     @Bean
-    MessageListenerAdapter skillAcquiredListenerAdapter(SKillAcquiredEventListener sKillAcquiredEventListener) {
+    public MessageListenerAdapter skillAcquiredListenerAdapter(SKillAcquiredEventListener sKillAcquiredEventListener) {
         return new MessageListenerAdapter(sKillAcquiredEventListener);
+    }
+
+    @Bean
+    public MessageListenerAdapter mentorshipOfferedEventListenerAdapter(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
+        return new MessageListenerAdapter(mentorshipOfferedEventListener);
     }
 
     @Bean
     public ChannelTopic eventStarter() {
         return new ChannelTopic(eventStarter);
+    }
+
+    @Bean
+    public ChannelTopic mentorshipOffered() {
+        return new ChannelTopic(mentorshipOfferedTopic);
     }
 
     @Bean
