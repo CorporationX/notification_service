@@ -5,6 +5,7 @@ import faang.school.notificationservice.service.NotificationService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class EmailService implements NotificationService {
     private final JavaMailSender mailSender;
 
+    @Setter
     @Value("${spring.mail.username}")
     private String emailFrom;
 
@@ -47,7 +49,6 @@ public class EmailService implements NotificationService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
 
         mimeMessageHelper.setFrom(emailFrom);
-        //mimeMessageHelper.
 
         mimeMessageHelper.setTo(recipient);
         mimeMessageHelper.setSubject(subject);
