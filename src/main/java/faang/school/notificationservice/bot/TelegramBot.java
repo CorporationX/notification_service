@@ -18,6 +18,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final TelegramContactService contactService;
 
+    @Value("telegram-bot.welcomeMessage")
+    private String welcomeMessage;
+
     @Value("${telegram-bot.botName}")
     private String botName;
 
@@ -38,7 +41,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (Objects.equals(message.getText(), "/start")) {
             String username = "@" + message.getChat().getUserName();
             contactService.addChatIdForUser(username, chatId);
-            messageText = "You have subscribed to notifications of CorporationX";
+            messageText = welcomeMessage;
         } else {
             messageText = message.getText();
         }
@@ -58,5 +61,4 @@ public class TelegramBot extends TelegramLongPollingBot {
     public String getBotUsername() {
         return botName;
     }
-
 }

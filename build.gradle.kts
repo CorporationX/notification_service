@@ -33,11 +33,6 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     /**
-     * Telegram
-     */
-    implementation("org.telegram:telegrambots:6.8.0")
-
-    /**
      * Utils & Logging
      */
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
@@ -62,6 +57,11 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    /**
+     * Telegram Bot
+     */
+    implementation("org.telegram:telegrambots:6.8.0")
 }
 
 tasks.withType<Test> {
