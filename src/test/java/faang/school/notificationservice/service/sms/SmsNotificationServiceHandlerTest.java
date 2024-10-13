@@ -61,19 +61,29 @@ class SmsNotificationServiceHandlerTest {
 
         @Test
         public void testGetHttpRequest_Success() {
-            String message = "TestMessage";
+            String message = "testMessage";
             String apiKey = "testApiKey";
+            String senderKey = "testSenderKey";
+            String receiverKey = "testReceiverKey";
+            String messageKey = "messageKey";
+            String authKey = "testAuthKey";
+            String authPrefix = "Bearer";
             String authHeader = "Bearer " + apiKey;
             String senderNumber = "TestSenderNumber";
             URI mtsExolveURI = URI.create("https://example.com/api");
 
             when(mtsExolveProperties.getApiKey()).thenReturn(apiKey);
             when(mtsExolveProperties.getSenderNumber()).thenReturn(senderNumber);
-            when(mtsExolveProperties.getApiURI()).thenReturn("https://example.com/api");
+            when(mtsExolveProperties.getSmsURI()).thenReturn("https://example.com/api");
+            when(mtsExolveProperties.getSenderKey()).thenReturn(senderKey);
+            when(mtsExolveProperties.getReceiverKey()).thenReturn(receiverKey);
+            when(mtsExolveProperties.getMessageKey()).thenReturn(messageKey);
+            when(mtsExolveProperties.getAuthPrefix()).thenReturn(authPrefix);
+            when(mtsExolveProperties.getAuthKey()).thenReturn(authKey);
 
             HttpRequest httpRequest = smsNotificationServiceHandler.getHttpRequest(userDto, message);
 
-            assertEquals(authHeader, httpRequest.headers().firstValue("Authorization").orElse(null));
+            assertEquals(authHeader, httpRequest.headers().firstValue(authKey).orElse(null));
             assertEquals("application/json", httpRequest.headers().firstValue("Content-type").orElse(null));
             assertEquals(mtsExolveURI, httpRequest.uri());
         }
