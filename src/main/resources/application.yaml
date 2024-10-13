@@ -43,7 +43,7 @@ user-service:
     port: 8080
 
 redis:
-  channel:
+  channels:
     follower: follower_channel
     achievement: achievement_channel
-    mentorship-accepted: mentorship_accepted
+    mentorship-accepted: mentorship_accepted_channel

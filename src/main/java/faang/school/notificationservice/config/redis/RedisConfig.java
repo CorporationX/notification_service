@@ -21,7 +21,7 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
-    @Value("${redis.channel.mentorship-accepted}")
+    @Value("${redis.channels.mentorship-accepted}")
     private String mentorshipAcceptedChannel;
 
     @Bean
@@ -49,13 +49,13 @@ public class RedisConfig {
             MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory());
-        container.addMessageListener(mentorshipAcceptedListener(mentorshipAcceptedEventListener),
+        container.addMessageListener(mentorshipAcceptedListenerAdapter(mentorshipAcceptedEventListener),
                 mentorshipAcceptedChannel());
         return container;
     }
 
     @Bean
-    public MessageListenerAdapter mentorshipAcceptedListener(
+    public MessageListenerAdapter mentorshipAcceptedListenerAdapter(
             MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
         return new MessageListenerAdapter(mentorshipAcceptedEventListener, "onMessage");
     }
