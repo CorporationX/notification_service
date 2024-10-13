@@ -18,7 +18,7 @@ public class RedisFollowerTopicConfig {
     private final RedisProperties redisProperties;
 
     @Bean
-    public ChannelTopic followerEventTopic() {
+    public ChannelTopic followerTopic() {
         return new ChannelTopic(redisProperties.getChannels().getFollower().getName());
     }
 
@@ -29,6 +29,6 @@ public class RedisFollowerTopicConfig {
 
     @Bean
     public Pair<MessageListenerAdapter, ChannelTopic> followerRequester(MessageListenerAdapter followerMessageListener) {
-        return Pair.of(followerMessageListener, followerEventTopic());
+        return Pair.of(followerMessageListener, followerTopic());
     }
 }
