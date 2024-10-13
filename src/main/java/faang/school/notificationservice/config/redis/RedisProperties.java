@@ -11,11 +11,16 @@ public class RedisProperties {
 
     private int port;
     private String host;
-    private Channel channel;
+    private Channels channels;
 
     @Data
-    public static class Channel {
-        private String follower;
-        private String achievement;
+    public static class Channels {
+        private ChannelConfig follower;
+        private ChannelConfig achievement;
+    }
+
+    @Data
+    public static class ChannelConfig {
+        private String name;
     }
 }

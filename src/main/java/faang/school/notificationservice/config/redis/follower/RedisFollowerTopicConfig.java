@@ -19,7 +19,7 @@ public class RedisFollowerTopicConfig {
 
     @Bean
     public ChannelTopic followerEventTopic() {
-        return new ChannelTopic(redisProperties.getChannel().getFollower());
+        return new ChannelTopic(redisProperties.getChannels().getFollower().getName());
     }
 
     @Bean
