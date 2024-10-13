@@ -16,7 +16,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -41,7 +40,7 @@ class AbstractEventListenerTest {
     @InjectMocks
     private TestEventListener eventListener;
 
-    private final Locale locale = Locale.ENGLISH;
+    private final UserDto emptyUser = new UserDto();
     private final TestEvent event = new TestEvent();
     private final String message = "MESSAGE";
     private final long userId = 1L;
@@ -59,12 +58,12 @@ class AbstractEventListenerTest {
     @Test
     void getMessage_ValidEvent_ReturnsMessage() {
         when(messageBuilder.getInstance()).thenReturn(TestEvent.class);
-        when(messageBuilder.buildMessage(event, locale)).thenReturn(message);
+        when(messageBuilder.buildMessage(emptyUser, event)).thenReturn(message);
 
-        String actualMessage = eventListener.getMessage(event, locale);
+        String actualMessage = eventListener.getMessage(emptyUser, event);
 
         assertEquals(message, actualMessage);
-        verify(messageBuilder).buildMessage(event, locale);
+        verify(messageBuilder).buildMessage(emptyUser, event);
     }
 
     @Test
@@ -73,7 +72,7 @@ class AbstractEventListenerTest {
         String correctMessage = "No such event handler for TestEvent";
         when(messageBuilder.getInstance()).thenReturn((Class) SomeOtherEvent.class);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> eventListener.getMessage(event, locale));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> eventListener.getMessage(emptyUser, event));
 
         assertEquals(correctMessage, exception.getMessage());
     }
@@ -85,40 +84,32 @@ class AbstractEventListenerTest {
                 .email("test@example.com")
                 .preferredContact(UserDto.PreferredContact.EMAIL)
                 .build();
-
-        when(userServiceClient.tryGetUser(userId)).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
 
-        eventListener.sendNotification(userId, message);
+        eventListener.sendNotification(userDto, message);
         verify(notificationService).send(userDto, message);
-    }
-
-    @Test
-    void sendNotification_UserNotFound_ThrowsException() {
-        when(userServiceClient.tryGetUser(userId)).thenThrow(new RuntimeException("User not found"));
-
-        Exception exception = assertThrows(RuntimeException.class, () ->
-                eventListener.sendNotification(userId, message));
-
-        assertEquals("User not found", exception.getMessage());
     }
 
     @Test
     void sendNotification_NoPreferredService_ThrowsException() {
         String correctMessage = "Notification service not found for user " + userId;
-        UserDto userDto = UserDto.builder().preferredContact(UserDto.PreferredContact.SMS).build();
+        UserDto userDto = UserDto.builder()
+                .id(userId)
+                .preferredContact(UserDto.PreferredContact.SMS)
+                .build();
         ReflectionTestUtils.setField(eventListener, "notificationServices", Collections.emptyList());
 
-        when(userServiceClient.tryGetUser(userId)).thenReturn(userDto);
-
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
-                eventListener.sendNotification(userId, message));
+                eventListener.sendNotification(userDto, message));
 
         assertEquals(correctMessage, exception.getMessage());
     }
 
     private static class TestEventListener extends AbstractEventListener<TestEvent> {
-        public TestEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient, List<NotificationService> notificationServices, List<MessageBuilder<TestEvent>> messageBuilders) {
+        public TestEventListener(ObjectMapper objectMapper,
+                                 UserServiceClient userServiceClient,
+                                 List<NotificationService> notificationServices,
+                                 List<MessageBuilder<TestEvent>> messageBuilders) {
             super(objectMapper, userServiceClient, notificationServices, messageBuilders);
         }
 
