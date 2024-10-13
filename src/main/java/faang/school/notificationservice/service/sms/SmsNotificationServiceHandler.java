@@ -58,6 +58,7 @@ public class SmsNotificationServiceHandler {
 
     private void statusCodeValidation(HttpResponse<String> response) {
         if (response.statusCode() != 200) {
+            log.error(response.body());
             throw new MtsExolveException(response.body());
         }
     }
