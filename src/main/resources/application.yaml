@@ -33,9 +33,18 @@ logging:
     root: info
 
 mts_exolve:
-  apikey: some_apikey
-  uri: https://api.exolve.ru/messaging/v1/SendSMS
-  sender_number: some_sender_number
+  sms_uri: https://api.exolve.ru/messaging/v1/SendSMS
+  headers:
+    auth_key: Authorization
+    auth_prefix: Bearer
+  params:
+    keys:
+      sender_key: number
+      receiver_key: destination
+      message_key: text
+    values:
+      api_key: some_api_key
+      sender_number: some_sender_number
 
 project-service:
     host: localhost

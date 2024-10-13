@@ -19,7 +19,7 @@ import java.net.http.HttpResponse;
 @Component
 @RequiredArgsConstructor
 public class SmsNotificationServiceHandler {
-    private final MtsExolveProperties mtsExolveProperties;
+    private final MtsExolveProperties properties;
 
     public HttpClient getHttpClient() {
         return HttpClient.newHttpClient();
@@ -28,18 +28,17 @@ public class SmsNotificationServiceHandler {
     public HttpRequest getHttpRequest(UserDto user, String message) {
         log.info("Notification message: " + message);
 
-        String authHeader = "Bearer " + mtsExolveProperties.getApiKey();
-        String senderNumber = mtsExolveProperties.getSenderNumber();
-        URI mtsExolveURI = URI.create(mtsExolveProperties.getApiURI());
+        String authHeader = properties.getAuthPrefix() + " " + properties.getApiKey();
+        URI smsURI = URI.create(properties.getSmsURI());
 
         JSONObject body = new JSONObject()
-                .put("number", senderNumber)
-                .put("destination", user.getPhone())
-                .put("text", message);
+                .put(properties.getSenderKey(), properties.getSenderNumber())
+                .put(properties.getReceiverKey(), user.getPhone())
+                .put(properties.getMessageKey(), message);
 
-        return HttpRequest.newBuilder(mtsExolveURI)
+        return HttpRequest.newBuilder(smsURI)
                 .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
-                .header("Authorization", authHeader)
+                .header(properties.getAuthKey(), authHeader)
                 .header("Content-type", "application/json")
                 .build();
     }
