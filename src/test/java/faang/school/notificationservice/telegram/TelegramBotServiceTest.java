@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -57,7 +58,9 @@ public class TelegramBotServiceTest {
         user.setTelegramId(9L);
         String message = "This message will not be sent Telegram.";
 
-        telegramBotService.send(user, message);
+        assertThrows(IllegalArgumentException.class, () -> {
+            telegramBotService.send(user, message);
+        });
         verify(telegramBot, never()).execute(any(SendMessage.class));
     }
 
@@ -70,12 +73,14 @@ public class TelegramBotServiceTest {
         user.setTelegramId(null);
         String message = "This message should not be sent because Telegram ID is null.";
 
-        telegramBotService.send(user, message);
+        assertThrows(IllegalArgumentException.class, () -> {
+            telegramBotService.send(user, message);
+        });
         verify(telegramBot, never()).execute(any(SendMessage.class));
     }
 
     @Test
-    void getPreferredContact_ShouldReturnTelegram() {
+    void testGetPreferredContact_ShouldReturnTelegram() {
         UserDto.PreferredContact preferredContact = telegramBotService.getPreferredContact();
 
         assertThat(preferredContact).isEqualTo(UserDto.PreferredContact.TELEGRAM);

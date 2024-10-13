@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: "classpath:telegram-bot.yaml"
   data:
     redis:
       port: 6379
@@ -24,10 +26,6 @@ spring:
 
   messages:
     basename: messages
-
-  telegram-bot:
-    name: corparationX_bot
-    token: 7211075208:AAGuA34LfPXyGernyK-bDNy0YAb6UnGtrSs
 
 server:
   port: 8083
