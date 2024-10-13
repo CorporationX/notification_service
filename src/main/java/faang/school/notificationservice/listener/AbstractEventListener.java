@@ -26,12 +26,12 @@ public abstract class AbstractEventListener<T> {
         try {
             return objectMapper.readValue(message.getBody(), eventType);
         } catch (IOException e) {
-            log.error("Error during reading message from redis topic: {}", e);
+            log.error("Error during reading message from redis topic: ", e);
             throw new RuntimeException(e);
         }
     }
 
-    public String getMessage(T event, Locale locale){
+    public String getMessage(T event, Locale locale) {
         return messageBuilder.buildMessage(event, locale);
     }
 

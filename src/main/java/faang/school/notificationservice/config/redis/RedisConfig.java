@@ -2,6 +2,7 @@ package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.EventStartEventListener;
 import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
+import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,9 +20,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 public class RedisConfig {
 
-    private final EventStartEventListener eventStartEventListener;
-    private final MentorshipOfferedEventListener mentorshipOfferedEventListener;
-
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
@@ -29,9 +27,10 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.channel.event-starter}")
     private String eventStarter;
-
     @Value("${spring.data.redis.channel.mentorship-offered}")
     private String mentorshipOfferedTopic;
+    @Value("${spring.data.redis.channel.recommendation-received}")
+    private String recommendationReceived;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -51,37 +50,44 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(
-            MessageListenerAdapter eventStartListenerAdapter,
-            MessageListenerAdapter mentorshipOfferedEventListenerAdapter
-    ) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter,
+                                                        MessageListenerAdapter mentorshipOfferedEventListenerAdapter,
+                                                        MessageListenerAdapter recommendationReceivedListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-
         container.setConnectionFactory(redisConnectionFactory());
-
         container.addMessageListener(eventStartListenerAdapter, eventStarter());
         container.addMessageListener(mentorshipOfferedEventListenerAdapter, mentorshipOffered());
-
+        container.addMessageListener(recommendationReceivedListenerAdapter, recommendationReceived());
         return container;
     }
 
     @Bean
-    public MessageListenerAdapter eventStartListenerAdapter(){
+    MessageListenerAdapter eventStartListenerAdapter(EventStartEventListener eventStartEventListener) {
         return new MessageListenerAdapter(eventStartEventListener);
     }
 
     @Bean
-    public MessageListenerAdapter mentorshipOfferedEventListenerAdapter() {
+    public MessageListenerAdapter mentorshipOfferedEventListenerAdapter(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
         return new MessageListenerAdapter(mentorshipOfferedEventListener);
     }
 
     @Bean
-    public ChannelTopic eventStarter(){
+    MessageListenerAdapter recommendationReceivedListenerAdapter(RecommendationReceivedEventListener recommendationReceivedEventListener) {
+        return new MessageListenerAdapter(recommendationReceivedEventListener);
+    }
+
+    @Bean
+    public ChannelTopic eventStarter() {
         return new ChannelTopic(eventStarter);
     }
 
     @Bean
-    public ChannelTopic mentorshipOffered(){
+    public ChannelTopic mentorshipOffered() {
         return new ChannelTopic(mentorshipOfferedTopic);
+    }
+
+    @Bean
+    public ChannelTopic recommendationReceived() {
+        return new ChannelTopic(recommendationReceived);
     }
 }
