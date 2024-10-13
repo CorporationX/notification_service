@@ -33,7 +33,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 execute(message);
                 log.info("Message was sent to user {} device!", message.getChatId());
             } catch (TelegramApiException e) {
-                log.error("Error during sending telegram notification to user: {}", e);
+                log.error("Error during sending telegram notification to user: ", e);
                 throw new RuntimeException(e);
             }
         }

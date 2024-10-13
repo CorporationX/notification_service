@@ -3,10 +3,12 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channels:
+      channel:
         follower: follower_channel
         achievement: achievement_channel
         event-starter: event_start_channel
+        mentorship-offered: mentorship_offered_channel
+        recommendation-received: recommendation_received_channel
         follow-project: project_subscription_event
 
   mail:

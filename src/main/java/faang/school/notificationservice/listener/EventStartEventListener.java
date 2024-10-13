@@ -29,8 +29,6 @@ public class EventStartEventListener extends AbstractEventListener<EventStartEve
         EventStartEvent eventStartEvent = handleEvent(message, EventStartEvent.class);
         String userMessage = getMessage(eventStartEvent, Locale.getDefault());
 
-        eventStartEvent.userIds().forEach(userId -> {
-            sendNotification(userId, userMessage);
-        });
+        eventStartEvent.userIds().forEach(userId -> sendNotification(userId, userMessage));
     }
 }
