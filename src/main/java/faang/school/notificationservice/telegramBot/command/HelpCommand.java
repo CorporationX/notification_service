@@ -1,11 +1,11 @@
-package faang.school.notificationservice.service.telegram.command;
+package faang.school.notificationservice.telegramBot.command;
 
 import faang.school.notificationservice.dto.CommandDto;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import static faang.school.notificationservice.service.telegram.command.CommandName.*;
+import static faang.school.notificationservice.telegramBot.command.CommandName.*;
 
 @Component(value = "/help")
 public class HelpCommand extends Command {
@@ -21,11 +21,10 @@ public class HelpCommand extends Command {
 
     @Override
     public SendMessage execute(CommandDto commandDto) {
-        SendMessage sendMessage = makeMessage(commandDto.getText(), commandDto.getChatId());
-        return sendMessage;
+        return createMessage(commandDto.getText(), commandDto.getChatId());
     }
 
-    private SendMessage makeMessage(String messageText, long chatId) {
+    private SendMessage createMessage(String messageText, long chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(String.format(HELP_MESSAGE, messageText));

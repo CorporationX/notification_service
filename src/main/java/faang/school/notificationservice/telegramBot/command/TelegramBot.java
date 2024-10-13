@@ -1,7 +1,6 @@
-package faang.school.notificationservice.service.telegram;
+package faang.school.notificationservice.telegramBot.command;
 
-import faang.school.notificationservice.config.context.BotConfig;
-import faang.school.notificationservice.service.telegram.command.CommandExecutor;
+import faang.school.notificationservice.config.tgBot.TelegramBotConfig;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +18,18 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class TelegramBot extends TelegramLongPollingBot {
     private static final char COMMAND_ANNOUNCE = '/';
 
-    private final BotConfig config;
+    private final TelegramBotConfig config;
     private final CommandExecutor commandExecutor;
+
+    @PostConstruct
+    public void init() {
+        try {
+            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+            telegramBotsApi.registerBot(this);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+    }
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -39,16 +48,6 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
         }
 
-    }
-
-    @PostConstruct
-    public void init() {
-        try {
-            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(this);
-        } catch (TelegramApiException e) {
-            log.error(e.getMessage());
-        }
     }
 
     private boolean checkMessage(String messageText) {

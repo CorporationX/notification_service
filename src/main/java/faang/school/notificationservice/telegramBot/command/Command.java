@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.telegram.command;
+package faang.school.notificationservice.telegramBot.command;
 
 import faang.school.notificationservice.dto.CommandDto;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 @RequiredArgsConstructor
-@PropertySource("classpath:messages.properties")
+@PropertySource("classpath:messageTgEmailSms.properties")
 public abstract class Command {
 
     protected final Environment environment;

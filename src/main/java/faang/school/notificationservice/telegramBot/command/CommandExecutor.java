@@ -1,10 +1,12 @@
-package faang.school.notificationservice.service.telegram.command;
+package faang.school.notificationservice.telegramBot.command;
 
 import faang.school.notificationservice.dto.CommandDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+
+import static faang.school.notificationservice.telegramBot.command.CommandName.*;
 
 import java.util.Map;
 
@@ -21,7 +23,7 @@ public class CommandExecutor {
             return commands.get(textCommand).execute(commandDto);
         } else {
             log.warn("Passed a non-existent command from chat = {}", chatId);
-            return commands.get("/error").execute(commandDto);
+            return commands.get(ERROR.getCommandName()).execute(commandDto);
         }
     }
 

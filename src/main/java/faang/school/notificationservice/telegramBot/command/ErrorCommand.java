@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.telegram.command;
+package faang.school.notificationservice.telegramBot.command;
 
 import faang.school.notificationservice.dto.CommandDto;
 import org.springframework.core.env.Environment;
@@ -15,14 +15,13 @@ public class ErrorCommand extends Command {
 
     @Override
     public SendMessage execute(CommandDto commandDto) {
-        SendMessage sendMessage = makeMessage(commandDto.getText(), commandDto.getChatId());
-        return sendMessage;
+        return createMessage(commandDto.getText(), commandDto.getChatId());
     }
 
-    private SendMessage makeMessage(String messageText, long chatId) {
+    private SendMessage createMessage(String messageText, long chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText(String.format(COMMAND_NOT_EXIST, messageText));
+        sendMessage.setText(String.format("The command %s does not exist", messageText));
         return sendMessage;
     }
 }

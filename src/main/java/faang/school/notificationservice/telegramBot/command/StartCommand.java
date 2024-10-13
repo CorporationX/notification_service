@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.telegram.command;
+package faang.school.notificationservice.telegramBot.command;
 
 import faang.school.notificationservice.dto.CommandDto;
 import lombok.extern.slf4j.Slf4j;
@@ -17,11 +17,10 @@ public class StartCommand extends Command {
     @Override
     public SendMessage execute(CommandDto commandDto) {
         String greetings = environment.getProperty("telegram.greetings", commandDto.getFirstName());
-        SendMessage message = makeMessage(greetings, commandDto.getChatId(), commandDto.getFirstName());
-        return message;
+        return createMessage(greetings, commandDto.getChatId(), commandDto.getFirstName());
     }
 
-    private SendMessage makeMessage(String messageText, long chatId, String firstName) {
+    private SendMessage createMessage(String messageText, long chatId, String firstName) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(String.format(messageText, firstName));
