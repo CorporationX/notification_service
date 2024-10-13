@@ -32,11 +32,11 @@ spring:
 server:
   port: 8083
 
-#Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
-vonage: #https://dashboard.nexmo.com/getting-started/sms
+vonage:
   api:
-    key: whatever
-    secret: whatever
+    key: ${VONAGE_API_KEY}
+    secret: ${VONAGE_API_SECRET}
+  sender: CorporationX
 
 project-service:
     host: localhost
