@@ -98,7 +98,7 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter projectFollowerListenerAdapter() {
+    MessageListenerAdapter projectFollowerListenerAdapter(ProjectFollowerEventListener projectFollowerEventListener) {
         return new MessageListenerAdapter(projectFollowerEventListener);
     }
 
