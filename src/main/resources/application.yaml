@@ -9,6 +9,7 @@ spring:
         event-starter: event_start_channel
         mentorship-offered: mentorship_offered_channel
         recommendation-received: recommendation_received_channel
+        follow-project: project_subscription_event
 
   mail:
     host: smtp.gmail.com

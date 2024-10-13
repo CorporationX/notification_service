@@ -42,5 +42,6 @@ public abstract class AbstractEventListener<T> {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Notification type was not found in existing options"))
                 .send(user, message);
+        log.info("Notification was sent to user with id {}", userId);
     }
 }
