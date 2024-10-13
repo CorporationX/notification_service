@@ -19,7 +19,7 @@ public class StartCommand extends Command {
         String greetings = environment.getProperty("telegram.greetings", commandDto.getFirstName());
         return createMessage(greetings, commandDto.getChatId(), commandDto.getFirstName());
     }
-
+    
     private SendMessage createMessage(String messageText, long chatId, String firstName) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
