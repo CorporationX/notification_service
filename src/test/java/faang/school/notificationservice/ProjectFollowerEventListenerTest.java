@@ -2,12 +2,12 @@ package faang.school.notificationservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.event.ProjectFollowerEvent;
+import faang.school.notificationservice.model.dto.UserDto;
+import faang.school.notificationservice.model.event.ProjectFollowerEvent;
 import faang.school.notificationservice.exception.EventProcessingException;
 import faang.school.notificationservice.listener.ProjectFollowerEventListener;
-import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.messaging.ProjectFollowerMessageBuilder;
+import faang.school.notificationservice.service.MessageBuilder;
+import faang.school.notificationservice.service.impl.ProjectFollowerMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,7 +55,7 @@ public class ProjectFollowerEventListenerTest {
     @BeforeEach
     public void setUp() {
         List<NotificationService> notificationServices = Collections.singletonList(notificationService);
-        List<MessageBuilder<?>> messageBuilders = Collections.singletonList(
+        List<MessageBuilder<ProjectFollowerEvent>> messageBuilders = Collections.singletonList(
                 new ProjectFollowerMessageBuilder(userServiceClient, messageSource));
 
         listener = new ProjectFollowerEventListener(objectMapper, userServiceClient,
@@ -80,7 +80,7 @@ public class ProjectFollowerEventListenerTest {
 
         when(userServiceClient.getUser(3L)).thenReturn(creatorDto);
         when(userServiceClient.getUser(1L)).thenReturn(new UserDto());
-        when(messageSource.getMessage(eq("new_project_follower"), any(), eq(Locale.UK))).thenReturn("Notification message");
+        when(messageSource.getMessage(eq("new.project.follower"), any(), eq(Locale.UK))).thenReturn("Notification message");
 
         listener.onMessage(message, null);
 

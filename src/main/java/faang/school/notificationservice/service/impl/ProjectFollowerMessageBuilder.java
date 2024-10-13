@@ -1,8 +1,9 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.service.impl;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.event.ProjectFollowerEvent;
+import faang.school.notificationservice.model.dto.UserDto;
+import faang.school.notificationservice.model.event.ProjectFollowerEvent;
+import faang.school.notificationservice.service.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ public class ProjectFollowerMessageBuilder implements MessageBuilder<ProjectFoll
     private final MessageSource messageSource;
 
     @Override
-    public Class<ProjectFollowerEvent> getInstance() {
+    public Class<ProjectFollowerEvent> getSupportedClass() {
         return ProjectFollowerEvent.class;
     }
 
@@ -24,7 +25,8 @@ public class ProjectFollowerMessageBuilder implements MessageBuilder<ProjectFoll
     public String buildMessage(ProjectFollowerEvent event, Locale locale) {
         UserDto projectFollowerDto = userServiceClient.getUser(event.getFollowerId());
         UserDto projectCreatorDto = userServiceClient.getUser(event.getCreatorId());
-        return messageSource.getMessage("new_project_follower",
-                new Object[]{projectCreatorDto.getUsername(), projectFollowerDto.getUsername(), event.getProjectId()}, locale);
+        return messageSource.getMessage("new.project.follower",
+                new Object[]{projectCreatorDto.getUsername(), projectFollowerDto.getUsername(), event.getProjectId()},
+                locale);
     }
 }

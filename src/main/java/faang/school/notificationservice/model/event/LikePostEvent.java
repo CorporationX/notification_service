@@ -1,4 +1,4 @@
-package faang.school.notificationservice.messaging.likepost;
+package faang.school.notificationservice.model.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

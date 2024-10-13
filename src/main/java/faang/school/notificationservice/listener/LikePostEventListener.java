@@ -1,9 +1,10 @@
-package faang.school.notificationservice.messaging.likepost;
+package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.messaging.AbstractEventListener;
-import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.model.dto.UserDto;
+import faang.school.notificationservice.model.event.LikePostEvent;
+import faang.school.notificationservice.service.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
@@ -17,20 +18,22 @@ import java.util.Locale;
 @Component
 public class LikePostEventListener extends AbstractEventListener<LikePostEvent> implements MessageListener {
 
+    private final UserServiceClient userServiceClient;
     public LikePostEventListener(ObjectMapper objectMapper,
                                  UserServiceClient userServiceClient,
                                  List<NotificationService> notificationServices,
                                  List<MessageBuilder<LikePostEvent>> messageBuilders) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+        super(objectMapper, notificationServices, messageBuilders);
+        this.userServiceClient = userServiceClient;
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, LikePostEvent.class, event -> {
-            String text = buildText(event, Locale.ENGLISH);
-            Long postAuthorId = event.getPostAuthorId();
-            sendNotification(postAuthorId, text);
-            log.info("Notification was sent, postAuthorId: {}, text: {}", postAuthorId, text);
+            UserDto postAuthorDto = userServiceClient.getUser(event.getPostAuthorId());
+            String notificationMessage = buildMessage(event, Locale.ENGLISH);
+            sendNotification(postAuthorDto, notificationMessage);
+            log.info("Notification was sent, postAuthorId: {}, notificationMessage: {}", postAuthorDto.getId(), notificationMessage);
         });
     }
 }

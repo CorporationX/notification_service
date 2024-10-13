@@ -1,8 +1,9 @@
 package faang.school.notificationservice.messaging.likepost;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
-import org.junit.jupiter.api.BeforeEach;
+import faang.school.notificationservice.model.dto.UserDto;
+import faang.school.notificationservice.model.event.LikePostEvent;
+import faang.school.notificationservice.service.impl.LikePostMessageBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
