@@ -2,7 +2,7 @@ package faang.school.notificationservice.service.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +18,8 @@ public abstract class AbstractEventListener<T> {
 
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
-    private final List<NotificationService> notificationServices;
     protected final List<MessageBuilder<T>> messageBuilders;
+    private final List<NotificationService> notificationServices;
 
     protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
         try {
@@ -30,8 +30,7 @@ public abstract class AbstractEventListener<T> {
         }
     }
 
-    protected void sendNotification(Long id, String message) {
-        UserDto user = userServiceClient.getUser(id);
+    protected void sendNotification(UserDto user, String message) {
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact() == user.getPreference())
                 .findFirst()

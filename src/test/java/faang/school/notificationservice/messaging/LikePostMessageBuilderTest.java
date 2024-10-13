@@ -20,6 +20,7 @@ class LikePostMessageBuilderTest {
 
     @InjectMocks
     private LikePostMessageBuilder likePostMessageBuilder;
+
     @Mock
     private MessageSource messageSource;
 

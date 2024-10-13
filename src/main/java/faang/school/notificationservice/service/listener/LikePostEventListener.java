@@ -2,7 +2,7 @@ package faang.school.notificationservice.service.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.dto.event.LikePostEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -20,7 +20,7 @@ public class LikePostEventListener extends AbstractEventListener<LikePostEvent> 
                                  UserServiceClient userServiceClient,
                                  List<NotificationService> notificationServices,
                                  List<MessageBuilder<LikePostEvent>> messageBuilders) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+        super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class LikePostEventListener extends AbstractEventListener<LikePostEvent> 
         handleEvent(message, LikePostEvent.class, likePostEvent -> {
             UserDto postAuthor = userServiceClient.getUser(likePostEvent.getPostAuthorId());
             String text = getMessage(likePostEvent, Locale.UK);
-            sendNotification(postAuthor.getId(), text);
+            sendNotification(postAuthor, text);
         });
     }
 }
