@@ -29,7 +29,13 @@ dependencies {
      * Database
      */
     implementation("redis.clients:jedis:4.3.2")
+    implementation("org.liquibase:liquibase-core")
     runtimeOnly("org.postgresql:postgresql")
+
+    /**
+     * Telegram
+     */
+    implementation("org.telegram:telegrambots:6.8.0")
 
     /**
      * Utils & Logging
