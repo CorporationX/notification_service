@@ -7,6 +7,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 public class ProfileViewEventDto {
     private Long senderId;
     private Long receiverId;
