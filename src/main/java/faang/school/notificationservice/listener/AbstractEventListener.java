@@ -26,7 +26,7 @@ public abstract class AbstractEventListener<E> implements MessageListener {
 
     protected String getMessage(E event, Locale locale) {
         Optional<MessageBuilder<E>> messageBuilder = messageBuilders.stream()
-                .filter(builder -> builder.getInstance().equals(event.getClass()))
+                .filter(builder -> builder.getInstance() == event.getClass())
                 .findFirst();
         return messageBuilder
                 .map(builder -> builder.buildMessage(event, locale))
@@ -34,7 +34,7 @@ public abstract class AbstractEventListener<E> implements MessageListener {
     }
 
     protected void sendNotification(long userId, String message) {
-        UserDto user = userServiceClient.tryGetUser(userId);
+        UserDto user = userServiceClient.getUser(userId);
         Optional<NotificationService> optionalService = notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
                 .findFirst();
