@@ -2,6 +2,9 @@ package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.EventStartEventListener;
+import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
+import faang.school.notificationservice.listener.ProjectFollowerEventListener;
+import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -89,7 +92,8 @@ public class RedisConfig {
         return new MessageListenerAdapter(recommendationReceivedEventListener);
     }
 
-    @Bean MessageListenerAdapter commentReceivingListenerAdapter(CommentEventListener commentEventListener) {
+    @Bean
+    MessageListenerAdapter commentReceivingListenerAdapter(CommentEventListener commentEventListener) {
         return new MessageListenerAdapter(commentEventListener);
     }
 
