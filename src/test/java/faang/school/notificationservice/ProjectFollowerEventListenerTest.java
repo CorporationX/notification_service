@@ -2,13 +2,13 @@ package faang.school.notificationservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.model.dto.UserDto;
-import faang.school.notificationservice.model.event.ProjectFollowerEvent;
 import faang.school.notificationservice.exception.EventProcessingException;
 import faang.school.notificationservice.listener.ProjectFollowerEventListener;
+import faang.school.notificationservice.model.dto.UserDto;
+import faang.school.notificationservice.model.event.ProjectFollowerEvent;
 import faang.school.notificationservice.service.MessageBuilder;
-import faang.school.notificationservice.service.impl.ProjectFollowerMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.impl.ProjectFollowerMessageBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,7 +55,7 @@ public class ProjectFollowerEventListenerTest {
     @BeforeEach
     public void setUp() {
         List<NotificationService> notificationServices = Collections.singletonList(notificationService);
-        List<MessageBuilder<ProjectFollowerEvent>> messageBuilders = Collections.singletonList(
+        List<MessageBuilder<?>> messageBuilders = Collections.singletonList(
                 new ProjectFollowerMessageBuilder(userServiceClient, messageSource));
 
         listener = new ProjectFollowerEventListener(objectMapper, userServiceClient,

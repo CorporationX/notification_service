@@ -22,7 +22,7 @@ public class LikePostEventListener extends AbstractEventListener<LikePostEvent> 
     public LikePostEventListener(ObjectMapper objectMapper,
                                  UserServiceClient userServiceClient,
                                  List<NotificationService> notificationServices,
-                                 List<MessageBuilder<LikePostEvent>> messageBuilders) {
+                                 List<MessageBuilder<?>> messageBuilders) {
         super(objectMapper, notificationServices, messageBuilders);
         this.userServiceClient = userServiceClient;
     }

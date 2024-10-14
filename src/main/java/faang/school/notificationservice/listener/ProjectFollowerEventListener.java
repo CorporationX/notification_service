@@ -22,7 +22,7 @@ public class ProjectFollowerEventListener extends AbstractEventListener<ProjectF
     public ProjectFollowerEventListener(ObjectMapper objectMapper,
                                         UserServiceClient userServiceClient,
                                         List<NotificationService> notificationServices,
-                                        List<MessageBuilder<ProjectFollowerEvent>> messageBuilders) {
+                                        List<MessageBuilder<?>> messageBuilders) {
         super(objectMapper, notificationServices, messageBuilders);
         this.userServiceClient = userServiceClient;
     }

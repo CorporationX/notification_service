@@ -21,7 +21,7 @@ public abstract class AbstractEventListener<T> {
 
     private final ObjectMapper objectMapper;
     private final List<NotificationService> notificationServices;
-    private final List<MessageBuilder<T>> messageBuilders;
+    private final List<MessageBuilder<?>> messageBuilders;
 
     protected void handleEvent(Message message, Class<T> eventClass, Consumer<T> consumer) {
         try {
@@ -35,13 +35,14 @@ public abstract class AbstractEventListener<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected String buildMessage(T event, Locale userLocale) {
         return messageBuilders.stream()
                 .filter(builder -> builder.getSupportedClass().isAssignableFrom(event.getClass()))
                 .findFirst()
                 .map(builder -> {
                     log.info("Successfully built message for event type: {}", event.getClass().getSimpleName());
-                    return builder.buildMessage(event, userLocale);
+                    return ((MessageBuilder<T>) builder).buildMessage(event, userLocale);
                 })
                 .orElseThrow(() -> {
                     String errorMessage = "No message builder found for event type: " + event.getClass().getSimpleName();
