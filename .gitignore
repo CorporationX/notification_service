@@ -53,3 +53,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Telegram Bot ###
+telegram-bot.yaml
