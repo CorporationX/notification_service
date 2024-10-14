@@ -1,9 +1,10 @@
 package faang.school.notificationservice.model.dto;
 
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
     private long id;
     private String username;
