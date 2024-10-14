@@ -31,7 +31,7 @@ public abstract class AbstractEventListener<T> {
         }
     }
 
-    public String getMessage(T event, Locale locale){
+    public String getMessage(T event, Locale locale) {
         return messageBuilder.buildMessage(event, locale);
     }
 
@@ -42,5 +42,6 @@ public abstract class AbstractEventListener<T> {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Notification type was not found in existing options"))
                 .send(user, message);
+        log.info("Notification was sent to user with id {}", userId);
     }
 }

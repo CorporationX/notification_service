@@ -19,15 +19,23 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 public class RedisConfig {
 
-    private final EventStartEventListener eventStartEventListener;
-
     @Value("${spring.data.redis.host}")
     private String host;
+
     @Value("${spring.data.redis.port}")
     private int port;
 
     @Value("${spring.data.redis.channel.event-starter}")
     private String eventStarter;
+
+    @Value("${spring.data.redis.channel.mentorship-offered}")
+    private String mentorshipOfferedTopic;
+
+    @Value("${spring.data.redis.channel.recommendation-received}")
+    private String recommendationReceived;
+
+    @Value("${spring.data.redis.channel.follow-project}")
+    private String followProjectTopic;
 
     @Value("${spring.data.redis.channel.comment-receiving.name}")
     private String commentReceivingTopic;
@@ -51,19 +59,34 @@ public class RedisConfig {
 
     @Bean
     public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter,
+                                                        MessageListenerAdapter mentorshipOfferedEventListenerAdapter,
+                                                        MessageListenerAdapter recommendationReceivedListenerAdapter,
+                                                        MessageListenerAdapter projectFollowerListenerAdapter,
                                                         MessageListenerAdapter commentReceivingListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(eventStartListenerAdapter, eventStarter());
+        container.addMessageListener(mentorshipOfferedEventListenerAdapter, mentorshipOffered());
+        container.addMessageListener(recommendationReceivedListenerAdapter, recommendationReceived());
+        container.addMessageListener(projectFollowerListenerAdapter, followProjectTopic());
         container.addMessageListener(commentReceivingListenerAdapter, commentTopic());
 
         return container;
     }
 
     @Bean
-    MessageListenerAdapter eventStartListenerAdapter() {
+    public MessageListenerAdapter eventStartListenerAdapter(EventStartEventListener eventStartEventListener) {
         return new MessageListenerAdapter(eventStartEventListener);
+    }
+
+    @Bean
+    public MessageListenerAdapter mentorshipOfferedEventListenerAdapter(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
+        return new MessageListenerAdapter(mentorshipOfferedEventListener);
+    }
+
+    @Bean
+    MessageListenerAdapter recommendationReceivedListenerAdapter(RecommendationReceivedEventListener recommendationReceivedEventListener) {
+        return new MessageListenerAdapter(recommendationReceivedEventListener);
     }
 
     @Bean MessageListenerAdapter commentReceivingListenerAdapter(CommentEventListener commentEventListener) {
@@ -78,5 +101,25 @@ public class RedisConfig {
     @Bean
     public ChannelTopic commentTopic() {
         return new ChannelTopic(commentReceivingTopic);
+    }
+
+    @Bean
+    public ChannelTopic mentorshipOffered() {
+        return new ChannelTopic(mentorshipOfferedTopic);
+    }
+
+    @Bean
+    public ChannelTopic recommendationReceived() {
+        return new ChannelTopic(recommendationReceived);
+    }
+
+    @Bean
+    MessageListenerAdapter projectFollowerListenerAdapter(ProjectFollowerEventListener projectFollowerEventListener) {
+        return new MessageListenerAdapter(projectFollowerEventListener);
+    }
+
+    @Bean
+    public ChannelTopic followProjectTopic() {
+        return new ChannelTopic(followProjectTopic);
     }
 }
