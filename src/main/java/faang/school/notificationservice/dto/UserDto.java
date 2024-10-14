@@ -8,7 +8,7 @@ public class UserDto {
     private String username;
     private String email;
     private String phone;
-    private PreferredContact preference;
+    private PreferredContact preference = PreferredContact.EMAIL;
 
     public enum PreferredContact {
         EMAIL, SMS, TELEGRAM
