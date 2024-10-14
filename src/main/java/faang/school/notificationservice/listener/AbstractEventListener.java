@@ -11,16 +11,16 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Locale;
 
-@Component
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
+
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
     protected final List<MessageBuilder<T>> messageBuilders;
     protected final List<NotificationService> notificationServices;
 
     protected String buildMessage(T event, Locale locale) {
-       return messageBuilders.stream()
+        return messageBuilders.stream()
                 .filter(messageBuilder -> messageBuilder.getInstance() == event.getClass())
                 .findFirst()
                 .map(messageBuilder -> messageBuilder.buildMessage(event, locale))
