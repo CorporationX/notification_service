@@ -1,11 +1,15 @@
 package faang.school.notificationservice.config.redis;
 
+
+import faang.school.notificationservice.subscriber.ProfileViewEventListener;
+
 import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.EventStartEventListener;
 import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
 import faang.school.notificationservice.listener.ProjectFollowerEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +23,8 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+
+
 @RequiredArgsConstructor
 public class RedisConfig {
 
@@ -31,6 +37,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.event-starter}")
     private String eventStarter;
 
+
+    @Value("${spring.data.redis.channel.profile}")
+    private String profileView;
     @Value("${spring.data.redis.channel.mentorship-offered}")
     private String mentorshipOfferedTopic;
 
@@ -50,6 +59,18 @@ public class RedisConfig {
     }
 
     @Bean
+
+    public MessageListenerAdapter profileViewListener(ProfileViewEventListener profileViewEventListener) {
+        return new MessageListenerAdapter(profileViewEventListener);
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
@@ -61,6 +82,12 @@ public class RedisConfig {
     }
 
     @Bean
+
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter profileViewListener) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(redisConnectionFactory());
+        container.addMessageListener(profileViewListener, topic());
+
     public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter,
                                                         MessageListenerAdapter mentorshipOfferedEventListenerAdapter,
                                                         MessageListenerAdapter recommendationReceivedListenerAdapter,
@@ -74,10 +101,15 @@ public class RedisConfig {
         container.addMessageListener(projectFollowerListenerAdapter, followProjectTopic());
         container.addMessageListener(commentReceivingListenerAdapter, commentTopic());
 
+
         return container;
     }
 
     @Bean
+
+    public ChannelTopic topic() {
+        return new ChannelTopic(profileView);
+
     public MessageListenerAdapter eventStartListenerAdapter(EventStartEventListener eventStartEventListener) {
         return new MessageListenerAdapter(eventStartEventListener);
     }
