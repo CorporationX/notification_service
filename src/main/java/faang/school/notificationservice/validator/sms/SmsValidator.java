@@ -3,7 +3,6 @@ package faang.school.notificationservice.validator.sms;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.SmsSubmissionResponseMessage;
-import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.exception.SmsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -11,12 +10,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class SmsValidator {
-
-    public void validateMessage(String message) {
-        if (message.isBlank() || message.isEmpty()) {
-            throw new DataValidationException("The message is missing");
-        }
-    }
 
     public void validateResponse(SmsSubmissionResponse response) {
         for (SmsSubmissionResponseMessage responseMessage : response.getMessages()) {

@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -75,7 +74,6 @@ class SmsServiceTest {
         //given
         when(vonageClient.getSmsClient()).thenReturn(smsClient);
         when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(response);
-        doNothing().when(smsValidator).validateResponse(response);
 
         //when
         smsService.send(userDto, "Test text");
