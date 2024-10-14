@@ -12,6 +12,8 @@ spring:
         follow-project: project_subscription_event
         comment-receiving:
           name: comment-receiving-topic
+          goal-completed-event-channel:
+            name: goal_completed_event_channel
 
   mail:
     host: smtp.gmail.com

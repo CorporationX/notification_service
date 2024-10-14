@@ -2,6 +2,7 @@ package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.EventStartEventListener;
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
 import faang.school.notificationservice.listener.ProjectFollowerEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
@@ -43,6 +44,10 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.comment-receiving.name}")
     private String commentReceivingTopic;
 
+    @Value("${spring.data.redis.channel.comment-receiving.goal-completed-event-channel.name}")
+    private String goalCompletedEvent;
+
+
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
@@ -65,7 +70,8 @@ public class RedisConfig {
                                                         MessageListenerAdapter mentorshipOfferedEventListenerAdapter,
                                                         MessageListenerAdapter recommendationReceivedListenerAdapter,
                                                         MessageListenerAdapter projectFollowerListenerAdapter,
-                                                        MessageListenerAdapter commentReceivingListenerAdapter) {
+                                                        MessageListenerAdapter commentReceivingListenerAdapter,
+                                                        MessageListenerAdapter goalCompletedListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(eventStartListenerAdapter, eventStarter());
@@ -73,6 +79,7 @@ public class RedisConfig {
         container.addMessageListener(recommendationReceivedListenerAdapter, recommendationReceived());
         container.addMessageListener(projectFollowerListenerAdapter, followProjectTopic());
         container.addMessageListener(commentReceivingListenerAdapter, commentTopic());
+        container.addMessageListener(goalCompletedListener, goalCompletedTopic());
 
         return container;
     }
@@ -125,5 +132,15 @@ public class RedisConfig {
     @Bean
     public ChannelTopic followProjectTopic() {
         return new ChannelTopic(followProjectTopic);
+    }
+
+    @Bean
+    MessageListenerAdapter goalCompletedListener(GoalCompletedEventListener goalCompletedEventListener) {
+        return new MessageListenerAdapter(goalCompletedEventListener);
+    }
+
+    @Bean
+    ChannelTopic goalCompletedTopic() {
+        return new ChannelTopic(goalCompletedEvent);
     }
 }

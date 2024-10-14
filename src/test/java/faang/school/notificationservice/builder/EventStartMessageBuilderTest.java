@@ -1,6 +1,6 @@
 package faang.school.notificationservice.builder;
 
-import faang.school.notificationservice.event.EventStartEvent;
+import faang.school.notificationservice.model.event.EventStartEvent;
 import faang.school.notificationservice.messaging.EventStartMessageBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

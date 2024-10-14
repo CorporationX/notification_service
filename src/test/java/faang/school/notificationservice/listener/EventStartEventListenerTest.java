@@ -2,11 +2,9 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.event.EventStartEvent;
+import faang.school.notificationservice.model.dto.UserDto;
+import faang.school.notificationservice.model.event.EventStartEvent;
 import faang.school.notificationservice.messaging.EventStartMessageBuilder;
-import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.telegram.TelegramService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,7 +47,7 @@ public class EventStartEventListenerTest {
 
     private EventStartEvent event;
     private UserDto user;
-    private Locale locale = Locale.getDefault();
+    private final Locale locale = Locale.getDefault();
     String jsonEventStart;
 
     @BeforeEach

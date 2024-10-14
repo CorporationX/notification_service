@@ -5,7 +5,6 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.model.event.ProjectFollowerEvent;
 import faang.school.notificationservice.service.NotificationService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Locale;
 
-@Slf4j
 @Component
 public class ProjectFollowerEventListener extends AbstractEventListener<ProjectFollowerEvent> implements MessageListener {
     public ProjectFollowerEventListener(ObjectMapper objectMapper,

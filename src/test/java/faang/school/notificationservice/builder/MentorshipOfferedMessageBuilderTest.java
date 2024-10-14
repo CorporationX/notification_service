@@ -1,7 +1,7 @@
 package faang.school.notificationservice.builder;
 
-import faang.school.notificationservice.event.MentorshipOfferedEvent;
 import faang.school.notificationservice.messaging.MentorshipOfferedMessageBuilder;
+import faang.school.notificationservice.model.event.MentorshipOfferedEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,7 +11,7 @@ import org.springframework.context.MessageSource;
 
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
