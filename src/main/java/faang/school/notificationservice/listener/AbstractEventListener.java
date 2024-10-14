@@ -37,10 +37,16 @@ public abstract class AbstractEventListener<T> {
 
     public void sendNotification(long userId, String message) {
         UserDto user = userServiceClient.getUser(userId);
+        log.info("User preference: {}", user.getPreference());
+        log.info("Available notification services: {}, {}", notificationServices.get(0), notificationServices.get(0).getPreferredContact());
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Notification type was not found in existing options"))
+                .orElseThrow(() -> {
+                    log.info("User preference: {}", user.getPreference());
+                    log.info("Available notification services: {}, {}", notificationServices.get(0), notificationServices.get(0).getPreferredContact());
+                    return new IllegalArgumentException("Notification type was not found in existing options");
+                })
                 .send(user, message);
         log.info("Notification was sent to user with id {}", userId);
     }
