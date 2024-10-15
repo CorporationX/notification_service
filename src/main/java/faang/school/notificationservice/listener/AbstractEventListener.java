@@ -2,7 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -42,5 +42,6 @@ public abstract class AbstractEventListener<T> {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Notification type was not found in existing options"))
                 .send(user, message);
+        log.info("Notification was sent to user with id {}", userId);
     }
 }

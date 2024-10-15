@@ -1,7 +1,7 @@
-package faang.school.notificationservice.builder;
+package faang.school.notificationservice.listener;
 
-import faang.school.notificationservice.model.event.EventStartEvent;
-import faang.school.notificationservice.messaging.EventStartMessageBuilder;
+import faang.school.notificationservice.messaging.ProjectFollowerMessageBuilder;
+import faang.school.notificationservice.model.event.ProjectFollowerEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,17 +17,17 @@ import static org.mockito.Mockito.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class EventStartMessageBuilderTest {
+public class ProjectFollowerEventListenerTest {
 
     @Mock
     private MessageSource messageSource;
 
     @InjectMocks
-    private EventStartMessageBuilder builder;
+    private ProjectFollowerMessageBuilder builder;
 
     @Test
-    void testOkBuilder(){
-        EventStartEvent event = EventStartEvent.builder().build();
+    void testBuilderOk(){
+        ProjectFollowerEvent event = ProjectFollowerEvent.builder().build();
 
         when(messageSource.getMessage(anyString(), any(), any())).thenReturn("hello there");
 
