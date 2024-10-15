@@ -27,15 +27,17 @@ public class LikeEventListener extends AbstractEventListener<LikeEvent> {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         log.debug("Received message: {}", message);
-        handleEvent(message, LikeEvent.class, likeEvent -> {
-            String text = getMessage(likeEvent, Locale.UK);
-            log.debug("Generated notification text: {}", text);
-            try {
-                sendNotification(likeEvent.postAuthorId(), text);
-                log.info("Notification sent successfully to author ID: {}", likeEvent.postAuthorId());
-            } catch (Exception e) {
-                log.error("Failed to send notification to author ID: {}", likeEvent.postAuthorId(), e);
-            }
-        });
+        handleEvent(message, LikeEvent.class, this::handleLikeEvent);
+    }
+
+    private void handleLikeEvent(LikeEvent likeEvent) {
+        String text = getMessage(likeEvent, Locale.UK);
+        log.debug("Generated notification text: {}", text);
+        try {
+            sendNotification(likeEvent.postAuthorId(), text);
+            log.debug("Notification sent successfully to author ID: {}", likeEvent.postAuthorId());
+        } catch (Exception e) {
+            log.error("Failed to send notification to author ID: {}", likeEvent.postAuthorId(), e);
+        }
     }
 }

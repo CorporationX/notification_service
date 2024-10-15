@@ -32,8 +32,8 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         UserDto user = userServiceClient.getUser(id);
         NotificationService notificationService = notificationServices.get(user.getPreference());
         if (notificationService == null) {
-            throw new IllegalArgumentException("No notification service found " +
-                    "for the user's preferred communication method.");
+            throw new IllegalArgumentException(String.format("No notification service found " +
+                    "for the user's %s communication method.", user.getPreference()));
         }
         notificationService.send(user, message);
     }
