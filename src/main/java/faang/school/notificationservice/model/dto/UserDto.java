@@ -1,6 +1,7 @@
 package faang.school.notificationservice.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import faang.school.notificationservice.model.enums.PreferredContact;
 import lombok.Data;
 
 @Data
@@ -13,8 +14,4 @@ public class UserDto {
     private String telegramUsername;
     private String telegramUserId;
     private PreferredContact preference;
-
-    public enum PreferredContact {
-        EMAIL, SMS, TELEGRAM
-    }
 }

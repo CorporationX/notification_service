@@ -2,9 +2,12 @@ package faang.school.notificationservice.messaging.likepost;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.email.EmailService;
+import faang.school.notificationservice.model.dto.UserDto;
+import faang.school.notificationservice.model.enums.PreferredContact;
+import faang.school.notificationservice.model.event.LikePostEvent;
+import faang.school.notificationservice.listener.LikePostEventListener;
+import faang.school.notificationservice.service.MessageBuilder;
+import faang.school.notificationservice.service.impl.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,13 +56,13 @@ class LikePostEventListenerTest {
     void testOnMessage() throws IOException {
         LikePostEvent likePostEvent = new LikePostEvent(1L, 2L, 3L);
         UserDto userDto = new UserDto();
-        userDto.setPreference(UserDto.PreferredContact.EMAIL);
+        userDto.setPreference(PreferredContact.EMAIL);
 
         when(objectMapper.readValue(any(byte[].class), eq(LikePostEvent.class))).thenReturn(likePostEvent);
         when(messageBuilder.buildMessage(likePostEvent, Locale.ENGLISH)).thenReturn("Post was liked!");
         when(messageBuilder.getSupportedClass()).thenReturn(LikePostEvent.class);
         when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
-        when(emailService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
+        when(emailService.getPreferredContact()).thenReturn(PreferredContact.EMAIL);
         when(message.getBody()).thenReturn(new byte[0]);
 
         likePostEventListener.onMessage(message, new byte[0]);
