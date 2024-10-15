@@ -2,6 +2,7 @@ package faang.school.notificationservice;
 
 import faang.school.notificationservice.bot.TelegramBot;
 import faang.school.notificationservice.model.dto.UserDto;
+import faang.school.notificationservice.model.enums.PreferredContact;
 import faang.school.notificationservice.service.impl.TelegramService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,8 +66,8 @@ public class TelegramServiceTest {
 
     @Test
     public void testGetPreferredContact() {
-        UserDto.PreferredContact preferredContact = telegramService.getPreferredContact();
+        PreferredContact preferredContact = telegramService.getPreferredContact();
 
-        assertEquals(UserDto.PreferredContact.TELEGRAM, preferredContact);
+        assertEquals(PreferredContact.TELEGRAM, preferredContact);
     }
 }

@@ -2,6 +2,7 @@ package faang.school.notificationservice.service.impl;
 
 import faang.school.notificationservice.bot.TelegramBot;
 import faang.school.notificationservice.model.dto.UserDto;
+import faang.school.notificationservice.model.enums.PreferredContact;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class TelegramService implements NotificationService {
     }
 
     @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.TELEGRAM;
+    public PreferredContact getPreferredContact() {
+        return PreferredContact.TELEGRAM;
     }
 }
