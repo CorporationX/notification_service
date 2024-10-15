@@ -12,6 +12,7 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,6 +42,14 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         return userServiceClient.getUser(userId);
     }
 
+    protected MessageBuilder<T> defineBuilder() {
+        return messageBuilders.stream()
+                .filter(builder -> builder.getInstance().equals(eventClass))
+                .map(builder -> (MessageBuilder<T>) builder)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No suitable MessageBuilder found for " + eventClass.getName()));
+    }
+
     protected MessageBuilder<?> defineBuilder(Class<?> eventDtoClass) {
         return messageBuilders.stream()
                 .filter(builder -> builder.getInstance().equals(eventDtoClass))
@@ -57,10 +66,18 @@ public abstract class AbstractEventListener<T> implements MessageListener {
                         "NotificationServices not found for preference: " + userDto.getPreference()));
     }
 
-    protected void sendNotification(long userId, String message) {
-        UserDto userDto = userServiceClient.getUser(userId);
+    protected String getMessage(T event, Locale locale) {
+        MessageBuilder<T> messageBuilder = defineBuilder();
+        return messageBuilder.buildMessage(event, locale);
+    }
 
+    protected void sendNotification(UserDto userDto, String message) {
         NotificationService notificationService = defineNotificationService(userDto);
         notificationService.send(userDto, message);
+    }
+
+    protected void sendNotification(Long userId, String message) {
+        UserDto userDto = getUserDto(userId);
+        sendNotification(userDto, message);
     }
 }
