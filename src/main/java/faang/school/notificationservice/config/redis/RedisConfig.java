@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.CommentEventListener;
+import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.EventStartEventListener;
 import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
@@ -52,6 +53,8 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.follower-event-channel}")
     private String followerEventChannel;
 
+    @Value("${spring.data.redis.channel.achievement}")
+    private String achievementEventTopic;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -77,7 +80,8 @@ public class RedisConfig {
                                                         MessageListenerAdapter projectFollowerListenerAdapter,
                                                         MessageListenerAdapter commentReceivingListenerAdapter,
                                                         MessageListenerAdapter goalCompletedListener,
-                                                        MessageListenerAdapter followerEventListenerAdapter) {
+                                                        MessageListenerAdapter followerEventListenerAdapter,
+                                                        MessageListenerAdapter achievementEventListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(eventStartListenerAdapter, eventStarter());
@@ -87,6 +91,7 @@ public class RedisConfig {
         container.addMessageListener(commentReceivingListenerAdapter, commentTopic());
         container.addMessageListener(goalCompletedListener, goalCompletedTopic());
         container.addMessageListener(followerEventListenerAdapter, followerEventChannel());
+        container.addMessageListener(achievementEventListenerAdapter, achievementTopic());
 
         return container;
     }
@@ -102,18 +107,23 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter recommendationReceivedListenerAdapter(RecommendationReceivedEventListener recommendationReceivedEventListener) {
+    public MessageListenerAdapter recommendationReceivedListenerAdapter(RecommendationReceivedEventListener recommendationReceivedEventListener) {
         return new MessageListenerAdapter(recommendationReceivedEventListener);
     }
 
     @Bean
-    MessageListenerAdapter commentReceivingListenerAdapter(CommentEventListener commentEventListener) {
+    public MessageListenerAdapter commentReceivingListenerAdapter(CommentEventListener commentEventListener) {
         return new MessageListenerAdapter(commentEventListener);
     }
 
     @Bean
-    MessageListenerAdapter followerEventListenerAdapter(FollowerEventListener followerEventListener){
+    public MessageListenerAdapter followerEventListenerAdapter(FollowerEventListener followerEventListener){
         return new MessageListenerAdapter(followerEventListener);
+    }
+
+    @Bean
+    public MessageListenerAdapter achievementEventListenerAdapter(AchievementEventListener achievementEventListener) {
+        return new MessageListenerAdapter(achievementEventListener);
     }
 
     @Bean
@@ -137,7 +147,7 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter projectFollowerListenerAdapter(ProjectFollowerEventListener projectFollowerEventListener) {
+    public MessageListenerAdapter projectFollowerListenerAdapter(ProjectFollowerEventListener projectFollowerEventListener) {
         return new MessageListenerAdapter(projectFollowerEventListener);
     }
 
@@ -147,17 +157,22 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter goalCompletedListener(GoalCompletedEventListener goalCompletedEventListener) {
+    public MessageListenerAdapter goalCompletedListener(GoalCompletedEventListener goalCompletedEventListener) {
         return new MessageListenerAdapter(goalCompletedEventListener);
     }
 
     @Bean
-    ChannelTopic goalCompletedTopic() {
+    public ChannelTopic goalCompletedTopic() {
         return new ChannelTopic(goalCompletedEvent);
     }
 
     @Bean
     public ChannelTopic followerEventChannel(){
         return new ChannelTopic(followerEventChannel);
+    }
+
+    @Bean
+    public ChannelTopic achievementTopic() {
+        return new ChannelTopic(achievementEventTopic);
     }
 }
