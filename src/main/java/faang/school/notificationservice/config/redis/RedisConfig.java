@@ -42,4 +42,9 @@ public class RedisConfig {
     Topic commentTopic() {
         return new ChannelTopic(redisProperties.getCommentChannelName());
     }
+
+    @Bean
+    Topic followerTopic() {
+        return new ChannelTopic(redisProperties.getFollowerEventChannel());
+    }
 }

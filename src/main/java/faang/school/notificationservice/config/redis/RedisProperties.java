@@ -15,4 +15,8 @@ public class RedisProperties {
 
     @Value("${spring.data.redis.channel.comment_event}")
     private String commentChannelName;
+
+    @Value("${spring.data.redis.channel.follower}")
+    private String followerEventChannel;
+
 }
