@@ -33,7 +33,7 @@ class SmsNotificationServiceHandlerTest {
     @Mock
     private HttpResponse<String> response;
     @Mock
-    private MtsExolveProperties mtsExolveProperties;
+    private SmsNotificationProperties properties;
     @InjectMocks
     private SmsNotificationServiceHandler smsNotificationServiceHandler;
 
@@ -72,14 +72,14 @@ class SmsNotificationServiceHandlerTest {
             String senderNumber = "TestSenderNumber";
             URI mtsExolveURI = URI.create("https://example.com/api");
 
-            when(mtsExolveProperties.getApiKey()).thenReturn(apiKey);
-            when(mtsExolveProperties.getSenderNumber()).thenReturn(senderNumber);
-            when(mtsExolveProperties.getSmsURI()).thenReturn("https://example.com/api");
-            when(mtsExolveProperties.getSenderKey()).thenReturn(senderKey);
-            when(mtsExolveProperties.getReceiverKey()).thenReturn(receiverKey);
-            when(mtsExolveProperties.getMessageKey()).thenReturn(messageKey);
-            when(mtsExolveProperties.getAuthPrefix()).thenReturn(authPrefix);
-            when(mtsExolveProperties.getAuthKey()).thenReturn(authKey);
+            when(properties.getApiKey()).thenReturn(apiKey);
+            when(properties.getSenderNumber()).thenReturn(senderNumber);
+            when(properties.getSmsURI()).thenReturn("https://example.com/api");
+            when(properties.getSenderKey()).thenReturn(senderKey);
+            when(properties.getReceiverKey()).thenReturn(receiverKey);
+            when(properties.getMessageKey()).thenReturn(messageKey);
+            when(properties.getAuthPrefix()).thenReturn(authPrefix);
+            when(properties.getAuthKey()).thenReturn(authKey);
 
             HttpRequest httpRequest = smsNotificationServiceHandler.getHttpRequest(userDto, message);
 

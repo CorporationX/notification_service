@@ -5,6 +5,8 @@ import faang.school.notificationservice.exception.MtsExolveException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
@@ -19,7 +21,7 @@ import java.net.http.HttpResponse;
 @Component
 @RequiredArgsConstructor
 public class SmsNotificationServiceHandler {
-    private final MtsExolveProperties properties;
+    private final SmsNotificationProperties properties;
 
     public HttpClient getHttpClient() {
         return HttpClient.newHttpClient();
@@ -39,16 +41,19 @@ public class SmsNotificationServiceHandler {
         return HttpRequest.newBuilder(smsURI)
                 .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                 .header(properties.getAuthKey(), authHeader)
-                .header("Content-type", "application/json")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
 
-    @Retryable(retryFor = {MtsExolveException.class}, maxAttempts = 2, backoff = @Backoff(delay = 10000))
+    @Retryable(
+            retryFor = {MtsExolveException.class},
+            maxAttemptsExpression = "#{@smsNotificationProperties.getMaxAttempts()}",
+            backoff = @Backoff(delayExpression = "#{@smsNotificationProperties.getDelay()}")
+    )
     public void retryableSend(HttpClient client, HttpRequest request) {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            log.info("Response status code: " + response.statusCode());
-            log.info("Response body: " + response.body());
+            log.info("Response status code: {}; Response body: {}", response.statusCode(), response.body());
             statusCodeValidation(response);
         } catch (IOException | InterruptedException e) {
             log.error(e.getMessage(), e);
