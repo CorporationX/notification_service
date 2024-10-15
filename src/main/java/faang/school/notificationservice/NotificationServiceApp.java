@@ -9,6 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 
+@EnableConfigurationProperties
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableFeignClients("faang.school.notificationservice.client")
 public class NotificationServiceApp {
