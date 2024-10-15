@@ -5,7 +5,6 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.model.event.CommentEvent;
 import faang.school.notificationservice.service.NotificationService;
-import jakarta.annotation.Nonnull;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
@@ -23,7 +22,7 @@ public class CommentEventListener extends AbstractEventListener<CommentEvent> im
     }
 
     @Override
-    public void onMessage(@Nonnull Message message, byte[] pattern) {
+    public void onMessage(Message message, byte[] pattern) {
         CommentEvent commentEvent = handleEvent(message, CommentEvent.class);
         String userMessage = getMessage(commentEvent, Locale.getDefault());
         sendNotification(commentEvent.postAuthorId(), userMessage);
