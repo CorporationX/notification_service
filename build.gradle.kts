@@ -37,6 +37,7 @@ dependencies {
     implementation("org.telegram:telegrambots-meta:7.10.0")
     implementation("org.telegram:telegrambots-client:7.10.0")
     implementation("org.telegram:telegrambots-webhook:7.10.0")
+    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2")
 
     /**
      * Database
