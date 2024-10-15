@@ -1,4 +1,4 @@
-package faang.school.notificationservice.telegramBot.command;
+package faang.school.notificationservice.telegram.command;
 
 
 import lombok.Getter;

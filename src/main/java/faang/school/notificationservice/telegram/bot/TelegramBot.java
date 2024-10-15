@@ -1,6 +1,7 @@
-package faang.school.notificationservice.telegramBot.command;
+package faang.school.notificationservice.telegram.bot;
 
-import faang.school.notificationservice.config.tgBot.TelegramBotConfig;
+import faang.school.notificationservice.config.telegram.TelegramBotConfig;
+import faang.school.notificationservice.telegram.command.CommandExecutor;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

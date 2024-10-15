@@ -38,7 +38,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
-bot:
+telegram.bot:
   name: PhoenixTestMessage
   token: 7635777006:AAEfw7L9OftwV3EKMYk8u83UArjzVe5DrC8
 

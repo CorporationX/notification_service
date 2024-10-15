@@ -1,4 +1,4 @@
-package faang.school.notificationservice.telegramBot.command;
+package faang.school.notificationservice.telegram.command;
 
 import faang.school.notificationservice.dto.CommandDto;
 import lombok.extern.slf4j.Slf4j;

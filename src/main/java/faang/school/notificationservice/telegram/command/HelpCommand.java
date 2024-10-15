@@ -1,11 +1,11 @@
-package faang.school.notificationservice.telegramBot.command;
+package faang.school.notificationservice.telegram.command;
 
 import faang.school.notificationservice.dto.CommandDto;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import static faang.school.notificationservice.telegramBot.command.CommandName.*;
+import static faang.school.notificationservice.telegram.command.CommandName.*;
 
 @Component(value = "/help")
 public class HelpCommand extends Command {
