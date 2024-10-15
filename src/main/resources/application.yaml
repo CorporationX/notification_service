@@ -18,6 +18,7 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+          ssl.trust: smtp.gmail.com
 
   messages:
     basename: messages
@@ -44,6 +45,7 @@ user-service:
 
 redis:
   channels:
-    follower: follower_channel
-    achievement: achievement_channel
+    mentorship: mentorship_channel
+    project-follower: project_follower_channel
     mentorship-accepted: mentorship_accepted_channel
+    like_post: like_post_channel

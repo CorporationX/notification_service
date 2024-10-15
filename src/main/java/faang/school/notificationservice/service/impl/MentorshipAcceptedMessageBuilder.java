@@ -1,8 +1,9 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.service.impl;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.model.event.MentorshipAcceptedEvent;
 import faang.school.notificationservice.model.dto.UserDto;
+import faang.school.notificationservice.service.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ public class MentorshipAcceptedMessageBuilder implements MessageBuilder<Mentorsh
     private final MessageSource messageSource;
 
     @Override
-    public Class<MentorshipAcceptedEvent> getInstance() {
+    public Class<MentorshipAcceptedEvent> getSupportedClass() {
         return MentorshipAcceptedEvent.class;
     }
 
@@ -24,7 +25,7 @@ public class MentorshipAcceptedMessageBuilder implements MessageBuilder<Mentorsh
     public String buildMessage(MentorshipAcceptedEvent event, Locale locale) {
         UserDto requesterDto = userServiceClient.getUser(event.getRequesterId());
         UserDto mentorDto = userServiceClient.getUser(event.getMentorId());
-        return messageSource.getMessage("mentorship_accepted",
+        return messageSource.getMessage("mentorship.accepted",
                 new Object[]{requesterDto.getUsername(), event.getRequestId(), mentorDto.getUsername()}, locale);
     }
 }

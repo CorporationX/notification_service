@@ -1,14 +1,10 @@
 package faang.school.notificationservice.model.event;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@Setter
 public class MentorshipAcceptedEvent {
     Long requestId;
     Long requesterId;
