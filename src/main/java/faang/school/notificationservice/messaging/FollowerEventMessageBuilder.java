@@ -1,7 +1,7 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.model.event.FollowerEventDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;

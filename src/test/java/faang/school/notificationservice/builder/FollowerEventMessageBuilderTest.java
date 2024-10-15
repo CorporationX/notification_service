@@ -1,7 +1,7 @@
 package faang.school.notificationservice.builder;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.messaging.FollowerEventMessageBuilder;
 import faang.school.notificationservice.model.event.FollowerEventDto;
 import org.junit.jupiter.api.Test;
