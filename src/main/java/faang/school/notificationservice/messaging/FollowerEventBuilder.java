@@ -1,6 +1,6 @@
 package faang.school.notificationservice.messaging;
 
-import faang.school.notificationservice.event.FollowerEvent;
+import faang.school.notificationservice.redis.event.FollowerEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ public class FollowerEventBuilder implements MessageBuilder<FollowerEvent> {
 
     @Override
     public Class<?> getInstance() {
-        return FollowerEventBuilder.class;
+        return FollowerEvent.class;
     }
 
     @Override

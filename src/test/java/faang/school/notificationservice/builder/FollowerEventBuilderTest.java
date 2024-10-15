@@ -1,6 +1,6 @@
 package faang.school.notificationservice.builder;
 
-import faang.school.notificationservice.event.FollowerEvent;
+import faang.school.notificationservice.redis.event.FollowerEvent;
 import faang.school.notificationservice.messaging.FollowerEventBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,6 +46,6 @@ public class FollowerEventBuilderTest {
     void testInstance() {
         var result = followerEventBuilder.getInstance();
 
-        assertEquals(result, FollowerEventBuilder.class);
+        assertEquals(result, FollowerEvent.class);
     }
 }

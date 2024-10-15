@@ -1,4 +1,4 @@
-package faang.school.notificationservice.event;
+package faang.school.notificationservice.redis.event;
 
 import lombok.Builder;
 

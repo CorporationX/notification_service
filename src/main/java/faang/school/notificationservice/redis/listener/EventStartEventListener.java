@@ -34,7 +34,7 @@ public class EventStartEventListener extends AbstractEventListener<EventStartEve
 
             String message = messageBuilder.buildMessage(dto, userDto.getLocale());
 
-            sendNotification(userDto, message);
+            sendNotification(userDto.getId(), message);
         });
     }
 }

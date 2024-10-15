@@ -11,8 +11,16 @@ public class RedisTopicsFactory {
     @Value("${spring.data.redis.channel-topics.event-start.name}")
     private String eventStartTopicName;
 
+    @Value("${spring.data.redis.channel-topics.follower-event.name}")
+    private String followerEventTopic;
+
     @Bean
     public Topic eventStartTopic() {
         return new ChannelTopic(eventStartTopicName);
+    }
+
+    @Bean
+    public Topic followerTopic() {
+        return new ChannelTopic(followerEventTopic);
     }
 }
