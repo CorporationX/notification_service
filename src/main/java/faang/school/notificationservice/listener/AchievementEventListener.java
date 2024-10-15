@@ -17,7 +17,7 @@ public class AchievementEventListener extends AbstractEventListener<AchievementE
 
     public AchievementEventListener(ObjectMapper objectMapper,
                                     UserServiceClient userServiceClient,
-                                    MessageBuilder messageBuilder,
+                                    MessageBuilder<AchievementEvent> messageBuilder,
                                     List<NotificationService> notifications) {
         super(objectMapper, userServiceClient, messageBuilder, notifications);
     }
