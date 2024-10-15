@@ -1,6 +1,6 @@
 package faang.school.notificationservice.messaging;
 
-import faang.school.notificationservice.dto.comment.CommentEventDto;
+import faang.school.notificationservice.dto.comment.NewCommentEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class NewCommentEventBuilderTest {
 
-    private static final Class<?> EXPECTED_INSTANCE = CommentEventDto.class;
+    private static final Class<?> EXPECTED_INSTANCE = NewCommentEvent.class;
 
     private static final String TEST = "TEST";
     private static final String KEY_FOR_MESSAGE = "comment.new";
@@ -40,7 +40,7 @@ class NewCommentEventBuilderTest {
     @Test
     @DisplayName("Should return full short message")
     void whenMethodCalledThenReturnFullShortMessage() {
-        CommentEventDto commentEventDto = CommentEventDto.builder()
+        NewCommentEvent newCommentEvent = NewCommentEvent.builder()
                 .content(TEST)
                 .build();
         Locale locale = Locale.ENGLISH;
@@ -48,7 +48,7 @@ class NewCommentEventBuilderTest {
         when(messageSource.getMessage(eq(KEY_FOR_MESSAGE), any(), eq(locale)))
                 .thenReturn(TEST);
 
-        String message = newCommentEventBuilder.buildMessage(commentEventDto, locale);
+        String message = newCommentEventBuilder.buildMessage(newCommentEvent, locale);
 
         assertEquals(TEST, message);
         verify(messageSource).getMessage(eq(KEY_FOR_MESSAGE), any(), eq(locale));

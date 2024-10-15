@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommentEventDto {
+public class NewCommentEvent {
     private long userId;
     private long authorId;
     private long postId;

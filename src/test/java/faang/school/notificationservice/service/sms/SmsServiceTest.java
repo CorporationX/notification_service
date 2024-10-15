@@ -6,7 +6,7 @@ import com.vonage.client.sms.SmsClient;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.SmsSubmissionResponseMessage;
 import com.vonage.client.sms.messages.TextMessage;
-import faang.school.notificationservice.config.sms.VonageConfigurationProperties;
+import faang.school.notificationservice.config.notification.sms.VonageConfigurationProperties;
 import faang.school.notificationservice.dto.user.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

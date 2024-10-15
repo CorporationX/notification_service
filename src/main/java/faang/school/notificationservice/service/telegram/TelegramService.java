@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service.telegram;
 
-import faang.school.notificationservice.config.telegram.TelegramConfig;
+import faang.school.notificationservice.config.notification.telegram.TelegramConfig;
 import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +52,8 @@ public class TelegramService extends TelegramLongPollingBot implements Notificat
     }
 
     private void sendMessage(Long chatId, String textToSend) {
+        log.info("Sending notification to chatId - {}", chatId);
+
         SendMessage message = SendMessage.builder()
                 .chatId(chatId)
                 .text(textToSend)

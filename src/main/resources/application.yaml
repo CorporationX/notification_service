@@ -29,7 +29,7 @@ spring:
 
   tg:
     name: UnicornCorpX_bot
-    token: 7128232509:AAFtd-A11vnxOVfC7W9E9foN2Sk2gqYSXZA
+    token: 7890346256:AAEDtzp7dlbZ4qu7rE6WN5Jp55DCi-9Akbw
 
 server:
   port: 8083
@@ -51,3 +51,6 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+post-service:
+  host: localhost
+  port: 8081
