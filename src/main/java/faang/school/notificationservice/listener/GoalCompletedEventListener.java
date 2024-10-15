@@ -11,8 +11,8 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -20,8 +20,8 @@ public class GoalCompletedEventListener extends AbstractEventListener<GoalComple
 
     public GoalCompletedEventListener(ObjectMapper objectMapper,
                                       UserServiceClient userServiceClient,
-                                      List<MessageBuilder<GoalCompletedEvent>> messageBuilders,
-                                      List<NotificationService> notificationServices) {
+                                      Map<Class<?>, MessageBuilder<?>> messageBuilders,
+                                      Map<UserDto.PreferredContact, NotificationService> notificationServices) {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
@@ -34,6 +34,5 @@ public class GoalCompletedEventListener extends AbstractEventListener<GoalComple
             String text = getMessage(event, userPreferedLocale);
             sendNotification(user, text);
         });
-        log.info("Finish handle message");
     }
 }

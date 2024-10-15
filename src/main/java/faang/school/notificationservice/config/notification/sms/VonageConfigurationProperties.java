@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.sms;
+package faang.school.notificationservice.config.notification.sms;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -7,7 +7,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Setter
 @Getter
-@Setter
 @ConfigurationProperties(prefix = "vonage.api")
 public class VonageConfigurationProperties {
 
