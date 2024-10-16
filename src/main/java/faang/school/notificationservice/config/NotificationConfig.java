@@ -10,8 +10,6 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.retry.annotation.EnableRetry;
 
 @Configuration
-@EnableRetry
-@ConfigurationPropertiesScan
 @RequiredArgsConstructor
 public class NotificationConfig {
 

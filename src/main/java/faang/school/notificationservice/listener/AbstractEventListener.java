@@ -47,7 +47,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         try {
             return objectMapper.readValue(message.getBody(), eventType);
         } catch (IOException e) {
-            log.error(String.valueOf(e));
+            log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
@@ -66,7 +66,8 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         UserDto userDto = userServiceClient.getUser(id);
         NotificationService notificationService = notificationServices.get(userDto.getPreference());
         if (notificationService == null) {
-            log.error("Not found notification service for user {} with preferred contact {}", id, userDto.getPreference());
+            log.error("Not found notification service for user {} with preferred contact {}",
+                    id, userDto.getPreference());
             throw new IllegalArgumentException("No such notification service found " + userDto.getPreference());
         }
         notificationService.send(userDto, message);
