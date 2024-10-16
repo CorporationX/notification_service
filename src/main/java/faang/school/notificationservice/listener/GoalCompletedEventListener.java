@@ -8,7 +8,6 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
@@ -16,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class GoalCompletedEventListener extends AbstractEventListener<GoalCompletedEvent> implements MessageListener {
+public class GoalCompletedEventListener extends AbstractEventListener<GoalCompletedEvent> {
 
     public GoalCompletedEventListener(ObjectMapper objectMapper,
                                       UserServiceClient userServiceClient,

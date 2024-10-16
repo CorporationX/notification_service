@@ -8,6 +8,7 @@ import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ import java.util.function.Consumer;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public abstract class AbstractEventListener<T> {
+public abstract class AbstractEventListener<T> implements MessageListener {
 
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
@@ -59,9 +60,9 @@ public abstract class AbstractEventListener<T> {
         try {
             log.info("handleEvent() - start");
             T event = objectMapper.readValue(message.getBody(), type);
-            log.info("handleEvent() - event - {}", event);
+            log.debug("handleEvent() - event - {}", event);
             consumer.accept(event);
-            log.info("handleEvent() - finish, object - {} ", event);
+            log.info("handleEvent() - finish, event - {} ", event);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
