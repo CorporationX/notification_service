@@ -6,6 +6,8 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        eventStart-event-channel: eventStart_event
+
 
   mail:
     host: smtp.gmail.com
@@ -37,6 +39,10 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+
+bot:
+  name: TestBot
+  token:
 
 project-service:
     host: localhost
