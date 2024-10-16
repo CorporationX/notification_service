@@ -9,7 +9,9 @@ import faang.school.notificationservice.listener.ProjectFollowerEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
 import faang.school.notificationservice.listener.FollowerEventListener;
 import faang.school.notificationservice.listener.FollowerEventListener;
+import faang.school.notificationservice.listener.RecommendationRequestedEventListener;
 import faang.school.notificationservice.listener.SKillAcquiredEventListener;
+import faang.school.notificationservice.listener.RecommendationRequestedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +37,8 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.channel.event-starter}")
     private String eventStarter;
+    @Value("${spring.data.redis.channel.recommendation-request-channel}")
+    private String recommendationReqTopic;
 
     @Value("${spring.data.redis.channel.mentorship-offered}")
     private String mentorshipOfferedTopic;
@@ -86,7 +90,8 @@ public class RedisConfig {
                                                         MessageListenerAdapter goalCompletedListener,
                                                         MessageListenerAdapter followerEventListenerAdapter,
                                                         MessageListenerAdapter achievementEventListenerAdapter,
-                                                        MessageListenerAdapter skillAcquiredListenerAdapter) {
+                                                        MessageListenerAdapter skillAcquiredListenerAdapter,
+                                                        MessageListenerAdapter recommendationRequestedEventListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(eventStartListenerAdapter, eventStarter());
@@ -98,6 +103,8 @@ public class RedisConfig {
         container.addMessageListener(followerEventListenerAdapter, followerEventChannel());
         container.addMessageListener(achievementEventListenerAdapter, achievementTopic());
         container.addMessageListener(skillAcquiredListenerAdapter, skillAcquired());
+        container.addMessageListener(recommendationRequestedEventListenerAdapter, recommendationRequestedEventTopic());
+
         return container;
     }
 
@@ -134,6 +141,12 @@ public class RedisConfig {
     @Bean
     public MessageListenerAdapter skillAcquiredListenerAdapter(SKillAcquiredEventListener sKillAcquiredEventListener) {
         return new MessageListenerAdapter(sKillAcquiredEventListener);
+    }
+
+    @Bean
+    public MessageListenerAdapter recommendationRequestedEventListenerAdapter(
+            RecommendationRequestedEventListener recommendationRequestedEventListener) {
+        return new MessageListenerAdapter(recommendationRequestedEventListener);
     }
 
     @Bean
@@ -189,5 +202,10 @@ public class RedisConfig {
     @Bean
     public ChannelTopic skillAcquired() {
         return new ChannelTopic(skillAcquired);
+    }
+
+    @Bean
+    public ChannelTopic recommendationRequestedEventTopic() {
+        return new ChannelTopic(recommendationReqTopic);
     }
 }

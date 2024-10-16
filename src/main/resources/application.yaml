@@ -16,6 +16,7 @@ spring:
             name: goal_completed_event_channel
         follower-event-channel: follower_event_channel
         skill-acquired: skill_acquired_channel
+        recommendation-request-channel: recommendation_req_channel
 
   mail:
     host: smtp.gmail.com

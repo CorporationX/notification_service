@@ -3,7 +3,7 @@ package faang.school.notificationservice.service.impl.sms;
 import com.vonage.client.VonageClient;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.validator.sms.SmsValidator;
 import lombok.RequiredArgsConstructor;
