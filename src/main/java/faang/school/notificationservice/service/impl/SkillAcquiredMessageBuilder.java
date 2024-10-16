@@ -1,9 +1,10 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.service.impl;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.model.dto.SkillAcquiredEvent;
+import faang.school.notificationservice.model.event.SkillAcquiredEvent;
 import faang.school.notificationservice.model.dto.SkillDto;
 import faang.school.notificationservice.model.dto.UserDto;
+import faang.school.notificationservice.service.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,7 @@ public class SkillAcquiredMessageBuilder implements MessageBuilder<SkillAcquired
     private final MessageSource messageSource;
 
     @Override
-    public Class<SkillAcquiredEvent> getInstance() {
+    public Class<SkillAcquiredEvent> getSupportedClass() {
         return SkillAcquiredEvent.class;
     }
 
@@ -27,14 +28,13 @@ public class SkillAcquiredMessageBuilder implements MessageBuilder<SkillAcquired
         UserDto beneficiaryDto = userServiceClient.getUser(event.getUserId());
 
         List<SkillDto> skills = userServiceClient.getUserSkills(event.getUserId());
-
         String skillName = skills.stream()
                 .filter(skill -> skill.getId() == event.getSkillId())
                 .map(SkillDto::getTitle)
                 .findFirst()
                 .orElse("Unknown Skill");
 
-        return messageSource.getMessage("skill_acquired",
+        return messageSource.getMessage("skill.acquired",
                 new Object[]{beneficiaryDto.getUsername(), skillName}, locale);
     }
 }
