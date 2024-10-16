@@ -17,8 +17,8 @@ import java.util.Locale;
 @Slf4j
 public class EventStartEventListener extends AbstractEventListener<EventDto> implements MessageListener {
 
-    public EventStartEventListener(ObjectMapper objectMapper, UserServiceClient userService
-            , List<NotificationService> services, MessageBuilder<EventDto> messageBuilder) {
+    public EventStartEventListener(ObjectMapper objectMapper, UserServiceClient userService,
+                                   List<NotificationService> services, MessageBuilder<EventDto> messageBuilder) {
         super(objectMapper, userService, services, messageBuilder);
     }
 
