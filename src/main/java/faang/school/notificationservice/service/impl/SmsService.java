@@ -24,7 +24,7 @@ public class SmsService implements NotificationService {
         log.info("Sending SMS notification for user " + user.getUsername() + ", message: " + text);
 
         String userPhone = user.getPhone();
-        String from = "79046194313";
+        String from = "+12345678900";
 
         TextMessage message = new TextMessage(from, userPhone, text);
 
