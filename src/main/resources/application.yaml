@@ -1,4 +1,17 @@
 spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   data:
     redis:
       port: 6379
@@ -6,6 +19,9 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
   mail:
     host: smtp.gmail.com
@@ -46,6 +62,10 @@ user-service:
   host: localhost
   port: 8080
 
+telegram-bot:
+  botName: JavaNotificationCorporationXBot
+  token: 7834249482:AAEueK040HQyxDFdO-SE7pVyPyfyFcze4xk
+  welcomeMessage: You have subscribed to notifications of CorporationX
 task-executor:
   core-pool-size: 10
   max-pool-size: 20
