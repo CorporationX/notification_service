@@ -18,7 +18,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final TelegramContactService contactService;
 
-    @Value("telegram-bot.welcomeMessage")
+    @Value("${telegram-bot.welcomeMessage}")
     private String welcomeMessage;
 
     @Value("${telegram-bot.botName}")
