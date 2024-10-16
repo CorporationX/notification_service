@@ -19,7 +19,7 @@ public class TelegramApiConfig {
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() {
-        try{
+        try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(bot);
         } catch (TelegramApiException e) {
