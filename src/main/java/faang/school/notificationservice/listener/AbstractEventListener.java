@@ -47,7 +47,6 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         try {
             return objectMapper.readValue(message.getBody(), eventType);
         } catch (IOException e) {
-            log.error(String.valueOf(e));
             throw new RuntimeException(e);
         }
     }
