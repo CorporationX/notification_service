@@ -35,7 +35,9 @@ public class FollowerEventListener implements MessageListener {
             if (notificationService == null) {
                 throw new RuntimeException("Preferred notification method was not found");
             }
-
+            // тут потом сделать мессадж билдер
+            String messageText = "you have been subscribed to by a user with id = %d".formatted(userDto.getId());
+            notificationService.send(userDto, messageText);
         } catch (IOException e) {
             log.error("Error parsing from json: " + e.getMessage());
             throw new RuntimeException(e);

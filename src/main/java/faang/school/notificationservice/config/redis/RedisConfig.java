@@ -18,10 +18,10 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.follower}")
     private String followerEventListenerTopicName;
 
-    @Value("${spring.data.redis.host")
+    @Value("${spring.data.redis.host}")
     private String host;
 
-    @Value("${${spring.data.redis.port}")
+    @Value("${spring.data.redis.port}")
     private int port;
 
     @Autowired
@@ -33,18 +33,20 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter followerEventListener() {
+    MessageListenerAdapter followerEventListenerAdapter() {
         return new MessageListenerAdapter(followerEventListener);
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer() {
+    public RedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
-        RedisConnectionFactory factory = new JedisConnectionFactory(config);
-
+        return new JedisConnectionFactory(config);
+    }
+    @Bean
+    RedisMessageListenerContainer redisContainer() {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(factory);
-        container.addMessageListener(followerEventListener(), followerTopic());
+        container.setConnectionFactory(jedisConnectionFactory());
+        container.addMessageListener(followerEventListenerAdapter(), followerTopic());
 
         return container;
     }
