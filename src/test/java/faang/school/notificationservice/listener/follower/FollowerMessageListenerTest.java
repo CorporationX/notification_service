@@ -90,7 +90,6 @@ class FollowerMessageListenerTest {
             when(userService.getUser(FOLLOWEE_ID)).thenReturn(followeeUser);
             when(userService.getUser(FOLLOWER_ID)).thenReturn(followerUser);
             when(followerMessageBuilder.buildMessage(followerUser, Locale.getDefault())).thenReturn(MESSAGE_TEXT);
-            when(notificationService.getPreferredContact()).thenReturn(PREFERRED_CONTACT);
 
             followerMessageListener = new FollowerMessageListener(
                     objectMapper,
@@ -145,7 +144,7 @@ class FollowerMessageListenerTest {
             when(userService.getUser(FOLLOWER_ID)).thenReturn(followerUser);
             when(followerMessageBuilder.buildMessage(followerUser, Locale.getDefault())).thenReturn(MESSAGE_TEXT);
 
-            followerMessageListener = new FollowerMessageListener(objectMapper, followerMessageBuilder, notificationServices, userService);
+            followerMessageListener = new FollowerMessageListener(objectMapper, followerMessageBuilder, Map.of(), userService);
 
             followerMessageListener.onMessage(message, pattern);
 
