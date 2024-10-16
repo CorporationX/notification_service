@@ -6,7 +6,7 @@ import com.vonage.client.sms.SmsClient;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.SmsSubmissionResponseMessage;
 import com.vonage.client.sms.messages.TextMessage;
-import faang.school.notificationservice.config.sms.VonageConfigurationProperties;
+import faang.school.notificationservice.config.notification.sms.VonageConfigurationProperties;
 import faang.school.notificationservice.dto.user.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -58,7 +58,7 @@ class SmsServiceTest {
                 .username(USERNAME)
                 .email(EMAIL)
                 .phone(PHONE)
-                .preference(UserDto.PreferredContact.SMS)
+                .notifyPreference(UserDto.PreferredContact.PHONE)
                 .build();
     }
 
@@ -98,7 +98,7 @@ class SmsServiceTest {
         @Test
         @DisplayName("Should return SMS as the preferred contact method")
         void returnsSmsAsPreferredContactMethod() {
-            assertEquals(UserDto.PreferredContact.SMS, smsService.getPreferredContact());
+            assertEquals(UserDto.PreferredContact.PHONE, smsService.getPreferredContact());
         }
     }
 }
