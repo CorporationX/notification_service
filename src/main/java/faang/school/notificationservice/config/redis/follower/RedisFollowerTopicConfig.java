@@ -28,7 +28,8 @@ public class RedisFollowerTopicConfig {
     }
 
     @Bean
-    public Pair<MessageListenerAdapter, ChannelTopic> followerRequester(MessageListenerAdapter followerMessageListener) {
-        return Pair.of(followerMessageListener, followerTopic());
+    public Pair<MessageListenerAdapter, ChannelTopic> followerListenerChannelPair(MessageListenerAdapter followerMessageListener,
+                                                                                  ChannelTopic followerTopic) {
+        return Pair.of(followerMessageListener, followerTopic);
     }
 }

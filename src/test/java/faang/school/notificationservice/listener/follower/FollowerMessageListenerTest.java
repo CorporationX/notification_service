@@ -23,8 +23,8 @@ import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 class FollowerMessageListenerTest {
@@ -53,6 +53,7 @@ class FollowerMessageListenerTest {
     private UserDto followeeUser;
     private UserDto followerUser;
     private FollowerEvent followerEvent;
+    private Map<UserDto.PreferredContact, NotificationService> notificationServices;
 
     @BeforeEach
     void setUp() {
@@ -69,6 +70,9 @@ class FollowerMessageListenerTest {
                 .followeeId(FOLLOWEE_ID)
                 .created(LocalDateTime.now())
                 .build();
+
+        notificationServices = Map.of(UserDto.PreferredContact.EMAIL, notificationService);
+
     }
 
     @Nested
@@ -88,11 +92,10 @@ class FollowerMessageListenerTest {
             when(followerMessageBuilder.buildMessage(followerUser, Locale.getDefault())).thenReturn(MESSAGE_TEXT);
             when(notificationService.getPreferredContact()).thenReturn(PREFERRED_CONTACT);
 
-            List<NotificationService> services = List.of(notificationService);
             followerMessageListener = new FollowerMessageListener(
                     objectMapper,
                     followerMessageBuilder,
-                    services,
+                    notificationServices,
                     userService
             );
 
@@ -115,8 +118,7 @@ class FollowerMessageListenerTest {
             when(message.getBody()).thenReturn(pattern);
             when(objectMapper.readValue(any(byte[].class), eq(FollowerEvent.class))).thenThrow(new IOException("Invalid data"));
 
-            List<NotificationService> services = List.of(notificationService);
-            followerMessageListener = new FollowerMessageListener(objectMapper, followerMessageBuilder, services, userService);
+            followerMessageListener = new FollowerMessageListener(objectMapper, followerMessageBuilder, notificationServices, userService);
 
             RuntimeException exception = assertThrows(RuntimeException.class, () ->
                     followerMessageListener.onMessage(message, pattern)
@@ -143,8 +145,7 @@ class FollowerMessageListenerTest {
             when(userService.getUser(FOLLOWER_ID)).thenReturn(followerUser);
             when(followerMessageBuilder.buildMessage(followerUser, Locale.getDefault())).thenReturn(MESSAGE_TEXT);
 
-            List<NotificationService> services = List.of(notificationService);
-            followerMessageListener = new FollowerMessageListener(objectMapper, followerMessageBuilder, services, userService);
+            followerMessageListener = new FollowerMessageListener(objectMapper, followerMessageBuilder, notificationServices, userService);
 
             followerMessageListener.onMessage(message, pattern);
 
