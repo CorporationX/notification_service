@@ -4,7 +4,7 @@ import com.vonage.client.VonageClient;
 import com.vonage.client.sms.SmsClient;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.service.impl.sms.SmsService;
 import faang.school.notificationservice.validator.sms.SmsValidator;
 import org.junit.jupiter.api.BeforeEach;
