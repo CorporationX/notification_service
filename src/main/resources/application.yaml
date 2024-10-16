@@ -3,17 +3,16 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
-        like:
-          post_channel: like_post_channel
+      channels:
+        followerChannel: follower_channel
+        achievementChannel: achievement_channel
+        likePostChannel: like_post_channel
 
   mail:
     host: smtp.gmail.com
     port: 587
     username: varvarastepnova915@gmail.com #https://www.baeldung.com/spring-email
-    password: ezmt ecng qetx llnj #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    password: 123 #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
         smtp:

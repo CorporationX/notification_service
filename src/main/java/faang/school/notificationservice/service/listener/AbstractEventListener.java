@@ -11,6 +11,9 @@ import org.springframework.data.redis.connection.Message;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 @RequiredArgsConstructor
@@ -18,8 +21,8 @@ public abstract class AbstractEventListener<T> {
 
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
-    protected final List<MessageBuilder<T>> messageBuilders;
-    private final List<NotificationService> notificationServices;
+    protected final Map<Class<?>, MessageBuilder<?>> messageBuilders;
+    protected final Map<UserDto.PreferredContact, NotificationService> notificationServices;
 
     protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
         try {
@@ -30,21 +33,17 @@ public abstract class AbstractEventListener<T> {
         }
     }
 
-    protected void sendNotification(UserDto user, String message) {
-        notificationServices.stream()
-                .filter(service -> service.getPreferredContact() == user.getPreference())
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "No notification service found for user's preferred communication method"))
-                .send(user, message);
+    protected String getMessage(T event, Locale userLocale) {
+        MessageBuilder<T> messageBuilder = (MessageBuilder<T>) Optional.ofNullable(messageBuilders.get(event.getClass()))
+                .orElseThrow(() -> new NoSuchElementException("No message builder found for given event type"));
+
+        return messageBuilder.buildMessage(event, userLocale);
     }
 
-    protected String getMessage(T event, Locale userLocal) {
-        return messageBuilders.stream()
-                .filter(messageBuilders -> messageBuilders.getInstance() == event.getClass())
-                .findFirst()
-                .map(messageBuilders -> messageBuilders.buildMessage(event, userLocal))
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "No message builder found for given event type: " + event.getClass().getName()));
+    protected void sendNotification(UserDto user, String message) {
+        NotificationService notificationService = Optional.ofNullable(notificationServices.get(user.getPreference()))
+                .orElseThrow(() -> new NoSuchElementException("Not found notification service"));
+
+        notificationService.send(user, message);
     }
 }

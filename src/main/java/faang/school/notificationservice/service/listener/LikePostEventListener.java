@@ -10,16 +10,16 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Component
 public class LikePostEventListener extends AbstractEventListener<LikePostEvent> implements MessageListener {
 
     public LikePostEventListener(ObjectMapper objectMapper,
                                  UserServiceClient userServiceClient,
-                                 List<NotificationService> notificationServices,
-                                 List<MessageBuilder<LikePostEvent>> messageBuilders) {
+                                 Map<Class<?>, MessageBuilder<?>> messageBuilders,
+                                 Map<UserDto.PreferredContact, NotificationService> notificationServices) {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 

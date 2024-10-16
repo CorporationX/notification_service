@@ -1,7 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.service.listener.LikePostEventListener;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -11,39 +11,35 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 @Configuration
-public class RedisConfig {
+@RequiredArgsConstructor
+public class RedisConfiguration {
 
-    @Value("${spring.data.redis.host}")
-    private String redisHost;
-
-    @Value("${spring.data.redis.port}")
-    private int redisPort;
-
-    @Value("${spring.data.redis.channel.like.post_channel}")
-    private String likePostTopic;
+    private final RedisProperties redisProperties;
 
     @Bean
     public ChannelTopic likePostTopic() {
-        return new ChannelTopic(likePostTopic);
+        return new ChannelTopic(redisProperties.getChannels().getLikePostChannel());
     }
 
     @Bean
-    public MessageListenerAdapter likePostListener(LikePostEventListener likePostEventListener) {
+    public MessageListenerAdapter likePostEvent(LikePostEventListener likePostEventListener) {
         return new MessageListenerAdapter(likePostEventListener);
     }
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisHost, redisPort);
-        return new JedisConnectionFactory(configuration);
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(
+                redisProperties.getHost(),
+                redisProperties.getPort());
+
+        return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter likePostListener) {
+    RedisMessageListenerContainer redisContainer(MessageListenerAdapter likePostEvent) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-
-        container.addMessageListener(likePostListener, likePostTopic());
+        container.addMessageListener(likePostEvent, likePostTopic());
         return container;
     }
 }
