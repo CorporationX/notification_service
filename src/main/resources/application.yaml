@@ -10,6 +10,8 @@ spring:
           name: follower_event_topic
         event-start:
           name: event_start_topic
+        profile-view:
+          name: profileViewEvent
 
   mail:
     host: smtp.gmail.com
