@@ -1,6 +1,6 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.message;
 
-import faang.school.notificationservice.dto.redis.CommentEvent;
+import faang.school.notificationservice.dto.event.CommentEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
