@@ -1,12 +1,17 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.bot.TelegramBot;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.FollowerEvent;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.repository.TelegramContactRepository;
 import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.telegram.TelegramContactService;
+import faang.school.notificationservice.service.telegram.TelegramService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
@@ -22,21 +27,25 @@ public class FollowerEventListener implements MessageListener {
     private final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationServices;
+    private final TelegramService notificationService1;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            FollowerEvent event = objectMapper.readValue(message.getBody(), FollowerEvent.class);
-            UserDto userDto = userServiceClient.getUser(event.followerId());
-            List<NotificationService> services = notificationServices.stream()
-                    .filter(notificationService -> Objects.equals(notificationService.getPreferredContact(), userDto.getPreference()))
-                    .toList();
-            NotificationService notificationService = services.get(0);
+            FollowerEvent event = objectMapper.readValue(message.toString(), FollowerEvent.class);
+            UserDto userDto = userServiceClient.getUser(event.followeeId());
+            NotificationService notificationService = null;
+            for (NotificationService service : notificationServices) {
+                if (Objects.equals(service.getPreferredContact(), userDto.getPreference())) {
+                    notificationService = service;
+                    break;
+                }
+            }
             if (notificationService == null) {
                 throw new RuntimeException("Preferred notification method was not found");
             }
             // тут потом сделать мессадж билдер
-            String messageText = "you have been subscribed to by a user with id = %d".formatted(userDto.getId());
+            String messageText = "you have been subscribed to by a user with id = %d".formatted(event.followerId());
             notificationService.send(userDto, messageText);
         } catch (IOException e) {
             log.error("Error parsing from json: " + e.getMessage());

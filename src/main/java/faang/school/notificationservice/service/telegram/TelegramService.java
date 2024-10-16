@@ -5,7 +5,9 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.NotificationService;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -15,13 +17,16 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@ToString
 public class TelegramService implements NotificationService {
     private final TelegramBot telegramBot;
     private final TelegramContactService contactService;
 
     @Override
     public void send(UserDto user, String message) {
-        Update update = getUpdateForTelegramBot(user.getUsername(), message);
+        System.out.println(user);
+        System.out.println(message);
+        Update update = getUpdateForTelegramBot(user.getTelegram(), message);
         telegramBot.onUpdateReceived(update);
     }
 
