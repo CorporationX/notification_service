@@ -30,7 +30,7 @@ spring:
 
   tg:
     name: UnicornCorpX_bot
-    token:
+    token: 7128232509:AAFtd-A11vnxOVfC7W9E9foN2Sk2gqYSXZA
 
 server:
   port: 8083
