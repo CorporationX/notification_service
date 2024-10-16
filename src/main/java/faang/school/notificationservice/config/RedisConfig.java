@@ -2,6 +2,7 @@ package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.LikePostEventListener;
 import faang.school.notificationservice.listener.ProjectFollowerEventListener;
+import faang.school.notificationservice.listener.SkillAcquiredEventListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,12 +25,15 @@ public class RedisConfig {
     @Value("${redis.channels.like_post}")
     private String topicNameLikePost;
 
+    @Value("${redis.channels.skill-acquired}")
+    private String skillAcquiredEventChannel;
+
     @Bean
     public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(lettuceConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
         return template;
     }
 
@@ -44,14 +48,21 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic skillAcquiredChannelTopic() {
+        return new ChannelTopic(skillAcquiredEventChannel);
+    }
+
+    @Bean
     public RedisMessageListenerContainer redisContainer(
             LettuceConnectionFactory lettuceConnectionFactory,
             ProjectFollowerEventListener projectFollowerEventListener,
-            LikePostEventListener likePostEventListener) {
+            LikePostEventListener likePostEventListener,
+            SkillAcquiredEventListener skillAcquiredEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory);
         container.addMessageListener(projectFollowerEventListenerAdapter(projectFollowerEventListener), projectFollowerChannelTopic());
         container.addMessageListener(likePostEventListenerAdapter(likePostEventListener), likePostChannelTopic());
+        container.addMessageListener(skillAcquiredEventListenerAdapter(skillAcquiredEventListener), skillAcquiredChannelTopic());
         return container;
     }
 
@@ -63,5 +74,10 @@ public class RedisConfig {
     @Bean
     public MessageListenerAdapter likePostEventListenerAdapter(LikePostEventListener likePostEventListener) {
         return new MessageListenerAdapter(likePostEventListener, "onMessage");
+    }
+
+    @Bean
+    public MessageListenerAdapter skillAcquiredEventListenerAdapter(SkillAcquiredEventListener skillAcquiredEventListener) {
+        return new MessageListenerAdapter(skillAcquiredEventListener, "onMessage");
     }
 }
