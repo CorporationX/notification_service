@@ -46,6 +46,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+    band: CorporationX
 
 project-service:
     host: localhost
