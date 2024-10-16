@@ -18,6 +18,7 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+          ssl.trust: smtp.gmail.com
 
   messages:
     basename: messages
@@ -43,8 +44,9 @@ user-service:
     port: 8080
 
 redis:
-  channel:
-    follower: follower
-    achievement: achievement
-    goal-completed: goal_completed
-
+  channels:
+    mentorship: mentorship_channel
+    project-follower: project_follower_channel
+    mentorship-accepted: mentorship_accepted_channel
+    like_post: like_post_channel
+    goal-completed: goal_completed_channel

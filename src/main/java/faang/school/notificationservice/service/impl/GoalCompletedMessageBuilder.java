@@ -1,9 +1,10 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.service.impl;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.model.dto.GoalDto;
 import faang.school.notificationservice.model.dto.UserDto;
-import faang.school.notificationservice.event.GoalCompletedEvent;
+import faang.school.notificationservice.model.event.GoalCompletedEvent;
+import faang.school.notificationservice.service.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ public class GoalCompletedMessageBuilder implements MessageBuilder<GoalCompleted
     private final MessageSource messageSource;
 
     @Override
-    public Class<GoalCompletedEvent> getInstance() {
+    public Class<GoalCompletedEvent> getSupportedClass() {
         return GoalCompletedEvent.class;
     }
 
@@ -25,7 +26,7 @@ public class GoalCompletedMessageBuilder implements MessageBuilder<GoalCompleted
     public String buildMessage(GoalCompletedEvent event, Locale locale) {
         UserDto userDto = userServiceClient.getUser(event.getUserId());
         GoalDto goalDto = userServiceClient.getGoal(event.getGoalId());
-        return messageSource.getMessage("goal_completed",
+        return messageSource.getMessage("goal.completed",
                 new Object[]{userDto.getUsername(), goalDto.getTitle()}, locale);
     }
 }
