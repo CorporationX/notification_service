@@ -24,8 +24,6 @@ public class TelegramService implements NotificationService {
 
     @Override
     public void send(UserDto user, String message) {
-        System.out.println(user);
-        System.out.println(message);
         Update update = getUpdateForTelegramBot(user.getTelegram(), message);
         telegramBot.onUpdateReceived(update);
     }
