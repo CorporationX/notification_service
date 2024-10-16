@@ -27,7 +27,7 @@ public class GoalCompletedEventListener extends AbstractEventListener<GoalComple
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        log.info("Got message, handle it");
+        log.info("Got message, trying to handle it");
         handleEvent(message, GoalCompletedEvent.class, event -> {
             UserDto user = userServiceClient.getUser(event.getUserId());
             Locale userPreferedLocale = user.getLocale() != null ? user.getLocale() : Locale.ENGLISH;
