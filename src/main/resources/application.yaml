@@ -15,6 +15,7 @@ spring:
           goal-completed-event-channel:
             name: goal_completed_event_channel
         follower-event-channel: follower_event_channel
+        skill-acquired: skill_acquired_channel
 
   mail:
     host: smtp.gmail.com
