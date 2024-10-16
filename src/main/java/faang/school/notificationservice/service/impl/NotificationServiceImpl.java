@@ -1,6 +1,7 @@
-package faang.school.notificationservice.service;
+package faang.school.notificationservice.service.impl;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.service.NotificationService;
 import org.springframework.stereotype.Service;
 
 @Service
