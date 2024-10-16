@@ -1,7 +1,6 @@
-package faang.school.notificationservice.builder;
+package faang.school.notificationservice.messaging;
 
-import faang.school.notificationservice.model.event.EventStartEvent;
-import faang.school.notificationservice.messaging.EventStartMessageBuilder;
+import faang.school.notificationservice.event.SkillAcquiredEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,26 +10,26 @@ import org.springframework.context.MessageSource;
 
 import java.util.Locale;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class EventStartMessageBuilderTest {
+class SkillAcquiredMessageBuilderTest {
 
     @Mock
     private MessageSource messageSource;
 
     @InjectMocks
-    private EventStartMessageBuilder builder;
+    private SkillAcquiredMessageBuilder builder;
 
     @Test
-    void testOkBuilder(){
-        EventStartEvent event = EventStartEvent.builder().build();
-
+    void testOkBuilder() {
+        // given
+        SkillAcquiredEvent event = SkillAcquiredEvent.builder().build();
         when(messageSource.getMessage(anyString(), any(), any())).thenReturn("hello there");
-
+        // when & then
         assertEquals("hello there", builder.buildMessage(event, Locale.getDefault()));
     }
 }

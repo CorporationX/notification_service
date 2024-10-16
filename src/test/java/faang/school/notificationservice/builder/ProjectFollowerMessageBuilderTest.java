@@ -1,10 +1,11 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.builder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.model.dto.UserDto;
-import faang.school.notificationservice.model.event.EventStartEvent;
-import faang.school.notificationservice.messaging.EventStartMessageBuilder;
+import faang.school.notificationservice.listener.ProjectFollowerEventListener;
+import faang.school.notificationservice.messaging.ProjectFollowerMessageBuilder;
+import faang.school.notificationservice.model.event.ProjectFollowerEvent;
 import faang.school.notificationservice.service.telegram.TelegramService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,10 +23,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyLong;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-public class EventStartEventListenerTest {
+public class ProjectFollowerMessageBuilderTest {
 
     @Mock
     private ObjectMapper objectMapper;
@@ -34,7 +34,7 @@ public class EventStartEventListenerTest {
     private UserServiceClient userServiceClient;
 
     @Mock
-    private EventStartMessageBuilder messageBuilder;
+    private ProjectFollowerMessageBuilder messageBuilder;
 
     @Mock
     private Message message;
@@ -43,47 +43,38 @@ public class EventStartEventListenerTest {
     private TelegramService telegramService;
 
     @InjectMocks
-    private EventStartEventListener eventListener;
+    private ProjectFollowerEventListener eventListener;
 
-    private EventStartEvent event;
+    private ProjectFollowerEvent event;
     private UserDto user;
     private final Locale locale = Locale.getDefault();
-    String jsonEventStart;
+    private String jsonProjectFollowerEvent;
 
     @BeforeEach
     void setup() {
-        event = EventStartEvent.builder().id(1L).userIds(List.of(1L)).build();
+        jsonProjectFollowerEvent = "{ \"ownerId\": 1, \"followerId\": 2, \"projectId\": 3 }";
         user = UserDto.builder().id(1L).preference(UserDto.PreferredContact.TELEGRAM).build();
-        jsonEventStart = "{ \"id\": 1, \"userIds\": [2] }";
-        eventListener = new EventStartEventListener(objectMapper, userServiceClient,
-                messageBuilder, List.of(telegramService));
+        eventListener = new ProjectFollowerEventListener(objectMapper, userServiceClient, messageBuilder, List.of(telegramService));
+
+        event = ProjectFollowerEvent.builder()
+                .ownerId(1L)
+                .followerId(2L)
+                .projectId(3L)
+                .build();
     }
 
     @Test
     void testOnMessageOk() throws IOException {
-        when(message.getBody()).thenReturn(jsonEventStart.getBytes());
-        when(objectMapper.readValue(jsonEventStart.getBytes(), EventStartEvent.class)).thenReturn(event);
+        when(message.getBody()).thenReturn(jsonProjectFollowerEvent.getBytes());
+        when(objectMapper.readValue(jsonProjectFollowerEvent.getBytes(), ProjectFollowerEvent.class)).thenReturn(event);
         when(messageBuilder.buildMessage(event, locale)).thenReturn("babushka");
         when(userServiceClient.getUser(anyLong())).thenReturn(user);
         when(telegramService.getPreferredContact()).thenReturn(UserDto.PreferredContact.TELEGRAM);
 
         eventListener.onMessage(message, new byte[0]);
 
-        verify(objectMapper).readValue(message.getBody(), EventStartEvent.class);
+        verify(objectMapper).readValue(message.getBody(), ProjectFollowerEvent.class);
         verify(messageBuilder).buildMessage(any(), any());
         verify(userServiceClient).getUser(anyLong());
-    }
-
-    @Test
-    void testNoPassingNotificationTypes() throws IOException {
-        when(message.getBody()).thenReturn(jsonEventStart.getBytes());
-        when(objectMapper.readValue(jsonEventStart.getBytes(), EventStartEvent.class)).thenReturn(event);
-        when(messageBuilder.buildMessage(event, locale)).thenReturn("babushka");
-        when(userServiceClient.getUser(anyLong())).thenReturn(user);
-        when(telegramService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS);
-
-
-
-        assertThrows(IllegalArgumentException.class, () -> eventListener.onMessage(message, new byte[0]));
     }
 }
