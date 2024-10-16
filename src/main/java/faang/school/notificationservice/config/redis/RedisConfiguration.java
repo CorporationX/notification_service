@@ -27,5 +27,10 @@ public class RedisConfiguration {
 
         return container;
     }
+
+    @Bean
+    JedisConnectionFactory jedisConnectionFactory() {
+        return new JedisConnectionFactory();
+    }
 }
 
