@@ -37,11 +37,14 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
+achievement-service:
+  host: localhost
+  port: 8085
 
 redis:
   channels:
@@ -49,3 +52,4 @@ redis:
     project-follower: project_follower_channel
     mentorship-accepted: mentorship_accepted_channel
     like_post: like_post_channel
+    achievement: achievement_channel

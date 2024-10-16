@@ -1,4 +1,4 @@
-package faang.school.notificationservice.client;
+package faang.school.notificationservice.feign;
 
 
 import org.springframework.cloud.openfeign.FeignClient;
