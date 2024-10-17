@@ -23,11 +23,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
             Long chatId = update.getMessage().getChatId();
-            String stickerFileId = "CAACAgIAAxkBAAEDRcdhfhJijljkljsidfjlsd_RqO8AAGyAAJ9p0kUKvC_rEIj4PgkHwQ";
-            InputFile sticker = new InputFile(stickerFileId);
+            InputFile sticker = new InputFile(properties.getDefaultStickerId());
 
             SendSticker sendSticker = new SendSticker();
-            sendSticker.setChatId(chatId.toString());
+            sendSticker.setChatId(chatId);
             sendSticker.setSticker(sticker);
 
             executeAsync(sendSticker);

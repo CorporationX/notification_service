@@ -8,4 +8,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class TelegramBotProperties {
     private String token;
     private String name;
+    private String defaultStickerId;
 }

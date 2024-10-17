@@ -7,7 +7,6 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}/api/v1/users")
 public interface UserServiceClient {
@@ -17,7 +16,4 @@ public interface UserServiceClient {
             backoff = @Backoff(delayExpression = "${user-service.retry.backoff}"))
     @GetMapping("/{id}/locale/contact-preference")
     UserDto getUser(@PathVariable long id);
-
-    @PostMapping("telegram/{telegramId}")
-    UserDto registrationTelegramId(@PathVariable long telegramId);
 }
