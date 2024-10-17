@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service.telegram;
 
-import faang.school.notificationservice.config.telegram.TelegramConfig;
+import faang.school.notificationservice.config.notification.telegram.TelegramConfig;
 import faang.school.notificationservice.dto.user.UserDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,5 +25,4 @@ class TelegramServiceTest {
     void whenCallThenReturnExpectedValue() {
         assertEquals(UserDto.PreferredContact.TELEGRAM, telegramService.getPreferredContact());
     }
-
 }

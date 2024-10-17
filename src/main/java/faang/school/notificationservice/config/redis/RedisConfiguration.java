@@ -1,7 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -32,5 +31,23 @@ public class RedisConfiguration {
     JedisConnectionFactory jedisConnectionFactory() {
         return new JedisConnectionFactory();
     }
-}
 
+    @Bean
+    RedisMessageListenerContainer redisContainer(MessageListenerAdapter goalCompletedEvent) {
+        RedisMessageListenerContainer container
+                = new RedisMessageListenerContainer();
+        container.setConnectionFactory(jedisConnectionFactory());
+        container.addMessageListener(goalCompletedEvent, goalCompletedEventTopic());
+        return container;
+    }
+
+    @Bean
+    ChannelTopic goalCompletedEventTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getGoalCompletedEvent());
+    }
+
+    @Bean
+    MessageListenerAdapter goalCompletedEvent(GoalCompletedEventListener goalCompletedEventListener) {
+        return new MessageListenerAdapter(goalCompletedEventListener);
+    }
+}
