@@ -68,14 +68,14 @@ class FollowerEventListenerTest {
         followee.setId(followeeId);
 
         when(objectMapper.readValue(messageValue, FollowerEvent.class)).thenReturn(event);
-        when(userServiceClient.tryGetUser(followeeId)).thenReturn(followee);
+        when(userServiceClient.getUser(followeeId)).thenReturn(followee);
         doReturn(notificationMessage).when(followerEventListener).getMessage(followee, event);
         doNothing().when(followerEventListener).sendNotification(followee, notificationMessage);
 
         followerEventListener.onMessage(message, null);
 
         verify(objectMapper).readValue(messageValue, FollowerEvent.class);
-        verify(userServiceClient).tryGetUser(followeeId);
+        verify(userServiceClient).getUser(followeeId);
         verify(followerEventListener).sendNotification(followee, notificationMessage);
     }
 
@@ -87,7 +87,7 @@ class FollowerEventListenerTest {
         followerEventListener.onMessage(message, null);
 
         verify(objectMapper).readValue(messageValue, FollowerEvent.class);
-        verify(userServiceClient, never()).tryGetUser(anyLong());
+        verify(userServiceClient, never()).getUser(anyLong());
         verify(followerEventListener, never()).getMessage(any(UserDto.class), any(FollowerEvent.class));
         verify(followerEventListener, never()).sendNotification(any(UserDto.class), anyString());
     }
