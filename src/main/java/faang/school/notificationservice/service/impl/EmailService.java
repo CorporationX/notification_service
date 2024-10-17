@@ -29,7 +29,7 @@ public class EmailService implements NotificationService {
 
         System.out.println(text);
 
-        log.info("Success email notification for user " + user.getUsername());
+        log.info("Success email notification for user {}", user.getUsername());
     }
 
     @Override
