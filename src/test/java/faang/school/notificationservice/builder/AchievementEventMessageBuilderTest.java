@@ -1,9 +1,7 @@
 package faang.school.notificationservice.builder;
 
-import faang.school.notificationservice.model.event.EventStartEvent;
-import faang.school.notificationservice.messaging.EventStartMessageBuilder;
-import faang.school.notificationservice.messaging.MentorshipAcceptedEventMessageBuilder;
-import faang.school.notificationservice.model.event.MentorshipAcceptedEvent;
+import faang.school.notificationservice.messaging.AchievementEventMessageBuilder;
+import faang.school.notificationservice.model.event.AchievementEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,23 +11,27 @@ import org.springframework.context.MessageSource;
 
 import java.util.Locale;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class EventStartMessageBuilderTest {
+public class AchievementEventMessageBuilderTest {
 
     @Mock
     private MessageSource messageSource;
 
     @InjectMocks
-    private MentorshipAcceptedEventMessageBuilder builder;
+    private AchievementEventMessageBuilder builder;
 
     @Test
-    void testBuilderOk() {
-        MentorshipAcceptedEvent event = MentorshipAcceptedEvent.builder().build();
+    void testBuilderOk(){
+        AchievementEvent event = AchievementEvent.builder()
+                .userId(1L)
+                .achievementId(2L)
+                .title("hello")
+                .build();
 
         when(messageSource.getMessage(anyString(), any(), any())).thenReturn("hello there");
 
