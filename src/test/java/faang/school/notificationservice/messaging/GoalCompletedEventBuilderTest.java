@@ -1,6 +1,7 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.dto.goal.GoalCompletedEvent;
+import faang.school.notificationservice.messaging.goal.GoalCompletedEventBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
