@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.model.dto.UserDto;
-import faang.school.notificationservice.model.event.RecommendationReceivedEvent;
+import faang.school.notificationservice.model.event.CommentEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.telegram.TelegramService;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class RecommendationReceivedEventListenerTest {
+class CommentEventListenerTest {
 
     @Mock
     private ObjectMapper objectMapper;
@@ -36,7 +36,7 @@ class RecommendationReceivedEventListenerTest {
     private UserServiceClient userServiceClient;
 
     @Mock
-    private MessageBuilder<RecommendationReceivedEvent> messageBuilder;
+    MessageBuilder<CommentEvent> messageBuilder;
 
     @Mock
     private List<NotificationService> notifications;
@@ -44,43 +44,51 @@ class RecommendationReceivedEventListenerTest {
     @Mock
     private Message message;
 
+    @InjectMocks
+    private CommentEventListener commentEventListener;
+
     @Mock
     private TelegramService telegramService;
 
-    @InjectMocks
-    private RecommendationReceivedEventListener recommendationReceivedEventListener;
-
-    private RecommendationReceivedEvent event;
+    private CommentEvent event;
     private UserDto user;
 
     @BeforeEach
-    void setUp() {
-        event = RecommendationReceivedEvent.builder()
+    void setup() {
+        event = CommentEvent.builder()
+                .commentAuthorId(1)
+                .username("username")
+                .postAuthorId(2)
+                .postId(3)
+                .content("content")
+                .commentId(2)
                 .build();
+
         user = UserDto.builder()
+                .id(1668746328L)
+                .username("Viktor")
                 .preference(UserDto.PreferredContact.TELEGRAM)
                 .build();
         notifications = List.of(telegramService);
-        recommendationReceivedEventListener = new RecommendationReceivedEventListener(objectMapper, userServiceClient,
+        commentEventListener = new CommentEventListener(objectMapper, userServiceClient,
                 messageBuilder, notifications);
     }
 
     @Test
-    void testOnMessageOk() throws IOException {
+    void testOnMessageOk() throws IOException{
         var messageBody = "Hello World!".getBytes();
 
         doReturn(messageBody).when(message).getBody();
-        doReturn(event).when(objectMapper).readValue(messageBody, RecommendationReceivedEvent.class);
-        doReturn("some message").when(messageBuilder).buildMessage(any(RecommendationReceivedEvent.class), any(Locale.class));
+        doReturn(event).when(objectMapper).readValue(messageBody, CommentEvent.class);
+        doReturn("some message").when(messageBuilder).buildMessage(any(CommentEvent.class), any(Locale.class));
         doReturn(user).when(userServiceClient).getUser(anyLong());
         doNothing().when(telegramService).send(any(UserDto.class), anyString());
         doReturn(UserDto.PreferredContact.TELEGRAM).when(telegramService).getPreferredContact();
 
-        recommendationReceivedEventListener.onMessage(message, new byte[0]);
+        commentEventListener.onMessage(message, new byte[0]);
 
-        verify(objectMapper).readValue(message.getBody(), RecommendationReceivedEvent.class);
+        verify(objectMapper).readValue(message.getBody(), CommentEvent.class);
         verify(messageBuilder).buildMessage(any(), any());
         verify(userServiceClient).getUser(anyLong());
     }
-
 }

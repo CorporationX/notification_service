@@ -10,6 +10,13 @@ spring:
         mentorship-offered: mentorship_offered_channel
         recommendation-received: recommendation_received_channel
         follow-project: project_subscription_event
+        comment-receiving:
+          name: comment-receiving-topic
+          goal-completed-event-channel:
+            name: goal_completed_event_channel
+        follower-event-channel: follower_event_channel
+        skill-acquired: skill_acquired_channel
+        recommendation-request-channel: recommendation_req_channel
         like: like_channel
 
   mail:
@@ -42,6 +49,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+    band: CorporationX
 
 project-service:
     host: localhost
