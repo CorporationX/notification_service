@@ -18,6 +18,7 @@ spring:
         skill-acquired: skill_acquired_channel
         recommendation-request-channel: recommendation_req_channel
         like: like_channel
+        mentorship-accepted-event-channel: mentorship_accepted_event_channel
 
   mail:
     host: smtp.gmail.com
@@ -52,11 +53,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     band: CorporationX
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
 
 telegram:
   bot:
