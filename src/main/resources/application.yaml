@@ -49,3 +49,4 @@ redis:
     project-follower: project_follower_channel
     mentorship-accepted: mentorship_accepted_channel
     like_post: like_post_channel
+    mentorship-offered: mentorship_offered_channel
