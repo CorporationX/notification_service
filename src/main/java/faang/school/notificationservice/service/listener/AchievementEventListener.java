@@ -10,15 +10,15 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Component
 public class AchievementEventListener extends AbstractEventListener<AchievementEvent> implements MessageListener {
 
     public AchievementEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
-                                    List<MessageBuilder<AchievementEvent>> messageBuilders,
-                                    List<NotificationService> notificationServices) {
+                                    Map<Class<?>, MessageBuilder<?>> messageBuilders,
+                                    Map<UserDto.PreferredContact, NotificationService> notificationServices) {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
