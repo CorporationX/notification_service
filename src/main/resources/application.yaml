@@ -36,8 +36,8 @@ logging:
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: whatever
-    secret: whatever
+    key: 2d381810
+    secret: mfiazZP2uXQDh6SH
 
 telegram.bot:
   name: PhoenixTestMessage
