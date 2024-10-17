@@ -1,7 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.GoalCompletedEventListener;
-import faang.school.notificationservice.service.listener.LikePostEventListener;
+import faang.school.notificationservice.listener.LikePostEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.listener;
+package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
@@ -76,7 +76,7 @@ class LikePostEventListenerTest {
                 .postId(ID)
                 .build();
         userDto = UserDto.builder()
-                .preference(UserDto.PreferredContact.EMAIL)
+                .notifyPreference(UserDto.PreferredContact.EMAIL)
                 .build();
     }
 
