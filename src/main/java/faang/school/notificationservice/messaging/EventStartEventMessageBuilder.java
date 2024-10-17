@@ -16,6 +16,11 @@ public class EventStartEventMessageBuilder implements MessageBuilder<EventDto> {
     private final UserServiceClient userServiceClient;
 
     @Override
+    public Class<?> getInstance() {
+        return EventDto.class;
+    }
+
+    @Override
     public String buildMessage(EventDto event, Locale locale) {
         EventDto eventDto = userServiceClient.getEvent(event.eventId());
         return messageSource.getMessage("event.start",

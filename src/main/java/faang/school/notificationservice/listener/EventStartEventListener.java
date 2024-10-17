@@ -17,9 +17,11 @@ import java.util.Locale;
 @Slf4j
 public class EventStartEventListener extends AbstractEventListener<EventDto> implements MessageListener {
 
-    public EventStartEventListener(ObjectMapper objectMapper, UserServiceClient userService,
-                                   List<NotificationService> services, MessageBuilder<EventDto> messageBuilder) {
-        super(objectMapper, userService, services, messageBuilder);
+    public EventStartEventListener(List<NotificationService> notificationServices,
+                                   List<MessageBuilder<EventDto>> messageBuilders,
+                                   UserServiceClient userServiceClient,
+                                   ObjectMapper objectMapper) {
+        super(notificationServices, messageBuilders, userServiceClient, objectMapper);
     }
 
     @Override
@@ -28,7 +30,7 @@ public class EventStartEventListener extends AbstractEventListener<EventDto> imp
         log.debug("Handle Event: {}", eventDto);
         String text = getMessage(eventDto, Locale.ENGLISH);
         log.debug("Message: {}", text);
-        List<Long> userIds = eventDto.usersId();
+        List<Long> userIds = eventDto.userIds();
 
         for (Long userId : userIds) {
             try {
