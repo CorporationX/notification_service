@@ -16,17 +16,16 @@ import java.util.Locale;
 @Slf4j
 public class GoalCompletedEventListener extends AbstractEventListener<GoalCompletedEventDto> {
 
-    public GoalCompletedEventListener(ObjectMapper objectMapper,
-                                      UserServiceClient userService,
-                                      List<NotificationService> services,
-                                      MessageBuilder<GoalCompletedEventDto> messageBuilder) {
-        super(objectMapper, userService, services, messageBuilder);
+    public GoalCompletedEventListener(List<NotificationService> notificationServices,
+                                      List<MessageBuilder<GoalCompletedEventDto>> messageBuilders,
+                                      UserServiceClient userServiceClient,
+                                      ObjectMapper objectMapper) {
+        super(notificationServices, messageBuilders, userServiceClient, objectMapper);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        String messageSting = new String(message.getBody());
-        GoalCompletedEventDto goalCompletedEventDto = handleEvent(messageSting);
+        GoalCompletedEventDto goalCompletedEventDto = handleEvent(message, GoalCompletedEventDto.class);
         log.debug("Handle Event: {}", goalCompletedEventDto);
 
         String text = getMessage(goalCompletedEventDto, Locale.ENGLISH);
