@@ -1,16 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
-import faang.school.notificationservice.listener.AchievementEventListener;
-import faang.school.notificationservice.listener.CommentEventListener;
-import faang.school.notificationservice.listener.EventStartEventListener;
-import faang.school.notificationservice.listener.FollowerEventListener;
-import faang.school.notificationservice.listener.GoalCompletedEventListener;
-import faang.school.notificationservice.listener.LikeEventListener;
-import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
-import faang.school.notificationservice.listener.ProjectFollowerEventListener;
-import faang.school.notificationservice.listener.RecommendationRequestedEventListener;
-import faang.school.notificationservice.listener.SKillAcquiredEventListener;
-import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
+import faang.school.notificationservice.listener.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -176,6 +166,12 @@ public class RedisConfig {
     public MessageListenerAdapter mentorshipAcceptedEventListenerAdapter(MentorshipAcceptedEventListener
                                                                                      mentorshipAcceptedEventListener) {
         return new MessageListenerAdapter(mentorshipAcceptedEventListener);
+    }
+
+    @Bean
+    public MessageListenerAdapter recommendationReceivedListenerAdapter(RecommendationReceivedEventListener
+                                                                                recommendationReceivedEventListener) {
+        return new MessageListenerAdapter(recommendationReceivedEventListener);
     }
 
     @Bean
