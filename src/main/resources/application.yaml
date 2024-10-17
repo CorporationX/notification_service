@@ -11,8 +11,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: almeevamirhan294@gmail.com #https://www.baeldung.com/spring-email
+    password: eske damp mqkz lqax #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
         smtp:
@@ -39,10 +39,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
-bot:
-  name:
-  token:
+telegram.bot:
+  name: PhoenixTestMessage
+  token: 7635777006:AAEfw7L9OftwV3EKMYk8u83UArjzVe5DrC8
   chat-id: 701889614L
+
 project-service:
     host: localhost
     port: 8082
