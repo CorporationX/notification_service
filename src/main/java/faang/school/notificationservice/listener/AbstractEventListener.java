@@ -28,7 +28,7 @@ public abstract class AbstractEventListener<E> implements MessageListener {
     protected String getMessage(UserDto user, E event) {
         log.info("Building message for user with id {}", user.getId());
         Optional<MessageBuilder<E>> messageBuilder = messageBuilders.stream()
-                .filter(builder -> builder.getInstance().equals(event.getClass()))
+                .filter(builder -> builder.getInstance() == event.getClass())
                 .findFirst();
         return messageBuilder
                 .map(builder -> builder.buildMessage(user, event))

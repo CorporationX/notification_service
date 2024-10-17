@@ -29,7 +29,7 @@ public class FollowerEventListener extends AbstractEventListener<FollowerEvent> 
         try {
             log.info("Follower listener received a message");
             FollowerEvent event = objectMapper.readValue(message.getBody(), FollowerEvent.class);
-            UserDto user = userServiceClient.tryGetUser(event.getFolloweeId());
+            UserDto user = userServiceClient.getUser(event.getFolloweeId());
             String text = getMessage(user, event);
             sendNotification(user, text);
             log.info("Follower listener sent a message to user {}", event.getFolloweeId());
