@@ -189,11 +189,6 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic mentorshipAcceptedEventTopic() {
-        return new ChannelTopic(mentorshipAcceptedEventTopic);
-    }
-
-    @Bean
     public ChannelTopic commentTopic() {
         return new ChannelTopic(commentReceivingTopic);
     }
