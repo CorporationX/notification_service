@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.sms;
+package faang.school.notificationservice.config.notification.sms;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

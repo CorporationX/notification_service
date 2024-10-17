@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.sms;
+package faang.school.notificationservice.config.notification.sms;
 
 import com.vonage.client.VonageClient;
 import lombok.RequiredArgsConstructor;

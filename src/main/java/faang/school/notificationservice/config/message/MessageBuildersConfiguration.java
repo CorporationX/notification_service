@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @RequiredArgsConstructor
-public class MessageBuildersConfiguration {
+public class MessageBuildersConfiguration<T> {
 
     private final List<MessageBuilder<?>> messageBuilders;
 
@@ -21,9 +21,10 @@ public class MessageBuildersConfiguration {
         return messageBuilders.stream()
                 .collect(Collectors.toMap(MessageBuilder::getInstance, Function.identity(),
                         (existing, replacement) -> {
-                            throw new RuntimeException("Collision in message builders map, " +
-                                    "exists: " + existing +
-                                    " replacement " + replacement);
+                            throw new RuntimeException(
+                                    "Collision in message builders map, " +
+                                            "exists: " + existing +
+                                            " replacement " + replacement);
                         }));
     }
 }

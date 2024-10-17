@@ -6,6 +6,7 @@ spring:
       channels:
         follower: follower_channel
         achievementEvent: achievement_channel
+        goalCompletedEvent: goal_completed_event_channel
 
   mail:
     host: smtp.gmail.com
