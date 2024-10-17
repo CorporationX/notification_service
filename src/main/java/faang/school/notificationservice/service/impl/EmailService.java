@@ -27,7 +27,7 @@ public class EmailService implements NotificationService {
         message.setFrom("your_mail@gmail.com");
         javaMailSender.send(message);
 
-        log.info("Success email notification for user " + user.getUsername());
+        log.info("Success email notification for user {}", user.getUsername());
     }
 
     @Override
