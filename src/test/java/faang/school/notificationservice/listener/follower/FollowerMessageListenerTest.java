@@ -1,10 +1,11 @@
 package faang.school.notificationservice.listener.follower;
 
+import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.event.follower.FollowerEvent;
+import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.messaging.follower.FollowerMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import faang.school.notificationservice.service.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +24,7 @@ import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -33,7 +35,9 @@ class FollowerMessageListenerTest {
     private static final Long FOLLOWER_ID = 321L;
     private static final UserDto.PreferredContact PREFERRED_CONTACT = UserDto.PreferredContact.EMAIL;
     private static final String MESSAGE_TEXT = "New follower!";
-    private static final String FOLLOWER_USER_NAME = "follower";
+
+    @Mock
+    private Message message;
 
     @Mock
     private ObjectMapper objectMapper;
@@ -42,7 +46,7 @@ class FollowerMessageListenerTest {
     private FollowerMessageBuilder followerMessageBuilder;
 
     @Mock
-    private UserService userService;
+    private UserServiceClient userServiceClient;
 
     @Mock
     private NotificationService notificationService;
@@ -51,18 +55,14 @@ class FollowerMessageListenerTest {
     private FollowerMessageListener followerMessageListener;
 
     private UserDto followeeUser;
-    private UserDto followerUser;
     private FollowerEvent followerEvent;
-    private Map<UserDto.PreferredContact, NotificationService> notificationServices;
+    private final Map<UserDto.PreferredContact, NotificationService> notificationServices = new HashMap<>();
+    private final Map<Class<?>, MessageBuilder<?>> messageBuilders = new HashMap<>();
 
     @BeforeEach
     void setUp() {
         followeeUser = UserDto.builder()
-                .preference(PREFERRED_CONTACT)
-                .build();
-
-        followerUser = UserDto.builder()
-                .username(FOLLOWER_USER_NAME)
+                .notifyPreference(PREFERRED_CONTACT)
                 .build();
 
         followerEvent = FollowerEvent.builder()
@@ -71,8 +71,12 @@ class FollowerMessageListenerTest {
                 .created(LocalDateTime.now())
                 .build();
 
-        notificationServices = Map.of(UserDto.PreferredContact.EMAIL, notificationService);
-
+        followerMessageListener = new FollowerMessageListener(
+                objectMapper,
+                userServiceClient,
+                messageBuilders,
+                notificationServices
+        );
     }
 
     @Nested
@@ -82,21 +86,15 @@ class FollowerMessageListenerTest {
         @Test
         @DisplayName("Then the notification service should send the message to the followee")
         void whenEventIsSuccessfullyProcessedThenNotificationServiceSendsMessage() throws Exception {
-            Message message = mock(Message.class);
+            messageBuilders.put(followerEvent.getClass(), followerMessageBuilder);
+            notificationServices.put(PREFERRED_CONTACT, notificationService);
+
             byte[] pattern = new byte[0];
 
             when(message.getBody()).thenReturn(pattern);
             when(objectMapper.readValue(any(byte[].class), eq(FollowerEvent.class))).thenReturn(followerEvent);
-            when(userService.getUser(FOLLOWEE_ID)).thenReturn(followeeUser);
-            when(userService.getUser(FOLLOWER_ID)).thenReturn(followerUser);
-            when(followerMessageBuilder.buildMessage(followerUser, Locale.getDefault())).thenReturn(MESSAGE_TEXT);
-
-            followerMessageListener = new FollowerMessageListener(
-                    objectMapper,
-                    followerMessageBuilder,
-                    notificationServices,
-                    userService
-            );
+            when(userServiceClient.getUser(FOLLOWEE_ID)).thenReturn(followeeUser);
+            when(followerMessageBuilder.buildMessage(followerEvent, Locale.ENGLISH)).thenReturn(MESSAGE_TEXT);
 
             followerMessageListener.onMessage(message, pattern);
 
@@ -111,19 +109,16 @@ class FollowerMessageListenerTest {
         @Test
         @DisplayName("Then an error should be logged and an exception should be thrown")
         void whenDeserializationFailsThenLogErrorAndThrowException() throws Exception {
-            Message message = mock(Message.class);
             byte[] pattern = new byte[0];
 
             when(message.getBody()).thenReturn(pattern);
             when(objectMapper.readValue(any(byte[].class), eq(FollowerEvent.class))).thenThrow(new IOException("Invalid data"));
 
-            followerMessageListener = new FollowerMessageListener(objectMapper, followerMessageBuilder, notificationServices, userService);
-
             RuntimeException exception = assertThrows(RuntimeException.class, () ->
                     followerMessageListener.onMessage(message, pattern)
             );
 
-            assertEquals("Failed to deserialize event of type: FollowerEvent", exception.getMessage());
+            assertEquals("java.io.IOException: Invalid data", exception.getMessage());
             verifyNoInteractions(notificationService);
         }
     }
@@ -135,19 +130,19 @@ class FollowerMessageListenerTest {
         @Test
         @DisplayName("Then a warning should be logged and no notification should be sent")
         void whenNoMatchingNotificationServiceFoundThenLogWarningAndDoNotSendNotification() throws Exception {
-            Message message = mock(Message.class);
+            messageBuilders.put(followerEvent.getClass(), followerMessageBuilder);
             byte[] pattern = new byte[0];
 
             when(message.getBody()).thenReturn(pattern);
             when(objectMapper.readValue(any(byte[].class), eq(FollowerEvent.class))).thenReturn(followerEvent);
-            when(userService.getUser(FOLLOWEE_ID)).thenReturn(followeeUser);
-            when(userService.getUser(FOLLOWER_ID)).thenReturn(followerUser);
-            when(followerMessageBuilder.buildMessage(followerUser, Locale.getDefault())).thenReturn(MESSAGE_TEXT);
+            when(userServiceClient.getUser(FOLLOWEE_ID)).thenReturn(followeeUser);
+            when(followerMessageBuilder.buildMessage(followerEvent, Locale.ENGLISH)).thenReturn(MESSAGE_TEXT);
 
-            followerMessageListener = new FollowerMessageListener(objectMapper, followerMessageBuilder, Map.of(), userService);
+            RuntimeException exception = assertThrows(RuntimeException.class, () ->
+                    followerMessageListener.onMessage(message, pattern)
+            );
 
-            followerMessageListener.onMessage(message, pattern);
-
+            assertEquals("Not found notification service", exception.getMessage());
             verify(notificationService, never()).send(any(), anyString());
         }
     }

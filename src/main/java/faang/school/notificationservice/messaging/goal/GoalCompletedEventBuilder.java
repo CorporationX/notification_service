@@ -1,7 +1,8 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.messaging.goal;
 
 
 import faang.school.notificationservice.dto.goal.GoalCompletedEvent;
+import faang.school.notificationservice.messaging.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Configuration;

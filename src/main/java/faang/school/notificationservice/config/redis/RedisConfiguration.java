@@ -1,6 +1,9 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.goal.GoalCompletedEventListener;
+import faang.school.notificationservice.listener.follower.FollowerMessageListener;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -16,16 +19,7 @@ import java.util.List;
 @EnableConfigurationProperties(RedisProperties.class)
 public class RedisConfiguration {
 
-    @Bean
-    public RedisMessageListenerContainer redisContainer(List<Pair<MessageListenerAdapter, ChannelTopic>> requesters, JedisConnectionFactory redisConnectionFactory) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConnectionFactory);
-        requesters.forEach(
-                (requester) -> container.addMessageListener(requester.getFirst(), requester.getSecond())
-        );
-
-        return container;
-    }
+    private final RedisProperties redisProperties;
 
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
@@ -33,11 +27,13 @@ public class RedisConfiguration {
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter goalCompletedEvent) {
-        RedisMessageListenerContainer container
-                = new RedisMessageListenerContainer();
-        container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(goalCompletedEvent, goalCompletedEventTopic());
+    public RedisMessageListenerContainer redisContainer(List<Pair<MessageListenerAdapter, ChannelTopic>> requesters, JedisConnectionFactory jedisConnectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(jedisConnectionFactory);
+        requesters.forEach(
+                (requester) -> container.addMessageListener(requester.getFirst(), requester.getSecond())
+        );
+
         return container;
     }
 
@@ -47,7 +43,30 @@ public class RedisConfiguration {
     }
 
     @Bean
-    MessageListenerAdapter goalCompletedEvent(GoalCompletedEventListener goalCompletedEventListener) {
+    MessageListenerAdapter goalCompletedMessageListener(GoalCompletedEventListener goalCompletedEventListener) {
         return new MessageListenerAdapter(goalCompletedEventListener);
+    }
+
+    @Bean
+    public ChannelTopic followerTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getFollower());
+    }
+
+    @Bean
+    public MessageListenerAdapter followerMessageListener(FollowerMessageListener followerEventListener) {
+        return new MessageListenerAdapter(followerEventListener);
+    }
+
+    @Bean
+    public List<Pair<MessageListenerAdapter, ChannelTopic>> requesters(
+            MessageListenerAdapter followerMessageListener,
+            ChannelTopic followerTopic,
+            MessageListenerAdapter goalCompletedMessageListener,
+            ChannelTopic goalCompletedEventTopic)
+    {
+        return List.of(
+                Pair.of(followerMessageListener, followerTopic),
+                Pair.of(goalCompletedMessageListener, goalCompletedEventTopic)
+        );
     }
 }
