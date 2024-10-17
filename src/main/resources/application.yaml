@@ -4,8 +4,9 @@ spring:
       port: 6379
       host: localhost
       channels:
-        followerChannel: follower_channel
-        achievementChannel: achievement_channel
+        follower: follower_channel
+        achievement: achievement_channel
+        goalCompletedEvent: goal_completed_event_channel
         likePostChannel: like_post_channel
 
   mail:

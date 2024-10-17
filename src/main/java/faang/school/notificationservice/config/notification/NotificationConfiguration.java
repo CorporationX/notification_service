@@ -22,10 +22,10 @@ public class NotificationConfiguration {
         return notificationServicesList.stream()
                 .collect(Collectors.toMap(NotificationService::getPreferredContact, Function.identity(),
                         (existing, replacement) -> {
-                            throw new RuntimeException("Collision in notification services map, " +
-                                            "exists: " + existing +
-                                            ", replacement: " + replacement);
-                        }
-                ));
+                            throw new RuntimeException(
+                                    "Collision in notification services map, " +
+                                            "exists: " + existing.getPreferredContact() +
+                                            " replacement " + replacement.getPreferredContact());
+                        }));
     }
 }
