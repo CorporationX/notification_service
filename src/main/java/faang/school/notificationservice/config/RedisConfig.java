@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.LikePostEventListener;
 import faang.school.notificationservice.listener.ProjectFollowerEventListener;
 import faang.school.notificationservice.listener.UserFollowerEventListener;
@@ -12,7 +13,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Slf4j
@@ -24,6 +24,9 @@ public class RedisConfig {
 
     @Value("${redis.channels.like_post}")
     private String topicNameLikePost;
+
+    @Value("${redis.channels.goal-completed}")
+    private String goalCompletedEventChannel;
 
     @Value("${redis.channels.user-follower}")
     private String userFollowerEventChannel;
@@ -53,9 +56,15 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic goalCompletedChannelTopic() {
+        return new ChannelTopic(goalCompletedEventChannel);
+    }
+
+    @Bean
     public RedisMessageListenerContainer redisContainer(
             LettuceConnectionFactory lettuceConnectionFactory,
             ProjectFollowerEventListener projectFollowerEventListener,
+            GoalCompletedEventListener goalCompletedEventListener,
             LikePostEventListener likePostEventListener,
             UserFollowerEventListener userFollowerEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
@@ -63,6 +72,7 @@ public class RedisConfig {
         container.addMessageListener(projectFollowerEventListenerAdapter(projectFollowerEventListener), projectFollowerChannelTopic());
         container.addMessageListener(likePostEventListenerAdapter(likePostEventListener), likePostChannelTopic());
         container.addMessageListener(userFollowerEventListenerAdapter(userFollowerEventListener), userFollowerChannelTopic());
+        container.addMessageListener(goalCompletedEventListenerAdapter(goalCompletedEventListener), goalCompletedChannelTopic());
         return container;
     }
 
@@ -79,5 +89,10 @@ public class RedisConfig {
     @Bean
     public MessageListenerAdapter userFollowerEventListenerAdapter(UserFollowerEventListener userFollowerEventListener) {
         return new MessageListenerAdapter(userFollowerEventListener, "onMessage");
+    }
+
+    @Bean
+    public MessageListenerAdapter goalCompletedEventListenerAdapter(GoalCompletedEventListener goalCompletedEventListener) {
+        return new MessageListenerAdapter(goalCompletedEventListener, "onMessage");
     }
 }

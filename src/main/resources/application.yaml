@@ -50,6 +50,7 @@ redis:
     mentorship-accepted: mentorship_accepted_channel
     like_post: like_post_channel
     user-follower: user_follower_channel
+    goal-completed: goal_completed_channel
 
 telegram:
   bot:

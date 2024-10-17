@@ -1,5 +1,6 @@
 package faang.school.notificationservice.client;
 
+import faang.school.notificationservice.model.dto.GoalDto;
 import faang.school.notificationservice.model.dto.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,9 @@ public interface UserServiceClient {
 
     @GetMapping("/users/{id}")
     UserDto getUser(@PathVariable long id);
+
+    @GetMapping("/goals/{id}")
+    GoalDto getGoal(@PathVariable long id);
 
     @PutMapping("/users/updateTelegramUserId")
     UserDto updateTelegramUserId(@RequestParam String telegramUserName,
