@@ -35,7 +35,7 @@ public class FollowerEventListener extends AbstractEventListener<FollowerEventDt
         String notificationMessage = getMessage(followerEvent, Locale.getDefault());
         log.info("Successful message receipt.");
 
-        sendNotification(followerEvent.getFollowerId(), notificationMessage);
+        sendNotification(followerEvent.getFolloweeId(), notificationMessage);
         log.info("Successful notification sending.");
     }
 }
