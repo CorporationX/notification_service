@@ -20,14 +20,12 @@ public class EmailService implements NotificationService {
     public void send(UserDto user, String text) {
         log.info("Sending email notification for user " + user.getUsername() + ", message: " + text);
 
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo(user.getEmail());
-//        message.setSubject("Notification from FAANG School");
-//        message.setText(text);
-//        message.setFrom("your_mail@gmail.com");
-//        javaMailSender.send(message);
-
-        System.out.println(text);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Notification from FAANG School");
+        message.setText(text);
+        message.setFrom("your_mail@gmail.com");
+        javaMailSender.send(message);
 
         log.info("Success email notification for user " + user.getUsername());
     }
