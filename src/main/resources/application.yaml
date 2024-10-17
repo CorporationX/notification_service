@@ -24,6 +24,9 @@ spring:
           timeout: 5000
           writetimeout: 5000
       from: "Corporation X <robertmama20@gmail.com>" # name / your_email@gmail.com #https://www.baeldung.com/spring-email
+  telegram-bot:
+    token: 7644881043:AAH_c8PrTze4AAGsSyiK-cB0F0NZw49hVLQ
+    name: Syeta228Bot
 
   messages:
     basename: messages
