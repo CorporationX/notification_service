@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ProfileViewEventDto {
     private long receiverId;
+    private String receiverName;
     private long actorId;
+    private String actorName;
     private LocalDateTime receivedAt;
 }

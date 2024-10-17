@@ -11,7 +11,6 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class ProfileViewEventMessageBuilder implements MessageBuilder<ProfileViewEventDto> {
     private static final String MESSAGE_KEY = "user.view";
-
     private final MessageSource messageSource;
 
     @Override
@@ -21,6 +20,6 @@ public class ProfileViewEventMessageBuilder implements MessageBuilder<ProfileVie
 
     @Override
     public String buildMessage(ProfileViewEventDto event, Locale locale) {
-        return messageSource.getMessage(MESSAGE_KEY, new Object[]{"id: " + event.getReceiverId()}, locale);
+        return messageSource.getMessage(MESSAGE_KEY, new Object[]{event.getReceiverName()}, locale);
     }
 }
