@@ -1,11 +1,13 @@
 spring:
   data:
     redis:
+
       port: 6379
       host: localhost
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        comment: comment_channel
 
   mail:
     host: smtp.gmail.com
