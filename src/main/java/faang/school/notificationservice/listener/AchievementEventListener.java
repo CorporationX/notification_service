@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.listener;
+package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
@@ -7,14 +7,13 @@ import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 import java.util.Map;
 
 @Component
-public class AchievementEventListener extends AbstractEventListener<AchievementEvent> implements MessageListener {
+public class AchievementEventListener extends AbstractEventListener<AchievementEvent> {
 
     public AchievementEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
                                     Map<Class<?>, MessageBuilder<?>> messageBuilders,
