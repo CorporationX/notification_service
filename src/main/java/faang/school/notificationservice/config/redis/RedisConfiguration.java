@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.GoalCompletedEventListener;
+import faang.school.notificationservice.listener.AchievementEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,11 +17,13 @@ public class RedisConfiguration {
     private final RedisProperties redisProperties;
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter goalCompletedEvent) {
+    RedisMessageListenerContainer redisContainer(MessageListenerAdapter goalCompletedEvent,
+                                                 MessageListenerAdapter achievementEvent) {
         RedisMessageListenerContainer container
                 = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(goalCompletedEvent, goalCompletedEventTopic());
+        container.addMessageListener(achievementEvent, achievementEventTopic());
         return container;
     }
 
@@ -30,8 +33,18 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public ChannelTopic achievementEventTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getAchievementEvent());
+    }
+
+    @Bean
     MessageListenerAdapter goalCompletedEvent(GoalCompletedEventListener goalCompletedEventListener) {
         return new MessageListenerAdapter(goalCompletedEventListener);
+    }
+
+    @Bean
+    public MessageListenerAdapter achievementEvent(AchievementEventListener achievementEventListener) {
+        return new MessageListenerAdapter(achievementEventListener);
     }
 
     @Bean
