@@ -8,12 +8,12 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}")
+@FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}/api/v1/users")
 public interface UserServiceClient {
 
     @Retryable(retryFor = FeignException.class,
             maxAttemptsExpression = "${user-service.retry.max-attempts}",
             backoff = @Backoff(delayExpression = "${user-service.retry.backoff}"))
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}/locale/contact-preference")
     UserDto getUser(@PathVariable long id);
 }
