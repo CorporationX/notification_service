@@ -49,3 +49,10 @@ redis:
     project-follower: project_follower_channel
     mentorship-accepted: mentorship_accepted_channel
     like_post: like_post_channel
+    user-follower: user_follower_channel
+    goal-completed: goal_completed_channel
+
+telegram:
+  bot:
+    username: werewolf_proger_bot
+    token: 8094892038:AAGqH3CFZcqPzR_zUIo_8H9M1I-26AlEbjI
