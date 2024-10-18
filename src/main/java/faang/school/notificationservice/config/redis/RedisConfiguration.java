@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.LikePostEventListener;
 import faang.school.notificationservice.listener.goal.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.follower.FollowerMessageListener;
 import lombok.RequiredArgsConstructor;
