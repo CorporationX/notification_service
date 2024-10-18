@@ -7,6 +7,8 @@ import faang.school.notificationservice.listener.UserFollowerEventListener;
 import faang.school.notificationservice.listener.impl.AchievementEventListener;
 import faang.school.notificationservice.listener.impl.LikePostEventListener;
 import faang.school.notificationservice.listener.impl.ProjectFollowerEventListener;
+import faang.school.notificationservice.listener.SkillAcquiredEventListener;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -44,6 +46,9 @@ public class RedisConfig {
 
     @Value("${redis.channels.achievement}")
     private String topicNameAchievement;
+
+    @Value("${redis.channels.skill-acquired}")
+    private String skillAcquiredEventChannel;
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
@@ -90,6 +95,11 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic skillAcquiredChannelTopic() {
+        return new ChannelTopic(skillAcquiredEventChannel);
+    }
+
+    @Bean
     public RedisMessageListenerContainer redisContainer(
             LettuceConnectionFactory lettuceConnectionFactory,
             ProjectFollowerEventListener projectFollowerEventListener,
@@ -98,7 +108,8 @@ public class RedisConfig {
             LikePostEventListener likePostEventListener,
             MentorshipAcceptedEventListener mentorshipAcceptedEventListener,
             CommentEventListener commentEventListener,
-            AchievementEventListener achievementEventListener) {
+            AchievementEventListener achievementEventListener,
+            SkillAcquiredEventListener skillAcquiredEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory);
         container.addMessageListener(projectFollowerEventListenerAdapter(projectFollowerEventListener), projectFollowerChannelTopic());
@@ -108,6 +119,7 @@ public class RedisConfig {
         container.addMessageListener(mentorshipAcceptedEventListenerAdapter(mentorshipAcceptedEventListener), mentorshipAcceptedChannelTopic());
         container.addMessageListener(commentEventListenerAdapter(commentEventListener), commentTopic());
         container.addMessageListener(achievementEventListenerAdapter(achievementEventListener), achievementChannelTopic());
+        container.addMessageListener(skillAcquiredEventListenerAdapter(skillAcquiredEventListener), skillAcquiredChannelTopic());
         return container;
     }
 
@@ -144,5 +156,10 @@ public class RedisConfig {
     @Bean
     public MessageListenerAdapter commentEventListenerAdapter(CommentEventListener commentEventListener) {
         return new MessageListenerAdapter(commentEventListener, "onMessage");
+    }
+
+    @Bean
+    public MessageListenerAdapter skillAcquiredEventListenerAdapter(SkillAcquiredEventListener skillAcquiredEventListener) {
+        return new MessageListenerAdapter(skillAcquiredEventListener, "onMessage");
     }
 }
