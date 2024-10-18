@@ -58,15 +58,28 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public ChannelTopic likePostTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getLikePostChannel());
+    }
+
+    @Bean
+    public MessageListenerAdapter likePostMessageListener(LikePostEventListener likePostEventListener) {
+        return new MessageListenerAdapter(likePostEventListener);
+    }
+
+    @Bean
     public List<Pair<MessageListenerAdapter, ChannelTopic>> requesters(
             MessageListenerAdapter followerMessageListener,
             ChannelTopic followerTopic,
             MessageListenerAdapter goalCompletedMessageListener,
-            ChannelTopic goalCompletedEventTopic)
+            ChannelTopic goalCompletedEventTopic,
+            MessageListenerAdapter likePostMessageListener,
+            ChannelTopic likePostTopic)
     {
         return List.of(
                 Pair.of(followerMessageListener, followerTopic),
-                Pair.of(goalCompletedMessageListener, goalCompletedEventTopic)
+                Pair.of(goalCompletedMessageListener, goalCompletedEventTopic),
+                Pair.of(likePostMessageListener, likePostTopic)
         );
     }
 }
