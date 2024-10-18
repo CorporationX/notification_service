@@ -1,4 +1,4 @@
-package faang.school.notificationservice.publis.listener.comment;
+package faang.school.notificationservice.publis.listener.follower;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;

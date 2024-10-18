@@ -1,7 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.publis.listener.comment.CommentEventListener;
-import faang.school.notificationservice.publis.listener.comment.FollowerEventListener;
+import faang.school.notificationservice.publis.listener.follower.FollowerEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
