@@ -1,6 +1,8 @@
 package faang.school.notificationservice.messaging;
 
+import faang.school.notificationservice.config.message.BuilderProperties;
 import faang.school.notificationservice.dto.comment.NewCommentEvent;
+import faang.school.notificationservice.messaging.comment.NewCommentEventBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,11 +27,20 @@ class NewCommentEventBuilderTest {
     private static final String TEST = "TEST";
     private static final String KEY_FOR_MESSAGE = "comment.new";
 
+    private static final int START_INDEX = 0;
+    private static final int LAST_INDEX = 1;
+
     @InjectMocks
     private NewCommentEventBuilder newCommentEventBuilder;
 
     @Mock
     private MessageSource messageSource;
+
+    @Mock
+    private BuilderProperties builderProperties;
+
+    @Mock
+    private BuilderProperties.NewCommentEventOpt newCommentEventOpt;
 
     @Test
     @DisplayName("Should return expected class instance")
@@ -45,6 +56,12 @@ class NewCommentEventBuilderTest {
                 .build();
         Locale locale = Locale.ENGLISH;
 
+        when(builderProperties.getNewCommentEventOpt())
+                .thenReturn(newCommentEventOpt);
+        when(newCommentEventOpt.getStartMessageIndex())
+                .thenReturn(START_INDEX);
+        when(newCommentEventOpt.getLastMessageIndex())
+                .thenReturn(LAST_INDEX);
         when(messageSource.getMessage(eq(KEY_FOR_MESSAGE), any(), eq(locale)))
                 .thenReturn(TEST);
 

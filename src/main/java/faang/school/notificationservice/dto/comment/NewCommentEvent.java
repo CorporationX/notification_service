@@ -10,8 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NewCommentEvent {
-    private long userId;
-    private long authorId;
+    private long commentAuthorId;
+    private long postAuthorId;
     private long postId;
     private String content;
     private long commentId;

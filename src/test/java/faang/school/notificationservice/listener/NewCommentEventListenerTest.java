@@ -6,8 +6,9 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.comment.NewCommentEvent;
 import faang.school.notificationservice.dto.post.PostDto;
 import faang.school.notificationservice.dto.user.UserDto;
+import faang.school.notificationservice.listener.comment.NewCommentEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.messaging.NewCommentEventBuilder;
+import faang.school.notificationservice.messaging.comment.NewCommentEventBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.telegram.TelegramService;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,8 +80,8 @@ class NewCommentEventListenerTest {
         );
 
         newCommentEvent = NewCommentEvent.builder()
-                .userId(USER_ID)
-                .authorId(USER_ID)
+                .commentAuthorId(USER_ID)
+                .postAuthorId(USER_ID)
                 .postId(POST_ID)
                 .content(COMMENT_CONTENT)
                 .commentId(COMMENT_ID)

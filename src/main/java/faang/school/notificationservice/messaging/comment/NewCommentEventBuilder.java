@@ -1,6 +1,8 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.messaging.comment;
 
+import faang.school.notificationservice.config.message.BuilderProperties;
 import faang.school.notificationservice.dto.comment.NewCommentEvent;
+import faang.school.notificationservice.messaging.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -11,9 +13,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class NewCommentEventBuilder implements MessageBuilder<NewCommentEvent> {
 
-    private static final int START_MESSAGE_INDEX = 0;
-    private static final int FINISH_MESSAGE_INDEX = 20;
-
+    private final BuilderProperties builderProperties;
     private final MessageSource messageSource;
 
     @Override
@@ -24,8 +24,9 @@ public class NewCommentEventBuilder implements MessageBuilder<NewCommentEvent> {
     @Override
     public String buildMessage(NewCommentEvent event, Locale locale) {
         String content = event.getContent();
-        if (content.length() > FINISH_MESSAGE_INDEX) {
-            content = content.substring(START_MESSAGE_INDEX, FINISH_MESSAGE_INDEX);
+        if (content.length() > builderProperties.getNewCommentEventOpt().getStartMessageIndex()) {
+            content = content.substring(builderProperties.getNewCommentEventOpt().getStartMessageIndex(),
+                    builderProperties.getNewCommentEventOpt().getLastMessageIndex());
         }
 
         return messageSource.getMessage("comment.new", new Object[]{content}, locale);
