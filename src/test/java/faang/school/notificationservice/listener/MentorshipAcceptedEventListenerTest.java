@@ -2,11 +2,10 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.feign.UserServiceClient;
-import faang.school.notificationservice.model.event.SkillAcquiredEvent;
+import faang.school.notificationservice.model.event.MentorshipAcceptedEvent;
 import faang.school.notificationservice.exception.EventProcessingException;
+import faang.school.notificationservice.service.impl.MentorshipAcceptedMessageBuilder;
 import faang.school.notificationservice.service.MessageBuilder;
-import faang.school.notificationservice.service.impl.SkillAcquiredMessageBuilder;
-import faang.school.notificationservice.model.dto.SkillDto;
 import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SkillAcquiredEventListenerTest {
+public class MentorshipAcceptedEventListenerTest {
 
     @Mock
     private ObjectMapper objectMapper;
@@ -50,46 +49,41 @@ public class SkillAcquiredEventListenerTest {
     @Mock
     private Message message;
 
-    private SkillAcquiredEventListener listener;
+    private MentorshipAcceptedEventListener listener;
 
     @BeforeEach
     public void setUp() {
         List<NotificationService> notificationServices = Collections.singletonList(notificationService);
         List<MessageBuilder<?>> messageBuilders = Collections.singletonList(
-                new SkillAcquiredMessageBuilder(userServiceClient, messageSource));
+                new MentorshipAcceptedMessageBuilder(userServiceClient, messageSource));
 
-        listener = new SkillAcquiredEventListener(objectMapper, userServiceClient,
+        listener = new MentorshipAcceptedEventListener(objectMapper, userServiceClient,
                 notificationServices, messageBuilders);
     }
 
     @Test
-    @DisplayName("Should successfully process SkillAcquiredEvent and send notification")
+    @DisplayName("Should successfully process MentorshipAcceptedEvent and send notification")
     public void testOnMessage_Success() throws Exception {
-        SkillAcquiredEvent event = new SkillAcquiredEvent();
-        event.setUserId(1L);
-        event.setSkillId(2L);
+        MentorshipAcceptedEvent event = new MentorshipAcceptedEvent();
+        event.setRequesterId(1L);
+        event.setMentorId(2L);
+        event.setRequestId(3L);
 
         byte[] messageBody = objectMapper.writeValueAsBytes(event);
         when(message.getBody()).thenReturn(messageBody);
-        when(objectMapper.readValue(messageBody, SkillAcquiredEvent.class)).thenReturn(event);
+        when(objectMapper.readValue(messageBody, MentorshipAcceptedEvent.class)).thenReturn(event);
 
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setUsername("beneficiary");
+        UserDto requesterDto = new UserDto();
+        requesterDto.setId(1L);
+        requesterDto.setUsername("Requester");
 
-        SkillDto skillDto = new SkillDto();
-        skillDto.setId(2L);
-        skillDto.setTitle("FAANG");
-
-        List<SkillDto> skillDtos = Collections.singletonList(skillDto);
-
-        when(userServiceClient.getUser(1L)).thenReturn(userDto);
-        when(userServiceClient.getUserSkills(1L)).thenReturn(skillDtos);
-        when(messageSource.getMessage(eq("skill.acquired"), any(), eq(Locale.UK))).thenReturn("Notification message");
+        when(userServiceClient.getUser(1L)).thenReturn(requesterDto);
+        when(userServiceClient.getUser(2L)).thenReturn(new UserDto());
+        when(messageSource.getMessage(eq("mentorship.accepted"), any(), eq(Locale.UK))).thenReturn("Notification message");
 
         listener.onMessage(message, null);
 
-        verify(notificationService, times(1)).send(eq(userDto), eq("Notification message"));
+        verify(notificationService, times(1)).send(eq(requesterDto), eq("Notification message"));
     }
 
     @Test
@@ -97,12 +91,12 @@ public class SkillAcquiredEventListenerTest {
     public void testOnMessage_EventProcessingException() throws Exception {
         byte[] messageBody = new byte[0];
         when(message.getBody()).thenReturn(messageBody);
-        when(objectMapper.readValue(messageBody, SkillAcquiredEvent.class))
+        when(objectMapper.readValue(messageBody, MentorshipAcceptedEvent.class))
                 .thenThrow(new IOException("Error parsing"));
 
         Executable executable = () -> listener.onMessage(message, new byte[0]);
 
         EventProcessingException exception = assertThrows(EventProcessingException.class, executable);
-        assertEquals("Failed to process event of type SkillAcquiredEvent", exception.getMessage());
+        assertEquals("Failed to process event of type MentorshipAcceptedEvent", exception.getMessage());
     }
 }

@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service.impl;
 
-import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.feign.UserServiceClient;
 import faang.school.notificationservice.model.event.SkillAcquiredEvent;
 import faang.school.notificationservice.model.dto.SkillDto;
 import faang.school.notificationservice.model.dto.UserDto;

@@ -1,6 +1,7 @@
-package faang.school.notificationservice.client;
+package faang.school.notificationservice.config;
 
 
+import faang.school.notificationservice.config.context.FeignUserInterceptor;
 import faang.school.notificationservice.config.context.UserContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
