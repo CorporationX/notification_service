@@ -1,8 +1,11 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.LikePostEventListener;
+import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import faang.school.notificationservice.listener.ProjectFollowerEventListener;
+import faang.school.notificationservice.listener.UserFollowerEventListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +26,15 @@ public class RedisConfig {
 
     @Value("${redis.channels.like_post}")
     private String topicNameLikePost;
+
+    @Value("${redis.channels.goal-completed}")
+    private String goalCompletedEventChannel;
+
+    @Value("${redis.channels.user-follower}")
+    private String userFollowerEventChannel;
+
+    @Value("${redis.channels.mentorship-accepted}")
+    private String mentorshipAcceptedEventChannel;
 
     @Value("${redis.channels.comment_channel}")
     private String topicNameComment;
@@ -47,6 +59,21 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic userFollowerChannelTopic() {
+        return new ChannelTopic(userFollowerEventChannel);
+    }
+
+    @Bean
+    public ChannelTopic goalCompletedChannelTopic() {
+        return new ChannelTopic(goalCompletedEventChannel);
+    }
+
+    @Bean
+    public ChannelTopic mentorshipAcceptedChannelTopic() {
+        return new ChannelTopic(mentorshipAcceptedEventChannel);
+    }
+
+    @Bean
     public ChannelTopic commentTopic() {
         return new ChannelTopic(topicNameComment);
     }
@@ -55,12 +82,18 @@ public class RedisConfig {
     public RedisMessageListenerContainer redisContainer(
             LettuceConnectionFactory lettuceConnectionFactory,
             ProjectFollowerEventListener projectFollowerEventListener,
+            GoalCompletedEventListener goalCompletedEventListener,
+            UserFollowerEventListener userFollowerEventListener,
             LikePostEventListener likePostEventListener,
+            MentorshipAcceptedEventListener mentorshipAcceptedEventListener,
             CommentEventListener commentEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory);
         container.addMessageListener(projectFollowerEventListenerAdapter(projectFollowerEventListener), projectFollowerChannelTopic());
         container.addMessageListener(likePostEventListenerAdapter(likePostEventListener), likePostChannelTopic());
+        container.addMessageListener(userFollowerEventListenerAdapter(userFollowerEventListener), userFollowerChannelTopic());
+        container.addMessageListener(goalCompletedEventListenerAdapter(goalCompletedEventListener), goalCompletedChannelTopic());
+        container.addMessageListener(mentorshipAcceptedEventListenerAdapter(mentorshipAcceptedEventListener), mentorshipAcceptedChannelTopic());
         container.addMessageListener(commentEventListenerAdapter(commentEventListener), commentTopic());
         return container;
     }
@@ -73,6 +106,21 @@ public class RedisConfig {
     @Bean
     public MessageListenerAdapter likePostEventListenerAdapter(LikePostEventListener likePostEventListener) {
         return new MessageListenerAdapter(likePostEventListener, "onMessage");
+    }
+
+    @Bean
+    public MessageListenerAdapter userFollowerEventListenerAdapter(UserFollowerEventListener userFollowerEventListener) {
+        return new MessageListenerAdapter(userFollowerEventListener, "onMessage");
+    }
+
+    @Bean
+    public MessageListenerAdapter goalCompletedEventListenerAdapter(GoalCompletedEventListener goalCompletedEventListener) {
+        return new MessageListenerAdapter(goalCompletedEventListener, "onMessage");
+    }
+
+    @Bean
+    public MessageListenerAdapter mentorshipAcceptedEventListenerAdapter(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
+        return new MessageListenerAdapter(mentorshipAcceptedEventListener, "onMessage");
     }
 
     @Bean
