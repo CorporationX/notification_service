@@ -143,11 +143,11 @@ public class CommentEventListenerTest {
 
     @Test
     public void testSendNotificationSuccess() {
-        String message = "This is a comment";
         SmsSubmissionResponse response = new SmsSubmissionResponse();
         when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
         when(vonageClient.getSmsClient()).thenReturn(smsClient);
         when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(response);
+        String message = "This is a comment";
 
         commentEventListener.sendNotification(userDto.getId(), message);
         ArgumentCaptor<TextMessage> captorMessage = ArgumentCaptor.forClass(TextMessage.class);
