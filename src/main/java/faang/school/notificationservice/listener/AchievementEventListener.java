@@ -2,6 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.AchievementEvent;
 import faang.school.notificationservice.event.LikeEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -9,13 +10,14 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 @Component
-public class LikeEventListener extends AbstractEventListener<LikeEvent> implements MessageListener {
+public class AchievementEventListener extends AbstractEventListener implements MessageListener {
 
-    public LikeEventListener(
+    public AchievementEventListener(
             ObjectMapper objectMapper, UserServiceClient userServiceClient,
             List<MessageBuilder<LikeEvent>> messageBuilders, List<NotificationService> notificationServices) {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
@@ -23,7 +25,12 @@ public class LikeEventListener extends AbstractEventListener<LikeEvent> implemen
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        LikeEvent event = objectMapper.convertValue(message.getBody(), LikeEvent.class);
-        sendNotification(event.getLikingUserId(), buildMessage(event, Locale.UK));
+        try {
+            AchievementEvent event = objectMapper.readValue(message.getBody(), AchievementEvent.class);
+            sendNotification(event.getUserId(), buildMessage(event, Locale.UK));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 }
