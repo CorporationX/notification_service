@@ -7,12 +7,8 @@ import faang.school.notificationservice.listener.LikePostEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
 import faang.school.notificationservice.listener.ProjectFollowerEventListener;
-import faang.school.notificationservice.listener.UserFollowerEventListener;
-import faang.school.notificationservice.listener.AchievementEventListener;
-import faang.school.notificationservice.listener.LikePostEventListener;
-import faang.school.notificationservice.listener.ProjectFollowerEventListener;
 import faang.school.notificationservice.listener.SkillAcquiredEventListener;
-
+import faang.school.notificationservice.listener.UserFollowerEventListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
