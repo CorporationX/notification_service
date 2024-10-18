@@ -1,8 +1,8 @@
 package faang.school.notificationservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.exception.EventProcessingException;
+import faang.school.notificationservice.feign.UserServiceClient;
 import faang.school.notificationservice.listener.UserFollowerEventListener;
 import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.model.event.UserFollowerEvent;

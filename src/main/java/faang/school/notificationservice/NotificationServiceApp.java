@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 
 @Slf4j
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-@EnableFeignClients("faang.school.notificationservice.client")
+@EnableFeignClients("faang.school.notificationservice.feign")
 public class NotificationServiceApp {
     public static void main(String[] args) {
         new SpringApplicationBuilder(NotificationServiceApp.class)

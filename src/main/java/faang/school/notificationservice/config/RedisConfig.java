@@ -2,10 +2,11 @@ package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.CommentEventListener;
-import faang.school.notificationservice.listener.LikePostEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
-import faang.school.notificationservice.listener.ProjectFollowerEventListener;
 import faang.school.notificationservice.listener.UserFollowerEventListener;
+import faang.school.notificationservice.listener.impl.AchievementEventListener;
+import faang.school.notificationservice.listener.impl.LikePostEventListener;
+import faang.school.notificationservice.listener.impl.ProjectFollowerEventListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Slf4j
 @Configuration
 public class RedisConfig {
+
+    private static final String DEFAULT_LISTENER_METHOD = "onMessage";
 
     @Value("${redis.channels.project-follower}")
     private String projectFollowerEventChannel;
@@ -38,6 +41,9 @@ public class RedisConfig {
 
     @Value("${redis.channels.comment_channel}")
     private String topicNameComment;
+
+    @Value("${redis.channels.achievement}")
+    private String topicNameAchievement;
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
@@ -79,6 +85,11 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic achievementChannelTopic() {
+        return new ChannelTopic(topicNameAchievement);
+    }
+
+    @Bean
     public RedisMessageListenerContainer redisContainer(
             LettuceConnectionFactory lettuceConnectionFactory,
             ProjectFollowerEventListener projectFollowerEventListener,
@@ -86,7 +97,8 @@ public class RedisConfig {
             UserFollowerEventListener userFollowerEventListener,
             LikePostEventListener likePostEventListener,
             MentorshipAcceptedEventListener mentorshipAcceptedEventListener,
-            CommentEventListener commentEventListener) {
+            CommentEventListener commentEventListener,
+            AchievementEventListener achievementEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory);
         container.addMessageListener(projectFollowerEventListenerAdapter(projectFollowerEventListener), projectFollowerChannelTopic());
@@ -95,17 +107,23 @@ public class RedisConfig {
         container.addMessageListener(goalCompletedEventListenerAdapter(goalCompletedEventListener), goalCompletedChannelTopic());
         container.addMessageListener(mentorshipAcceptedEventListenerAdapter(mentorshipAcceptedEventListener), mentorshipAcceptedChannelTopic());
         container.addMessageListener(commentEventListenerAdapter(commentEventListener), commentTopic());
+        container.addMessageListener(achievementEventListenerAdapter(achievementEventListener), achievementChannelTopic());
         return container;
     }
 
     @Bean
     public MessageListenerAdapter projectFollowerEventListenerAdapter(ProjectFollowerEventListener projectFollowerEventListener) {
-        return new MessageListenerAdapter(projectFollowerEventListener, "onMessage");
+        return new MessageListenerAdapter(projectFollowerEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean
     public MessageListenerAdapter likePostEventListenerAdapter(LikePostEventListener likePostEventListener) {
-        return new MessageListenerAdapter(likePostEventListener, "onMessage");
+        return new MessageListenerAdapter(likePostEventListener, DEFAULT_LISTENER_METHOD);
+    }
+
+    @Bean
+    public MessageListenerAdapter achievementEventListenerAdapter(AchievementEventListener achievementEventListener) {
+        return new MessageListenerAdapter(achievementEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean

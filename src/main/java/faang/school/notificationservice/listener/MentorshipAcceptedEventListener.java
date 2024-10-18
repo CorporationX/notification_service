@@ -1,7 +1,7 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.feign.UserServiceClient;
 import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.model.event.MentorshipAcceptedEvent;
 import faang.school.notificationservice.service.MessageBuilder;

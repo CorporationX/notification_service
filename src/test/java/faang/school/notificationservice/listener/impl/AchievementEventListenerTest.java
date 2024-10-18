@@ -1,10 +1,10 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.listener.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.feign.UserServiceClient;
 import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.model.enums.PreferredContact;
-import faang.school.notificationservice.model.event.CommentEvent;
+import faang.school.notificationservice.model.event.AchievementEvent;
 import faang.school.notificationservice.service.MessageBuilder;
 import faang.school.notificationservice.service.impl.EmailService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,19 +14,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CommentEventListenerTest {
+class AchievementEventListenerTest {
 
     @Mock
     private ObjectMapper objectMapper;
@@ -35,37 +33,38 @@ class CommentEventListenerTest {
     private UserServiceClient userServiceClient;
 
     @Mock
+    private Message message;
+
+    @Mock
+    private MessageBuilder<AchievementEvent> messageBuilder;
+
+    @Mock
     private EmailService emailService;
 
-    @Mock
-    private MessageBuilder<CommentEvent> messageBuilder;
-
-    @Mock
-    private Message message;
+    private AchievementEventListener achievementEventListener;
 
     @BeforeEach
     void setUp() {
-        commentEventListener = new CommentEventListener(
-                objectMapper, List.of(emailService), userServiceClient, List.of(messageBuilder));
+        achievementEventListener = new AchievementEventListener(
+                objectMapper, userServiceClient, List.of(emailService), List.of(messageBuilder));
     }
 
-    private CommentEventListener commentEventListener;
-
     @Test
-    void testOnMessage() throws IOException {
-        CommentEvent commentEvent = new CommentEvent(1L, 2L, 3L, "someText", 4L);
+    void testOnMessage() throws Exception {
+        AchievementEvent event = new AchievementEvent(1L, 1L);
         UserDto userDto = new UserDto();
         userDto.setPreference(PreferredContact.EMAIL);
 
-        when(objectMapper.readValue(any(byte[].class), eq(CommentEvent.class))).thenReturn(commentEvent);
-        when(messageBuilder.buildMessage(commentEvent, Locale.ENGLISH)).thenReturn("Post was commented!");
-        when(messageBuilder.getSupportedClass()).thenReturn(CommentEvent.class);
+        when(objectMapper.readValue(any(byte[].class), eq(AchievementEvent.class))).thenReturn(event);
+        when(messageBuilder.buildMessage(event, Locale.ENGLISH)).thenReturn("Achievement received!");
+        when(messageBuilder.getSupportedClass()).thenReturn(AchievementEvent.class);
         when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
         when(emailService.getPreferredContact()).thenReturn(PreferredContact.EMAIL);
         when(message.getBody()).thenReturn(new byte[0]);
 
-        commentEventListener.onMessage(message, new byte[0]);
+        achievementEventListener.onMessage(message, null);
 
-        verify(emailService, times(1)).send(any(), eq("Post was commented!"));
+        verify(emailService).send(any(), eq("Achievement received!"));
+        verify(userServiceClient).getUser(1L);
     }
 }
