@@ -1,14 +1,14 @@
-package faang.school.notificationservice;
+package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.exception.EventProcessingException;
 import faang.school.notificationservice.feign.UserServiceClient;
-import faang.school.notificationservice.listener.UserFollowerEventListener;
+import faang.school.notificationservice.model.dto.GoalDto;
 import faang.school.notificationservice.model.dto.UserDto;
-import faang.school.notificationservice.model.event.UserFollowerEvent;
+import faang.school.notificationservice.model.event.GoalCompletedEvent;
 import faang.school.notificationservice.service.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import faang.school.notificationservice.service.impl.UserFollowerMessageBuilder;
+import faang.school.notificationservice.service.impl.GoalCompletedMessageBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UserFollowerEventListenerTest {
+public class GoalCompletedEventListenerTest {
 
     @Mock
     private ObjectMapper objectMapper;
@@ -50,40 +50,44 @@ public class UserFollowerEventListenerTest {
     @Mock
     private Message message;
 
-    private UserFollowerEventListener listener;
+    private GoalCompletedEventListener listener;
 
     @BeforeEach
     public void setUp() {
         List<NotificationService> notificationServices = Collections.singletonList(notificationService);
         List<MessageBuilder<?>> messageBuilders = Collections.singletonList(
-                new UserFollowerMessageBuilder(userServiceClient, messageSource));
+                new GoalCompletedMessageBuilder(userServiceClient, messageSource));
 
-        listener = new UserFollowerEventListener(objectMapper, userServiceClient,
+        listener = new GoalCompletedEventListener(objectMapper, userServiceClient,
                 notificationServices, messageBuilders);
     }
 
     @Test
-    @DisplayName("Should successfully process UserFollowerEvent and send notification")
+    @DisplayName("Should successfully process GoalCompletedEvent and send notification")
     public void testOnMessage_Success() throws Exception {
-        UserFollowerEvent event = new UserFollowerEvent();
-        event.setFollowerId(1L);
-        event.setFollowedUserId(3L);
+        GoalCompletedEvent event = new GoalCompletedEvent();
+        event.setUserId(1L);
+        event.setGoalId(1L);
 
         byte[] messageBody = objectMapper.writeValueAsBytes(event);
         when(message.getBody()).thenReturn(messageBody);
-        when(objectMapper.readValue(messageBody, UserFollowerEvent.class)).thenReturn(event);
+        when(objectMapper.readValue(messageBody, GoalCompletedEvent.class)).thenReturn(event);
 
-        UserDto followedUserDto = new UserDto();
-        followedUserDto.setId(3L);
-        followedUserDto.setUsername("Followed user");
+        UserDto receiverDto = new UserDto();
+        receiverDto.setId(1L);
+        receiverDto.setUsername("Receiver");
 
-        when(userServiceClient.getUser(3L)).thenReturn(followedUserDto);
-        when(userServiceClient.getUser(1L)).thenReturn(new UserDto());
-        when(messageSource.getMessage(eq("new.follower"), any(), eq(Locale.UK))).thenReturn("Notification message");
+        GoalDto goalDto = new GoalDto();
+        goalDto.setId(1L);
+        goalDto.setDescription("Some description");
+
+        when(userServiceClient.getUser(1L)).thenReturn(receiverDto);
+        when(userServiceClient.getGoal(1L)).thenReturn(goalDto);
+        when(messageSource.getMessage(eq("goal.completed"), any(), eq(Locale.UK))).thenReturn("Notification message");
 
         listener.onMessage(message, null);
 
-        verify(notificationService, times(1)).send(eq(followedUserDto), eq("Notification message"));
+        verify(notificationService, times(1)).send(eq(receiverDto), eq("Notification message"));
     }
 
     @Test
@@ -91,12 +95,12 @@ public class UserFollowerEventListenerTest {
     public void testOnMessage_EventProcessingException() throws Exception {
         byte[] messageBody = new byte[0];
         when(message.getBody()).thenReturn(messageBody);
-        when(objectMapper.readValue(messageBody, UserFollowerEvent.class))
+        when(objectMapper.readValue(messageBody, GoalCompletedEvent.class))
                 .thenThrow(new IOException("Error parsing"));
 
         Executable executable = () -> listener.onMessage(message, new byte[0]);
 
         EventProcessingException exception = assertThrows(EventProcessingException.class, executable);
-        assertEquals("Failed to process event of type UserFollowerEvent", exception.getMessage());
+        assertEquals("Failed to process event of type GoalCompletedEvent", exception.getMessage());
     }
 }

@@ -1,8 +1,7 @@
 package faang.school.notificationservice.service.impl;
 
-import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.feign.UserServiceClient;
 import faang.school.notificationservice.model.dto.UserDto;
-import faang.school.notificationservice.model.event.ProjectFollowerEvent;
 import faang.school.notificationservice.model.event.UserFollowerEvent;
 import faang.school.notificationservice.service.MessageBuilder;
 import lombok.RequiredArgsConstructor;
