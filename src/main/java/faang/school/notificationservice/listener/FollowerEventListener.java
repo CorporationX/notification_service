@@ -19,7 +19,7 @@ import java.util.Objects;
 
 @Component("followerEventListener")
 public class FollowerEventListener extends AbstractEventListener<FollowerEvent> {
-    private final static Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
     public FollowerEventListener(List<NotificationService> notificationServices,
                                  List<MessageBuilder<FollowerEvent>> messageBuilders,

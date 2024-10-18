@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.catalina.User;
 
 @Data
 @AllArgsConstructor
@@ -20,5 +21,13 @@ public class UserDto {
 
     public enum PreferredContact {
         EMAIL, SMS, TELEGRAM
+    }
+
+    public UserDto(long id, String username, String email, String phone, PreferredContact preference) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.phone = phone;
+        this.preference = preference;
     }
 }
