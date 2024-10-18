@@ -1,8 +1,10 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.LikePostEventListener;
 import faang.school.notificationservice.listener.goal.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.follower.FollowerMessageListener;
+import faang.school.notificationservice.listener.AchievementEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,11 +25,6 @@ public class RedisConfiguration {
     private final RedisProperties redisProperties;
 
     @Bean
-    JedisConnectionFactory jedisConnectionFactory() {
-        return new JedisConnectionFactory();
-    }
-
-    @Bean
     public RedisMessageListenerContainer redisContainer(List<Pair<MessageListenerAdapter, ChannelTopic>> requesters, JedisConnectionFactory jedisConnectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory);
@@ -39,13 +36,27 @@ public class RedisConfiguration {
     }
 
     @Bean
-    ChannelTopic goalCompletedEventTopic() {
-        return new ChannelTopic(redisProperties.getChannels().getGoalCompletedEvent());
+    public List<Pair<MessageListenerAdapter, ChannelTopic>> requesters(
+            MessageListenerAdapter followerMessageListener,
+            ChannelTopic followerTopic,
+            MessageListenerAdapter goalCompletedMessageListener,
+            ChannelTopic goalCompletedEventTopic,
+            MessageListenerAdapter likePostMessageListener,
+            ChannelTopic likePostTopic,
+            MessageListenerAdapter achievementEvent,
+            ChannelTopic achievementEventTopic)
+    {
+        return List.of(
+                Pair.of(followerMessageListener, followerTopic),
+                Pair.of(goalCompletedMessageListener, goalCompletedEventTopic),
+                Pair.of(likePostMessageListener, likePostTopic),
+                Pair.of(achievementEvent, achievementEventTopic)
+        );
     }
 
     @Bean
-    MessageListenerAdapter goalCompletedMessageListener(GoalCompletedEventListener goalCompletedEventListener) {
-        return new MessageListenerAdapter(goalCompletedEventListener);
+    ChannelTopic goalCompletedEventTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getGoalCompletedEvent());
     }
 
     @Bean
@@ -54,13 +65,23 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public MessageListenerAdapter followerMessageListener(FollowerMessageListener followerEventListener) {
-        return new MessageListenerAdapter(followerEventListener);
+    public ChannelTopic likePostTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getLikePostChannel());
     }
 
     @Bean
-    public ChannelTopic likePostTopic() {
-        return new ChannelTopic(redisProperties.getChannels().getLikePostChannel());
+    public ChannelTopic achievementEventTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getAchievementEvent());
+    }
+
+    @Bean
+    MessageListenerAdapter goalCompletedMessageListener(GoalCompletedEventListener goalCompletedEventListener) {
+        return new MessageListenerAdapter(goalCompletedEventListener);
+    }
+
+    @Bean
+    public MessageListenerAdapter followerMessageListener(FollowerMessageListener followerEventListener) {
+        return new MessageListenerAdapter(followerEventListener);
     }
 
     @Bean
@@ -69,18 +90,12 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public List<Pair<MessageListenerAdapter, ChannelTopic>> requesters(
-            MessageListenerAdapter followerMessageListener,
-            ChannelTopic followerTopic,
-            MessageListenerAdapter goalCompletedMessageListener,
-            ChannelTopic goalCompletedEventTopic,
-            MessageListenerAdapter likePostMessageListener,
-            ChannelTopic likePostTopic)
-    {
-        return List.of(
-                Pair.of(followerMessageListener, followerTopic),
-                Pair.of(goalCompletedMessageListener, goalCompletedEventTopic),
-                Pair.of(likePostMessageListener, likePostTopic)
-        );
+    public MessageListenerAdapter achievementEvent(AchievementEventListener achievementEventListener) {
+        return new MessageListenerAdapter(achievementEventListener);
+    }
+
+    @Bean
+    JedisConnectionFactory jedisConnectionFactory() {
+        return new JedisConnectionFactory();
     }
 }
