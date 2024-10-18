@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.feign.UserServiceClient;
 import faang.school.notificationservice.model.dto.UserDto;
-import faang.school.notificationservice.model.event.ProfileViewEvent;
+import faang.school.notificationservice.model.event.UserFollowerEvent;
 import faang.school.notificationservice.service.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,25 +16,24 @@ import java.util.Locale;
 
 @Slf4j
 @Component
-public class ProfileViewEventListener extends AbstractEventListener<ProfileViewEvent> implements MessageListener {
+public class UserFollowerEventListener extends AbstractEventListener<UserFollowerEvent> implements MessageListener {
 
     private final UserServiceClient userServiceClient;
-    public ProfileViewEventListener(ObjectMapper objectMapper,
-                                        UserServiceClient userServiceClient,
-                                        List<NotificationService> notificationServices,
-                                        List<MessageBuilder<?>> messageBuilders) {
+    public UserFollowerEventListener(ObjectMapper objectMapper,
+                                     UserServiceClient userServiceClient,
+                                     List<NotificationService> notificationServices,
+                                     List<MessageBuilder<?>> messageBuilders) {
         super(objectMapper, notificationServices, messageBuilders);
         this.userServiceClient = userServiceClient;
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        handleEvent(message, ProfileViewEvent.class, event -> {
-            UserDto profileOwnerDto = userServiceClient.getUser(event.getProfileOwnerId());
+        handleEvent(message, UserFollowerEvent.class, event -> {
+            UserDto followedUserDto = userServiceClient.getUser(event.getFollowedUserId());
             String notificationMessage = buildMessage(event, Locale.UK);
-            sendNotification(profileOwnerDto, notificationMessage);
-            log.info("Notification was sent, profileOwnerId: {}, notificationMessage: {}",
-                    profileOwnerDto.getId(), notificationMessage);
+            sendNotification(followedUserDto, notificationMessage);
+            log.info("Notification was sent, postAuthorId: {}, notificationMessage: {}", followedUserDto.getId(), notificationMessage);
         });
     }
 }

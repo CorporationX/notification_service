@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.feign.UserServiceClient;
 import faang.school.notificationservice.model.dto.UserDto;
-import faang.school.notificationservice.model.event.ProfileViewEvent;
+import faang.school.notificationservice.model.event.GoalCompletedEvent;
 import faang.school.notificationservice.service.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +14,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Locale;
 
-@Slf4j
 @Component
-public class ProfileViewEventListener extends AbstractEventListener<ProfileViewEvent> implements MessageListener {
+@Slf4j
+public class GoalCompletedEventListener extends AbstractEventListener<GoalCompletedEvent> implements MessageListener {
 
     private final UserServiceClient userServiceClient;
-    public ProfileViewEventListener(ObjectMapper objectMapper,
+    public GoalCompletedEventListener(ObjectMapper objectMapper,
                                         UserServiceClient userServiceClient,
                                         List<NotificationService> notificationServices,
                                         List<MessageBuilder<?>> messageBuilders) {
@@ -29,12 +29,11 @@ public class ProfileViewEventListener extends AbstractEventListener<ProfileViewE
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        handleEvent(message, ProfileViewEvent.class, event -> {
-            UserDto profileOwnerDto = userServiceClient.getUser(event.getProfileOwnerId());
+        handleEvent(message, GoalCompletedEvent.class, event -> {
+            UserDto userDto = userServiceClient.getUser(event.getUserId());
             String notificationMessage = buildMessage(event, Locale.UK);
-            sendNotification(profileOwnerDto, notificationMessage);
-            log.info("Notification was sent, profileOwnerId: {}, notificationMessage: {}",
-                    profileOwnerDto.getId(), notificationMessage);
+            sendNotification(userDto, notificationMessage);
+            log.info("Notification was sent, receiverId: {}, notificationMessage: {}", userDto.getId(), notificationMessage);
         });
     }
 }
