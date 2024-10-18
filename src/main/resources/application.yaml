@@ -6,6 +6,8 @@ spring:
       channels:
         follower:
           name: follower_channel
+        like:
+          name: like_channel
         achievement:
           name: achievement_channel
 

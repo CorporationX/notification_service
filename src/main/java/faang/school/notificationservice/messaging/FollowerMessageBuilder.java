@@ -1,7 +1,7 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.event.FollowerEvent;
+import faang.school.notificationservice.dto.event.FollowerEvent;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 

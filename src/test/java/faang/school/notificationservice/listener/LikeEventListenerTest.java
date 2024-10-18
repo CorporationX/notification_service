@@ -3,9 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.dto.event.FollowerEvent;
-import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.dto.event.LikeEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
-import java.util.List;
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -29,7 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FollowerEventListenerTest {
+class LikeEventListenerTest {
 
     @Mock
     private ObjectMapper objectMapper;
@@ -38,14 +36,8 @@ class FollowerEventListenerTest {
     private UserServiceClient userServiceClient;
 
     @Spy
-    private List<NotificationService> notificationServices;
-
-    @Spy
-    private List<MessageBuilder<FollowerEvent>> messageBuilders;
-
-    @Spy
     @InjectMocks
-    private FollowerEventListener followerEventListener;
+    private LikeEventListener likeEventListener;
 
     private byte[] messageValue;
     private Message message;
@@ -61,34 +53,39 @@ class FollowerEventListenerTest {
     @Test
     void onMessage_ShouldProcessMessageAndSendNotification() throws IOException {
         String notificationMessage = "Notification message";
-        long followeeId = 1L;
-        FollowerEvent event = new FollowerEvent();
-        event.setFolloweeId(followeeId);
-        UserDto followee = new UserDto();
-        followee.setId(followeeId);
+        long authorId = 2L;
+        Long authorLikeId = 1L;
+        LikeEvent event = LikeEvent.builder()
+                .authorLikeId(authorId)
+                .authorPostId(authorLikeId)
+                .createdAt(LocalDateTime.now())
+                .build();
 
-        when(objectMapper.readValue(messageValue, FollowerEvent.class)).thenReturn(event);
-        when(userServiceClient.getUser(followeeId)).thenReturn(followee);
-        doReturn(notificationMessage).when(followerEventListener).getMessage(followee, event);
-        doNothing().when(followerEventListener).sendNotification(followee, notificationMessage);
+        UserDto authorDto = new UserDto();
+        authorDto.setId(authorId);
 
-        followerEventListener.onMessage(message, null);
+        when(objectMapper.readValue(messageValue, LikeEvent.class)).thenReturn(event);
+        when(userServiceClient.getUser(authorId)).thenReturn(authorDto);
+        doReturn(notificationMessage).when(likeEventListener).getMessage(authorDto, event);
+        doNothing().when(likeEventListener).sendNotification(authorDto, notificationMessage);
 
-        verify(objectMapper).readValue(messageValue, FollowerEvent.class);
-        verify(userServiceClient).getUser(followeeId);
-        verify(followerEventListener).sendNotification(followee, notificationMessage);
+        likeEventListener.onMessage(message, null);
+
+        verify(objectMapper).readValue(messageValue, LikeEvent.class);
+        verify(userServiceClient).getUser(authorId);
+        verify(likeEventListener).sendNotification(authorDto, notificationMessage);
     }
 
     @Test
     void onMessage_ShouldLogErrorWhenMessageCannotBeDeserialized() throws IOException {
-        when(objectMapper.readValue(messageValue, FollowerEvent.class))
+        when(objectMapper.readValue(messageValue, LikeEvent.class))
                 .thenThrow(new IOException("Deserialization error"));
 
-        followerEventListener.onMessage(message, null);
+        likeEventListener.onMessage(message, null);
 
-        verify(objectMapper).readValue(messageValue, FollowerEvent.class);
+        verify(objectMapper).readValue(messageValue, LikeEvent.class);
         verify(userServiceClient, never()).getUser(anyLong());
-        verify(followerEventListener, never()).getMessage(any(UserDto.class), any(FollowerEvent.class));
-        verify(followerEventListener, never()).sendNotification(any(UserDto.class), anyString());
+        verify(likeEventListener, never()).getMessage(any(UserDto.class), any(LikeEvent.class));
+        verify(likeEventListener, never()).sendNotification(any(UserDto.class), anyString());
     }
 }
