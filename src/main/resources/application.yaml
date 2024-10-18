@@ -1,6 +1,6 @@
 spring:
   config:
-    import: "classpath:telegram-bot.yaml"
+    import: "classpath:application-telegram.yaml"
   data:
     redis:
       port: 6379

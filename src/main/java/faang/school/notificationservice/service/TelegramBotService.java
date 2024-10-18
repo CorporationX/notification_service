@@ -16,7 +16,7 @@ public class TelegramBotService implements NotificationService {
 
     @Override
     public void send(UserDto user, String message) {
-        validation(user, message);
+        validationPlatform(user, message);
 
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(String.valueOf(user.getTelegramId()))
@@ -35,7 +35,7 @@ public class TelegramBotService implements NotificationService {
         return UserDto.PreferredContact.TELEGRAM;
     }
 
-    private void validation(UserDto user, String message) {
+    private void validationPlatform(UserDto user, String message) {
         if (user.getPreference() != UserDto.PreferredContact.TELEGRAM || user.getTelegramId() == null) {
             log.error("It is not possible to send a notification via Telegram to the user {} {}", user.getId(), user.getUsername());
             throw new IllegalArgumentException("Invalid user data for sending a Telegram message.");
