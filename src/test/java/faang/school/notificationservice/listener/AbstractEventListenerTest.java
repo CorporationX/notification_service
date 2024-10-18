@@ -95,7 +95,7 @@ class AbstractEventListenerTest {
         String correctMessage = "Notification service not found for user " + userId;
         UserDto userDto = UserDto.builder()
                 .id(userId)
-                .preferredContact(UserDto.PreferredContact.SMS)
+                .preferredContact(UserDto.PreferredContact.PHONE)
                 .build();
         ReflectionTestUtils.setField(eventListener, "notificationServices", Collections.emptyList());
 
