@@ -16,9 +16,13 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
+      channels:
+        comment-channel:
+          name: comment_channel
+        follower-channel:
+          name: follower_channel
+        achievement-channel:
+          name: achievement_channel
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
@@ -66,3 +70,14 @@ telegram-bot:
   botName: JavaNotificationCorporationXBot
   token: 7834249482:AAEueK040HQyxDFdO-SE7pVyPyfyFcze4xk
   welcomeMessage: You have subscribed to notifications of CorporationX
+task-executor:
+  core-pool-size: 10
+  max-pool-size: 20
+  queue-capacity: 100
+  thread-name-prefix: "notificationExecutor - "
+
+retry:
+  retryer:
+    period: 100
+    duration: 5 #In seconds
+    max-attempts: 3
