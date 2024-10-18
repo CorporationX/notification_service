@@ -64,6 +64,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
             consumer.accept(event);
             log.info("handleEvent() - finish, event - {} ", event);
         } catch (IOException e) {
+            log.error("Failed to handle event: {}", type, e);
             throw new RuntimeException(e);
         }
     }
