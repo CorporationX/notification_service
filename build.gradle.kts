@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.com.fasterxml.jackson.core.JsonPointer.compile
+
 plugins {
     java
     id("org.springframework.boot") version "3.0.6"
@@ -25,6 +27,10 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     implementation("org.springframework.retry:spring-retry")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    /**
+     * Sms service
+     */
+    compile("com.vonage:client:[6.1.0,7.0.0)")
 
     /**
      * Database
