@@ -1,7 +1,7 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.dto.event.FollowerEvent;
+import faang.school.notificationservice.dto.event.LikeEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,20 +17,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class FollowerMessageBuilderTest {
+public class LikeMessageBuilderTest {
 
     @Mock
     private MessageSource messageSource;
 
     @InjectMocks
-    private FollowerMessageBuilder followerMessageBuilder;
+    private LikeMessageBuilder likeMessageBuilder;
 
     private final String username = "testUser";
     private final Locale locale = Locale.ENGLISH;
     private final LocalDateTime eventTime = LocalDateTime.of(2024, 10, 13, 15, 30);
 
     private UserDto user;
-    private FollowerEvent event;
+    private LikeEvent event;
 
     @BeforeEach
     public void setUp() {
@@ -38,24 +38,23 @@ public class FollowerMessageBuilderTest {
         user.setUsername(username);
         user.setLocale(locale);
 
-        event = new FollowerEvent();
-        event.setEventTime(eventTime);
+        event = LikeEvent.builder().createdAt(eventTime).build();
     }
 
     @Test
     public void testBuildMessage() {
-        String textAddress = "follower.new";
+        String textAddress = "post.like";
         Object[] args = {username, eventTime.toLocalTime()};
-        String correctResult = "User testUser followed you at 15:30";
+        String correctResult = String.format("User %s liked your post at 16:30", username);
         when(messageSource.getMessage(textAddress, args, locale)).thenReturn(correctResult);
 
-        String result = followerMessageBuilder.buildMessage(user, event);
+        String result = likeMessageBuilder.buildMessage(user, event);
 
         assertEquals(correctResult, result);
     }
 
     @Test
     public void testGetInstance() {
-        assertEquals(FollowerEvent.class, followerMessageBuilder.getInstance());
+        assertEquals(LikeEvent.class, likeMessageBuilder.getInstance());
     }
 }

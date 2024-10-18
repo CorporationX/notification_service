@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.dto.event.FollowerEvent;
+import faang.school.notificationservice.dto.event.LikeEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,26 +15,27 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class FollowerEventListener extends AbstractEventListener<FollowerEvent> {
+public class LikeEventListener extends AbstractEventListener<LikeEvent> {
 
-    public FollowerEventListener(ObjectMapper objectMapper,
-                                 UserServiceClient userServiceClient,
-                                 List<NotificationService> notificationServices,
-                                 List<MessageBuilder<FollowerEvent>> messageBuilders) {
+    public LikeEventListener(ObjectMapper objectMapper,
+                             UserServiceClient userServiceClient,
+                             List<NotificationService> notificationServices,
+                             List<MessageBuilder<LikeEvent>> messageBuilders) {
         super(objectMapper, userServiceClient, notificationServices, messageBuilders);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            log.info("Follower listener received a message");
-            FollowerEvent event = objectMapper.readValue(message.getBody(), FollowerEvent.class);
-            UserDto user = userServiceClient.getUser(event.getFolloweeId());
+            log.info("LikeEventListener listens for messages");
+            LikeEvent event = objectMapper.readValue(message.getBody(), LikeEvent.class);
+            UserDto user = userServiceClient.getUser(event.getAuthorLikeId());
             String text = getMessage(user, event);
             sendNotification(user, text);
-            log.info("Follower listener sent a message to user {}", event.getFolloweeId());
+            log.info("LikeEventListener sent a message. Author like id: {}, post id: {}",
+                    event.getAuthorLikeId(), event.getAuthorPostId());
         } catch (IOException exception) {
-            log.info("Failed to deserialize follower event", exception);
+            log.info("Failed to deserialize like event", exception);
         }
     }
 }
