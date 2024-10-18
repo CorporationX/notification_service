@@ -3,7 +3,7 @@ package faang.school.notificationservice.builder;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.messaging.FollowerEventMessageBuilder;
-import faang.school.notificationservice.model.event.FollowerEventDto;
+import faang.school.notificationservice.model.event.FollowerEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,7 +37,7 @@ public class FollowerEventMessageBuilderTest {
                 .username("pups")
                 .build();
         when(serviceClient.getUser(anyLong())).thenReturn(user);
-        FollowerEventDto event = FollowerEventDto.builder().build();
+        FollowerEvent event = FollowerEvent.builder().build();
 
         when(messageSource.getMessage(anyString(), any(), any())).thenReturn("hello there");
 

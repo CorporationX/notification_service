@@ -1,7 +1,6 @@
 package faang.school.notificationservice.builder;
 
-import faang.school.notificationservice.event.LikeEvent;
-import faang.school.notificationservice.messaging.EventStartMessageBuilder;
+import faang.school.notificationservice.model.event.LikeEvent;
 import faang.school.notificationservice.messaging.LikeMessageBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +14,6 @@ import org.springframework.context.MessageSource;
 
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 
 class LikeMessageBuilderTest {

@@ -19,6 +19,7 @@ spring:
         recommendation-request-channel: recommendation_req_channel
         like: like_channel
         mentorship-accepted-event-channel: mentorship_accepted_event_channel
+        skill-offered: skill_offered_channel
 
   mail:
     host: smtp.gmail.com

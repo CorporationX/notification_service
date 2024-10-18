@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.messaging.FollowerEventMessageBuilder;
-import faang.school.notificationservice.model.event.FollowerEventDto;
+import faang.school.notificationservice.model.event.FollowerEvent;
 import faang.school.notificationservice.service.telegram.TelegramService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ public class FollowerEventListenerTest {
     @InjectMocks
     private FollowerEventListener eventListener;
 
-    private FollowerEventDto event;
+    private FollowerEvent event;
     private UserDto user;
     private Locale locale = Locale.getDefault();
     private String jsonProjectFollowerEvent;
@@ -55,7 +55,7 @@ public class FollowerEventListenerTest {
         user = UserDto.builder().id(1L).preference(UserDto.PreferredContact.TELEGRAM).build();
         eventListener = new FollowerEventListener(objectMapper, userServiceClient, messageBuilder, List.of(telegramService));
 
-        event = FollowerEventDto.builder()
+        event = FollowerEvent.builder()
                 .followerId(1L)
                 .followeeId(2L)
                 .subscribedAt(null)
@@ -65,14 +65,14 @@ public class FollowerEventListenerTest {
     @Test
     void testOnMessageOk() throws IOException {
         when(message.getBody()).thenReturn(jsonProjectFollowerEvent.getBytes());
-        when(objectMapper.readValue(jsonProjectFollowerEvent.getBytes(), FollowerEventDto.class)).thenReturn(event);
+        when(objectMapper.readValue(jsonProjectFollowerEvent.getBytes(), FollowerEvent.class)).thenReturn(event);
         when(messageBuilder.buildMessage(event, locale)).thenReturn("babushka");
         when(userServiceClient.getUser(anyLong())).thenReturn(user);
         when(telegramService.getPreferredContact()).thenReturn(UserDto.PreferredContact.TELEGRAM);
 
         eventListener.onMessage(message, new byte[0]);
 
-        verify(objectMapper).readValue(message.getBody(), FollowerEventDto.class);
+        verify(objectMapper).readValue(message.getBody(), FollowerEvent.class);
         verify(messageBuilder).buildMessage(any(), any());
         verify(userServiceClient).getUser(anyLong());
     }
