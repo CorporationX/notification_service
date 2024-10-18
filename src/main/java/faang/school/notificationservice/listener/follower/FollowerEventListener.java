@@ -16,12 +16,12 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class FollowerMessageListener extends AbstractEventListener<FollowerEvent> {
+public class FollowerEventListener extends AbstractEventListener<FollowerEvent> {
 
-    public FollowerMessageListener(ObjectMapper objectMapper,
-                                   UserServiceClient userServiceClient,
-                                   Map<Class<?>, MessageBuilder<?>> messageBuilders,
-                                   Map<UserDto.PreferredContact, NotificationService> notificationServices) {
+    public FollowerEventListener(ObjectMapper objectMapper,
+                                 UserServiceClient userServiceClient,
+                                 Map<Class<?>, MessageBuilder<?>> messageBuilders,
+                                 Map<UserDto.PreferredContact, NotificationService> notificationServices) {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
