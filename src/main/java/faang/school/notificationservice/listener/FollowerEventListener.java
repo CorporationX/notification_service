@@ -17,8 +17,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Objects;
 
-@Component
-@Slf4j
+@Component("followerEventListener")
 public class FollowerEventListener extends AbstractEventListener<FollowerEvent> {
     private final static Locale DEFAULT_LOCALE = Locale.ENGLISH;
 

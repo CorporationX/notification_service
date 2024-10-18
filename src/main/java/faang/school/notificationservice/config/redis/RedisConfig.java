@@ -23,9 +23,6 @@ public class RedisConfig {
     @Value("${spring.data.redis.channels.follower-channel.name}")
     private String followerEventListenerTopicName;
 
-    @Autowired
-    private FollowerEventListener followerEventListener;
-
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         return new JedisConnectionFactory();
@@ -48,7 +45,9 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter followerEventListenerAdapter() {
+    public MessageListenerAdapter followerEventListenerAdapter(
+            @Qualifier("followerEventListener") MessageListener followerEventListener
+    ) {
         return new MessageListenerAdapter(followerEventListener);
     }
 
