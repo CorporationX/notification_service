@@ -4,7 +4,8 @@ spring:
       port: 6379
       host: localhost
       channel:
-        follower: follower_channel
+        follower_event_channel:
+          name: follower_event_channel
         achievement: achievement_channel
         comment_event: comment_event_channel
 
