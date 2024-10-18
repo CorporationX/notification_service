@@ -10,5 +10,6 @@ import java.time.LocalDateTime;
 public class LikeEvent {
     private Long authorLikeId;
     private Long authorPostId;
+    private Long postId;
     private LocalDateTime createdAt;
 }
