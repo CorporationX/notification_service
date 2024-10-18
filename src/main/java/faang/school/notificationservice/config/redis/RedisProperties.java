@@ -19,5 +19,6 @@ public class RedisProperties {
         private String follower;
         private String achievementEvent;
         private String goalCompletedEvent;
+        private String likePostChannel;
     }
 }
