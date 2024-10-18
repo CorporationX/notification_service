@@ -21,10 +21,11 @@ spring:
         mentorship-accepted-event-channel: mentorship_accepted_event_channel
 
   mail:
+
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: test@test.com #https://www.baeldung.com/spring-email
+    password: your password #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
         smtp:
