@@ -20,7 +20,7 @@ public class RedisConfig {
     @Value("${spring.data.redis.channels.comment-channel.name}")
     private String commentChannel;
 
-    @Value("${spring.data.redis.channel.follower}")
+    @Value("${spring.data.redis.channels.follower-channel.name}")
     private String followerEventListenerTopicName;
 
     @Autowired
