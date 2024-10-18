@@ -57,6 +57,7 @@ redis:
     comment_channel: comment_channel
     achievement: achievement_channel
     skill-acquired: skill_acquired_channel
+    mentorship-offered: mentorship_offered_channel
 
 telegram:
   bot:
