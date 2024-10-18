@@ -2,6 +2,7 @@ package faang.school.notificationservice.listener.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.feign.UserServiceClient;
+import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.model.enums.PreferredContact;
 import faang.school.notificationservice.model.event.AchievementEvent;

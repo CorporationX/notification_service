@@ -1,12 +1,13 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.AchievementEventListener;
+import faang.school.notificationservice.listener.CommentEventListener;
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.LikePostEventListener;
+import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import faang.school.notificationservice.listener.MentorshipOfferedEventListener;
 import faang.school.notificationservice.listener.ProjectFollowerEventListener;
 import faang.school.notificationservice.listener.UserFollowerEventListener;
-import faang.school.notificationservice.listener.impl.AchievementEventListener;
-import faang.school.notificationservice.listener.impl.LikePostEventListener;
-import faang.school.notificationservice.listener.impl.ProjectFollowerEventListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -104,10 +105,9 @@ public class RedisConfig {
             GoalCompletedEventListener goalCompletedEventListener,
             UserFollowerEventListener userFollowerEventListener,
             LikePostEventListener likePostEventListener,
-            MentorshipAcceptedEventListener mentorshipAcceptedEventListener,
             CommentEventListener commentEventListener,
-            AchievementEventListener achievementEventListener) {
-            UserFollowerEventListener userFollowerEventListener,
+            AchievementEventListener achievementEventListener,
+            MentorshipAcceptedEventListener mentorshipAcceptedEventListener,
             MentorshipOfferedEventListener mentorshipOfferedEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory);
@@ -139,26 +139,26 @@ public class RedisConfig {
 
     @Bean
     public MessageListenerAdapter userFollowerEventListenerAdapter(UserFollowerEventListener userFollowerEventListener) {
-        return new MessageListenerAdapter(userFollowerEventListener, "onMessage");
+        return new MessageListenerAdapter(userFollowerEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean
     public MessageListenerAdapter goalCompletedEventListenerAdapter(GoalCompletedEventListener goalCompletedEventListener) {
-        return new MessageListenerAdapter(goalCompletedEventListener, "onMessage");
+        return new MessageListenerAdapter(goalCompletedEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean
     public MessageListenerAdapter mentorshipAcceptedEventListenerAdapter(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
-        return new MessageListenerAdapter(mentorshipAcceptedEventListener, "onMessage");
+        return new MessageListenerAdapter(mentorshipAcceptedEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean
     public MessageListenerAdapter commentEventListenerAdapter(CommentEventListener commentEventListener) {
-        return new MessageListenerAdapter(commentEventListener, "onMessage");
+        return new MessageListenerAdapter(commentEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean
     public MessageListenerAdapter mentorshipOfferedEventListenerAdapter(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
-        return new MessageListenerAdapter(mentorshipOfferedEventListener, "onMessage");
+        return new MessageListenerAdapter(mentorshipOfferedEventListener, DEFAULT_LISTENER_METHOD);
     }
 }
