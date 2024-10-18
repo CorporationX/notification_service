@@ -1,6 +1,6 @@
 package faang.school.notificationservice.bot;
 
-import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.feign.UserServiceClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -4,9 +4,9 @@ import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import faang.school.notificationservice.listener.UserFollowerEventListener;
-import faang.school.notificationservice.listener.impl.AchievementEventListener;
-import faang.school.notificationservice.listener.impl.LikePostEventListener;
-import faang.school.notificationservice.listener.impl.ProjectFollowerEventListener;
+import faang.school.notificationservice.listener.AchievementEventListener;
+import faang.school.notificationservice.listener.LikePostEventListener;
+import faang.school.notificationservice.listener.ProjectFollowerEventListener;
 import faang.school.notificationservice.listener.SkillAcquiredEventListener;
 
 import lombok.extern.slf4j.Slf4j;
@@ -140,26 +140,26 @@ public class RedisConfig {
 
     @Bean
     public MessageListenerAdapter userFollowerEventListenerAdapter(UserFollowerEventListener userFollowerEventListener) {
-        return new MessageListenerAdapter(userFollowerEventListener, "onMessage");
+        return new MessageListenerAdapter(userFollowerEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean
     public MessageListenerAdapter goalCompletedEventListenerAdapter(GoalCompletedEventListener goalCompletedEventListener) {
-        return new MessageListenerAdapter(goalCompletedEventListener, "onMessage");
+        return new MessageListenerAdapter(goalCompletedEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean
     public MessageListenerAdapter mentorshipAcceptedEventListenerAdapter(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
-        return new MessageListenerAdapter(mentorshipAcceptedEventListener, "onMessage");
+        return new MessageListenerAdapter(mentorshipAcceptedEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean
     public MessageListenerAdapter commentEventListenerAdapter(CommentEventListener commentEventListener) {
-        return new MessageListenerAdapter(commentEventListener, "onMessage");
+        return new MessageListenerAdapter(commentEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean
     public MessageListenerAdapter skillAcquiredEventListenerAdapter(SkillAcquiredEventListener skillAcquiredEventListener) {
-        return new MessageListenerAdapter(skillAcquiredEventListener, "onMessage");
+        return new MessageListenerAdapter(skillAcquiredEventListener, DEFAULT_LISTENER_METHOD);
     }
 }

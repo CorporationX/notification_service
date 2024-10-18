@@ -1,7 +1,7 @@
 package faang.school.notificationservice;
 
 import faang.school.notificationservice.bot.TelegramBot;
-import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.feign.UserServiceClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
