@@ -6,7 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-        event: event_start
+        event-start: event_start
 
   mail:
     host: smtp.gmail.com
@@ -32,6 +32,10 @@ server:
 logging:
   level:
     root: info
+    org:
+      springframework:
+        boot:
+          autoconfigure: DEBUG
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms

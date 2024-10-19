@@ -22,7 +22,7 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
-    @Value("${spring.data.redis.channel.event}")
+    @Value("${spring.data.redis.channel.event-start}")
     private String eventStartTopic;
 
     @Bean

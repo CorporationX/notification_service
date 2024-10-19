@@ -18,11 +18,7 @@ public class EventStartEvent {
     @NotNull
     Long userId;
     @NotNull
-    Long eventId;
-    @NotNull
     List<Long> participantIds;
-    @NotNull
-    String title;
     @NotNull
     LocalDateTime startDateTime;
 }

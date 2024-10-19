@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,6 +22,7 @@ import java.util.Locale;
 public class EventStartEventListener extends AbstractEventListener<EventStartEvent>implements MessageListener {
 
     private final UserServiceClient userServiceClient;
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     public EventStartEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
                                    List<MessageBuilder<?>> messageBuilders,
