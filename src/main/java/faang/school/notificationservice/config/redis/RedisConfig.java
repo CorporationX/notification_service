@@ -1,32 +1,53 @@
-package faang.school.notificationservice.config.redis;
-
-import faang.school.notificationservice.listener.LikeEventListener;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
-    @Value("${spring.data.redis.host}")
-    private String redisHost;
 
-    @Value("${spring.data.redis.port}")
-    private int redisPort;
+    private final RedisProperties redisProperties;
 
-    @Value("${spring.data.redis.channel.like}")
-    private String likeChannelName;
+    private final String methodName = "onMessage";
+
+    @Bean
+    public ChannelTopic commentChannel() {
+        return new ChannelTopic(redisProperties.getChannel().getComment());
+    }
+
+    @Bean
+    ChannelTopic likeTopic() {
+        return new ChannelTopic(redisProperties.getChannel().getLike());
+    }
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
-        return new JedisConnectionFactory(redisConfig);
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(redisProperties.getHost());
+        redisStandaloneConfiguration.setPort(redisProperties.getPort());
+        return new JedisConnectionFactory(redisStandaloneConfiguration);
+    }
+
+    @Bean
+    public MessageListenerAdapter commentListener(CommentEventListener commentEventListener) {
+        return new MessageListenerAdapter(commentEventListener, methodName);
+    }
+
+    @Bean
+    MessageListenerAdapter likeListenerAdapter(LikeEventListener likeEventListener) {
+        return new MessageListenerAdapter(likeEventListener);
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisMessageListenerContainer(CommentEventListener commentEventListener) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(jedisConnectionFactory());
+        container.addMessageListener(commentEventListener, commentChannel());
+        return container;
     }
 
     @Bean
@@ -39,23 +60,5 @@ public class RedisConfig {
         template.setHashValueSerializer(new StringRedisSerializer());
         template.afterPropertiesSet();
         return template;
-    }
-
-    @Bean
-    MessageListenerAdapter likeListenerAdapter(LikeEventListener likeEventListener) {
-        return new MessageListenerAdapter(likeEventListener);
-    }
-
-    @Bean
-    ChannelTopic likeTopic() {
-        return new ChannelTopic(likeChannelName);
-    }
-
-    @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter likeListenerAdapter) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(likeListenerAdapter, likeTopic());
-        return container;
     }
 }
