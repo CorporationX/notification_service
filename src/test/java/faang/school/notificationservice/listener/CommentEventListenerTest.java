@@ -51,6 +51,7 @@ public class CommentEventListenerTest {
     private CommentEventListener commentEventListener;
 
     private Message message;
+
     private CommentEvent commentEvent;
 
     private MessageBuilder<CommentEvent> messageBuilder;
