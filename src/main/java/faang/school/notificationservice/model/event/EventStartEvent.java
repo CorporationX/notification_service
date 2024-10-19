@@ -15,10 +15,6 @@ import java.util.List;
 @Builder
 public class EventStartEvent {
 
-    @NotNull
-    Long userId;
-    @NotNull
+    Long eventId;
     List<Long> participantIds;
-    @NotNull
-    LocalDateTime startDateTime;
 }

@@ -30,10 +30,10 @@ public class EventStartMessageBuilder implements MessageBuilder<EventStartEvent>
 
     @Override
     public String buildMessage(EventStartEvent event, Locale locale) {
-        LocalDateTime eventStartDateTime = event.getStartDateTime();
-        String formattedDateTime = eventStartDateTime.format(formatter);
+//        LocalDateTime eventStartDateTime = event.getStartDateTime();
+//        String formattedDateTime = eventStartDateTime.format(formatter);
         return messageSource.getMessage("event.start.new",
-                new Object[]{eventStartDateTime},
+                new Object[]{"eventStartDateTime"},
                 locale);
     }
 }
