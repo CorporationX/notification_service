@@ -5,45 +5,71 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Component
-@RequiredArgsConstructor
 public abstract class AbstractEventListener<T> implements MessageListener {
 
-    protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
-    protected final MessageBuilder<T> messageBuilder;
-    protected final Map<UserDto.PreferredContact, NotificationService> notificationServices;
+    protected final ObjectMapper objectMapper;
+    private final Map<UserDto.PreferredContact, NotificationService> notificationServices;
+    private final Map<Class<?>, MessageBuilder<T>> messageBuilders;
+
+    @Autowired
+    public AbstractEventListener(List<NotificationService> notificationServices,
+                                 List<MessageBuilder<T>> messageBuilders,
+                                 UserServiceClient userServiceClient,
+                                 ObjectMapper objectMapper) {
+        this.notificationServices = notificationServices
+                .stream()
+                .collect(Collectors.toMap(NotificationService::getPreferredContact,
+                        notificationService -> notificationService));
+        this.messageBuilders = messageBuilders
+                .stream()
+                .collect(Collectors.toMap(MessageBuilder::getInstance, messageBuilder -> messageBuilder));
+        this.userServiceClient = userServiceClient;
+        this.objectMapper = objectMapper;
+    }
+
+    protected T handleEvent(Message message, Class<T> eventType) {
+        try {
+            return objectMapper.readValue(message.getBody(), eventType);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+    }
 
     protected String getMessage(T event, Locale locale) {
+        MessageBuilder<T> messageBuilder = messageBuilders.get(event.getClass());
+        if (messageBuilder == null) {
+            log.error("No message builder found for event {}", event.getClass().getName());
+            throw new IllegalArgumentException("No such message builder found " + event.getClass().getName());
+        }
         return messageBuilder.buildMessage(event, locale);
     }
 
+    @Async("taskExecutor")
     protected void sendNotification(Long id, String message) {
-        UserDto user = userServiceClient.getUser(id);
-        NotificationService notificationService = notificationServices.get(user.getPreference());
+        UserDto userDto = userServiceClient.getUser(id);
+        NotificationService notificationService = notificationServices.get(userDto.getPreference());
         if (notificationService == null) {
-            throw new IllegalArgumentException(String.format("No notification service found " +
-                    "for the user's %s communication method.", user.getPreference()));
+            log.error("Not found notification service for user {} with preferred contact {}",
+                    id, userDto.getPreference());
+            throw new IllegalArgumentException("No such notification service found " + userDto.getPreference());
         }
-        notificationService.send(user, message);
-    }
-
-    protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
-        try {
-            T event = objectMapper.readValue(message.getBody(), type);
-            consumer.accept(event);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        notificationService.send(userDto, message);
     }
 }

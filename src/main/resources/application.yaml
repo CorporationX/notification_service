@@ -1,15 +1,33 @@
 spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   data:
     redis:
       port: 6379
       host: localhost
-      channel:
+      channels:
+        comment-channel:
+          name: comment_channel
         follower-channel:
           name: follower_channel
         achievement-channel:
           name: achievement_channel
         like-channel:
           name: like_channel
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
   mail:
     host: smtp.gmail.com
@@ -38,13 +56,30 @@ logging:
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
+  sender-name: CorporationX
   api:
-    key: whatever
-    secret: whatever
+    key: 1728ba10
+    secret: T7vhMPVQcNZj9BEU
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
+
+telegram-bot:
+  botName: JavaNotificationCorporationXBot
+  token: 7834249482:AAEueK040HQyxDFdO-SE7pVyPyfyFcze4xk
+  welcomeMessage: You have subscribed to notifications of CorporationX
+task-executor:
+  core-pool-size: 10
+  max-pool-size: 20
+  queue-capacity: 100
+  thread-name-prefix: "notificationExecutor - "
+
+retry:
+  retryer:
+    period: 100
+    duration: 5 #In seconds
+    max-attempts: 3
