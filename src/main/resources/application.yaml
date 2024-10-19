@@ -23,6 +23,8 @@ spring:
           name: follower_channel
         achievement-channel:
           name: achievement_channel
+        like-channel:
+          name: like_channel
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
