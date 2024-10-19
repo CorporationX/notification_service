@@ -1,9 +1,9 @@
 package faang.school.notificationservice.config.redis;
 
-import faang.school.notificationservice.listener.like.LikePostEventListener;
+import faang.school.notificationservice.listener.comment.NewCommentEventListener;
 import faang.school.notificationservice.listener.follower.FollowerEventListener;
 import faang.school.notificationservice.listener.goal.GoalCompletedEventListener;
-import faang.school.notificationservice.listener.comment.NewCommentEventListener;
+import faang.school.notificationservice.listener.like.LikePostEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -12,9 +12,6 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.data.util.Pair;
-
-import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -29,19 +26,22 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(List<Pair<MessageListenerAdapter, ChannelTopic>> requesters,
-                                                        JedisConnectionFactory jedisConnectionFactory) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter goalCompletedMessageListener,
+                                                        MessageListenerAdapter newCommentMessageListener,
+                                                        MessageListenerAdapter followerMessageListener,
+                                                        MessageListenerAdapter likePostMessageListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(jedisConnectionFactory);
-        requesters.forEach(
-                (requester) -> container.addMessageListener(requester.getFirst(), requester.getSecond())
-        );
+        container.setConnectionFactory(jedisConnectionFactory());
+        container.addMessageListener(goalCompletedMessageListener, goalCompletedEventTopic());
+        container.addMessageListener(newCommentMessageListener, newCommentEventTopic());
+        container.addMessageListener(followerMessageListener, followerTopic());
+        container.addMessageListener(likePostMessageListener, likePostTopic());
 
         return container;
     }
 
     @Bean
-    ChannelTopic goalCompletedEventTopic() {
+    public ChannelTopic goalCompletedEventTopic() {
         return new ChannelTopic(redisProperties.getChannels().getGoalCompletedEvent());
     }
 
@@ -78,23 +78,5 @@ public class RedisConfiguration {
     @Bean
     public MessageListenerAdapter likePostMessageListener(LikePostEventListener likePostEventListener) {
         return new MessageListenerAdapter(likePostEventListener);
-    }
-
-    @Bean
-    public List<Pair<MessageListenerAdapter, ChannelTopic>> requesters(
-            MessageListenerAdapter followerMessageListener,
-            ChannelTopic followerTopic,
-            MessageListenerAdapter goalCompletedMessageListener,
-            ChannelTopic goalCompletedEventTopic,
-            MessageListenerAdapter likePostMessageListener,
-            ChannelTopic likePostTopic,
-            MessageListenerAdapter newCommentMessageListener,
-            ChannelTopic newCommentEventTopic) {
-        return List.of(
-                Pair.of(followerMessageListener, followerTopic),
-                Pair.of(goalCompletedMessageListener, goalCompletedEventTopic),
-                Pair.of(likePostMessageListener, likePostTopic),
-                Pair.of(newCommentMessageListener, newCommentEventTopic)
-        );
     }
 }
