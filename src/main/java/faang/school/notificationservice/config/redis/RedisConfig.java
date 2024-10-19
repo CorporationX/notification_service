@@ -20,19 +20,22 @@ public class RedisConfig {
     private String commentChannel;
 
     @Bean
-    JedisConnectionFactory jedisConnectionFactory() {
+    public JedisConnectionFactory jedisConnectionFactory() {
         return new JedisConnectionFactory();
     }
 
     @Bean
     public ChannelTopic commentTopic() {
         return new ChannelTopic(commentChannel);
-    MessageListenerAdapter likeListener(LikeEventListener likeEventListener) {
+    }
+
+    @Bean
+    public MessageListenerAdapter likeListener(LikeEventListener likeEventListener) {
         return new MessageListenerAdapter(likeEventListener);
     }
 
     @Bean(value = "likeChannel")
-    ChannelTopic likeEventTopic(@Value("${spring.data.redis.like-channel.name}") String name) {
+    public ChannelTopic likeEventTopic(@Value("${spring.data.redis.like-channel.name}") String name) {
         return new ChannelTopic(name);
     }
 
@@ -44,11 +47,12 @@ public class RedisConfig {
 
     @Bean
     public RedisMessageListenerContainer container(MessageListenerAdapter commentMessageListenerAdapter,
-                MessageListenerAdapter likeListener) {
+                                                   MessageListenerAdapter likeListener,
+                                                   @Qualifier("likeEventTopic") ChannelTopic likeEventTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(commentMessageListenerAdapter, commentTopic());
-        container.addMessageListener(likeListener, likeEventTopic());
+        container.addMessageListener(likeListener, likeEventTopic);
         return container;
     }
 }
