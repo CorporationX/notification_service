@@ -1,6 +1,7 @@
 package faang.school.notificationservice.feign;
 
 import faang.school.notificationservice.model.dto.GoalDto;
+import faang.school.notificationservice.model.dto.SkillCandidateDto;
 import faang.school.notificationservice.model.dto.SkillDto;
 import faang.school.notificationservice.model.dto.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -26,4 +27,7 @@ public interface UserServiceClient {
 
     @GetMapping("/skills/{userId}")
     List<SkillDto> getUserSkills(@PathVariable Long userId);
+
+    @GetMapping("/skills/{userId}/offers")
+    List<SkillCandidateDto> getOfferedSkills(@PathVariable long userId);
 }

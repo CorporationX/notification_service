@@ -8,6 +8,7 @@ import faang.school.notificationservice.listener.impl.AchievementEventListener;
 import faang.school.notificationservice.listener.impl.LikePostEventListener;
 import faang.school.notificationservice.listener.impl.ProjectFollowerEventListener;
 import faang.school.notificationservice.listener.SkillAcquiredEventListener;
+import faang.school.notificationservice.listener.SkillOfferedEventListener;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,6 +50,9 @@ public class RedisConfig {
 
     @Value("${redis.channels.skill-acquired}")
     private String skillAcquiredEventChannel;
+
+    @Value("${redis.channels.skill-offered}")
+    private String skillOfferedEventChannel;
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
@@ -100,6 +104,11 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic skillOfferedChannelTopic() {
+        return new ChannelTopic(skillOfferedEventChannel);
+    }
+
+    @Bean
     public RedisMessageListenerContainer redisContainer(
             LettuceConnectionFactory lettuceConnectionFactory,
             ProjectFollowerEventListener projectFollowerEventListener,
@@ -109,7 +118,8 @@ public class RedisConfig {
             MentorshipAcceptedEventListener mentorshipAcceptedEventListener,
             CommentEventListener commentEventListener,
             AchievementEventListener achievementEventListener,
-            SkillAcquiredEventListener skillAcquiredEventListener) {
+            SkillAcquiredEventListener skillAcquiredEventListener,
+            SkillOfferedEventListener skillOfferedEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory);
         container.addMessageListener(projectFollowerEventListenerAdapter(projectFollowerEventListener), projectFollowerChannelTopic());
@@ -120,6 +130,7 @@ public class RedisConfig {
         container.addMessageListener(commentEventListenerAdapter(commentEventListener), commentTopic());
         container.addMessageListener(achievementEventListenerAdapter(achievementEventListener), achievementChannelTopic());
         container.addMessageListener(skillAcquiredEventListenerAdapter(skillAcquiredEventListener), skillAcquiredChannelTopic());
+        container.addMessageListener(skillOfferedEventListenerAdapter(skillOfferedEventListener), skillOfferedChannelTopic());
         return container;
     }
 
@@ -140,26 +151,31 @@ public class RedisConfig {
 
     @Bean
     public MessageListenerAdapter userFollowerEventListenerAdapter(UserFollowerEventListener userFollowerEventListener) {
-        return new MessageListenerAdapter(userFollowerEventListener, "onMessage");
+        return new MessageListenerAdapter(userFollowerEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean
     public MessageListenerAdapter goalCompletedEventListenerAdapter(GoalCompletedEventListener goalCompletedEventListener) {
-        return new MessageListenerAdapter(goalCompletedEventListener, "onMessage");
+        return new MessageListenerAdapter(goalCompletedEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean
     public MessageListenerAdapter mentorshipAcceptedEventListenerAdapter(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
-        return new MessageListenerAdapter(mentorshipAcceptedEventListener, "onMessage");
+        return new MessageListenerAdapter(mentorshipAcceptedEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean
     public MessageListenerAdapter commentEventListenerAdapter(CommentEventListener commentEventListener) {
-        return new MessageListenerAdapter(commentEventListener, "onMessage");
+        return new MessageListenerAdapter(commentEventListener, DEFAULT_LISTENER_METHOD);
     }
 
     @Bean
     public MessageListenerAdapter skillAcquiredEventListenerAdapter(SkillAcquiredEventListener skillAcquiredEventListener) {
-        return new MessageListenerAdapter(skillAcquiredEventListener, "onMessage");
+        return new MessageListenerAdapter(skillAcquiredEventListener, DEFAULT_LISTENER_METHOD);
+    }
+
+    @Bean
+    public MessageListenerAdapter skillOfferedEventListenerAdapter(SkillOfferedEventListener skillOfferedEventListener) {
+        return new MessageListenerAdapter(skillOfferedEventListener, DEFAULT_LISTENER_METHOD);
     }
 }
