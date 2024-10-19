@@ -57,6 +57,7 @@ redis:
     comment_channel: comment_channel
     achievement: achievement_channel
     skill-acquired: skill_acquired_channel
+    event-start: event_start_channel
 
 telegram:
   bot:
