@@ -1,10 +1,18 @@
+package faang.school.notificationservice.config.redis;
+
+import faang.school.notificationservice.dto.RedisProperties;
+import faang.school.notificationservice.listener.CommentEventListener;
+import faang.school.notificationservice.listener.LikeEventListener;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @RequiredArgsConstructor
@@ -20,7 +28,7 @@ public class RedisConfig {
     }
 
     @Bean
-    ChannelTopic likeTopic() {
+    public ChannelTopic likeTopic() {
         return new ChannelTopic(redisProperties.getChannel().getLike());
     }
 
@@ -38,15 +46,17 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter likeListenerAdapter(LikeEventListener likeEventListener) {
+    public MessageListenerAdapter likeListenerAdapter(LikeEventListener likeEventListener) {
         return new MessageListenerAdapter(likeEventListener);
     }
 
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(CommentEventListener commentEventListener) {
+    public RedisMessageListenerContainer redisMessageListenerContainer(MessageListenerAdapter commentListener,
+                                                                       MessageListenerAdapter likeListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(commentEventListener, commentChannel());
+        container.addMessageListener(commentListener, commentChannel());
+        container.addMessageListener(likeListenerAdapter, likeTopic());
         return container;
     }
 

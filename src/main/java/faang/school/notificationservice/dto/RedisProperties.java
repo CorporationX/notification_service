@@ -15,5 +15,8 @@ public class RedisProperties {
     @Data
     public static class Channels {
         private String comment;
+        private String like;
+        private String achievement;
+        private String follower;
     }
 }
