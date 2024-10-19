@@ -100,7 +100,7 @@ class SkillOfferedMessageBuilderTest {
             skillOfferedMessageBuilder.buildMessage(skillOfferedEvent, Locale.UK);
         });
 
-        verify(userServiceClient, never()).getUserSkills(receiverDto.getId());
+        verify(userServiceClient, never()).getOfferedSkills(receiverDto.getId());
         verify(messageSource, never()).getMessage(any(), any(), any());
     }
 }
