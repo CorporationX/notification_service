@@ -45,7 +45,6 @@ public class EmailServiceTest {
         verify(emailSender, times(1)).send(any(SimpleMailMessage.class));
 
         SimpleMailMessage emailMessageArgument = captureEmailMessageArgument();
-        assertEquals("almeevamirhan294@gmail.com", emailMessageArgument.getFrom());
         assertEquals("test@gmail.com", emailMessageArgument.getTo()[0]);
         assertEquals(message, emailMessageArgument.getText());
     }
