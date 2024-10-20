@@ -6,12 +6,13 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        comment_event: comment_event_channel
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: #your_email@gmail.com #https://www.baeldung.com/spring-email
+    password: #whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
         smtp:
@@ -21,7 +22,8 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-
+        debug: true
+    protocol: smtp
   messages:
     basename: messages
 
@@ -32,11 +34,23 @@ logging:
   level:
     root: info
 
-#Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
-vonage: #https://dashboard.nexmo.com/getting-started/sms
-  api:
-    key: whatever
-    secret: whatever
+sms_service:
+  mts_exolve_api:
+    sms_uri: https://api.exolve.ru/messaging/v1/SendSMS
+    headers:
+      auth_key: Authorization
+      auth_prefix: Bearer
+    params:
+      keys:
+        sender_key: number
+        receiver_key: destination
+        message_key: text
+      values:
+        api_key: some_api_key
+        sender_number: some_sender_number
+  retryable:
+    max_attempts: 2
+    delay: 10000
 
 project-service:
     host: localhost
@@ -44,3 +58,4 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+    path: "user-service"
