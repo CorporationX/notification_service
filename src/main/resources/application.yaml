@@ -16,6 +16,13 @@ spring:
         follow-project: project_subscription_event
         comment-receiving:
           name: comment-receiving-topic
+          goal-completed-event-channel:
+            name: goal_completed_event_channel
+        follower-event-channel: follower_event_channel
+        skill-acquired: skill_acquired_channel
+        recommendation-request-channel: recommendation_req_channel
+        like: like_channel
+        mentorship-accepted-event-channel: mentorship_accepted_event_channel
 
   mail:
     host: smtp.gmail.com
@@ -47,13 +54,14 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+    band: CorporationX
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
 
 telegram:
   bot:

@@ -1,7 +1,9 @@
 package faang.school.notificationservice.builder;
 
-import faang.school.notificationservice.event.EventStartEvent;
+import faang.school.notificationservice.model.event.EventStartEvent;
 import faang.school.notificationservice.messaging.EventStartMessageBuilder;
+import faang.school.notificationservice.messaging.MentorshipAcceptedEventMessageBuilder;
+import faang.school.notificationservice.model.event.MentorshipAcceptedEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,11 +25,11 @@ public class EventStartMessageBuilderTest {
     private MessageSource messageSource;
 
     @InjectMocks
-    private EventStartMessageBuilder builder;
+    private MentorshipAcceptedEventMessageBuilder builder;
 
     @Test
-    void testOkBuilder(){
-        EventStartEvent event = EventStartEvent.builder().build();
+    void testBuilderOk() {
+        MentorshipAcceptedEvent event = MentorshipAcceptedEvent.builder().build();
 
         when(messageSource.getMessage(anyString(), any(), any())).thenReturn("hello there");
 

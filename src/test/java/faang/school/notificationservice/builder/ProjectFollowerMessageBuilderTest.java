@@ -2,13 +2,10 @@ package faang.school.notificationservice.builder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.listener.ProjectFollowerEventListener;
-import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.messaging.ProjectFollowerMessageBuilder;
 import faang.school.notificationservice.model.event.ProjectFollowerEvent;
-import faang.school.notificationservice.service.NotificationService;
-import faang.school.notificationservice.service.telegram.TelegramBot;
 import faang.school.notificationservice.service.telegram.TelegramService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,7 +47,7 @@ public class ProjectFollowerMessageBuilderTest {
 
     private ProjectFollowerEvent event;
     private UserDto user;
-    private Locale locale = Locale.getDefault();
+    private final Locale locale = Locale.getDefault();
     private String jsonProjectFollowerEvent;
 
     @BeforeEach
