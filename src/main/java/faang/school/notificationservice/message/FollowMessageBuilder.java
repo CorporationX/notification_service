@@ -1,4 +1,4 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.message;
 
 import faang.school.notificationservice.dto.FollowEvent;
 import lombok.RequiredArgsConstructor;

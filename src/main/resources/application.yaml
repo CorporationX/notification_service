@@ -9,7 +9,7 @@ spring:
         eventStart: eventStart-event
         like: like_channel
         comment: comment_channel
-        recommendation-request: recommendation-request-channel
+        recommendation: recommendation-request-channel
 
   mail:
     host: smtp.gmail.com
