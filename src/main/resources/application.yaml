@@ -6,7 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-        eventStart-event-channel: eventStart_event
+        eventStart-event-channel: eventStart-event
 
 
   mail:
