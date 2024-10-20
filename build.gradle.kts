@@ -25,13 +25,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail:3.0.6")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    implementation("org.telegram:telegrambots-spring-boot-starter:6.1.0")
 
     /**
      * Telegram
      */
-    implementation("org.telegram:telegrambots:6.7.0")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.2")
+    implementation("org.telegram:telegrambots:6.9.7.1")
 
     /**
      * Database
