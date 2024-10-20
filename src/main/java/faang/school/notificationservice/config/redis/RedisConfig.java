@@ -4,7 +4,9 @@ import faang.school.notificationservice.dto.RedisProperties;
 import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.EventStartEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
+import faang.school.notificationservice.listener.RecommendationRequestedEventListener;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -18,6 +20,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
+
+    @Value("${spring.data.redis.channel.recommendation-request}")
+    private String recommendationRequestChannel;
 
     private final RedisProperties redisProperties;
 
@@ -34,6 +39,11 @@ public class RedisConfig {
     @Bean
     public ChannelTopic commentChannel() {
         return new ChannelTopic(redisProperties.getChannel().getComment());
+    }
+
+    @Bean
+    public ChannelTopic recRequestChannel() {
+        return new ChannelTopic(recommendationRequestChannel);
     }
 
     @Bean
@@ -62,14 +72,21 @@ public class RedisConfig {
     }
 
     @Bean
+    public MessageListenerAdapter recRequestListenerAdapter(RecommendationRequestedEventListener recRequestEventListener) {
+        return new MessageListenerAdapter(recRequestEventListener);
+    }
+
+    @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(MessageListenerAdapter commentListener,
                                                                        MessageListenerAdapter likeListenerAdapter,
-                                                                       MessageListenerAdapter eventStartListenerAdapter) {
+                                                                       MessageListenerAdapter eventStartListenerAdapter,
+                                                                       MessageListenerAdapter recRequestListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(eventStartListenerAdapter, eventStartTopic());
         container.addMessageListener(commentListener, commentChannel());
         container.addMessageListener(likeListenerAdapter, likeTopic());
+        container.addMessageListener(recRequestListenerAdapter, recRequestChannel());
         return container;
     }
 
