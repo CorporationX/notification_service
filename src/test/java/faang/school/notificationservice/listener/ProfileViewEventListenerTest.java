@@ -2,7 +2,7 @@ package faang.school.notificationservice.listener;
 
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.event.ProfileViewEventDto;
 import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.messaging.MessageBuilder;
@@ -10,7 +10,9 @@ import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.telegram.TelegramService;
 import faang.school.notificationservice.subscriber.ProfileViewEventListener;
 import org.junit.Assert;
+
 import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
