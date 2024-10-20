@@ -9,6 +9,7 @@ spring:
         eventStart: eventStart-event
         like: like_channel
         comment: comment_channel
+        recommendation-request: recommendation-request-channel
 
   mail:
     host: smtp.gmail.com
@@ -38,13 +39,8 @@ logging:
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: 2d381810
-    secret: mfiazZP2uXQDh6SH
-
-telegram.bot:
-  name: PhoenixTestMessage
-  token: 7635777006:AAEfw7L9OftwV3EKMYk8u83UArjzVe5DrC8
-  chat-id: 701889614L
+    key: whatever
+    secret: whatever
 
 project-service:
     host: localhost
