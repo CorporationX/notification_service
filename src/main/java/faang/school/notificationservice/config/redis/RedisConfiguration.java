@@ -2,6 +2,7 @@ package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.LikePostEventListener;
 import faang.school.notificationservice.listener.goal.GoalCompletedEventListener;
+import faang.school.notificationservice.listener.projectfollower.ProjectFollowerMessageListener;
 import faang.school.notificationservice.listener.follower.FollowerMessageListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -28,12 +29,12 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(List<Pair<MessageListenerAdapter, ChannelTopic>> requesters, JedisConnectionFactory jedisConnectionFactory) {
+    public RedisMessageListenerContainer redisContainer(List<Pair<MessageListenerAdapter, ChannelTopic>> requesters,
+            JedisConnectionFactory jedisConnectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory);
         requesters.forEach(
-                (requester) -> container.addMessageListener(requester.getFirst(), requester.getSecond())
-        );
+                (requester) -> container.addMessageListener(requester.getFirst(), requester.getSecond()));
 
         return container;
     }
@@ -69,18 +70,29 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public ChannelTopic projectFollowerTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getProjectChannel());
+    }
+
+    @Bean
+    public MessageListenerAdapter projectFollowerMessageListener(ProjectFollowerMessageListener projectFollowerMessageListener) {
+        return new MessageListenerAdapter(projectFollowerMessageListener);
+    }
+
+    @Bean
     public List<Pair<MessageListenerAdapter, ChannelTopic>> requesters(
             MessageListenerAdapter followerMessageListener,
             ChannelTopic followerTopic,
             MessageListenerAdapter goalCompletedMessageListener,
             ChannelTopic goalCompletedEventTopic,
             MessageListenerAdapter likePostMessageListener,
-            ChannelTopic likePostTopic)
-    {
+            ChannelTopic likePostTopic,
+            MessageListenerAdapter projectFollowerMessageListener,
+            ChannelTopic projectFollowerTopic) {
         return List.of(
                 Pair.of(followerMessageListener, followerTopic),
                 Pair.of(goalCompletedMessageListener, goalCompletedEventTopic),
-                Pair.of(likePostMessageListener, likePostTopic)
-        );
+                Pair.of(likePostMessageListener, likePostTopic),
+                Pair.of(projectFollowerMessageListener, projectFollowerTopic));
     }
 }
