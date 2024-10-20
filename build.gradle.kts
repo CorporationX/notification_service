@@ -19,24 +19,17 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation ("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-mail:3.0.6")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    implementation("org.telegram:telegrambots-spring-boot-starter:6.1.0")
-    implementation("org.telegram:telegrambots-springboot-longpolling-starter:7.10.0")
 
     /**
      * Telegram
      */
-    implementation("org.telegram:telegrambotsextensions:6.8.0")
-    implementation("org.telegram:telegrambots:6.1.0")
-    implementation("org.telegram:telegrambots-abilities:7.10.0")
-    implementation("org.telegram:telegrambots-longpolling:7.10.0")
-    implementation("org.telegram:telegrambots-meta:7.10.0")
-    implementation("org.telegram:telegrambots-client:7.10.0")
-    implementation("org.telegram:telegrambots-webhook:7.10.0")
+    implementation("org.telegram:telegrambots:6.9.7.1")
 
     /**
      * Database
@@ -69,6 +62,11 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    /**
+     * Notification services
+     */
+    implementation ("com.vonage:client:6.3.0")
 }
 
 tasks.withType<Test> {

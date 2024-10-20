@@ -12,7 +12,6 @@ import java.io.IOException;
 public class UserHeaderFilter implements Filter {
 
     private final UserContext userContext;
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws ServletException, IOException {
