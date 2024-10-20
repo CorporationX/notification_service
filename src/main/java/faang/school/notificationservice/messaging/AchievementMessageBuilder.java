@@ -3,7 +3,9 @@ package faang.school.notificationservice.messaging;
 import faang.school.notificationservice.dto.AchievementEvent;
 import faang.school.notificationservice.dto.UserDto;
 import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AchievementMessageBuilder extends MessageBuilder<AchievementEvent> {
 
     public AchievementMessageBuilder(MessageSource messageSource) {

@@ -14,6 +14,6 @@ public interface UserServiceClient {
     @Retryable(retryFor = FeignException.class,
             maxAttemptsExpression = "${user-service.retry.max-attempts}",
             backoff = @Backoff(delayExpression = "${user-service.retry.backoff}"))
-    @GetMapping("/{id}/locale/contact-preference")
-    UserDto getUser(@PathVariable long id);
+    @GetMapping("/{userId}/locale/contact-preference")
+    UserDto getUser(@PathVariable long userId);
 }
