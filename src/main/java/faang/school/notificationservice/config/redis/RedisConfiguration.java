@@ -2,7 +2,7 @@ package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.LikePostEventListener;
 import faang.school.notificationservice.listener.goal.GoalCompletedEventListener;
-import faang.school.notificationservice.listener.follower.FollowerMessageListener;
+import faang.school.notificationservice.listener.follower.FollowerEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -54,7 +54,7 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public MessageListenerAdapter followerMessageListener(FollowerMessageListener followerEventListener) {
+    public MessageListenerAdapter followerMessageListener(FollowerEventListener followerEventListener) {
         return new MessageListenerAdapter(followerEventListener);
     }
 
