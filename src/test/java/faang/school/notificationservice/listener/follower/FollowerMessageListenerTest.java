@@ -52,7 +52,7 @@ class FollowerMessageListenerTest {
     private NotificationService notificationService;
 
     @InjectMocks
-    private FollowerMessageListener followerMessageListener;
+    private FollowerEventListener followerMessageListener;
 
     private UserDto followeeUser;
     private FollowerEvent followerEvent;
@@ -71,7 +71,7 @@ class FollowerMessageListenerTest {
                 .created(LocalDateTime.now())
                 .build();
 
-        followerMessageListener = new FollowerMessageListener(
+        followerMessageListener = new FollowerEventListener(
                 objectMapper,
                 userServiceClient,
                 messageBuilders,

@@ -2,7 +2,8 @@ package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.LikePostEventListener;
 import faang.school.notificationservice.listener.goal.GoalCompletedEventListener;
-import faang.school.notificationservice.listener.follower.FollowerMessageListener;
+import faang.school.notificationservice.listener.follower.FollowerEventListener;
+import faang.school.notificationservice.listener.profile.ProfileViewEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -54,7 +55,7 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public MessageListenerAdapter followerMessageListener(FollowerMessageListener followerEventListener) {
+    public MessageListenerAdapter followerMessageListener(FollowerEventListener followerEventListener) {
         return new MessageListenerAdapter(followerEventListener);
     }
 
@@ -69,18 +70,30 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public MessageListenerAdapter profileViewMessageListener(ProfileViewEventListener profileViewEventListener) {
+        return new MessageListenerAdapter(profileViewEventListener);
+    }
+
+    @Bean
+    public ChannelTopic profileViewTopic(){
+        return new ChannelTopic(redisProperties.getChannels().getProfileView());
+    }
+
+    @Bean
     public List<Pair<MessageListenerAdapter, ChannelTopic>> requesters(
             MessageListenerAdapter followerMessageListener,
             ChannelTopic followerTopic,
             MessageListenerAdapter goalCompletedMessageListener,
             ChannelTopic goalCompletedEventTopic,
             MessageListenerAdapter likePostMessageListener,
-            ChannelTopic likePostTopic)
-    {
+            ChannelTopic likePostTopic,
+            MessageListenerAdapter profileViewMessageListener,
+            ChannelTopic profileViewTopic) {
         return List.of(
                 Pair.of(followerMessageListener, followerTopic),
                 Pair.of(goalCompletedMessageListener, goalCompletedEventTopic),
-                Pair.of(likePostMessageListener, likePostTopic)
+                Pair.of(likePostMessageListener, likePostTopic),
+                Pair.of(profileViewMessageListener, profileViewTopic)
         );
     }
 }
