@@ -27,6 +27,8 @@ spring:
           name: like_channel
         goal-channel:
           name: goal_channel
+        event-channel:
+          name: event_channel
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml

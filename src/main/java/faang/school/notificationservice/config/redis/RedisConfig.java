@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.EventStartEventListener;
 import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,11 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListenerAdapter eventListenerAdapter(EventStartEventListener eventStartEventListener) {
+        return new MessageListenerAdapter(eventStartEventListener);
+    }
+
+    @Bean
     public ChannelTopic commentTopic() {
         return new ChannelTopic(commentChannel);
     }
@@ -56,18 +62,26 @@ public class RedisConfig {
                                                    MessageListenerAdapter likeListener,
                                                    MessageListenerAdapter goalListenerAdapter,
                                                    @Qualifier("goalCompletedTopic") ChannelTopic goalCompletedTopic,
-                                                   @Qualifier("likeChannel") ChannelTopic likeEventTopic) {
+                                                   @Qualifier("likeChannel") ChannelTopic likeEventTopic,
+                                                   MessageListenerAdapter eventListenerAdapter,
+                                                   @Qualifier("eventTopic") ChannelTopic eventTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(goalListenerAdapter, goalCompletedTopic);
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(commentMessageListenerAdapter, commentTopic());
         container.addMessageListener(likeListener, likeEventTopic);
+        container.addMessageListener(eventListenerAdapter, eventTopic);
         return container;
     }
 
     @Bean(value = "goalCompletedTopic")
     ChannelTopic goalCompletedTopic(@Value("${spring.data.redis.channels.goal-channel.name}") String topic) {
+        return new ChannelTopic(topic);
+    }
+
+    @Bean(value = "eventTopic")
+    public ChannelTopic eventTopic(@Value("${spring.data.redis.channels.event-channel.name}") String topic) {
         return new ChannelTopic(topic);
     }
 }
