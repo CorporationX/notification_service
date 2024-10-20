@@ -3,9 +3,11 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
+      channels:
+        follower:
+          name: follower_channel
+        achievement:
+          name: achievement_channel
 
   mail:
     host: smtp.gmail.com
@@ -21,6 +23,7 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+      from: "Corporation X <robertmama20@gmail.com>" # name / your_email@gmail.com #https://www.baeldung.com/spring-email
   kafka:
     bootstrap-servers:  localhost:9092
     pool-size: 3
@@ -37,6 +40,7 @@ spring:
     basename: messages
 
 server:
+  main-thread-pool-size: 12
   port: 8083
 
 logging:
@@ -55,3 +59,6 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+    retry:
+      max-attempts: 3
+      backoff: 1000
