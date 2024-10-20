@@ -8,6 +8,7 @@ import faang.school.notificationservice.listener.AbstractEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.data.redis.connection.Message;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
@@ -24,7 +25,7 @@ public class ProfileViewEventListener extends AbstractEventListener<ProfileViewE
     }
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
+    public void onMessage(@NonNull Message message, byte[] pattern) {
         handleEvent(message, ProfileViewEvent.class, profileView -> {
             UserDto profileViewedAuthor = userServiceClient.getUser(profileView.getProfileViewedId());
             Locale userPreferedLocale =
