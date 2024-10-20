@@ -17,10 +17,14 @@ spring:
       port: 6379
       host: localhost
       channels:
+        comment-channel:
+          name: comment_channel
         follower-channel:
           name: follower_channel
         achievement-channel:
           name: achievement_channel
+        like-channel:
+          name: like_channel
         goal-channel:
           name: goal_channel
 
