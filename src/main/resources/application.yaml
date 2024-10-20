@@ -6,7 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-        eventStart-event-channel: eventStart-event
+        eventStart: eventStart-event
         like: like_channel
         comment: comment_channel
 
