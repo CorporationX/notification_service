@@ -25,6 +25,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     implementation("org.springframework.retry:spring-retry")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("org.telegram:telegrambots-spring-boot-starter:6.5.0")
 
     /**
      * Database
@@ -43,6 +44,11 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
     implementation("com.vonage:client:7.3.0")
+
+    /**
+     * Others
+     */
+    implementation("org.telegram:telegrambots:6.9.7.1")
 
     /**
      * Test containers
