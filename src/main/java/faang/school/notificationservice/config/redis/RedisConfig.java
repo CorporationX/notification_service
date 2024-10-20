@@ -70,14 +70,6 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
-
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
-
         return redisTemplate;
     }
 
@@ -87,6 +79,8 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(profileViewListener, topic());
+        return container;
+    }
 
     public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter,
                                                         MessageListenerAdapter mentorshipOfferedEventListenerAdapter,
@@ -109,18 +103,21 @@ public class RedisConfig {
 
     public ChannelTopic topic() {
         return new ChannelTopic(profileView);
+    }
 
     public MessageListenerAdapter eventStartListenerAdapter(EventStartEventListener eventStartEventListener) {
         return new MessageListenerAdapter(eventStartEventListener);
     }
 
     @Bean
-    public MessageListenerAdapter mentorshipOfferedEventListenerAdapter(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
+    public MessageListenerAdapter mentorshipOfferedEventListenerAdapter(MentorshipOfferedEventListener
+                                                                                mentorshipOfferedEventListener) {
         return new MessageListenerAdapter(mentorshipOfferedEventListener);
     }
 
     @Bean
-    MessageListenerAdapter recommendationReceivedListenerAdapter(RecommendationReceivedEventListener recommendationReceivedEventListener) {
+    MessageListenerAdapter recommendationReceivedListenerAdapter(RecommendationReceivedEventListener
+                                                                         recommendationReceivedEventListener) {
         return new MessageListenerAdapter(recommendationReceivedEventListener);
     }
 

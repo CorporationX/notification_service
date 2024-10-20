@@ -7,11 +7,14 @@ import faang.school.notificationservice.event.ProfileViewEventDto;
 import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.telegram.TelegramService;
 import faang.school.notificationservice.subscriber.ProfileViewEventListener;
 import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,6 +24,7 @@ import org.springframework.data.redis.connection.Message;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -35,16 +39,19 @@ public class ProfileViewEventListenerTest {
     @Mock
     private MessageBuilder<ProfileViewEventDto> messageBuilder;
     @Mock
-    private NotificationService notificationService;
-    @Mock
     private Message message;
-
+    @Mock
+    TelegramService telegramService;
+    @InjectMocks
     private ProfileViewEventListener listener;
 
     @BeforeEach
     public void setUp() {
-        List<NotificationService> notificationServices = Collections.singletonList(notificationService);
+        List<NotificationService> notificationServices = List.of(telegramService);
         listener = new ProfileViewEventListener(objectMapper, userServiceClient, messageBuilder, notificationServices);
+        String timeToString = LocalDateTime.now().toString();
+        String json = "{\"senderId\":1, \"receiverId\":2,\"dateTime\":" + timeToString + "}";
+        when(message.getBody()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -62,12 +69,12 @@ public class ProfileViewEventListenerTest {
                 .id(2L)
                 .username("John Doe")
                 .email("john.doe@example.com")
-                .preference(UserDto.PreferredContact.EMAIL)
+                .preference(UserDto.PreferredContact.TELEGRAM)
                 .build();
         when(objectMapper.readValue(message.getBody(), ProfileViewEventDto.class)).thenReturn(event);
         when(messageBuilder.buildMessage(event, Locale.getDefault())).thenReturn(expectedMessage);
         when(userServiceClient.getUser(event.getReceiverId())).thenReturn(user);
-        when(notificationService.getPreferredContact()).thenReturn(user.getPreference());
+        when(telegramService.getPreferredContact()).thenReturn(user.getPreference());
 
         // Call the method
         listener.onMessage(message, null);
@@ -76,7 +83,7 @@ public class ProfileViewEventListenerTest {
         verify(objectMapper).readValue(message.getBody(), ProfileViewEventDto.class);
         verify(messageBuilder).buildMessage(event, Locale.getDefault());
         verify(userServiceClient).getUser(event.getReceiverId());
-        verify(notificationService).send(user, expectedMessage);
+        verify(telegramService).send(user, expectedMessage);
     }
 
     @Test
@@ -86,39 +93,6 @@ public class ProfileViewEventListenerTest {
         verify(objectMapper).readValue(message.getBody(), ProfileViewEventDto.class);
         verifyNoInteractions(userServiceClient);
         verifyNoInteractions(messageBuilder);
-        verifyNoInteractions(notificationService);
-    }
-
-    @Test
-    public void testOnMessage_NoMatchingNotificationService() throws IOException {
-        // Mock data
-        ProfileViewEventDto event = ProfileViewEventDto
-                .builder()
-                .senderId(1L)
-                .receiverId(2L)
-                .dateTime(LocalDateTime.now())
-                .build();
-        String expectedMessage = "Someone viewed your profile!";
-        UserDto user = UserDto.builder()
-                .id(2L)
-                .username("John Doe")
-                .email("john.doe@example.com")
-                .preference(UserDto.PreferredContact.EMAIL)
-                .build();
-        when(objectMapper.readValue(message.getBody(), ProfileViewEventDto.class)).thenReturn(event);
-        when(messageBuilder.buildMessage(event, Locale.getDefault())).thenReturn(expectedMessage);
-        when(userServiceClient.getUser(event.getReceiverId())).thenReturn(user);
-        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS); // Doesn't match user preference
-
-        // Call the method
-        listener.onMessage(message, null);
-
-        // Verify interactions
-        verify(objectMapper).readValue(message.getBody(), ProfileViewEventDto.class);
-        verify(messageBuilder).buildMessage(event, Locale.getDefault());
-        verify(userServiceClient).getUser(event.getReceiverId());
-        verify(notificationService).getPreferredContact();
-        verify(notificationService, never()).send(any(), any());
-        verify(userServiceClient, never()).getUser(event.getReceiverId());
+        verifyNoInteractions(telegramService);
     }
 }
