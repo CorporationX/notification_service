@@ -9,19 +9,28 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 @Component
 public class LikeEventListener extends AbstractEventListener<LikeEvent> implements MessageListener {
 
-    public LikeEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient, List<MessageBuilder<LikeEvent>> messageBuilders, List<NotificationService> notificationServices) {
+    public LikeEventListener(ObjectMapper objectMapper,
+                             UserServiceClient userServiceClient,
+                             List<MessageBuilder<LikeEvent>> messageBuilders,
+                             List<NotificationService> notificationServices) {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        LikeEvent event = objectMapper.convertValue(message.getBody(), LikeEvent.class);
-        sendNotification(event.getLikingUserId(), buildMessage(event, Locale.UK));
+        LikeEvent event;
+        try {
+            event = objectMapper.readValue(message.getBody(), LikeEvent.class);
+            sendNotification(event.getLikingUserId(), buildMessage(event, Locale.UK));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
