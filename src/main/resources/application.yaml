@@ -21,6 +21,17 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+  kafka:
+    bootstrap-servers:  localhost:9092
+    pool-size: 3
+    consumer:
+      group-id: "group"
+      auto-offset-reset: earliest
+    topics:
+      achievement-received:
+        name: achievement-received_topic
+        num-partitions: 3
+        replication-factor: 1
 
   messages:
     basename: messages
