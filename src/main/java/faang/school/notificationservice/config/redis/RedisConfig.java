@@ -1,7 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
-import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.EventStartEventListener;
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -62,10 +62,9 @@ public class RedisConfig {
                                                    MessageListenerAdapter likeListener,
                                                    MessageListenerAdapter goalListenerAdapter,
                                                    @Qualifier("goalCompletedTopic") ChannelTopic goalCompletedTopic,
-                                                   @Qualifier("likeChannel") ChannelTopic likeEventTopic) {
+                                                   @Qualifier("likeChannel") ChannelTopic likeEventTopic,
                                                    MessageListenerAdapter eventListenerAdapter,
-                                                   @Qualifier("eventTopic") ChannelTopic eventTopic,
-                                                   @Qualifier("likeChannel") ChannelTopic likeEventTopic) {
+                                                   @Qualifier("eventTopic") ChannelTopic eventTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(goalListenerAdapter, goalCompletedTopic);
@@ -83,6 +82,6 @@ public class RedisConfig {
 
     @Bean(value = "eventTopic")
     public ChannelTopic eventTopic(@Value("${spring.data.redis.channels.event-channel.name}") String topic) {
-        return new ChannelTopic(toString());
+        return new ChannelTopic(topic);
     }
 }
