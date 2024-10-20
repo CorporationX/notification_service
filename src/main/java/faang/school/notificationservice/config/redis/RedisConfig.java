@@ -20,15 +20,11 @@ public class RedisConfig {
 
     private final RedisDto redisDto;
 
-    private final String host = redisDto.getHost();
-
-    private final int port = redisDto.getPort();
-
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName(host);
-        redisStandaloneConfiguration.setPort(port);
+        redisStandaloneConfiguration.setHostName(redisDto.getHost());
+        redisStandaloneConfiguration.setPort(redisDto.getPort());
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
