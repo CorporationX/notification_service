@@ -1,6 +1,7 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.messaging.like;
 
 import faang.school.notificationservice.dto.event.LikePostEvent;
+import faang.school.notificationservice.messaging.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
