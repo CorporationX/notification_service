@@ -37,7 +37,6 @@ public class RedisConfig {
         return new MessageListenerAdapter(eventStartEventListener);
     }
 
-
     @Bean
     ChannelTopic eventStartTopic() {
         return new ChannelTopic(eventChannel);
