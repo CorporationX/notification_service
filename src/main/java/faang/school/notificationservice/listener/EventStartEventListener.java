@@ -7,7 +7,6 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.Locale;
 
 @Component
 @Slf4j
-public class EventStartEventListener extends AbstractEventListener<EventDto> implements MessageListener {
+public class EventStartEventListener extends AbstractEventListener<EventDto> {
 
     public EventStartEventListener(List<NotificationService> notificationServices,
                                    List<MessageBuilder<EventDto>> messageBuilders,
