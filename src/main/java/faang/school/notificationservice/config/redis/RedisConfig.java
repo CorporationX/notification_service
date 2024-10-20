@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.RecommendationRequestedEventListener;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,16 +12,17 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
 
     @Value("${spring.data.redis.channel.recommendation-request}")
     private String recommendationRequestChannel;
 
-    @Value("${spring.data.redis.host}")
-    private String host;
+    private final RedisDto redisDto;
 
-    @Value("${spring.data.redis.port}")
-    private int port;
+    private final String host = redisDto.getHost();
+
+    private final int port = redisDto.getPort();
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
