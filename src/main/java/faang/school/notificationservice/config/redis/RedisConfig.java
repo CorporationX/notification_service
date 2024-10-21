@@ -28,6 +28,11 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic projectFollowerChannel() {
+        return new ChannelTopic(redisProperties.getChannel().getProject());
+    }
+
+    @Bean
     public ChannelTopic commentChannel() {
         return new ChannelTopic(redisProperties.getChannel().getComment());
     }
@@ -45,6 +50,11 @@ public class RedisConfig {
     @Bean
     public MessageListenerAdapter commentListener(CommentEventListener commentEventListener) {
         return new MessageListenerAdapter(commentEventListener, methodName);
+    }
+
+    @Bean
+    MessageListenerAdapter projectFollowerListenerAdapter(ProjectFollowerEventListener projectFollowerEventListener) {
+        return new MessageListenerAdapter(projectFollowerEventListener);
     }
 
     @Bean
@@ -82,7 +92,8 @@ public class RedisConfig {
                                                                        MessageListenerAdapter likeListenerAdapter,
                                                                        MessageListenerAdapter eventStartListenerAdapter,
                                                                        MessageListenerAdapter recRequestListenerAdapter,
-                                                                       MessageListenerAdapter followListenerAdapter) {
+                                                                       MessageListenerAdapter followListenerAdapter,
+                                                                       MessageListenerAdapter projectFollowerListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(eventStartListenerAdapter, eventStartTopic());
@@ -90,6 +101,7 @@ public class RedisConfig {
         container.addMessageListener(likeListenerAdapter, likeTopic());
         container.addMessageListener(recRequestListenerAdapter, recRequestChannel());
         container.addMessageListener(followListenerAdapter, followTopic());
+        container.addMessageListener(projectFollowerListenerAdapter, projectFollowerChannel());
         return container;
     }
 }
