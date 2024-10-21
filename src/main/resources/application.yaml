@@ -29,6 +29,8 @@ spring:
           name: goal_channel
         event-channel:
           name: event_channel
+        mentorship-channel:
+          name: mentorship_channel
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
