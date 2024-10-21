@@ -20,5 +20,6 @@ public class RedisProperties {
         private String follower;
         private String eventStart;
         private String recommendation;
+        private String project;
     }
 }
