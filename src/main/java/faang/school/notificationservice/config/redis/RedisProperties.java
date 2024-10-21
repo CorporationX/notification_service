@@ -20,5 +20,6 @@ public class RedisProperties {
         private String achievement;
         private String goalCompletedEvent;
         private String likePostChannel;
+        private String skillAcquiredChannel;
     }
 }

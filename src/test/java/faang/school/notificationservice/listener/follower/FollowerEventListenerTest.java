@@ -29,7 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
-class FollowerMessageListenerTest {
+class FollowerEventListenerTest {
 
     private static final Long FOLLOWEE_ID = 123L;
     private static final Long FOLLOWER_ID = 321L;
@@ -52,7 +52,7 @@ class FollowerMessageListenerTest {
     private NotificationService notificationService;
 
     @InjectMocks
-    private FollowerMessageListener followerMessageListener;
+    private FollowerEventListener followerEventListener;
 
     private UserDto followeeUser;
     private FollowerEvent followerEvent;
@@ -71,7 +71,7 @@ class FollowerMessageListenerTest {
                 .created(LocalDateTime.now())
                 .build();
 
-        followerMessageListener = new FollowerMessageListener(
+        followerEventListener = new FollowerEventListener(
                 objectMapper,
                 userServiceClient,
                 messageBuilders,
@@ -96,7 +96,7 @@ class FollowerMessageListenerTest {
             when(userServiceClient.getUser(FOLLOWEE_ID)).thenReturn(followeeUser);
             when(followerMessageBuilder.buildMessage(followerEvent, Locale.ENGLISH)).thenReturn(MESSAGE_TEXT);
 
-            followerMessageListener.onMessage(message, pattern);
+            followerEventListener.onMessage(message, pattern);
 
             verify(notificationService).send(followeeUser, MESSAGE_TEXT);
         }
@@ -115,7 +115,7 @@ class FollowerMessageListenerTest {
             when(objectMapper.readValue(any(byte[].class), eq(FollowerEvent.class))).thenThrow(new IOException("Invalid data"));
 
             RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                    followerMessageListener.onMessage(message, pattern)
+                    followerEventListener.onMessage(message, pattern)
             );
 
             assertEquals("java.io.IOException: Invalid data", exception.getMessage());
@@ -139,7 +139,7 @@ class FollowerMessageListenerTest {
             when(followerMessageBuilder.buildMessage(followerEvent, Locale.ENGLISH)).thenReturn(MESSAGE_TEXT);
 
             RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                    followerMessageListener.onMessage(message, pattern)
+                    followerEventListener.onMessage(message, pattern)
             );
 
             assertEquals("Not found notification service", exception.getMessage());

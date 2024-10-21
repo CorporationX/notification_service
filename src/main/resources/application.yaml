@@ -8,6 +8,7 @@ spring:
         achievement: achievement_channel
         goalCompletedEvent: goal_completed_event_channel
         likePostChannel: like_post_channel
+        skillAcquiredChannel: skill_acquired_channel
 
   mail:
     host: smtp.gmail.com
