@@ -45,7 +45,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
 
     protected void sendNotification(UserDto user, String message) {
         log.info("sendNotification() - start, userId - {}", user.getId());
-        UserDto.PreferredContact userPreferredNotification = UserDto.PreferredContact.TELEGRAM;
+        UserDto.PreferredContact userPreferredNotification = user.getNotifyPreference();
 
         NotificationService notificationService = Optional.ofNullable(notificationServices.get(userPreferredNotification))
                 .orElseThrow(() -> {
