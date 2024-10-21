@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Locale;
 
-@Component
 @Slf4j
+@Component("goalCompletedEventListener")
 public class GoalCompletedEventListener extends AbstractEventListener<GoalCompletedEventDto> {
 
     public GoalCompletedEventListener(List<NotificationService> notificationServices,

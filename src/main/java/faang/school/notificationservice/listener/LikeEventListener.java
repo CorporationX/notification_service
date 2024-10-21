@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Locale;
 
-@Component
 @Slf4j
+@Component("likeEventListener")
 public class LikeEventListener extends AbstractEventListener<LikeEvent> {
 
     public LikeEventListener(List<NotificationService> notificationServices,

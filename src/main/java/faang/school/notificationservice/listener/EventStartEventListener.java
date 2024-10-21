@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Locale;
 
-@Component
 @Slf4j
+@Component("eventStartEventListener")
 public class EventStartEventListener extends AbstractEventListener<EventDto> {
 
     public EventStartEventListener(List<NotificationService> notificationServices,
