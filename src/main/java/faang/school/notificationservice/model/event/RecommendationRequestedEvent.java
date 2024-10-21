@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectFollowerEvent {
-    private Long followerId;
-    private Long projectId;
-    private Long creatorId;
+public class RecommendationRequestedEvent {
+    private Long requesterId;
+    private Long receiverId;
+    private Long requestId;
 }
