@@ -3,16 +3,19 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
-        profile-view-notification: profile-view-event-topic
+      channels:
+        follower:
+          name: follower_channel
+        achievement:
+          name: achievement_channel
+        notification:
+        name: notification-channel
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: robertmama20@gmail.com #your_email@gmail.com
+    password: bpxa ywlf vywc ofvu # генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
         smtp:
@@ -22,11 +25,13 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+      from: "Corporation X <robertmama20@gmail.com>" # name / your_email@gmail.com #https://www.baeldung.com/spring-email
 
   messages:
     basename: messages
 
 server:
+  main-thread-pool-size: 12
   port: 8083
 
 logging:
@@ -45,3 +50,6 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+    retry:
+      max-attempts: 3
+      backoff: 1000
