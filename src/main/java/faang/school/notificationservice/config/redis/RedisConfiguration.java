@@ -5,7 +5,6 @@ import faang.school.notificationservice.listener.comment.NewCommentEventListener
 import faang.school.notificationservice.listener.follower.FollowerEventListener;
 import faang.school.notificationservice.listener.goal.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.like.LikePostEventListener;
-import faang.school.notificationservice.listener.AchievementEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -88,7 +87,7 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public MessageListenerAdapter achievementEvent(AchievementEventListener achievementEventListener) {
+    public MessageListenerAdapter achievementMessageListener(AchievementEventListener achievementEventListener) {
         return new MessageListenerAdapter(achievementEventListener);
     }
 
@@ -111,14 +110,14 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public Pair<MessageListenerAdapter, ChannelTopic> achievementPair(MessageListenerAdapter newCommentMessageListener,
+    public Pair<MessageListenerAdapter, ChannelTopic> newCommentPair(MessageListenerAdapter newCommentMessageListener,
                                                                      ChannelTopic newCommentEventTopic) {
         return Pair.of(newCommentMessageListener, newCommentEventTopic);
     }
 
     @Bean
-    public Pair<MessageListenerAdapter, ChannelTopic> newCommentPair(MessageListenerAdapter achievementEventListener,
+    public Pair<MessageListenerAdapter, ChannelTopic> achievementPair(MessageListenerAdapter achievementMessageListener,
                                                                      ChannelTopic achievementEventTopic) {
-        return Pair.of(achievementEventListener, achievementEventTopic);
+        return Pair.of(achievementMessageListener, achievementEventTopic);
     }
 }
