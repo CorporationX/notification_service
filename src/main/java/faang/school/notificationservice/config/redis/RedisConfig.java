@@ -54,4 +54,11 @@ public class RedisConfig {
             @Qualifier("likeEventListener") MessageListener listener) {
         return new ChannelListenerAdapter(listener, topic);
     }
+
+    @Bean
+    ChannelListenerAdapter mentorshipChannelListenerAdapter(
+            @Value("${spring.data.redis.channels.mentorship-channel.name}") String topic,
+            @Qualifier("mentorshipAcceptedEventListener") MessageListener listener) {
+        return new ChannelListenerAdapter(listener, topic);
+    }
 }
