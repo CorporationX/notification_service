@@ -1,6 +1,5 @@
 package faang.school.notificationservice.service.impl;
 
-import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;

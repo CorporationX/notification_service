@@ -66,6 +66,6 @@ public class ProfileViewEventListenerTest {
 
         profileViewEventListener.onMessage(message, null);
 
-        verify(notificationService, times(1)).send(profileAuthor, messageBuilder.buildMessage(event, profileAuthor.getLocale()));
+        verify(notificationService, times(1)).send(profileAuthor, messageBuilder.buildMessage(profileAuthor,event));
     }
 }

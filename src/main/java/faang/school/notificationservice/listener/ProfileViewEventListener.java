@@ -19,7 +19,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class ProfileViewEventListener implements MessageListener {
     private final ObjectMapper objectMapper;
-    private final NotificationService notificationService;
+    private final NotificationService notificationServiceImpl;
     private final UserServiceClient userServiceClient;
     private final MessageBuilder<ProfileViewEvent> messageBuilder;
 
@@ -30,7 +30,7 @@ public class ProfileViewEventListener implements MessageListener {
             ProfileViewEvent event = objectMapper.readValue(message.getBody(), ProfileViewEvent.class);
             log.info("Aquired message with body: {}", message.getBody());
             UserDto profileAuthor = userServiceClient.getUser(event.getAuthorId());
-            notificationService.send(profileAuthor, messageBuilder.buildMessage(event, profileAuthor.getLocale()));
+            notificationServiceImpl.send(profileAuthor, messageBuilder.buildMessage(profileAuthor,event));
         } catch (IOException exception) {
             log.info("Failed to deserialize like event", exception);
         }
