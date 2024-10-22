@@ -54,14 +54,16 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         return messageBuilders.stream()
                 .filter(builder -> builder.getInstance().equals(eventDtoClass))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("MessageBuilder not found for class: " + eventDtoClass.getName()));
+                .orElseThrow(() -> new IllegalStateException(
+                        "MessageBuilder not found for class: " + eventDtoClass.getName()));
     }
 
     protected NotificationService defineNotificationService(UserDto userDto) {
         return notificationServices.stream()
                 .filter(ns -> ns.getPreferredContact() == userDto.getPreference())
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("NotificationServices not found for preference: " + userDto.getPreference()));
+                .orElseThrow(() -> new IllegalStateException(
+                        "NotificationServices not found for preference: " + userDto.getPreference()));
     }
 
     protected String getMessage(T event, Locale locale) {
