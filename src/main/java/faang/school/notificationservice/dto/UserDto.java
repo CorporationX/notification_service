@@ -17,6 +17,7 @@ public class UserDto {
     private String avatar;
     private String avatarSmall;
     private PreferredContact preference;
+    private Long telegramId;
 
     public enum PreferredContact {
         EMAIL, PHONE, TELEGRAM
