@@ -8,6 +8,8 @@ spring:
           name: follower_channel
         achievement:
           name: achievement_channel
+        notification:
+        name: notification-channel
 
   mail:
     host: smtp.gmail.com
