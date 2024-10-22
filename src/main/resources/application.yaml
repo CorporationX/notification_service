@@ -5,7 +5,7 @@ spring:
       host: localhost
       channels:
         follower: follower_channel
-        achievement: achievement_channel
+        achievementEvent: achievement_channel
         goalCompletedEvent: goal_completed_event_channel
         likePostChannel: like_post_channel
         newComment: new_comment_channel
