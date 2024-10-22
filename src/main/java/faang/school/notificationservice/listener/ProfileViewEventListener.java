@@ -1,6 +1,5 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.ProfileViewEvent;
@@ -9,33 +8,32 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
+import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ProfileViewEventListener {
+public class ProfileViewEventListener implements MessageListener {
     private final ObjectMapper objectMapper;
     private final NotificationService notificationService;
     private final UserServiceClient userServiceClient;
     private final MessageBuilder<ProfileViewEvent> messageBuilder;
 
-    @EventListener
-    public void handleMessage(String jsonEvent) {
-        ProfileViewEvent event = readEvent(jsonEvent);
-        log.info("Received message from channel: {}", jsonEvent);
-        UserDto profileAuthor = userServiceClient.getUser(event.getAuthorId());
-        notificationService.send(profileAuthor, messageBuilder.buildMessage(event, profileAuthor.getLocale()));
-    }
-
-    private ProfileViewEvent readEvent(String jsonEvent) {
+    @Override
+    public void onMessage(Message message, byte[] pattern) {
         try {
-            log.info("reading message {}", jsonEvent);
-            return objectMapper.readValue(jsonEvent, ProfileViewEvent.class);
-        } catch (JsonProcessingException exception) {
-            log.error("message was not downloaded {}", exception.getMessage());
-            throw new RuntimeException(exception);
+            log.info("ProfileViewEventListener listens for messages");
+            ProfileViewEvent event = objectMapper.readValue(message.getBody(), ProfileViewEvent.class);
+            log.info("Aquired message with body: {}", message.getBody());
+            UserDto profileAuthor = userServiceClient.getUser(event.getAuthorId());
+            notificationService.send(profileAuthor, messageBuilder.buildMessage(event, profileAuthor.getLocale()));
+        } catch (IOException exception) {
+            log.info("Failed to deserialize like event", exception);
         }
     }
 }
+
