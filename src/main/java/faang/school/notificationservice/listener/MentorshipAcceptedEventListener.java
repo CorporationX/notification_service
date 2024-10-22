@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,8 +25,10 @@ public class MentorshipAcceptedEventListener extends AbstractEventListener<Mento
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
+        log.debug("Handling event from " + new String(message.getChannel()));
         MentorshipAcceptedEvent event = handleEvent(message, MentorshipAcceptedEvent.class);
         String answerMessage = getMessage(event, Locale.UK);
         sendNotification(event.menteeId(), answerMessage);
+        log.debug("Send notification to " + event.menteeId());
     }
 }
