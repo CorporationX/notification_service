@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.event.LikeEvent;
-import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.message.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -25,5 +25,10 @@ public class LikeEventListener extends AbstractEventListener<LikeEvent> implemen
     public void onMessage(Message message, byte[] pattern) {
         LikeEvent event = objectMapper.convertValue(message.getBody(), LikeEvent.class);
         sendNotification(event.getLikingUserId(), buildMessage(event, Locale.UK));
+    }
+
+    @Override
+    public String getTopic() {
+        return RedisTopics.LIKE_CHANNEL.getTopic();
     }
 }

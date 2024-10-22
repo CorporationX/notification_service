@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.AbstractEventListener;
 import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,8 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.util.List;
 
 @Configuration
 public class RedisConfig {
@@ -66,12 +69,12 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter likeListenerAdapter,
-                                                 MessageListenerAdapter achievementListenerAdapter) {
+    RedisMessageListenerContainer redisContainer(List<AbstractEventListener> eventListeners) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(likeListenerAdapter, likeTopic());
-        container.addMessageListener(achievementListenerAdapter, achievementTopic());
+        for (AbstractEventListener eventListener : eventListeners) {
+            container.addMessageListener(eventListener.createListenerAdapter(), new ChannelTopic(eventListener.getTopic()));
+        }
         return container;
     }
 }

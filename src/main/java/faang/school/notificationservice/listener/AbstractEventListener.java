@@ -3,9 +3,10 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.message.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,5 +35,11 @@ public abstract class AbstractEventListener<T> {
                 .filter(notificationService -> userDto.getPreference().equals(notificationService.getPreferredContact()))
                 .findFirst()
                 .ifPresent(notificationService -> notificationService.send(userDto, message));
+    }
+
+    public abstract String getTopic();
+
+    public MessageListenerAdapter createListenerAdapter() {
+        return new MessageListenerAdapter(this);
     }
 }
