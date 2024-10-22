@@ -1,6 +1,5 @@
 package faang.school.notificationservice.config.redis;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +11,6 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import java.util.List;
 
 @Configuration
-@RequiredArgsConstructor
 public class RedisConfig {
 
     @Bean
