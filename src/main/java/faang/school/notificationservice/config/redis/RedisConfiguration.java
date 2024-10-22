@@ -40,12 +40,12 @@ public class RedisConfiguration {
     }
 
     @Bean
-    ChannelTopic goalCompletedEventTopic() {
+    public ChannelTopic goalCompletedEventTopic() {
         return new ChannelTopic(redisProperties.getChannels().getGoalCompletedEvent());
     }
 
     @Bean
-    MessageListenerAdapter goalCompletedMessageListener(GoalCompletedEventListener goalCompletedEventListener) {
+    public MessageListenerAdapter goalCompletedMessageListener(GoalCompletedEventListener goalCompletedEventListener) {
         return new MessageListenerAdapter(goalCompletedEventListener);
     }
 
@@ -70,7 +70,7 @@ public class RedisConfiguration {
     }
 
     @Bean
-    ChannelTopic skillAcquiredTopic() {
+    public ChannelTopic skillAcquiredTopic() {
         return new ChannelTopic(redisProperties.getChannels().getSkillAcquiredChannel());
     }
 
