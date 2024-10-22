@@ -1,9 +1,10 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.AchievementEventListener;
-import faang.school.notificationservice.listener.LikePostEventListener;
+import faang.school.notificationservice.listener.comment.NewCommentEventListener;
+import faang.school.notificationservice.listener.follower.FollowerEventListener;
 import faang.school.notificationservice.listener.goal.GoalCompletedEventListener;
-import faang.school.notificationservice.listener.follower.FollowerMessageListener;
+import faang.school.notificationservice.listener.like.LikePostEventListener;
 import faang.school.notificationservice.listener.AchievementEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -25,7 +26,13 @@ public class RedisConfiguration {
     private final RedisProperties redisProperties;
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(List<Pair<MessageListenerAdapter, ChannelTopic>> requesters, JedisConnectionFactory jedisConnectionFactory) {
+    JedisConnectionFactory jedisConnectionFactory() {
+        return new JedisConnectionFactory();
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisContainer(List<Pair<MessageListenerAdapter, ChannelTopic>> requesters,
+                                                        JedisConnectionFactory jedisConnectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory);
         requesters.forEach(
@@ -36,42 +43,8 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public List<Pair<MessageListenerAdapter, ChannelTopic>> requesters(
-            MessageListenerAdapter followerMessageListener,
-            ChannelTopic followerTopic,
-            MessageListenerAdapter goalCompletedMessageListener,
-            ChannelTopic goalCompletedEventTopic,
-            MessageListenerAdapter likePostMessageListener,
-            ChannelTopic likePostTopic,
-            MessageListenerAdapter achievementEvent,
-            ChannelTopic achievementEventTopic)
-    {
-        return List.of(
-                Pair.of(followerMessageListener, followerTopic),
-                Pair.of(goalCompletedMessageListener, goalCompletedEventTopic),
-                Pair.of(likePostMessageListener, likePostTopic),
-                Pair.of(achievementEvent, achievementEventTopic)
-        );
-    }
-
-    @Bean
     ChannelTopic goalCompletedEventTopic() {
         return new ChannelTopic(redisProperties.getChannels().getGoalCompletedEvent());
-    }
-
-    @Bean
-    public ChannelTopic followerTopic() {
-        return new ChannelTopic(redisProperties.getChannels().getFollower());
-    }
-
-    @Bean
-    public ChannelTopic likePostTopic() {
-        return new ChannelTopic(redisProperties.getChannels().getLikePostChannel());
-    }
-
-    @Bean
-    public ChannelTopic achievementEventTopic() {
-        return new ChannelTopic(redisProperties.getChannels().getAchievementEvent());
     }
 
     @Bean
@@ -80,8 +53,28 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public MessageListenerAdapter followerMessageListener(FollowerMessageListener followerEventListener) {
+    public ChannelTopic newCommentEventTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getNewComment());
+    }
+
+    @Bean
+    public MessageListenerAdapter newCommentMessageListener(NewCommentEventListener newCommentEventListener) {
+        return new MessageListenerAdapter(newCommentEventListener);
+    }
+
+    @Bean
+    public ChannelTopic followerTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getFollower());
+    }
+
+    @Bean
+    public MessageListenerAdapter followerMessageListener(FollowerEventListener followerEventListener) {
         return new MessageListenerAdapter(followerEventListener);
+    }
+
+    @Bean
+    public ChannelTopic likePostTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getLikePostChannel());
     }
 
     @Bean
@@ -90,12 +83,42 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public ChannelTopic achievementEventTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getAchievementEvent());
+    }
+
+    @Bean
     public MessageListenerAdapter achievementEvent(AchievementEventListener achievementEventListener) {
         return new MessageListenerAdapter(achievementEventListener);
     }
 
     @Bean
-    JedisConnectionFactory jedisConnectionFactory() {
-        return new JedisConnectionFactory();
+    public Pair<MessageListenerAdapter, ChannelTopic> followerPair(MessageListenerAdapter followerMessageListener,
+                                                                   ChannelTopic followerTopic) {
+        return Pair.of(followerMessageListener, followerTopic);
+    }
+
+    @Bean
+    public Pair<MessageListenerAdapter, ChannelTopic> goalCompletedPair(MessageListenerAdapter goalCompletedMessageListener,
+                                                                        ChannelTopic goalCompletedEventTopic) {
+        return Pair.of(goalCompletedMessageListener, goalCompletedEventTopic);
+    }
+
+    @Bean
+    public Pair<MessageListenerAdapter, ChannelTopic> likePostPair(MessageListenerAdapter likePostMessageListener,
+                                                                   ChannelTopic likePostTopic) {
+        return Pair.of(likePostMessageListener, likePostTopic);
+    }
+
+    @Bean
+    public Pair<MessageListenerAdapter, ChannelTopic> achievementPair(MessageListenerAdapter newCommentMessageListener,
+                                                                     ChannelTopic newCommentEventTopic) {
+        return Pair.of(newCommentMessageListener, newCommentEventTopic);
+    }
+
+    @Bean
+    public Pair<MessageListenerAdapter, ChannelTopic> newCommentPair(MessageListenerAdapter achievementEventListener,
+                                                                     ChannelTopic achievementEventTopic) {
+        return Pair.of(achievementEventListener, achievementEventTopic);
     }
 }
