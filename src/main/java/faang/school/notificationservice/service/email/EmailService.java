@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service.email;
 
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.model.dto.UserDto;
 import faang.school.notificationservice.service.NotificationService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
