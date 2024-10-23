@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.AchievementEventListener;
+import faang.school.notificationservice.listener.SkillAcquiredEventMessageListener;
 import faang.school.notificationservice.listener.comment.NewCommentEventListener;
 import faang.school.notificationservice.listener.follower.FollowerEventListener;
 import faang.school.notificationservice.listener.goal.GoalCompletedEventListener;
@@ -82,6 +83,16 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public ChannelTopic skillAcquiredTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getSkillAcquiredChannel());
+    }
+
+    @Bean
+    public MessageListenerAdapter skillAcquiredListener(SkillAcquiredEventMessageListener skillAcquiredEventMessageListener) {
+        return new MessageListenerAdapter(skillAcquiredEventMessageListener);
+    }
+
+    @Bean
     public ChannelTopic achievementEventTopic() {
         return new ChannelTopic(redisProperties.getChannels().getAchievementEvent());
     }
@@ -89,6 +100,12 @@ public class RedisConfiguration {
     @Bean
     public MessageListenerAdapter achievementMessageListener(AchievementEventListener achievementEventListener) {
         return new MessageListenerAdapter(achievementEventListener);
+    }
+
+    @Bean
+    public Pair<MessageListenerAdapter, ChannelTopic>  skillAcquiredPair(MessageListenerAdapter skillAcquiredListener,
+                                                                         ChannelTopic skillAcquiredTopic){
+        return  Pair.of(skillAcquiredListener, skillAcquiredTopic);
     }
 
     @Bean
@@ -117,7 +134,7 @@ public class RedisConfiguration {
 
     @Bean
     public Pair<MessageListenerAdapter, ChannelTopic> achievementPair(MessageListenerAdapter achievementMessageListener,
-                                                                     ChannelTopic achievementEventTopic) {
+                                                                      ChannelTopic achievementEventTopic) {
         return Pair.of(achievementMessageListener, achievementEventTopic);
     }
 }

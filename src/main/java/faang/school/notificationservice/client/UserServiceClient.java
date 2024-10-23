@@ -1,6 +1,7 @@
 package faang.school.notificationservice.client;
 
 import faang.school.notificationservice.dto.user.UserDto;
+import faang.school.notificationservice.dto.skill.SkillDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

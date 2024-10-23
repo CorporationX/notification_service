@@ -1,11 +1,11 @@
-package faang.school.notificationservice.listener.goal;
+package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.goal.GoalCompletedEvent;
+import faang.school.notificationservice.dto.skill.SkillAcquiredEvent;
 import faang.school.notificationservice.dto.user.UserDto;
-import faang.school.notificationservice.messaging.goal.GoalCompletedEventBuilder;
 import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.messaging.SkillAcquiredBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.telegram.TelegramService;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,15 +23,17 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GoalCompletedEventListenerTest {
-
-    private static final long GOAL_ID = 1L;
+class SkillAcquiredEventMessageListenerTest {
     private static final long USER_ID = 1L;
 
-    private static final String GOAL_NAME = "TEST";
     private static final String BUILDER_TEXT = "BUILDER_TEXT";
 
     @Mock
@@ -47,27 +49,27 @@ class GoalCompletedEventListenerTest {
     private UserServiceClient userServiceClient;
 
     @Mock
-    private GoalCompletedEventBuilder goalCompletedEventBuilder;
+    private SkillAcquiredBuilder skillAcquiredBuilder;
 
     private final Map<UserDto.PreferredContact, NotificationService> notificationServices = new HashMap<>();
     private final Map<Class<?>, MessageBuilder<?>> messageBuilders = new HashMap<>();
-    private GoalCompletedEventListener goalCompletedEventListener;
-    private GoalCompletedEvent goalCompletedEvent;
+    private SkillAcquiredEventMessageListener skillAcquiredEventMessageListener;
+    private SkillAcquiredEvent skillAcquiredEvent;
     private UserDto userDto;
 
     @BeforeEach
     void init() {
-        goalCompletedEventListener = new GoalCompletedEventListener(
+        skillAcquiredEventMessageListener = new SkillAcquiredEventMessageListener(
                 objectMapper,
                 userServiceClient,
                 messageBuilders,
                 notificationServices
         );
 
-        goalCompletedEvent = GoalCompletedEvent.builder()
-                .goalId(GOAL_ID)
-                .userId(USER_ID)
-                .goalName(GOAL_NAME)
+        skillAcquiredEvent = skillAcquiredEvent.builder()
+                .skillId(1L)
+                .receiverId(2L)
+                .skillTitle("test")
                 .build();
 
         userDto = UserDto.builder()
@@ -79,25 +81,25 @@ class GoalCompletedEventListenerTest {
     @Test
     @DisplayName("Should notify user about event")
     void whenCorrectValuesThenNotifyPerson() throws IOException {
-        messageBuilders.put(goalCompletedEvent.getClass(), goalCompletedEventBuilder);
+        messageBuilders.put(skillAcquiredEvent.getClass(), skillAcquiredBuilder);
         notificationServices.put(UserDto.PreferredContact.TELEGRAM, telegramService);
 
-        when(objectMapper.readValue(message.getBody(), GoalCompletedEvent.class))
-                .thenReturn(goalCompletedEvent);
-        when(userServiceClient.getUser(goalCompletedEvent.getUserId()))
+        when(objectMapper.readValue(message.getBody(), SkillAcquiredEvent.class))
+                .thenReturn(skillAcquiredEvent);
+        when(userServiceClient.getUser(skillAcquiredEvent.getReceiverId()))
                 .thenReturn(userDto);
 
-        when(goalCompletedEventBuilder.buildMessage(eq(goalCompletedEvent), any(Locale.class)))
+        when(skillAcquiredBuilder.buildMessage(eq(skillAcquiredEvent), any(Locale.class)))
                 .thenReturn(BUILDER_TEXT);
 
         doNothing().when(telegramService).send(eq(userDto), anyString());
 
-        goalCompletedEventListener.onMessage(message, new byte[0]);
+        skillAcquiredEventMessageListener.onMessage(message, new byte[0]);
 
         verify(objectMapper)
-                .readValue(message.getBody(), GoalCompletedEvent.class);
+                .readValue(message.getBody(), SkillAcquiredEvent.class);
         verify(userServiceClient)
-                .getUser(goalCompletedEvent.getUserId());
+                .getUser(skillAcquiredEvent.getReceiverId());
         verify(telegramService)
                 .send(eq(userDto), anyString());
 
@@ -106,33 +108,29 @@ class GoalCompletedEventListenerTest {
     @Test
     @DisplayName("Should throw exception when not found any correct message builder")
     void whenNoMessageBuildersThenThrowException() throws IOException {
-        when(objectMapper.readValue(message.getBody(), GoalCompletedEvent.class))
-                .thenReturn(goalCompletedEvent);
-        when(userServiceClient.getUser(goalCompletedEvent.getUserId()))
+        when(objectMapper.readValue(message.getBody(), SkillAcquiredEvent.class))
+                .thenReturn(skillAcquiredEvent);
+        when(userServiceClient.getUser(skillAcquiredEvent.getReceiverId()))
                 .thenReturn(userDto);
 
 
         assertThrows(NoSuchElementException.class,
-                () -> goalCompletedEventListener.onMessage(message, new byte[0]),
+                () -> skillAcquiredEventMessageListener.onMessage(message, new byte[0]),
                 "Not found message builder");
-
     }
 
     @Test
     @DisplayName("Should throw exception when not found any correct preferred notification method")
     void whenNoPreferredNotificationMethodThenThrowException() throws IOException {
-        messageBuilders.put(goalCompletedEvent.getClass(), goalCompletedEventBuilder);
+        messageBuilders.put(skillAcquiredEvent.getClass(), skillAcquiredBuilder);
 
-        when(objectMapper.readValue(message.getBody(), GoalCompletedEvent.class))
-                .thenReturn(goalCompletedEvent);
-        when(userServiceClient.getUser(goalCompletedEvent.getUserId()))
+        when(objectMapper.readValue(message.getBody(), SkillAcquiredEvent.class))
+                .thenReturn(skillAcquiredEvent);
+        when(userServiceClient.getUser(skillAcquiredEvent.getReceiverId()))
                 .thenReturn(userDto);
 
         assertThrows(NoSuchElementException.class,
-                () -> goalCompletedEventListener.onMessage(message, new byte[0]),
+                () -> skillAcquiredEventMessageListener.onMessage(message, new byte[0]),
                 "Not found notification service");
-
     }
 }
-
-

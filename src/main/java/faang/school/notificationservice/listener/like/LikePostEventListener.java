@@ -27,7 +27,9 @@ public class LikePostEventListener extends AbstractEventListener<LikePostEvent> 
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, LikePostEvent.class, likePostEvent -> {
             UserDto postAuthor = userServiceClient.getUser(likePostEvent.getPostAuthorId());
-            String text = getMessage(likePostEvent, Locale.UK);
+            Locale userPreferedLocale =
+                    postAuthor.getLocale() != null ? postAuthor.getLocale() : Locale.ENGLISH;
+            String text = getMessage(likePostEvent, userPreferedLocale);
             sendNotification(postAuthor, text);
         });
     }

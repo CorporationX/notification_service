@@ -9,6 +9,7 @@ spring:
         goalCompletedEvent: goal_completed_event_channel
         likePostChannel: like_post_channel
         newComment: new_comment_channel
+        skillAcquiredChannel: skill_acquired_channel
 
   mail:
     host: smtp.gmail.com
