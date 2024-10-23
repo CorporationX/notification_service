@@ -16,5 +16,7 @@ public class UserDto {
     private String email;
     private String phone;
     private boolean active;
+    private String telegramUsername;
+    private String telegramUserId;
     private PreferredContact preference;
 }
