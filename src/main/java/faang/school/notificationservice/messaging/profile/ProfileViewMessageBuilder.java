@@ -21,6 +21,6 @@ public class ProfileViewMessageBuilder implements MessageBuilder<ProfileViewEven
 
     @Override
     public String buildMessage(ProfileViewEvent event, Locale locale) {
-        return messageSource.getMessage("profile.view", new Object[]{event.getUserViewedId()}, locale);
+        return messageSource.getMessage("profile.view", new Object[]{event.getUserViewedName()}, locale);
     }
 }

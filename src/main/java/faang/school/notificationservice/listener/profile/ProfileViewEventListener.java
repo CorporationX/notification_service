@@ -27,7 +27,7 @@ public class ProfileViewEventListener extends AbstractEventListener<ProfileViewE
     @Override
     public void onMessage(@NonNull Message message, byte[] pattern) {
         handleEvent(message, ProfileViewEvent.class, profileView -> {
-            UserDto profileViewedAuthor = userServiceClient.getUser(profileView.getProfileViewedId());
+            UserDto profileViewedAuthor = userServiceClient.getUser(profileView.getViewedProfileId());
             Locale userPreferedLocale =
                     profileViewedAuthor.getLocale() != null ? profileViewedAuthor.getLocale() : Locale.ENGLISH;
             String text = getMessage(profileView, userPreferedLocale);

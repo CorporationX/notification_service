@@ -68,7 +68,7 @@ public class ProfileViewEventListenerTest {
 
         profileViewEvent = ProfileViewEvent.builder()
                 .userViewedId(USER_ID_ONE)
-                .profileViewedId(USER_ID_ONE)
+                .viewedProfileId(USER_ID_ONE)
                 .build();
 
         userDto = UserDto.builder()

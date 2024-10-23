@@ -15,5 +15,6 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProfileViewEvent {
     private Long userViewedId;
-    private Long profileViewedId;
+    private String userViewedName;
+    private Long viewedProfileId;
 }
