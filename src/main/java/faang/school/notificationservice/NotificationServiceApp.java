@@ -15,11 +15,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication
 @EnableFeignClients("faang.school.notificationservice.client")
 @EnableRetry
 @EnableAsync
-@EnableAutoConfiguration
 @ConfigurationPropertiesScan
 public class NotificationServiceApp {
     public static void main(String[] args) {
