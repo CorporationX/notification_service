@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SkillAcquiredEvent {
-    private Long userId;
+public class SkillOfferedEvent {
+    private Long senderId;
+    private Long receiverId;
     private Long skillId;
 }
