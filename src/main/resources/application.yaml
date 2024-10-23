@@ -5,9 +5,10 @@ spring:
       host: localhost
       channels:
         follower: follower_channel
-        achievement: achievement_channel
+        achievementEvent: achievement_channel
         goalCompletedEvent: goal_completed_event_channel
         likePostChannel: like_post_channel
+        newComment: new_comment_channel
         skillAcquiredChannel: skill_acquired_channel
 
   mail:
@@ -53,3 +54,11 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+post-service:
+  host: localhost
+  port: 8081
+
+builder:
+  newCommentEventOpt:
+    startMessageIndex: 0
+    lastMessageIndex: 20
