@@ -1,20 +1,20 @@
 package faang.school.notificationservice.service.email;
 
-import faang.school.notificationservice.dto.UserDto;
-import jakarta.mail.MessagingException;
+import faang.school.notificationservice.model.dto.UserDto;
 import jakarta.mail.internet.MimeMessage;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.TestPropertySource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestPropertySource(properties = {
@@ -40,7 +40,7 @@ public class EmailServiceTest {
     }
 
     @Test
-    void testSendEmail_Success() throws MessagingException {
+    void testSendEmail_Success() {
         // Arrange
         MimeMessage mimeMessage = mock(MimeMessage.class);
         emailService.setEmailFrom("test@gmail.com");
@@ -51,8 +51,6 @@ public class EmailServiceTest {
 
         // Assert
         verify(mailSender, times(1)).send(mimeMessage);
-
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
         verify(mailSender, times(1)).send(mimeMessage);
     }
 }
