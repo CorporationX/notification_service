@@ -1,7 +1,6 @@
 package faang.school.notificationservice.messaging;
 
-import faang.school.notificationservice.dto.event.LikePostEvent;
-import faang.school.notificationservice.messaging.like.LikePostMessageBuilder;
+import faang.school.notificationservice.dto.event.AchievementEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,35 +16,33 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class LikePostMessageBuilderTest {
+class AchievementEvenBuilderTest {
 
     @InjectMocks
-    private LikePostMessageBuilder likePostMessageBuilder;
+    private AchievementEvenBuilder achievementEvenBuilder;
 
     @Mock
     private MessageSource messageSource;
 
-    private static final long ID = 1L;
-    private static final String EXPECTED_MESSAGE = "Your post 1 was liked!";
+    private static final String EXPECTED_MESSAGE = "Congrats! You've got a new achievement!";
+    private static final String PROPERTY_NAME = "achievement";
 
     @Test
-    @DisplayName("Успешное возвращение LikePostEvent.class")
+    @DisplayName("Успешное возвращение AchievementEvent.class")
     public void whenGetInstanceReturnLikePostEvent() {
-        assertEquals(LikePostEvent.class, likePostMessageBuilder.getInstance());
+        assertEquals(AchievementEvent.class, achievementEvenBuilder.getInstance());
     }
 
     @Test
     @DisplayName("Успешное построение сообщения")
     public void whenBuildMessageReturnExpectedMessage() {
-        LikePostEvent event = LikePostEvent.builder()
-                .postId(ID)
-                .build();
+        AchievementEvent event = AchievementEvent.builder().build();
         Locale locale = Locale.UK;
-        when(messageSource.getMessage("like.post", new Object[]{ID}, locale)).thenReturn(EXPECTED_MESSAGE);
+        when(messageSource.getMessage(PROPERTY_NAME, new Object[]{}, locale)).thenReturn(EXPECTED_MESSAGE);
 
-        String actualMessage = likePostMessageBuilder.buildMessage(event, locale);
+        String actualMessage = achievementEvenBuilder.buildMessage(event, locale);
 
         assertEquals(EXPECTED_MESSAGE, actualMessage);
-        verify(messageSource).getMessage("like.post", new Object[]{ID}, locale);
+        verify(messageSource).getMessage(PROPERTY_NAME, new Object[]{}, locale);
     }
 }

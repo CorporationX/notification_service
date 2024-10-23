@@ -17,9 +17,10 @@ public class RedisProperties {
     @Setter
     protected static class Channels {
         private String follower;
-        private String achievement;
+        private String achievementEvent;
         private String goalCompletedEvent;
         private String likePostChannel;
+        private String newComment;
         private String profileView;
     }
 }

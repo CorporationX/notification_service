@@ -2,10 +2,9 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.event.LikePostEvent;
+import faang.school.notificationservice.dto.event.AchievementEvent;
 import faang.school.notificationservice.dto.user.UserDto;
-import faang.school.notificationservice.listener.like.LikePostEventListener;
-import faang.school.notificationservice.messaging.like.LikePostMessageBuilder;
+import faang.school.notificationservice.messaging.AchievementEvenBuilder;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.email.EmailService;
@@ -34,10 +33,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class LikePostEventListenerTest {
+class AchievementEventListenerTest {
 
     @InjectMocks
-    private LikePostEventListener likePostEventListener;
+    private AchievementEventListener achievementEventListener;
 
     @Mock
     private Message message;
@@ -49,7 +48,7 @@ class LikePostEventListenerTest {
     private UserServiceClient userServiceClient;
 
     @Mock
-    private LikePostMessageBuilder likePostMessageBuilder;
+    private AchievementEvenBuilder achievementEvenBuilder;
 
     @Mock
     private EmailService emailService;
@@ -58,8 +57,9 @@ class LikePostEventListenerTest {
     private Map<UserDto.PreferredContact, NotificationService> notificationServices;
 
     private static final long ID = 1L;
+    private static final String TITLE = "Title";
     private static final String MESSAGE = "Success";
-    private LikePostEvent likePostEvent;
+    private AchievementEvent achievementEvent;
     private UserDto userDto;
 
 
@@ -67,14 +67,13 @@ class LikePostEventListenerTest {
     public void init() {
         messageBuilders = new HashMap<>();
         notificationServices = new HashMap<>();
-        likePostEventListener = new LikePostEventListener(
+        achievementEventListener = new AchievementEventListener(
                 objectMapper, userServiceClient,
                 messageBuilders, notificationServices);
 
-        likePostEvent = LikePostEvent.builder()
-                .postAuthorId(ID)
-                .likeAuthorId(ID)
-                .postId(ID)
+        achievementEvent = AchievementEvent.builder()
+                .title(TITLE)
+                .userId(ID)
                 .build();
         userDto = UserDto.builder()
                 .notifyPreference(UserDto.PreferredContact.EMAIL)
@@ -86,18 +85,20 @@ class LikePostEventListenerTest {
         @Test
         @DisplayName("Успешная отправка уведомления пользователю")
         public void whenOnMessageWithCurrentDataThenSuccess() throws IOException {
-            when(objectMapper.readValue(message.getBody(), LikePostEvent.class)).thenReturn(likePostEvent);
+            when(objectMapper.readValue(message.getBody(), AchievementEvent.class))
+                    .thenReturn(achievementEvent);
             when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
-            messageBuilders.put(LikePostEvent.class, likePostMessageBuilder);
+            messageBuilders.put(AchievementEvent.class, achievementEvenBuilder);
             notificationServices.put(UserDto.PreferredContact.EMAIL, emailService);
-            when(likePostMessageBuilder.buildMessage(eq(likePostEvent), any(Locale.class))).thenReturn(MESSAGE);
+            when(achievementEvenBuilder.buildMessage(eq(achievementEvent), any(Locale.class)))
+                    .thenReturn(MESSAGE);
             doNothing().when(emailService).send(userDto, MESSAGE);
 
-            likePostEventListener.onMessage(message, new byte[0]);
+            achievementEventListener.onMessage(message, new byte[0]);
 
-            verify(objectMapper).readValue(message.getBody(), LikePostEvent.class);
+            verify(objectMapper).readValue(message.getBody(), AchievementEvent.class);
             verify(userServiceClient).getUser(anyLong());
-            verify(likePostMessageBuilder).buildMessage(eq(likePostEvent), any(Locale.class));
+            verify(achievementEvenBuilder).buildMessage(eq(achievementEvent), any(Locale.class));
             verify(emailService).send(userDto, MESSAGE);
         }
     }
@@ -108,20 +109,25 @@ class LikePostEventListenerTest {
         @Test
         @DisplayName("Ошибка при отсутствии соответствующего messageBuilder")
         public void whenOnMessageWithoutMessageBuilderThenException() throws IOException {
-            when(objectMapper.readValue(message.getBody(), LikePostEvent.class)).thenReturn(likePostEvent);
+            when(objectMapper.readValue(message.getBody(), AchievementEvent.class))
+                    .thenReturn(achievementEvent);
 
-            assertThrows(NoSuchElementException.class, () -> likePostEventListener.onMessage(message, new byte[0]));
+            assertThrows(NoSuchElementException.class,
+                    () -> achievementEventListener.onMessage(message, new byte[0]));
         }
 
         @Test
         @DisplayName("Ошибка при отсутствии соответствующего notificationService")
         public void whenOnMessageWithoutNotificationServiceThenException() throws IOException {
-            when(objectMapper.readValue(message.getBody(), LikePostEvent.class)).thenReturn(likePostEvent);
+            when(objectMapper.readValue(message.getBody(), AchievementEvent.class))
+                    .thenReturn(achievementEvent);
             when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
-            messageBuilders.put(LikePostEvent.class, likePostMessageBuilder);
-            when(likePostMessageBuilder.buildMessage(eq(likePostEvent), any(Locale.class))).thenReturn(MESSAGE);
+            messageBuilders.put(AchievementEvent.class, achievementEvenBuilder);
+            when(achievementEvenBuilder.buildMessage(eq(achievementEvent), any(Locale.class)))
+                    .thenReturn(MESSAGE);
 
-            assertThrows(NoSuchElementException.class, () -> likePostEventListener.onMessage(message, new byte[0]));
+            assertThrows(NoSuchElementException.class,
+                    () -> achievementEventListener.onMessage(message, new byte[0]));
         }
     }
 }
