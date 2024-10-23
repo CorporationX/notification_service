@@ -59,6 +59,7 @@ redis:
     skill-acquired: skill_acquired_channel
     mentorship-offered: mentorship_offered_channel
     recommendation-received: recommendation_received_channel
+    profile-view: profile_view_channel
 
 telegram:
   bot:
