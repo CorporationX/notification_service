@@ -1,65 +1,72 @@
 package faang.school.notificationservice.config.redis;
 
-import faang.school.notificationservice.listener.FollowerEventListener;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+
+import java.util.List;
 
 @Configuration
-@RequiredArgsConstructor
 public class RedisConfig {
 
-    @Value("${spring.data.redis.channels.comment-channel.name}")
-    private String commentChannel;
-
-    @Value("${spring.data.redis.channels.follower-channel.name}")
-    private String followerEventListenerTopicName;
-
     @Bean
-    public JedisConnectionFactory jedisConnectionFactory() {
+    JedisConnectionFactory jedisConnectionFactory() {
         return new JedisConnectionFactory();
     }
 
-    @Bean(name = "followerTopic")
-    ChannelTopic followerTopic() {
-        return new ChannelTopic(followerEventListenerTopicName);
-    }
-
     @Bean
-    public ChannelTopic commentTopic() {
-        return new ChannelTopic(commentChannel);
-    }
-
-    @Bean
-    public MessageListenerAdapter commentMessageListenerAdapter(
-            @Qualifier("commentEventListener") MessageListener listener) {
-        return new MessageListenerAdapter(listener);
-    }
-
-    @Bean
-    public MessageListenerAdapter followerEventListenerAdapter(
-            @Qualifier("followerEventListener") MessageListener followerEventListener
-    ) {
-        return new MessageListenerAdapter(followerEventListener);
-    }
-
-    @Bean
-    public RedisMessageListenerContainer container(
-            MessageListenerAdapter commentMessageListenerAdapter,
-            MessageListenerAdapter followerEventListenerAdapter
-    ) {
+    public RedisMessageListenerContainer container(List<ChannelListenerAdapter> channelListenerAdapters) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(commentMessageListenerAdapter, commentTopic());
-        container.addMessageListener(followerEventListenerAdapter, followerTopic());
+        channelListenerAdapters.forEach(
+                listener -> container.addMessageListener(listener.getListenerAdapter(), listener.getTopic()));
         return container;
+    }
+
+    @Bean
+    ChannelListenerAdapter commentChannelListenerAdapter(
+            @Value("${spring.data.redis.channels.comment-channel.name}") String topic,
+            @Qualifier("commentEventListener") MessageListener listener) {
+        return new ChannelListenerAdapter(listener, topic);
+    }
+
+    @Bean
+    ChannelListenerAdapter eventChannelListenerAdapter(
+            @Value("${spring.data.redis.channels.comment-channel.name}") String topic,
+            @Qualifier("commentEventListener") MessageListener listener) {
+        return new ChannelListenerAdapter(listener, topic);
+    }
+
+    @Bean
+    ChannelListenerAdapter goalChannelListenerAdapter(
+            @Value("${spring.data.redis.channels.goal-channel.name}") String topic,
+            @Qualifier("goalCompletedEventListener") MessageListener listener) {
+        return new ChannelListenerAdapter(listener, topic);
+    }
+
+    @Bean
+    ChannelListenerAdapter likeChannelListenerAdapter(
+            @Value("${spring.data.redis.channels.like-channel.name}") String topic,
+            @Qualifier("likeEventListener") MessageListener listener) {
+        return new ChannelListenerAdapter(listener, topic);
+    }
+
+    @Bean
+    ChannelListenerAdapter mentorshipChannelListenerAdapter(
+            @Value("${spring.data.redis.channels.mentorship-channel.name}") String topic,
+            @Qualifier("mentorshipAcceptedEventListener") MessageListener listener) {
+        return new ChannelListenerAdapter(listener, topic);
+    }
+
+    @Bean
+    ChannelListenerAdapter followerChannelListenerAdapter(
+        @Value("${spring.data.redis.channels.follower-channel.name}") String topic,
+        @Qualifier("followerEventListener") MessageListener listener
+    ) {
+        return new ChannelListenerAdapter(listener, topic);
     }
 }
