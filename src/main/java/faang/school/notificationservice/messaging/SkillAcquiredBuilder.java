@@ -1,6 +1,5 @@
 package faang.school.notificationservice.messaging;
 
-import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.skill.SkillAcquiredEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -13,7 +12,6 @@ import java.util.Locale;
 public class SkillAcquiredBuilder implements MessageBuilder<SkillAcquiredEvent> {
 
     private final MessageSource messageSource;
-    private final UserServiceClient userServiceClient;
 
     @Override
     public Class<?> getInstance() {

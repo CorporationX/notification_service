@@ -1,10 +1,8 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.AchievementEventListener;
-import faang.school.notificationservice.listener.comment.NewCommentEventListener;
-import faang.school.notificationservice.listener.follower.FollowerEventListener;
-import faang.school.notificationservice.listener.LikePostEventListener;
 import faang.school.notificationservice.listener.SkillAcquiredEventMessageListener;
+import faang.school.notificationservice.listener.comment.NewCommentEventListener;
 import faang.school.notificationservice.listener.follower.FollowerEventListener;
 import faang.school.notificationservice.listener.goal.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.like.LikePostEventListener;
@@ -105,6 +103,12 @@ public class RedisConfiguration {
     }
 
     @Bean
+    public Pair<MessageListenerAdapter, ChannelTopic>  skillAcquiredPair(MessageListenerAdapter skillAcquiredListener,
+                                                                         ChannelTopic skillAcquiredTopic){
+        return  Pair.of(skillAcquiredListener, skillAcquiredTopic);
+    }
+
+    @Bean
     public Pair<MessageListenerAdapter, ChannelTopic> followerPair(MessageListenerAdapter followerMessageListener,
                                                                    ChannelTopic followerTopic) {
         return Pair.of(followerMessageListener, followerTopic);
@@ -130,7 +134,7 @@ public class RedisConfiguration {
 
     @Bean
     public Pair<MessageListenerAdapter, ChannelTopic> achievementPair(MessageListenerAdapter achievementMessageListener,
-                                                                     ChannelTopic achievementEventTopic) {
+                                                                      ChannelTopic achievementEventTopic) {
         return Pair.of(achievementMessageListener, achievementEventTopic);
     }
 }

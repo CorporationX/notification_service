@@ -27,7 +27,9 @@ public class SkillAcquiredEventMessageListener extends AbstractEventListener<Ski
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, SkillAcquiredEvent.class, skillAcquiredEvent -> {
             UserDto userDto = userServiceClient.getUser(skillAcquiredEvent.getReceiverId());
-            String textMessage = getMessage(skillAcquiredEvent, Locale.UK);
+            Locale userPreferedLocale =
+                    userDto.getLocale() != null ? userDto.getLocale() : Locale.ENGLISH;
+            String textMessage = getMessage(skillAcquiredEvent, userPreferedLocale);
             sendNotification(userDto, textMessage);
         });
     }
