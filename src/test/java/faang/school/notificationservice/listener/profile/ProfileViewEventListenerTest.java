@@ -67,7 +67,7 @@ public class ProfileViewEventListenerTest {
         );
 
         profileViewEvent = ProfileViewEvent.builder()
-                .userViewedId(USER_ID_ONE)
+                .viewerId(USER_ID_ONE)
                 .viewedProfileId(USER_ID_ONE)
                 .build();
 
@@ -84,7 +84,7 @@ public class ProfileViewEventListenerTest {
         notificationServices.put(UserDto.PreferredContact.TELEGRAM, telegramService);
         when(objectMapper.readValue(message.getBody(), ProfileViewEvent.class))
                 .thenReturn(profileViewEvent);
-        when(userServiceClient.getUser(profileViewEvent.getUserViewedId()))
+        when(userServiceClient.getUser(profileViewEvent.getViewerId()))
                 .thenReturn(userDto);
         when(profileViewMessageBuilder.buildMessage(eq(profileViewEvent), any(Locale.class)))
                 .thenReturn(TEST_TEXT);
@@ -95,7 +95,7 @@ public class ProfileViewEventListenerTest {
         verify(objectMapper)
                 .readValue(message.getBody(), ProfileViewEvent.class);
         verify(userServiceClient)
-                .getUser(profileViewEvent.getUserViewedId());
+                .getUser(profileViewEvent.getViewerId());
         verify(telegramService)
                 .send(eq(userDto), anyString());
     }
@@ -105,7 +105,7 @@ public class ProfileViewEventListenerTest {
     void whenNoMessageBuilderFoundThenThrowException() throws IOException {
         when(objectMapper.readValue(message.getBody(), ProfileViewEvent.class))
                 .thenReturn(profileViewEvent);
-        when(userServiceClient.getUser(profileViewEvent.getUserViewedId()))
+        when(userServiceClient.getUser(profileViewEvent.getViewerId()))
                 .thenReturn(userDto);
 
         assertThrows(NoSuchElementException.class,
@@ -118,7 +118,7 @@ public class ProfileViewEventListenerTest {
         messageBuilders.put(profileViewEvent.getClass(), profileViewMessageBuilder);
         when(objectMapper.readValue(message.getBody(), ProfileViewEvent.class))
                 .thenReturn(profileViewEvent);
-        when(userServiceClient.getUser(profileViewEvent.getUserViewedId()))
+        when(userServiceClient.getUser(profileViewEvent.getViewerId()))
                 .thenReturn(userDto);
 
         assertThrows(NoSuchElementException.class,
