@@ -131,4 +131,10 @@ public class RedisConfiguration {
                                                                      ChannelTopic achievementEventTopic) {
         return Pair.of(achievementMessageListener, achievementEventTopic);
     }
+
+    @Bean
+    public Pair<MessageListenerAdapter, ChannelTopic> profileViewPair(MessageListenerAdapter profileViewMessageListener,
+                                                                      ChannelTopic profileViewTopic) {
+        return Pair.of(profileViewMessageListener, profileViewTopic);
+    }
 }
