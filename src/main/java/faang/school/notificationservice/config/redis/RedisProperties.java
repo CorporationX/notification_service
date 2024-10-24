@@ -21,5 +21,6 @@ public class RedisProperties {
         private String goalCompletedEvent;
         private String likePostChannel;
         private String newComment;
+        private String projectChannel;
     }
 }
