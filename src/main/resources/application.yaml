@@ -31,6 +31,8 @@ spring:
           name: event_channel
         mentorship-channel:
           name: mentorship_channel
+        recommendation-channel:
+          name: recommendation_channel
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
