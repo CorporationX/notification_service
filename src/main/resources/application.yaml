@@ -12,6 +12,8 @@ spring:
           name: event_start_topic
         profile-view:
           name: profileViewEvent
+        comment_notification_event:
+          name: commentNotificationEvent
 
   mail:
     host: smtp.gmail.com
