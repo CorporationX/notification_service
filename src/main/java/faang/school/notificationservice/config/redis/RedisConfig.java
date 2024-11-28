@@ -2,7 +2,6 @@ package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.FollowerEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
-import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,12 +27,6 @@ public class RedisConfig {
     }
 
     @Bean
-    public MessageListenerAdapter messageListenerRecommendationReceivedAdapter(
-            RecommendationReceivedEventListener recommendationReceivedEventListener) {
-        return new MessageListenerAdapter(recommendationReceivedEventListener);
-    }
-
-    @Bean
     public ChannelTopic followerChannelTopic() {
         return new ChannelTopic(properties.getChannels().get("follower").getName());
     }
@@ -44,17 +37,10 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic recommendationReceivedChannelTopic() {
-        return new ChannelTopic(properties.getChannels().get("recommendation-received").getName());
-    }
-
-    @Bean
     public RedisMessageListenerContainer container(
             RedisConnectionFactory connectionFactory,
             MessageListenerAdapter messageListenerFollowerAdapter,
             MessageListenerAdapter messageListenerLikeAdapter,
-            MessageListenerAdapter messageListenerRecommendationReceivedAdapter,
-            ChannelTopic recommendationReceivedChannelTopic,
             ChannelTopic followerChannelTopic,
             ChannelTopic likeChannelTopic) {
 
@@ -63,7 +49,6 @@ public class RedisConfig {
 
         container.addMessageListener(messageListenerFollowerAdapter, followerChannelTopic);
         container.addMessageListener(messageListenerLikeAdapter, likeChannelTopic);
-        container.addMessageListener(messageListenerRecommendationReceivedAdapter, recommendationReceivedChannelTopic);
 
         return container;
     }
