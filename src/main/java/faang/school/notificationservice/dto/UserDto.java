@@ -1,8 +1,10 @@
 package faang.school.notificationservice.dto;
 
+import lombok.Builder;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
+@Builder
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
