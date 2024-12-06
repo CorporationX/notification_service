@@ -9,8 +9,6 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-        event_start: event_start
-        like-post: like-post-notification
 
   mail:
     host: smtp.gmail.com
@@ -44,19 +42,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
     from: Manticore Notification Service
 
-telegram:
-  notification-bot:
-    username: manticore_notification_bot
-    token: 7431818496:AAGZygfW_KWSkRRqpmPXn2oy2WOUMn0jnt0
-    retry:
-      max-attempts: 4
-      backoff-delay: 2000
-
 project-service:
-    host: localhost
-    port: 8082
-    path: /api/v1
+  host: localhost
+  port: 8082
+  path: /api/v1
 user-service:
-    host: localhost
-    port: 8080
-    path: /api/v1
+  host: localhost
+  port: 8080
+  path: /api/v1

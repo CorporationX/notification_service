@@ -4,15 +4,15 @@ import faang.school.notificationservice.dto.UserDto;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TelegramService implements NotificationService{
-
+public class SMSService implements NotificationService{
+    //Выполняется в задаче BJS2-41826
     @Override
     public void send(UserDto user, String message) {
-        System.out.println("Сообщение отправелно в телегу " + message + " пользователю " + user.getUsername());
+        System.out.println("Сообщение отправлено по смс " + message + " пользователю " + user.getUsername());
     }
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.TELEGRAM;
+        return UserDto.PreferredContact.SMS;
     }
 }

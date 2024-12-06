@@ -14,7 +14,7 @@ public class LikePostMessageBuilder implements MessageBuilder<LikePostResponseDt
     private final MessageSource messageSource;
 
     @Override
-    public Class<?> getInstance() {
+    public Class<LikePostResponseDto> supportEventType() {
         return LikePostResponseDto.class;
     }
 

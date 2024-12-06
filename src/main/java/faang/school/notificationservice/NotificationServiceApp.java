@@ -8,10 +8,12 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.retry.annotation.EnableRetry;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableFeignClients("faang.school.notificationservice.client")
-public class  NotificationServiceApp {
+@EnableRetry
+public class NotificationServiceApp {
     public static void main(String[] args) {
         new SpringApplicationBuilder(NotificationServiceApp.class)
                 .bannerMode(Banner.Mode.OFF)
