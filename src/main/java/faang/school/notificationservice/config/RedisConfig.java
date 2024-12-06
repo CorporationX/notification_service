@@ -2,6 +2,7 @@ package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.LikePostEventListener;
 import faang.school.notificationservice.listener.impl.UserFollowerEventListener;
+import faang.school.notificationservice.redis.EventStartEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,11 +39,13 @@ public class RedisConfig {
     @Bean
     public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory,
                                                         LikePostEventListener likePostEventListener,
-                                                        UserFollowerEventListener userFollowerListener) {
+                                                        UserFollowerEventListener userFollowerListener,
+                                                        EventStartEventListener eventStartEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(likePostEventListener.getAdapter(), likePostEventListener.getTopic());
         container.addMessageListener(userFollowerListener.getAdapter(), userFollowerListener.getTopic());
+        container.addMessageListener(eventStartEventListener.getAdapter(), eventStartEventListener.getTopic());
         return container;
     }
 }
