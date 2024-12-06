@@ -1,10 +1,11 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.LikeEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.LikeMessageBuilder;
-import faang.school.notificationservice.service.TelegramService;
+import faang.school.notificationservice.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -17,9 +18,10 @@ import java.util.Locale;
 @Component
 @RequiredArgsConstructor
 public class LikeEventListener implements MessageListener {
-    private final TelegramService telegramService;
+    private final EmailService emailService;
     private final LikeMessageBuilder likeMessageBuilder;
     private final ObjectMapper objectMapper;
+    private final UserServiceClient userServiceClient;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
@@ -29,8 +31,12 @@ public class LikeEventListener implements MessageListener {
             json = json.replaceAll("\"@class\".*?,", "");
 
             LikeEvent event = objectMapper.readValue(json, LikeEvent.class);
-            telegramService.send(
-                    UserDto.builder().id(event.getLikeAuthorId()).preference(UserDto.PreferredContact.TELEGRAM).build(),
+
+            UserDto user = userServiceClient.getUser(event.getPostAuthorId());
+            user.setPreference(UserDto.PreferredContact.EMAIL);
+
+            emailService.send(
+                    user,
                     likeMessageBuilder.buildMessage(event, Locale.US)
             );
         } catch (IOException e) {

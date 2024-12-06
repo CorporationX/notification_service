@@ -9,7 +9,7 @@ import java.util.Locale;
 public class LikeMessageBuilder implements MessageBuilder<LikeEvent> {
     @Override
     public String buildMessage(LikeEvent event, Locale locale) {
-        return String.format("User %d liked your post %d", event.getLikeAuthorId(), event.getPostId());
+        return String.format("User with id: %d liked your post with id: %d", event.getLikeAuthorId(), event.getPostId());
     }
 
     @Override
