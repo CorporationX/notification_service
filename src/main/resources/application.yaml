@@ -6,14 +6,13 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-        events: events_channel
+        like_event: like_event_channel
 
   mail:
     host: smtp.gmail.com
     port: 587
     username: coprorationsxinfo@gmail.com
     password: kkzl klci owng azqk
-#    password: asdcdsafdsf2309r293dHJIHSJAD
     properties:
       mail:
         smtp:

@@ -14,8 +14,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
-    @Value("${spring.data.redis.channel.events}")
-    private String topic;
+    @Value("${spring.data.redis.channel.like_event}")
+    private String likeEventsTopic;
 
     @Bean
     public RedisTemplate<String, ?> redisTemplateWithJson(RedisConnectionFactory connectionFactory) {
@@ -27,8 +27,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic topic() {
-        return new ChannelTopic(topic);
+    public ChannelTopic likeEventsTopic() {
+        return new ChannelTopic(likeEventsTopic);
     }
 
     @Bean
@@ -37,7 +37,7 @@ public class RedisConfig {
             MessageListenerAdapter likeEventListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
-        container.addMessageListener(likeEventListenerAdapter, topic());
+        container.addMessageListener(likeEventListenerAdapter, likeEventsTopic());
         return container;
     }
 
