@@ -2,6 +2,7 @@ package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.ProfileViewEventListener;
 import faang.school.notificationservice.listener.EventStartEventListener;
+import faang.school.notificationservice.listener.impl.UserFollowerEventListener;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,6 +26,10 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.profile-view}")
     private String profileViewChannel;
 
+
+    @Value("${spring.data.redis.channel.follower}")
+    private String userFollowerListener;
+
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
         return new JedisConnectionFactory();
@@ -40,12 +45,13 @@ public class RedisConfig {
 
     @Bean
     RedisMessageListenerContainer redisContainer(EventStartEventListener eventStartEventListener,
-                                                 ProfileViewEventListener profileViewEventListener) {
+                                                 ProfileViewEventListener profileViewEventListener,
+                                                 UserFollowerEventListener userFollowerEventListener) {
         final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(eventStartListener(eventStartEventListener), eventStartTopic());
         container.addMessageListener(profileViewListener(profileViewEventListener), profileViewTopic());
-
+        container.addMessageListener(userFollowerListener(userFollowerEventListener), userFollowerTopic());
         return container;
     }
 
@@ -68,5 +74,16 @@ public class RedisConfig {
     @Bean
     ChannelTopic profileViewTopic() {
         return new ChannelTopic(profileViewChannel);
+    }
+
+    @Bean
+    @Qualifier("userFollowerListener")
+    MessageListenerAdapter userFollowerListener(UserFollowerEventListener profileViewEventListener) {
+        return new MessageListenerAdapter(profileViewEventListener);
+    }
+
+    @Bean
+    ChannelTopic userFollowerTopic() {
+        return new ChannelTopic(userFollowerListener);
     }
 }
