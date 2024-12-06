@@ -5,6 +5,9 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 public interface RedisContainerMessageListener {
 
-    MessageListenerAdapter getAdapter();
     Topic getTopic();
+
+    default MessageListenerAdapter getAdapter() {
+        return new MessageListenerAdapter(this);
+    }
 }

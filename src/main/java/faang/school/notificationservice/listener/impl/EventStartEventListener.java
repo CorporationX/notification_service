@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.Topic;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -30,17 +29,13 @@ public class EventStartEventListener extends AbstractEventListener<EventStartEve
         super(objectMapper, userServiceClient, notificationService, messageBuilder);
     }
 
-    @Override
-    public void onMessage(Message message, byte[] pattern) {
-        Consumer<EventStartEventDto> sendNotifications = eventStartEventDto ->
-                eventStartEventDto.getEventParticipants()
-                        .forEach(userId -> sendNotification(userId, getMessage(eventStartEventDto, Locale.ENGLISH)));
-        processEvent(message, EventStartEventDto.class, sendNotifications);
-    }
+    private final Consumer<EventStartEventDto> sendNotifications = eventStartEventDto ->
+            eventStartEventDto.getEventParticipants()
+                    .forEach(userId -> sendNotification(userId, getMessage(eventStartEventDto, Locale.ENGLISH)));
 
     @Override
-    public MessageListenerAdapter getAdapter() {
-        return new MessageListenerAdapter(this);
+    public void onMessage(Message message, byte[] pattern) {
+        processEvent(message, EventStartEventDto.class, sendNotifications);
     }
 
     @Override
