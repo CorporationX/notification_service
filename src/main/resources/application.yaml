@@ -28,6 +28,11 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
+  telegram:
+    bot.name: Minotaur7_Bot
+    bot.token: 7464826082:AAEaIIuBnn1C1JJAY1zEGoPyERTO0kg9eNw
+    bot.chatId: userId
+
   messages:
     basename: messages
 

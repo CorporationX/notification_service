@@ -53,6 +53,11 @@ dependencies {
     testImplementation("org.testcontainers:postgresql")
 
     /**
+     * Telegram
+     */
+    implementation ("org.telegram:telegrambots:6.9.7.1")
+
+    /**
      * Tests
      */
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
