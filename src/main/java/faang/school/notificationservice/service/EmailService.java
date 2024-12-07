@@ -2,6 +2,7 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.validator.EmailServiceValidator;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

@@ -46,16 +46,16 @@ dependencies {
     implementation("com.vonage:client:7.3.0")
 
     /**
+     * Telegram
+     */
+    implementation("org.telegram:telegrambots:6.9.7.1")
+
+    /**
      * Test containers
      */
     implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
-
-    /**
-     * Telegram
-     */
-    implementation ("org.telegram:telegrambots:6.9.7.1")
 
     /**
      * Tests
