@@ -13,13 +13,14 @@ import org.springframework.stereotype.Service;
 public class EmailService implements NotificationService {
 
     private final JavaMailSender mailSender;
-    private final SimpleMailMessage mailMessage;
 
     private final EmailServiceValidator emailServiceValidator;
 
     @Override
     @Async("mailExecutor")
     public void send(UserDto user, String message) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+
         emailServiceValidator.validateUserDto(user);
         emailServiceValidator.validateMessage(message);
 
