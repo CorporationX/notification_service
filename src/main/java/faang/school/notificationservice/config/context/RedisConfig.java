@@ -7,8 +7,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.deserializer.LocalDateTimeArrayDeserializer;
 import faang.school.notificationservice.listener.FollowerEventListener;
 import faang.school.notificationservice.listener.UnfollowEventListener;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -24,24 +24,15 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
 
-    @Value("${spring.data.redis.host}")
-    private String redisHost;
-
-    @Value("${spring.data.redis.port}")
-    private int redisPort;
-
-    @Value("${spring.data.redis.channel.follower}")
-    private String followerChannel;
-
-    @Value("${spring.data.redis.channel.unfollower}")
-    private String unfollowChannel;
+    private final RedisProperties redisProperties;
 
     @Bean
     public LettuceConnectionFactory lettuceConnectionFactory() {
-        log.info("Настройка соединения с Redis: хост={}, порт={}", redisHost, redisPort);
-        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
+        log.info("Настройка соединения с Redis: хост={}, порт={}", redisProperties.getHost(), redisProperties.getPort());
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort());
         LettuceConnectionFactory factory = new LettuceConnectionFactory(redisConfig);
         try {
             factory.afterPropertiesSet();
@@ -59,8 +50,8 @@ public class RedisConfig {
         log.info("Настройка RedisMessageListenerContainer...");
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory);
-        container.addMessageListener(followerListenerAdapter, new ChannelTopic(followerChannel));
-        container.addMessageListener(unfollowListenerAdapter, new ChannelTopic(unfollowChannel));
+        container.addMessageListener(followerListenerAdapter, new ChannelTopic(redisProperties.getFollowerChannel()));
+        container.addMessageListener(unfollowListenerAdapter, new ChannelTopic(redisProperties.getUnfollowChannel()));
         log.info("RedisMessageListenerContainer успешно настроен для канала 'followerChannel'.");
         return container;
     }

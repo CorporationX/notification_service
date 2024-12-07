@@ -5,7 +5,7 @@ spring:
       host: localhost
       channel:
         follower: follower_channel
-        unfollower: unfollower_channel
+        unfollow: unfollower_channel
 
   mail:
     host: smtp.gmail.com
