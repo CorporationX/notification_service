@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.deserializer.LocalDateTimeArrayDeserializer;
 import faang.school.notificationservice.listener.FollowerEventListener;
+import faang.school.notificationservice.listener.UnfollowEventListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +35,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.follower}")
     private String followerChannel;
 
+    @Value("${spring.data.redis.channel.unfollower}")
+    private String unfollowChannel;
+
     @Bean
     public LettuceConnectionFactory lettuceConnectionFactory() {
         log.info("Настройка соединения с Redis: хост={}, порт={}", redisHost, redisPort);
@@ -50,11 +54,13 @@ public class RedisConfig {
 
     @Bean
     public RedisMessageListenerContainer container(LettuceConnectionFactory lettuceConnectionFactory,
-                                                   MessageListenerAdapter listenerAdapter) {
+                                                   MessageListenerAdapter followerListenerAdapter,
+                                                   MessageListenerAdapter unfollowListenerAdapter) {
         log.info("Настройка RedisMessageListenerContainer...");
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory);
-        container.addMessageListener(listenerAdapter, new ChannelTopic(followerChannel));
+        container.addMessageListener(followerListenerAdapter, new ChannelTopic(followerChannel));
+        container.addMessageListener(unfollowListenerAdapter, new ChannelTopic(unfollowChannel));
         log.info("RedisMessageListenerContainer успешно настроен для канала 'followerChannel'.");
         return container;
     }
@@ -84,8 +90,13 @@ public class RedisConfig {
     }
 
     @Bean
-    public MessageListenerAdapter listenerAdapter(FollowerEventListener followerEventListener) {
-        log.info("Настройка MessageListenerAdapter для обработки сообщений...");
+    public MessageListenerAdapter followerListenerAdapter(FollowerEventListener followerEventListener) {
+        log.info("Настройка FollowerListenerAdapter для обработки сообщений...");
         return new MessageListenerAdapter(followerEventListener, "onMessage");
+    }
+
+    @Bean MessageListenerAdapter unfollowListenerAdapter(UnfollowEventListener unfollowEventListener) {
+        log.info("Настройка UnfollowListenerAdapter для обработки сообщений...");
+        return new MessageListenerAdapter(unfollowEventListener, "onMessage");
     }
 }

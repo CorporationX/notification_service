@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.FollowerEvent;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.messaging.FollowerMessageBuilder;
+import faang.school.notificationservice.messaging.UnfollowMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +18,13 @@ import java.util.Locale;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class FollowerEventListener implements MessageListener {
+public class UnfollowEventListener implements MessageListener {
 
     private final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationServices;
-    private final FollowerMessageBuilder followerMessageBuilder;
+    private final UnfollowMessageBuilder unfollowMessageBuilder;
+
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
@@ -36,15 +37,15 @@ public class FollowerEventListener implements MessageListener {
         }
 
         try {
-            FollowerEvent followerEvent = objectMapper.readValue(messageBody, FollowerEvent.class);
+            FollowerEvent unfollowerEvent = objectMapper.readValue(messageBody, FollowerEvent.class);
             log.info("Десериализовано событие: followerId={}, followeeId={}, время события={}",
-                followerEvent.getFollowerId(), followerEvent.getFolloweeId(), followerEvent.getEventTime());
+                unfollowerEvent.getFollowerId(), unfollowerEvent.getFolloweeId(), unfollowerEvent.getEventTime());
 
-            UserDto user = userServiceClient.getUser(followerEvent.getFolloweeId());
+            UserDto user = userServiceClient.getUser(unfollowerEvent.getFolloweeId());
             log.info("Получены данные пользователя: userId={}, email={}, предпочтение={}",
                 user.getId(), user.getEmail(), user.getPreferredContact());
 
-            String text = followerMessageBuilder.buildMessage(followerEvent, Locale.getDefault());
+            String text = unfollowMessageBuilder.buildMessage(unfollowerEvent, Locale.getDefault());
             log.info("Сформировано сообщение для уведомления: {}", text);
 
             notificationServices.stream()
