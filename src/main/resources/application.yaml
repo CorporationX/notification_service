@@ -44,3 +44,6 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+email-service:
+  thread-pool-size: 10
