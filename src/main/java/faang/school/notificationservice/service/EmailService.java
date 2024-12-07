@@ -21,7 +21,7 @@ public class EmailService implements NotificationService {
     public void send(UserDto user, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
-        message.setSubject("subject");
+        message.setSubject("For: " + user.getUsername());
         message.setText(text);
 
         emailSender.send(message);
