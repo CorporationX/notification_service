@@ -68,6 +68,6 @@ public abstract class AbstractEventListener<T> implements MessageListener, Redis
                     return e;
                 })
                 .send(user, message);
-        log.info("Notification service sent notification - {} .To user with id {}", message, receiverId);
+        log.info(String.format("Notification service sent notification - %s. To user with id %d", message, receiverId));
     }
 }

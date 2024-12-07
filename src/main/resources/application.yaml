@@ -10,6 +10,8 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         event_start: event_start
+        mentorship:
+          accepted: mentorship_accepted_channel
 
   mail:
     host: smtp.gmail.com
