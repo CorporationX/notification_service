@@ -26,8 +26,9 @@ public class SmsService implements NotificationService {
         response.getMessages().forEach(responseMessage -> {
             if (responseMessage.getStatus() != MessageStatus.OK) {
                 log.error("Message failed with error: {}", response.getMessages().get(0).getErrorText());
+            } else {
+                log.info("Message sent successfully");
             }
-            log.info("Message sent successfully");
         });
     }
 
