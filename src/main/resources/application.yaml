@@ -10,6 +10,7 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         event_start: event_start
+        files-uploaded: files_uploaded_channel
 
   mail:
     host: smtp.gmail.com
