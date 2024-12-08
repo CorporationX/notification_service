@@ -1,5 +1,6 @@
 package faang.school.notificationservice.dto;
 
+import faang.school.notificationservice.data.PreferredContact;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -41,8 +42,4 @@ public class UserDto {
     private List<Long> menteesId;
     private List<Long> mentorsId;
     private List<Long> skillsId;
-
-    public enum PreferredContact {
-        EMAIL, SMS, TELEGRAM
-    }
 }

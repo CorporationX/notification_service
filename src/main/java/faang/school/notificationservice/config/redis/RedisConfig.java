@@ -43,6 +43,6 @@ public class RedisConfig {
 
     @Bean
     public MessageListenerAdapter likeEventListenerAdapter(LikeEventListener likeEventListener) {
-        return new MessageListenerAdapter(likeEventListener, "handleLikeEvent");
+        return new MessageListenerAdapter(likeEventListener, "onMessage");
     }
 }

@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service;
 
+import faang.school.notificationservice.data.PreferredContact;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.EmailSendingException;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class EmailService implements NotificationService  {
     }
 
     @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.EMAIL;
+    public PreferredContact getPreferredContact() {
+        return PreferredContact.EMAIL;
     }
 }

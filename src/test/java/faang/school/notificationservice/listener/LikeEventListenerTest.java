@@ -2,27 +2,27 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.data.PreferredContact;
 import faang.school.notificationservice.dto.LikeEvent;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserProfileSettingsDto;
 import faang.school.notificationservice.messaging.LikeMessageBuilder;
 import faang.school.notificationservice.service.EmailService;
-import faang.school.notificationservice.listener.LikeEventListener;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LikeEventListenerTest {
@@ -55,13 +55,14 @@ class LikeEventListenerTest {
 
         UserDto user = new UserDto();
         user.setId(1L);
-        user.setPreference(UserDto.PreferredContact.EMAIL);
+        user.setPreference(PreferredContact.EMAIL);
 
         String expectedMessage = "User with id: 2 liked your post with id: 44";
 
         when(message.getBody()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
         when(objectMapper.readValue(eq(json), eq(LikeEvent.class))).thenReturn(likeEvent);
         when(userServiceClient.getUser(1L)).thenReturn(user);
+        when(userServiceClient.getProfileSettings(1L)).thenReturn(UserProfileSettingsDto.builder().userId(1L).id(1L).preference("EMAIL").build());
         when(likeMessageBuilder.buildMessage(eq(likeEvent), eq(Locale.US))).thenReturn(expectedMessage);
 
         likeEventListener.onMessage(message, null);
