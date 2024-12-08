@@ -84,8 +84,10 @@ public class RedisConfig {
     public MessageListenerAdapter followerListenerAdapter(FollowerEventListener followerEventListener) {
         log.info("Настройка FollowerListenerAdapter для обработки сообщений...");
         return new MessageListenerAdapter(followerEventListener, "onMessage");
-    @Bean MessageListenerAdapter unfollowListenerAdapter(UnfollowEventListener unfollowEventListener) {
-        log.info("Настройка UnfollowListenerAdapter для обработки сообщений...");
-        return new MessageListenerAdapter(unfollowEventListener, "onMessage");
+
     }
-}
+        @Bean MessageListenerAdapter unfollowListenerAdapter (UnfollowEventListener unfollowEventListener){
+            log.info("Настройка UnfollowListenerAdapter для обработки сообщений...");
+            return new MessageListenerAdapter(unfollowEventListener, "onMessage");
+        }
+    }
