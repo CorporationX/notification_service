@@ -1,4 +1,13 @@
 spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
   data:
     redis:
       port: 6379
@@ -11,6 +20,7 @@ spring:
         mentorship-accepted: mentorship_accepted_topic
         skill_acquired: skill_acquire
         recommendation_received: recommendation_received
+
 
 
   mail:
@@ -36,7 +46,7 @@ spring:
     basename: messages
 
 server:
-  port: 8083
+  port: 8084
 
 logging:
   level:
