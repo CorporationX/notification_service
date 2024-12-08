@@ -27,6 +27,12 @@ public class EmailService implements NotificationService {
             log.warn("Предпочтение пользователя не указано, используется значение по умолчанию: EMAIL");
             userDto.setPreference(UserDto.PreferredContact.EMAIL);
         }
+
+        if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
+            log.warn("Email пользователя отсутствует, уведомление не может быть отправлено.");
+            return;
+        }
+
         try {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(userDto.getEmail());

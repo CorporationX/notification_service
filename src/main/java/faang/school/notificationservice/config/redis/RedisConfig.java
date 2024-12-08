@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.deserializer.LocalDateTimeArrayDeserializer;
 import faang.school.notificationservice.listener.FollowerEventListener;
+import faang.school.notificationservice.listener.UnfollowEventListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -50,6 +51,7 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory);
         container.addMessageListener(followerListenerAdapter, new ChannelTopic(redisProperties.getFollowerChannel()));
+        container.addMessageListener(unfollowListenerAdapter, new ChannelTopic(redisProperties.getUnfollowChannel()));
         log.info("RedisMessageListenerContainer успешно настроен для канала 'followerChannel'.");
         return container;
     }
@@ -82,5 +84,8 @@ public class RedisConfig {
     public MessageListenerAdapter followerListenerAdapter(FollowerEventListener followerEventListener) {
         log.info("Настройка FollowerListenerAdapter для обработки сообщений...");
         return new MessageListenerAdapter(followerEventListener, "onMessage");
+    @Bean MessageListenerAdapter unfollowListenerAdapter(UnfollowEventListener unfollowEventListener) {
+        log.info("Настройка UnfollowListenerAdapter для обработки сообщений...");
+        return new MessageListenerAdapter(unfollowEventListener, "onMessage");
     }
 }
