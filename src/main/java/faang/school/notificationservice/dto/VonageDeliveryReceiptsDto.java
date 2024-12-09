@@ -1,43 +1,51 @@
 package faang.school.notificationservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.util.Map;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
+@RequiredArgsConstructor
 public class VonageDeliveryReceiptsDto {
 
-    @JsonProperty("msisdn")
+    @Value("${vonage.delivery-receipts.fields-name.msisdn}")
     private String msisdn;
 
-    @JsonProperty("to")
+    @Value("${vonage.delivery-receipts.fields-name.to}")
     private String to;
 
-    @JsonProperty("network-code")
+    @Value("${vonage.delivery-receipts.fields-name.network-code}")
     private String networkCode;
 
-    @JsonProperty("messageId")
+    @Value("${vonage.delivery-receipts.fields-name.messageId}")
     private String messageId;
 
-    @JsonProperty("price")
-    private Double price;
+    @Value("${vonage.delivery-receipts.fields-name.price}")
+    private String price;
 
-    @JsonProperty("status")
+    @Value("${vonage.delivery-receipts.fields-name.status}")
     private String status;
 
-    @JsonProperty("scts")
+    @Value("${vonage.delivery-receipts.fields-name.scts}")
     private String scts;
 
-    @JsonProperty("err-code")
-    private Integer errCode;
+    @Value("${vonage.delivery-receipts.fields-name.err-code}")
+    private String errCode;
 
-    @JsonProperty("client-ref")
+    @Value("${vonage.delivery-receipts.fields-name.client-ref}")
     private String clientRef;
 
-    @JsonProperty("api-key")
+    @Value("${vonage.delivery-receipts.fields-name.api-key}")
     private String apiKey;
 
-    @JsonProperty("message-timestamp")
+    @Value("${vonage.delivery-receipts.fields-name.message-timestamp}")
     private String messageTimestamp;
+
+    private final Map<String, String> values;
+
+    public String getMsisdn() {
+
+    }
 }

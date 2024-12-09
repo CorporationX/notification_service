@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/webhooks/vonage")
@@ -25,12 +27,11 @@ public class VonageWebhookV1Controller {
     private final VonageSmsService vonageSmsService;
 
     @RequestMapping(value = "/delivery-receipt", method = {RequestMethod.GET, RequestMethod.POST})
-    public void handleDeliveryReceipt(@RequestParam VonageDeliveryReceiptsDto deliveryReceiptDto
-           /* @RequestParam Map<String, String> deliveryReceipt*/) {
-        log.info("handleDeliveryReceipt: {}", deliveryReceiptDto);
+    public void handleDeliveryReceipt(@RequestParam Map<String, String> deliveryReceipt) {
+        log.info("handleDeliveryReceipt: {}", deliveryReceipt);
         //String status = deliveryReceipt.get("status");
         //String to = deliveryReceipt.get("to");
-        //deliveryReceiptService.processDeliveryReceipt(deliveryReceiptDto);
+        deliveryReceiptService.processDeliveryReceipt(deliveryReceiptDto);
     }
 
     @PostMapping("/send")

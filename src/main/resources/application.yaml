@@ -59,6 +59,19 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret:
   brand-number: "Vonage APIs"
   callback-uri: https://valid-muskox-casual.ngrok-free.app/api/v1/webhooks/vonage/delivery-receipt #это урл для приема отчетов об отправке от Vonage. юзайте ngrok если хотите потестить
+  delivery-receipts:
+    fields-name:
+      msisdn: msisdn
+      to: to
+      network-code: network-code
+      messageId: messageId
+      price: price
+      status: status
+      scts: scts
+      err-code: err-code
+      client-ref: client-ref
+      api-key: api-key
+      message-timestamp: message-timestamp
 
 project-service:
   host: localhost
