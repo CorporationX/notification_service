@@ -44,17 +44,21 @@ logging:
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: whatever
-    secret: whatever
+    key: ea3cbdef
+    secret: t6qqwTma9etW5JwR
+  number:
+    message-sender: 31687519767
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
+
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
 
 telegram:
   bot:
     username: CorpXDragonBot
     token: 8178913921:AAGcrhifCTplnAjqGPJUs1rNa0wA-aQBkns
+

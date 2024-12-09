@@ -1,5 +1,6 @@
 plugins {
     java
+    jacoco
     id("org.springframework.boot") version "3.0.6"
     id("io.spring.dependency-management") version "1.1.0"
 }
@@ -64,6 +65,37 @@ dependencies {
      * Telegram Bots
      */
     implementation("org.telegram:telegrambots:6.9.7.1")
+}
+
+/**
+ * Jacoco
+ */
+
+jacoco {
+    toolVersion = "0.8.9"
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+val jacocoInclude = listOf(
+        "**/controller/**",
+        "**/service/**",
+        "**/validator/**"
+)
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(true)
+        csv.required.set(false)
+        html.outputLocation.set(file("${buildDir}/jacocoHtml"))
+    }
+    classDirectories.setFrom(
+            fileTree(project.buildDir) {
+                include(jacocoInclude)
+            }
+    )
 }
 
 tasks.withType<Test> {
