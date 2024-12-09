@@ -1,7 +1,8 @@
 package faang.school.notificationservice.service.impl;
 
-import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.dto.PreferredContact;
+import faang.school.notificationservice.dto.UserForNotificationDto;
+import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,18 +21,18 @@ public class EmailService implements NotificationService {
     private String emailAddress;
 
     @Override
-    public void send(UserDto user, String message) {
-        log.info("Trying to send email message: {} to user: {}", message, user.getId());
+    public void send(UserForNotificationDto user, String message) {
+        log.info("Trying to send email message: {} to user: {}", message, user.id());
         SimpleMailMessage emailMessage = new SimpleMailMessage();
         emailMessage.setFrom(emailAddress);
-        emailMessage.setTo(user.getEmail());
+        emailMessage.setTo(user.email());
         emailMessage.setText(message);
         emailSender.send(emailMessage);
-        log.info("Message: {} was successfully sent to user: {}", message, user.getId());
+        log.info("Message: {} was successfully sent to user: {}", message, user.id());
     }
 
     @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.EMAIL;
+    public PreferredContact getPreferredContact() {
+        return PreferredContact.EMAIL;
     }
 }
