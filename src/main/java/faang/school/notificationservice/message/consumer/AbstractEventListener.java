@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.builder.message.MessageBuilder;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.config.resilience4j.Resilience4jProperties;
 import faang.school.notificationservice.dto.UserForNotificationDto;
 import faang.school.notificationservice.exceptions.PreferredContactNotExistException;
 import faang.school.notificationservice.message.event.NotificationEvent;
 import faang.school.notificationservice.service.notification.NotificationService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 
