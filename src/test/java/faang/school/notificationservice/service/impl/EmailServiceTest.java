@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service.impl;
 
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.PreferredContact;
+import faang.school.notificationservice.dto.UserForNotificationDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -26,7 +27,7 @@ public class EmailServiceTest {
     public void testSend() {
         // arrange
         String emailAddress = "someemail.gmail.com";
-        UserDto user = UserDto.builder()
+        UserForNotificationDto user = UserForNotificationDto.builder()
                 .email(emailAddress)
                 .build();
         String message = "someMessage";
@@ -45,6 +46,6 @@ public class EmailServiceTest {
 
     @Test
     public void testGetPreferredContact() {
-        assertEquals(UserDto.PreferredContact.EMAIL, emailService.getPreferredContact());
+        assertEquals(PreferredContact.EMAIL, emailService.getPreferredContact());
     }
 }
