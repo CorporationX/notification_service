@@ -1,8 +1,9 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserContactsDto;
+import jakarta.validation.Valid;
 
 public interface NotificationService {
-    void send(UserContactsDto user, String message);
+    void send(@Valid UserContactsDto user, String message);
     UserContactsDto.PreferredContact getPreferredContact();
 }

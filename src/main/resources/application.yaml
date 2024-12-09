@@ -26,6 +26,12 @@ spring:
   messages:
     basename: messages
 
+  retry:
+    maxAttempts: 3
+    initialDelay: 1000
+    multiplier: 2
+    maxDelay: 10000
+
 server:
   port: 8083
   servlet:

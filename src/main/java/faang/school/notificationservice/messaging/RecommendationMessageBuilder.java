@@ -14,11 +14,12 @@ public class RecommendationMessageBuilder implements MessageBuilder<Recommendati
 
     @Override
     public Class<?> getInstance() {
-        return null;
+        return RecommendationReceivedEvent.class;
     }
 
     @Override
-    public String buildMessage(RecommendationReceivedEvent event, Locale locale, Object[] placeholders) {
+    public String buildMessage(RecommendationReceivedEvent event, Locale locale) {
+        Object[] placeholders = {event.getReceiverName(), event.getAuthorName()};
         return messageSource.getMessage("recommendation.new", placeholders, locale);
     }
 }

@@ -13,7 +13,7 @@ import org.springframework.context.MessageSource;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,30 +32,30 @@ class RecommendationMessageBuilderTest {
 
     @BeforeEach
     void setUp() {
-        event = new RecommendationReceivedEvent(1L, 2L, 3L);
+        event = new RecommendationReceivedEvent(1L, 2L, "Receiver", 3L, "Author");
         locale = Locale.ENGLISH;
     }
 
     @Test
     @DisplayName("Build message with placeholders success")
     void testBuildMessageWithPlaceholdersSuccess() {
-        Object[] placeholders = {"John", "Doe"};
+        Object[] placeholders = {"Receiver", "Author"};
         String code = "recommendation.new";
-        when(messageSource.getMessage(code, placeholders, locale)).thenReturn("Congrats, John! You've got a new recommendation from Doe!");
+        when(messageSource.getMessage(code, placeholders, locale)).thenReturn("Congrats, Receiver! You've got a new recommendation from Author!");
 
-        String result = recommendationMessageBuilder.buildMessage(event, locale, placeholders);
+        String result = recommendationMessageBuilder.buildMessage(event, locale);
         verify(messageSource, times(1)).getMessage(code, placeholders, locale);
 
-        assertEquals("Congrats, John! You've got a new recommendation from Doe!", result);
+        assertEquals("Congrats, Receiver! You've got a new recommendation from Author!", result);
     }
 
     @Test
-    @DisplayName("getInstance should return null")
-    void testGetInstance_ReturnsNull() {
+    @DisplayName("getInstance return success")
+    void testGetInstance_Success() {
         RecommendationMessageBuilder messageBuilder = new RecommendationMessageBuilder(null);
 
         Class<?> result = messageBuilder.getInstance();
 
-        assertNull(result, "getInstance should return null");
+        assertNotNull(result);
     }
 }

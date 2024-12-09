@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 public class RecommendationReceivedEvent {
     private Long recommendationId;
     private Long receiverId;
+    private String receiverName;
     private Long authorId;
+    private String authorName;
 }

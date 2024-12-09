@@ -45,7 +45,7 @@ public class TelegramService implements NotificationService {
     @Override
     @Async("cachedThreadPool")
     @Retryable(retryFor = TelegramBotMessageSendException.class, maxAttempts = 3, backoff = @Backoff(delay = 60000, multiplier = 2))
-    public void send(@Valid UserContactsDto user, String message) {
+    public void send(UserContactsDto user, String message) {
         log.debug("Trying to sending message to user #{} in Telegram: {}", user.getId(), message);
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(user.getId())

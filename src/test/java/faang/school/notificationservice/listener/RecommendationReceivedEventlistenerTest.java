@@ -2,6 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.config.RetryProperties;
 import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.event.RecommendationReceivedEvent;
 import faang.school.notificationservice.messaging.RecommendationMessageBuilder;
@@ -31,6 +32,9 @@ import static org.mockito.Mockito.when;
 class RecommendationReceivedEventlistenerTest {
 
     @Mock
+    RetryProperties retryProperties;
+
+    @Mock
     private RecommendationMessageBuilder recommendationMessageBuilder;
 
     @Mock
@@ -51,6 +55,7 @@ class RecommendationReceivedEventlistenerTest {
     @BeforeEach
     void setUp() {
         listener = new RecommendationReceivedEventListener(
+                retryProperties,
                 objectMapper,
                 userServiceClient,
                 recommendationMessageBuilder,
@@ -73,9 +78,8 @@ class RecommendationReceivedEventlistenerTest {
     @Test
     @DisplayName("Should process event and send email notification")
     void onMessage_Success_EmailNotification() throws Exception {
-        RecommendationReceivedEvent event = new RecommendationReceivedEvent(1L, 2L, 3L);
+        RecommendationReceivedEvent event = new RecommendationReceivedEvent(1L, 2L, "Receiver", 3L, "Author");
         UserContactsDto receiver = new UserContactsDto(2L, "Receiver", "receiver@example.com", "12345", faang.school.notificationservice.dto.UserContactsDto.PreferredContact.EMAIL);
-        UserContactsDto author = new UserContactsDto(3L, "Author", "author@example.com", "67890", faang.school.notificationservice.dto.UserContactsDto.PreferredContact.EMAIL);
         String messageBody = "{\"recommendationId\":1,\"receiverId\":2,\"authorId\":3}";
         String generatedMessage = "Receiver, Author sent you a recommendation!";
 
@@ -85,16 +89,14 @@ class RecommendationReceivedEventlistenerTest {
         when(objectMapper.readValue(any(byte[].class), eq(RecommendationReceivedEvent.class))).thenReturn(event);
 
         when(userServiceClient.getUserContacts(2L)).thenReturn(receiver);
-        when(userServiceClient.getUserContacts(3L)).thenReturn(author);
 
-        when(recommendationMessageBuilder.buildMessage(event, Locale.getDefault(), new Object[]{"Receiver", "Author"}))
+        when(recommendationMessageBuilder.buildMessage(event, Locale.getDefault()))
                 .thenReturn(generatedMessage);
 
         listener.onMessage(redisMessage, null);
 
         verify(objectMapper, times(1)).readValue(any(byte[].class), eq(RecommendationReceivedEvent.class));
         verify(userServiceClient, times(1)).getUserContacts(2L);
-        verify(userServiceClient, times(1)).getUserContacts(3L);
-        verify(recommendationMessageBuilder, times(1)).buildMessage(event, Locale.getDefault(), new Object[]{"Receiver", "Author"});
+        verify(recommendationMessageBuilder, times(1)).buildMessage(event, Locale.getDefault());
     }
 }
