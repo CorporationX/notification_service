@@ -18,11 +18,11 @@ public class RedisConfig {
     private String likeEventsTopic;
 
     @Bean
-    public RedisTemplate<String, ?> redisTemplateWithJson(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, ?> template = new RedisTemplate<>();
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
         return template;
     }
 
@@ -34,7 +34,8 @@ public class RedisConfig {
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(
             RedisConnectionFactory redisConnectionFactory,
-            MessageListenerAdapter likeEventListenerAdapter) {
+            MessageListenerAdapter likeEventListenerAdapter
+    ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
         container.addMessageListener(likeEventListenerAdapter, likeEventsTopic());
