@@ -8,6 +8,7 @@ import faang.school.notificationservice.message.event.PostLikeEvent;
 import faang.school.notificationservice.service.notification.NotificationService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -29,7 +30,7 @@ public class PostLikeEventListener extends AbstractEventListener<PostLikeEvent> 
     @Retry(name = Resilience4jProperties.DEFAULT_RETRY_CONFIG_NAME)
     @CircuitBreaker(name = Resilience4jProperties.DEFAULT_RETRY_CONFIG_NAME)
     @Override
-    public void onMessage(Message message, byte[] pattern) {
+    public void onMessage(@NonNull Message message, byte[] pattern) {
         handleEvent(message, PostLikeEvent.class);
     }
 }
