@@ -6,6 +6,24 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        like: notification_like_channel
+        failed-sms-message: failed_sms_message_channel
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
   mail:
     host: smtp.gmail.com
@@ -31,16 +49,53 @@ server:
 logging:
   level:
     root: info
+    io.github.resilience4j.retry: DEBUG
+    io.github.resilience4j.circuitbreaker: DEBUG
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: whatever
-    secret: whatever
+    key:
+    secret:
+  brand-number: "Vonage APIs"
+  callback-uri: https://valid-muskox-casual.ngrok-free.app/api/v1/webhooks/vonage/delivery-receipt #это урл для приема отчетов об отправке от Vonage. юзайте ngrok если хотите потестить
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
+
+resilience4j:
+  retry:
+    instances:
+      default-retry:
+        max-attempts: 3
+        wait-duration: 200ms
+        exponential-backoff-multiplier: 2.0
+        retry-exceptions:
+          - com.vonage.client.VonageClientException
+
+  circuitbreaker:
+    instances:
+      default-circuit-breaker:
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+
+thread-pool:
+  sms-message-pool:
+    name: "smsMessagePool"
+    num-of-threads: 5
+
+messages:
+  keys:
+    like-post: like.post
+
+snowflake:
+  worker-id: 1
+  datacenter-id: 1
