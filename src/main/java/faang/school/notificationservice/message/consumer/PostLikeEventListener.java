@@ -27,8 +27,6 @@ public class PostLikeEventListener extends AbstractEventListener<PostLikeEvent> 
         super(mapper, userServiceClient, notificationServices, messageBuilder);
     }
 
-    @Retry(name = Resilience4jProperties.DEFAULT_RETRY_CONFIG_NAME)
-    @CircuitBreaker(name = Resilience4jProperties.DEFAULT_RETRY_CONFIG_NAME)
     @Override
     public void onMessage(@NonNull Message message, byte[] pattern) {
         handleEvent(message, PostLikeEvent.class);
