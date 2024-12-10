@@ -2,16 +2,13 @@ package faang.school.notificationservice.service.notification.impl.vonage;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.redis.RedisConfig;
-import faang.school.notificationservice.config.resilience4j.Resilience4jProperties;
-import faang.school.notificationservice.dto.ErrorCode;
 import faang.school.notificationservice.dto.UserForNotificationDto;
-import faang.school.notificationservice.dto.VonageDeliveryReceiptsDto;
+import faang.school.notificationservice.dto.vonage.DeliveryReceipts;
+import faang.school.notificationservice.dto.vonage.ErrorCode;
 import faang.school.notificationservice.message.producer.MessagePublisher;
 import faang.school.notificationservice.model.MessageDeliveryStatus;
 import faang.school.notificationservice.model.SmsMessage;
 import faang.school.notificationservice.service.jpa.SmsMessageService;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +26,6 @@ public class DeliveryReceiptService {
     private final MessagePublisher messagePublisher;
     private final RedisConfig redisConfig;
 
-
     @Autowired
     public DeliveryReceiptService(SmsMessageService smsMessageService,
                                   UserServiceClient userServiceClient,
@@ -44,33 +40,30 @@ public class DeliveryReceiptService {
         this.redisConfig = redisConfig;
     }
 
-    @Retry(name = Resilience4jProperties.DEFAULT_RETRY_CONFIG_NAME)
-    @CircuitBreaker(name = Resilience4jProperties.DEFAULT_RETRY_CONFIG_NAME)
-    public void processDeliveryReceipt(VonageDeliveryReceiptsDto deliveryReceiptDto) {
+    public void processDeliveryReceipt(DeliveryReceipts deliveryReceipt) {
         log.info("Start process delivery receipt");
-        SmsMessage smsMessage = smsMessageService.getSmsMessageByUid(Long.valueOf(deliveryReceiptDto.getMessageId()));
-        smsMessage.setCost(deliveryReceiptDto.getPrice());
+        SmsMessage smsMessage = smsMessageService.getSmsMessageByUid(deliveryReceipt.getClientRef());
+        smsMessage.setCost(deliveryReceipt.getPrice());
 
-        if (ErrorCode.DELIVERED.isSame(deliveryReceiptDto.getErrCode())) {
+        if (ErrorCode.DELIVERED == deliveryReceipt.getErrorCode()) {
 
             smsMessage.setDeliveryStatus(MessageDeliveryStatus.DELIVERED);
-            log.info("Message with uid {} was delivered", deliveryReceiptDto.getMessageId());
+            log.info("Message with uid {} was delivered", deliveryReceipt.getClientRef());
 
-        } else if (ErrorCode.isRetryable(deliveryReceiptDto.getErrCode())) {
+        } else if (ErrorCode.isRetryable(deliveryReceipt.getErrorCode())) {
 
             smsMessage.setDeliveryStatus(MessageDeliveryStatus.REPROCESSING);
             UserForNotificationDto messageReceiver =
                     userServiceClient.getUserForNotificationById(smsMessage.getReceiverId());
             vonageSmsService.send(messageReceiver, smsMessage.getContent());
-            log.info("Try to send a message with uid {} again ", deliveryReceiptDto.getMessageId());
+            log.info("Try to send a message with uid {} again ", deliveryReceipt.getMessageId());
 
         } else {
             smsMessage.setDeliveryStatus(MessageDeliveryStatus.DELIVERY_FAILED);
             messagePublisher.publish(redisConfig.getFailedSmsMessageTopicName(), smsMessage);
-            log.info("Message with uid {} was not delivered. Error code {}", deliveryReceiptDto.getMessageId(),
-                    deliveryReceiptDto.getErrCode());
+            log.info("Message with uid {} was not delivered. Error code {}", deliveryReceipt.getMessageId(),
+                    deliveryReceipt.getErrorCode());
         }
-
         smsMessageService.saveSmsMessageAsync(smsMessage);
     }
 }

@@ -1,8 +1,9 @@
 package faang.school.notificationservice.controller;
 
 import faang.school.notificationservice.dto.UserForNotificationDto;
-import faang.school.notificationservice.dto.VonageDeliveryReceiptsDto;
+import faang.school.notificationservice.dto.vonage.DeliveryReceipts;
 import faang.school.notificationservice.service.notification.impl.vonage.DeliveryReceiptService;
+import faang.school.notificationservice.service.notification.impl.vonage.DeliveryReceiptsFactory;
 import faang.school.notificationservice.service.notification.impl.vonage.VonageSmsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,13 +26,13 @@ public class VonageWebhookV1Controller {
 
     private final DeliveryReceiptService deliveryReceiptService;
     private final VonageSmsService vonageSmsService;
+    private final DeliveryReceiptsFactory deliveryReceiptsFactory;
 
     @RequestMapping(value = "/delivery-receipt", method = {RequestMethod.GET, RequestMethod.POST})
-    public void handleDeliveryReceipt(@RequestParam Map<String, String> deliveryReceipt) {
-        log.info("handleDeliveryReceipt: {}", deliveryReceipt);
-        //String status = deliveryReceipt.get("status");
-        //String to = deliveryReceipt.get("to");
-        deliveryReceiptService.processDeliveryReceipt(deliveryReceiptDto);
+    public void handleDeliveryReceipt(@RequestParam Map<String, String> deliveryReceiptParams) {
+        log.info("handleDeliveryReceipt: {}", deliveryReceiptParams);
+        DeliveryReceipts deliveryReceipts = deliveryReceiptsFactory.create(deliveryReceiptParams);
+        deliveryReceiptService.processDeliveryReceipt(deliveryReceipts);
     }
 
     @PostMapping("/send")

@@ -1,4 +1,4 @@
-package faang.school.notificationservice.dto;
+package faang.school.notificationservice.dto.vonage;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

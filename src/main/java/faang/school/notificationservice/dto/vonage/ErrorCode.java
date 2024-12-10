@@ -1,4 +1,4 @@
-package faang.school.notificationservice.dto;
+package faang.school.notificationservice.dto.vonage;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +18,8 @@ public enum ErrorCode {
         return this.value == value;
     }
 
-    public static boolean isRetryable(int value) {
-        return value == 2 || value == 7 || value == 8;
+    public static boolean isRetryable(ErrorCode errorCode) {
+        return errorCode.getValue() == 2 || errorCode.getValue() == 7 || errorCode.getValue() == 8;
     }
 
     public static ErrorCode fromValue(int otherValue) {

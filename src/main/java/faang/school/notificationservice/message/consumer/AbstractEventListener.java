@@ -40,8 +40,7 @@ public abstract class AbstractEventListener<T extends NotificationEvent> {
 
     public void handleEvent(Message redisMessage, Class<T> eventType) {
         try {
-            JsonNode jsonNode = mapper.readTree(redisMessage.getBody());
-            T event = mapper.convertValue(jsonNode, eventType);
+            T event = mapper.readValue(redisMessage.getBody(), eventType);
             UserForNotificationDto receiver = userServiceClient.getUserForNotificationById(event.getReceiverId());
             String message = messageBuilder.build(event, receiver.getLocaleFromLanguage());
             sendNotification(receiver, message);
