@@ -6,6 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        recommendation: recommendation_channel
 
   mail:
     host: smtp.gmail.com
@@ -24,6 +25,12 @@ spring:
 
   messages:
     basename: messages
+
+  retry:
+    maxAttempts: 3
+    initialDelay: 1000
+    multiplier: 2
+    maxDelay: 10000
 
 server:
   port: 8083
@@ -45,11 +52,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
 project-service:
   host: localhost
   port: 8082
-  
+
 user-service:
   host: localhost
   port: 8080
-    
+
 telegram:
   bot:
     username: CorpXDragonBot

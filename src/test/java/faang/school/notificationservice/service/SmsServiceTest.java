@@ -4,7 +4,7 @@ import com.vonage.client.VonageClient;
 import com.vonage.client.sms.SmsClient;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserContactsDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class SmsServiceTest {
+class SmsServiceTest {
     @Mock
     private VonageClient vonageClient;
 
@@ -28,7 +28,7 @@ public class SmsServiceTest {
 
     @Test
     void testSendSuccess() {
-        UserDto dto = new UserDto();
+        UserContactsDto dto = new UserContactsDto();
         String jsonResponse = "{\"messages\": [{\"status\": \"0\"}]}";
 
         response = SmsSubmissionResponse.fromJson(jsonResponse);
