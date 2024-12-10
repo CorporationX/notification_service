@@ -5,6 +5,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.RetryProperties;
 import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.event.RecommendationReceivedEvent;
+import faang.school.notificationservice.exception.UserContactsRetrievalException;
 import faang.school.notificationservice.messaging.RecommendationMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import feign.FeignException;
@@ -43,20 +44,22 @@ public class RecommendationReceivedEventListener implements MessageListener {
     }
 
     private void handleEvent(RecommendationReceivedEvent event) {
+        try {
+            UserContactsDto receiverDto = getUserContacts(event.getReceiverId());
 
-        UserContactsDto receiverDto = getUserContacts(event.getReceiverId());
-        if (receiverDto == null) {
-            log.error("Failed to fetch user contacts for user {}", event.getReceiverId());
-            return;
+            String message = recommendationMessageBuilder.buildMessage(event, LocaleContextHolder.getLocale());
+
+            notificationServices.stream()
+                    .filter(service -> receiverDto.getPreference() == service.getPreferredContact())
+                    .findFirst()
+                    .ifPresent(service -> service.send(receiverDto, message));
+            log.info("Message sent to user {} via {}", receiverDto.getId(), receiverDto.getPreference());
+
+        } catch (UserContactsRetrievalException e) {
+            log.error("Error occurred while fetching user contacts for user {}", event.getReceiverId(), e);
+        } catch (RuntimeException e) {
+            log.error("Error occurred while sending notification to user {}", event.getReceiverId(), e);
         }
-
-        String message = recommendationMessageBuilder.buildMessage(event, LocaleContextHolder.getLocale());
-
-        notificationServices.stream()
-                .filter(service -> receiverDto.getPreference() == service.getPreferredContact())
-                .findFirst()
-                .ifPresent(service -> service.send(receiverDto, message));
-        log.info("Message sent to user {} via {}", receiverDto.getId(), receiverDto.getPreference());
     }
 
     @Retryable(retryFor = Exception.class,
@@ -67,12 +70,12 @@ public class RecommendationReceivedEventListener implements MessageListener {
                     maxDelayExpression = "#{@retryProperties.maxDelay}"
             )
     )
-    private UserContactsDto getUserContacts(Long userId) {
+    public UserContactsDto getUserContacts(Long userId) {
         try {
             return userServiceClient.getUserContacts(userId);
         } catch (FeignException e) {
             log.error("Error occurred while fetching user contacts for user {}", userId, e);
-            return null;
+            throw new UserContactsRetrievalException("Error occurred while fetching user contacts for user: " + userId + " Error: " + e.getMessage());
         }
     }
 }
