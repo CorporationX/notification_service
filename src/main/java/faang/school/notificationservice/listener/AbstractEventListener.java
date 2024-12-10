@@ -5,7 +5,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.NotFoundException;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.MappingException;
@@ -61,13 +61,14 @@ public abstract class AbstractEventListener<T> implements MessageListener, Redis
                 .findFirst()
                 .orElseThrow(() -> {
                     String exceptionMessage =
-                            String.format("Notification service wasn't found for user notification preference - %s",
+                            String.format("Notification service wasn't found for user with Id: %s, " +
+                                            "user notification preference - %s", receiverId,
                                     user.getPreference());
                     NotFoundException e = new NotFoundException(exceptionMessage);
                     log.error(exceptionMessage, e);
                     return e;
                 })
                 .send(user, message);
-        log.info(String.format("Notification service sent notification - %s. To user with id %d", message, receiverId));
+        log.info("Notification service sent notification - {}. To user with id: {}", message, receiverId);
     }
 }

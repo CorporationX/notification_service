@@ -4,16 +4,12 @@ import faang.school.notificationservice.listener.RedisContainerMessageListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
-
-import java.util.List;
 
 import java.util.List;
 
@@ -27,11 +23,10 @@ public class RedisConfig {
     private int redisPort;
 
     @Bean
-    JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration redisStandaloneConfiguration =
+    RedisConnectionFactory jedisConnectionFactory() {
+        RedisStandaloneConfiguration config =
                 new RedisStandaloneConfiguration(redisHost, redisPort);
-
-        return new JedisConnectionFactory(redisStandaloneConfiguration);
+        return new JedisConnectionFactory(config);
     }
 
     @Bean
@@ -48,7 +43,6 @@ public class RedisConfig {
         container.setConnectionFactory(jedisConnectionFactory());
         messageListeners.forEach(listener ->
                 container.addMessageListener(listener.getAdapter(), listener.getTopic()));
-
         return container;
     }
 }

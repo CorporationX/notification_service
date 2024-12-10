@@ -3,10 +3,10 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.Topic;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
 import java.util.List;
 
@@ -20,7 +20,12 @@ public class EventListenerForTest extends AbstractEventListener<EventForTest> {
     }
 
     @Override
-    public Topic getTopic() {
+    public MessageListenerAdapter getAdapter() {
+        return null;
+    }
+
+    @Override
+    public ChannelTopic getTopic() {
         return new ChannelTopic("test_topic");
     }
 
