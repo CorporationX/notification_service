@@ -5,12 +5,11 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.ProfileViewEvent;
 import faang.school.notificationservice.listener.AbstractEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.Topic;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class ProfileViewEventListener extends AbstractEventListener<ProfileViewE
     }
 
     @Override
-    public Topic getTopic() {
+    public ChannelTopic getTopic() {
         return new ChannelTopic(channelName);
     }
 
