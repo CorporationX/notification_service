@@ -5,7 +5,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.NotFoundException;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.MappingException;
