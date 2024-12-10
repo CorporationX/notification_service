@@ -9,10 +9,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-        comment: comment_channel
         event_start: event_start
-        mentorship:
-          accepted: mentorship_accepted_channel
 
   mail:
     host: smtp.gmail.com
@@ -55,10 +52,10 @@ telegram:
       backoff-delay: 2000
 
 project-service:
-    host: localhost
-    port: 8082
-    path: /api/v1
+  host: localhost
+  port: 8082
+  path: /api/v1
 user-service:
-    host: localhost
-    port: 8080
-    path: /api/v1
+  host: localhost
+  port: 8080
+  path: /api/v1

@@ -29,7 +29,7 @@ public class EmailServiceTest {
 
     @Test
     public void sendMailTest() {
-        UserDto userDto = new UserDto();
+        UserDto userDto = UserDto.builder().build();
         userDto.setEmail("example@gmail.com");
         String message = "Hello world!";
         SimpleMailMessage mailMessage = new SimpleMailMessage();

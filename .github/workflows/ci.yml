@@ -1,0 +1,25 @@
+name: PullRequestTest
+
+on:
+  pull_request:
+    branches:
+      - Manticore-master-stream7
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4.0.0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4.4.0
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant Permissions to gradlew
+        run: chmod +x gradlew
+
+      - name: Test
+        run: ./gradlew test --tests "*"
