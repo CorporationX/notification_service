@@ -17,7 +17,7 @@ import java.util.Locale;
 public class SkillAcquiredEventListener extends AbstractEventListener<SkillAcquiredEvent> implements MessageListener {
     @Autowired
     public SkillAcquiredEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
-                                      List<NotificationService> notificationService, List<MessageBuilder<SkillAcquiredEvent>> messageBuilders) {
+                                      List<NotificationService> notificationService, MessageBuilder<SkillAcquiredEvent> messageBuilders) {
         super(objectMapper, userServiceClient, notificationService, messageBuilders);
     }
 

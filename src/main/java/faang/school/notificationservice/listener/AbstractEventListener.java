@@ -18,7 +18,7 @@ public abstract class AbstractEventListener<T> {
     private final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationService;
-    private final List<MessageBuilder<T>> messageBuilders;
+    private final MessageBuilder<T> messageBuilders;
 
     public T mapMessage(Message message, Class<T> tClass) {
         String convertedMessage = new String(message.getBody());
@@ -31,11 +31,7 @@ public abstract class AbstractEventListener<T> {
 
     public String getMessage(T event, long userId) {
         UserDto userDto = userServiceClient.getUser(userId);
-        return messageBuilders.stream()
-                .filter(messageBuilder -> messageBuilder.getInstance() == event.getClass())
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Такого билдера сообщений не существует"))
-                .buildMessage(event, userDto.getLocale());
+        return messageBuilders.buildMessage(event, userDto.getLocale());
     }
 
     public void sendMessage(long userId, String message) {

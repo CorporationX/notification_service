@@ -22,6 +22,6 @@ public class SkillMessageBuilder implements MessageBuilder<SkillAcquiredEvent> {
     @Override
     public String buildMessage(SkillAcquiredEvent event, Locale locale) {
         SkillDto skillDto = userServiceClient.getSkill(event.getSkillId());
-        return messageSource.getMessage("skill.properties", new Object[]{skillDto.getTitle()}, locale);
+        return messageSource.getMessage("skill.new", new Object[]{skillDto.getTitle()}, locale);
     }
 }
