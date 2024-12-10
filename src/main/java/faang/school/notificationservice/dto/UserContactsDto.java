@@ -1,5 +1,6 @@
 package faang.school.notificationservice.dto;
 
+import faang.school.notificationservice.data.NotificationChannel;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -9,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -32,10 +35,10 @@ public class UserContactsDto {
     private String phone;
 
     @NotNull(message = "Preferred contact is required")
-    private PreferredContact preference;
+    private NotificationChannel preference;
 
-    public enum PreferredContact {
-        EMAIL, SMS, TELEGRAM
-    }
+    private List<Long> menteesId;
+    private List<Long> mentorsId;
+    private List<Long> skillsId;
 }
 

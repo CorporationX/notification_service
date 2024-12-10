@@ -4,6 +4,7 @@ import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
+import faang.school.notificationservice.data.NotificationChannel;
 import faang.school.notificationservice.dto.UserContactsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class SmsService implements NotificationService {
     }
 
     @Override
-    public UserContactsDto.PreferredContact getPreferredContact() {
-        return UserContactsDto.PreferredContact.SMS;
+    public NotificationChannel getPreferredContact() {
+        return NotificationChannel.SMS;
     }
 }
