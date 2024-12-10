@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.data.PreferredContact;
 import faang.school.notificationservice.dto.LikeEvent;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.messaging.LikeMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +32,7 @@ public class LikeEventListener implements MessageListener {
 
             LikeEvent event = objectMapper.readValue(json, LikeEvent.class);
 
-            UserDto user = userServiceClient.getUser(event.getPostAuthorId());
-            String preference = userServiceClient.getProfileSettings(event.getPostAuthorId()).getPreference();
-            user.setPreference(PreferredContact.valueOf(preference));
+            UserContactsDto user = userServiceClient.getUserContacts(event.getPostAuthorId());
 
             notificationServices.stream()
                     .filter(service -> user.getPreference().equals(service.getPreferredContact()))
