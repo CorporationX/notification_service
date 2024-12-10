@@ -12,6 +12,6 @@ public interface UserServiceClient {
     @GetMapping("/api/v1/users/{userId}/profile-settings")
     UserProfileSettingsDto getProfileSettings(@PathVariable Long userId);
 
-    @GetMapping("api/v1/users/{id}/contacts")
+    @GetMapping("/api/v1/users/{id}/contacts")
     UserContactsDto getUserContacts(@PathVariable long id);
 }
