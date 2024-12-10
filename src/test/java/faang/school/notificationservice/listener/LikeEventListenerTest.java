@@ -4,31 +4,37 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.data.PreferredContact;
 import faang.school.notificationservice.dto.LikeEvent;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.dto.UserProfileSettingsDto;
 import faang.school.notificationservice.messaging.LikeMessageBuilder;
 import faang.school.notificationservice.service.EmailService;
+import faang.school.notificationservice.service.NotificationService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.control.MappingControl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Locale;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LikeEventListenerTest {
-    @Mock
-    private EmailService emailService;
-
     @Mock
     private LikeMessageBuilder likeMessageBuilder;
 
@@ -39,40 +45,47 @@ class LikeEventListenerTest {
     private UserServiceClient userServiceClient;
 
     @Mock
-    private Message message;
+    private NotificationService emailNotificationService;
 
     @InjectMocks
     private LikeEventListener likeEventListener;
 
+    @BeforeEach
+    void setUp() {
+        likeEventListener = new LikeEventListener(
+                likeMessageBuilder,
+                objectMapper,
+                userServiceClient,
+                List.of(emailNotificationService)
+        );
+    }
+
     @Test
-    void onMessageShouldProcessMessageAndSendEmail() throws Exception {
-        String json = "{\"postAuthorId\":1,\"likeAuthorId\":2,\"postId\":44}";
-        LikeEvent likeEvent = LikeEvent.builder()
-                .postAuthorId(1L)
-                .likeAuthorId(2L)
-                .postId(44L)
-                .build();
+    void onMessageShouldProcessMessageAndSendNotification() throws Exception {
+        String expectedMessage = "You've received a new like!";
+        LikeEvent event = LikeEvent.builder().likeAuthorId(1L).postAuthorId(1L). postId(1L).build();
 
-        UserDto user = new UserDto();
-        user.setId(1L);
-        user.setPreference(PreferredContact.EMAIL);
+        UserContactsDto userContactsDto = new UserContactsDto();
+        userContactsDto.setId(1L);
+        userContactsDto.setPreference(PreferredContact.EMAIL);
 
-        String expectedMessage = "User with id: 2 liked your post with id: 44";
+        Message redisMessage = mock(Message.class);
+        byte[] body = "{\"likeId\":1,\"postId\":1,\"postAuthorId\":1}".getBytes(StandardCharsets.UTF_8);
+        when(redisMessage.getBody()).thenReturn(body);
 
-        when(message.getBody()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
-        when(objectMapper.readValue(eq(json), eq(LikeEvent.class))).thenReturn(likeEvent);
-        when(userServiceClient.getUser(1L)).thenReturn(user);
-        when(userServiceClient.getProfileSettings(1L)).thenReturn(UserProfileSettingsDto.builder().userId(1L).id(1L).preference("EMAIL").build());
-        when(likeMessageBuilder.buildMessage(eq(likeEvent), eq(Locale.US))).thenReturn(expectedMessage);
+        when(objectMapper.readValue(new String(body, StandardCharsets.UTF_8), LikeEvent.class)).thenReturn(event);
+        when(userServiceClient.getUserContacts(1L)).thenReturn(userContactsDto);
+        when(emailNotificationService.getPreferredContact()).thenReturn(PreferredContact.EMAIL);
+        when(likeMessageBuilder.buildMessage(event, Locale.US)).thenReturn(expectedMessage);
 
-        likeEventListener.onMessage(message, null);
+        likeEventListener.onMessage(redisMessage, null);
 
-        ArgumentCaptor<UserDto> userCaptor = ArgumentCaptor.forClass(UserDto.class);
+        ArgumentCaptor<UserContactsDto> userCaptor = ArgumentCaptor.forClass(UserContactsDto.class);
         ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
 
-        verify(emailService).send(userCaptor.capture(), messageCaptor.capture());
+        verify(emailNotificationService, times(1)).send(userCaptor.capture(), messageCaptor.capture());
 
-        assertEquals(user, userCaptor.getValue());
+        assertEquals(1L, userCaptor.getValue().getId());
         assertEquals(expectedMessage, messageCaptor.getValue());
     }
 }
