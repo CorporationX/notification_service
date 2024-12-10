@@ -2,31 +2,26 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.data.PreferredContact;
-import faang.school.notificationservice.dto.LikeEvent;
+import faang.school.notificationservice.data.NotificationChannel;
+import faang.school.notificationservice.event.LikeEvent;
 import faang.school.notificationservice.dto.UserContactsDto;
-import faang.school.notificationservice.dto.UserProfileSettingsDto;
 import faang.school.notificationservice.messaging.LikeMessageBuilder;
-import faang.school.notificationservice.service.EmailService;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.control.MappingControl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -67,7 +62,7 @@ class LikeEventListenerTest {
 
         UserContactsDto userContactsDto = new UserContactsDto();
         userContactsDto.setId(1L);
-        userContactsDto.setPreference(PreferredContact.EMAIL);
+        userContactsDto.setPreference(NotificationChannel.EMAIL);
 
         Message redisMessage = mock(Message.class);
         byte[] body = "{\"likeId\":1,\"postId\":1,\"postAuthorId\":1}".getBytes(StandardCharsets.UTF_8);
@@ -75,7 +70,7 @@ class LikeEventListenerTest {
 
         when(objectMapper.readValue(new String(body, StandardCharsets.UTF_8), LikeEvent.class)).thenReturn(event);
         when(userServiceClient.getUserContacts(1L)).thenReturn(userContactsDto);
-        when(emailNotificationService.getPreferredContact()).thenReturn(PreferredContact.EMAIL);
+        when(emailNotificationService.getPreferredContact()).thenReturn(NotificationChannel.EMAIL);
         when(likeMessageBuilder.buildMessage(event, Locale.US)).thenReturn(expectedMessage);
 
         likeEventListener.onMessage(redisMessage, null);

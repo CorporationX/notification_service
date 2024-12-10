@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.RetryProperties;
-import faang.school.notificationservice.data.PreferredContact;
+import faang.school.notificationservice.data.NotificationChannel;
 import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.event.RecommendationReceivedEvent;
 import faang.school.notificationservice.messaging.RecommendationMessageBuilder;
@@ -80,7 +80,7 @@ class RecommendationReceivedEventlistenerTest {
     @DisplayName("Should process event and send email notification")
     void onMessageSuccessEmailNotification() throws Exception {
         RecommendationReceivedEvent event = new RecommendationReceivedEvent(1L, 2L, "Receiver", 3L, "Author");
-        UserContactsDto receiver = new UserContactsDto(2L, "Receiver", "receiver@example.com", "12345", PreferredContact.EMAIL, List.of(1L), List.of(2L), List.of(3L));
+        UserContactsDto receiver = new UserContactsDto(2L, "Receiver", "receiver@example.com", "12345", NotificationChannel.EMAIL, List.of(1L), List.of(2L), List.of(3L));
         String messageBody = "{\"recommendationId\":1,\"receiverId\":2,\"authorId\":3}";
         String generatedMessage = "Receiver, Author sent you a recommendation!";
 

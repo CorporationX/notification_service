@@ -1,5 +1,5 @@
 package faang.school.notificationservice.data;
 
-public enum PreferredContact {
+public enum NotificationChannel {
     EMAIL, SMS, TELEGRAM
 }

@@ -1,6 +1,6 @@
 package faang.school.notificationservice.dto;
 
-import faang.school.notificationservice.data.PreferredContact;
+import faang.school.notificationservice.data.NotificationChannel;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -35,7 +35,7 @@ public class UserContactsDto {
     private String phone;
 
     @NotNull(message = "Preferred contact is required")
-    private PreferredContact preference;
+    private NotificationChannel preference;
 
     private List<Long> menteesId;
     private List<Long> mentorsId;

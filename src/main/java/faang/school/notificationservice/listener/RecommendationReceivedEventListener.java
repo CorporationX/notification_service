@@ -5,7 +5,6 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.RetryProperties;
 import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.event.RecommendationReceivedEvent;
-import faang.school.notificationservice.exception.UserContactsRetrievalException;
 import faang.school.notificationservice.messaging.RecommendationMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import feign.FeignException;

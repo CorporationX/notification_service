@@ -34,7 +34,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic likeEventsTopic() {
+    public ChannelTopic likeTopic() {
         return new ChannelTopic(redisProperties.getChannel().getLikeEvent());
     }
 
@@ -42,12 +42,12 @@ public class RedisConfig {
     RedisMessageListenerContainer redisMessageListenerContainer(
             JedisConnectionFactory jedisConnectionFactory,
             ChannelTopic recommendationTopic,
-            ChannelTopic likeEventsTopic
+            ChannelTopic likeTopic
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory);
         container.addMessageListener(recommendationReceivedEventListener, recommendationTopic);
-        container.addMessageListener(likeEventListener, likeEventsTopic);
+        container.addMessageListener(likeEventListener, likeTopic);
         return container;
     }
 }
