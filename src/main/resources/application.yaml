@@ -7,6 +7,7 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         like_event: like_event_channel
+        recommendation: recommendation_channel
 
   mail:
     host: smtp.gmail.com
@@ -25,6 +26,12 @@ spring:
 
   messages:
     basename: messages
+
+  retry:
+    maxAttempts: 3
+    initialDelay: 1000
+    multiplier: 2
+    maxDelay: 10000
 
 server:
   port: 8083

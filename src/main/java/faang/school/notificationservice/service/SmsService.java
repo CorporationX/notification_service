@@ -5,7 +5,7 @@ import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.data.PreferredContact;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserContactsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +21,7 @@ public class SmsService implements NotificationService {
     private String messageSenderPhoneNumber;
 
     @Override
-    public void send(UserDto user, String messageText) {
+    public void send(UserContactsDto user, String messageText) {
         TextMessage message = new TextMessage(messageSenderPhoneNumber, user.getPhone(), messageText);
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(message);
         response.getMessages().forEach(responseMessage -> {

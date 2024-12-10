@@ -2,11 +2,10 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.bot.TelegramBotImpl;
 import faang.school.notificationservice.data.PreferredContact;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.exception.TelegramBotInitException;
 import faang.school.notificationservice.exception.TelegramBotMessageSendException;
 import jakarta.annotation.PostConstruct;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -46,7 +45,7 @@ public class TelegramService implements NotificationService {
     @Override
     @Async("cachedThreadPool")
     @Retryable(retryFor = TelegramBotMessageSendException.class, maxAttempts = 3, backoff = @Backoff(delay = 60000, multiplier = 2))
-    public void send(@Valid UserDto user, String message) {
+    public void send(UserContactsDto user, String message) {
         log.debug("Trying to sending message to user #{} in Telegram: {}", user.getId(), message);
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(user.getId())
