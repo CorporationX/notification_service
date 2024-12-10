@@ -2,7 +2,6 @@ package faang.school.notificationservice.dto;
 
 import faang.school.notificationservice.data.PreferredContact;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
