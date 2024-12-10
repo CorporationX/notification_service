@@ -44,7 +44,6 @@ public class RecommendationReceivedEventListener implements MessageListener {
     }
 
     private void handleEvent(RecommendationReceivedEvent event) {
-        try {
             UserContactsDto receiverDto = getUserContacts(event.getReceiverId());
 
             String message = recommendationMessageBuilder.buildMessage(event, LocaleContextHolder.getLocale());
@@ -54,12 +53,6 @@ public class RecommendationReceivedEventListener implements MessageListener {
                     .findFirst()
                     .ifPresent(service -> service.send(receiverDto, message));
             log.info("Message sent to user {} via {}", receiverDto.getId(), receiverDto.getPreference());
-
-        } catch (UserContactsRetrievalException e) {
-            log.error("Error occurred while fetching user contacts for user {}", event.getReceiverId(), e);
-        } catch (RuntimeException e) {
-            log.error("Error occurred while sending notification to user {}", event.getReceiverId(), e);
-        }
     }
 
     @Retryable(retryFor = Exception.class,
@@ -75,7 +68,7 @@ public class RecommendationReceivedEventListener implements MessageListener {
             return userServiceClient.getUserContacts(userId);
         } catch (FeignException e) {
             log.error("Error occurred while fetching user contacts for user {}", userId, e);
-            throw new UserContactsRetrievalException("Error occurred while fetching user contacts for user: " + userId + " Error: " + e.getMessage());
+            throw e;
         }
     }
 }
