@@ -43,6 +43,11 @@ spring:
   messages:
     basename: messages
 
+  telegram:
+    bot:
+      username: corpnotification_bot
+      token: 8175053802:AAGhCg2Mgm4RwATkeqOUzzkQz9xlmxk9Wyg
+
 server:
   port: 8083
 
