@@ -2,7 +2,7 @@ package faang.school.notificationservice.controller;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.EmailService;
+import faang.school.notificationservice.service.notification.impl.email.EmailService;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
