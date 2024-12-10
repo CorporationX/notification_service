@@ -30,8 +30,6 @@ public class LikeEventListener implements MessageListener {
         try {
             String json = new String(message.getBody(), StandardCharsets.UTF_8);
 
-            json = json.replaceAll("\"@class\".*?,", "");
-
             LikeEvent event = objectMapper.readValue(json, LikeEvent.class);
 
             UserDto user = userServiceClient.getUser(event.getPostAuthorId());
