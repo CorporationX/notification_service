@@ -32,6 +32,11 @@ logging:
   level:
     root: info
 
+telegram:
+  bot:
+    name: corporation_x
+    token: 7773633002:AAGoNA7QwvDB9jwJU4RFmm6Tb92Gk17GORs
+
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
