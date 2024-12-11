@@ -5,6 +5,8 @@ spring:
       host: localhost
       channel:
         follower: follower_channel
+        achievement: achievement_channel
+        event-participation: event_participation_channel
         unfollow: unfollower_channel
 
   mail:
@@ -44,3 +46,10 @@ project-service:
 user-service:
   host: localhost
   port: 8080
+
+application:
+  telegram:
+    bot-name: tvoi_vernii_sluga_bot
+    telegram-token:
+  thread:
+    pool-size: 10
