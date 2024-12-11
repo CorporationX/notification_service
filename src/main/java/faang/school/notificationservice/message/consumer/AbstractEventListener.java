@@ -3,7 +3,7 @@ package faang.school.notificationservice.message.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.builder.message.MessageBuilder;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserForNotificationDto;
+import faang.school.notificationservice.dto.user.UserForNotificationDto;
 import faang.school.notificationservice.exceptions.PreferredContactNotExistException;
 import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +41,9 @@ public abstract class AbstractEventListener<T> {
                     userServiceClient.getUserForNotificationById(receiverIdExtractor.apply(event));
             String message = messageBuilder.build(event, receiver.getLocaleFromLanguage());
             sendNotification(receiver, message);
-        } catch (IOException | IllegalArgumentException e) {
-            log.error("Failed to convert message to {}", eventType.getSimpleName(), e);
+        } catch (IOException | IllegalArgumentException ex) {
+            log.error("Failed to convert message to {}", eventType.getSimpleName(), ex);
+            throw new RuntimeException(ex);
         }
     }
 

@@ -1,6 +1,6 @@
 package faang.school.notificationservice.exceptions;
 
-import faang.school.notificationservice.dto.PreferredContact;
+import faang.school.notificationservice.dto.user.PreferredContact;
 
 public class PreferredContactNotExistException extends RuntimeException {
 

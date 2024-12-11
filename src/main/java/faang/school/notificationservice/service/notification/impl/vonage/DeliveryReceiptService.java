@@ -2,7 +2,7 @@ package faang.school.notificationservice.service.notification.impl.vonage;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.redis.RedisConfig;
-import faang.school.notificationservice.dto.UserForNotificationDto;
+import faang.school.notificationservice.dto.user.UserForNotificationDto;
 import faang.school.notificationservice.dto.vonage.DeliveryReceipts;
 import faang.school.notificationservice.dto.vonage.ErrorCode;
 import faang.school.notificationservice.message.producer.MessagePublisher;

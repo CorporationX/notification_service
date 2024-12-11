@@ -1,7 +1,6 @@
 package faang.school.notificationservice.service.jpa;
 
 import faang.school.notificationservice.config.thread.pool.ThreadPoolConfig;
-import faang.school.notificationservice.dto.UserForNotificationDto;
 import faang.school.notificationservice.exceptions.ResourceNotFoundException;
 import faang.school.notificationservice.model.SmsMessage;
 import faang.school.notificationservice.repository.SmsMessageRepository;

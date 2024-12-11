@@ -1,7 +1,7 @@
 package faang.school.notificationservice.client;
 
 import faang.school.notificationservice.config.resilience4j.Resilience4jProperties;
-import faang.school.notificationservice.dto.UserForNotificationDto;
+import faang.school.notificationservice.dto.user.UserForNotificationDto;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.validation.constraints.Positive;

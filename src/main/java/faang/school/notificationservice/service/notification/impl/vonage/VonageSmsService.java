@@ -2,12 +2,11 @@ package faang.school.notificationservice.service.notification.impl.vonage;
 
 import cn.hutool.core.lang.Snowflake;
 import com.vonage.client.VonageClient;
-import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.config.resilience4j.Resilience4jProperties;
 import faang.school.notificationservice.config.vonage.VonageConfig;
-import faang.school.notificationservice.dto.PreferredContact;
-import faang.school.notificationservice.dto.UserForNotificationDto;
+import faang.school.notificationservice.dto.user.PreferredContact;
+import faang.school.notificationservice.dto.user.UserForNotificationDto;
 import faang.school.notificationservice.model.MessageDeliveryStatus;
 import faang.school.notificationservice.model.SmsMessage;
 import faang.school.notificationservice.service.jpa.SmsMessageService;
@@ -39,7 +38,7 @@ public class VonageSmsService implements NotificationService {
         smsMessageService.saveSmsMessageAsync(smsMessage);
 
         TextMessage textMessage = buildVonageTextMessage(receiver, message, smsMessage);
-        SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(textMessage);
+        vonageClient.getSmsClient().submitMessage(textMessage);
         log.info("SMS message with uid {} was sent", smsMessage.getUid());
     }
 
