@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
@@ -27,20 +26,12 @@ import java.util.Map;
 public class VonageWebhookV1Controller {
 
     private final DeliveryReceiptService deliveryReceiptService;
-    private final VonageSmsService vonageSmsService;
     private final DeliveryReceiptsFactory deliveryReceiptsFactory;
-    private final MessageSource messageSource;
 
     @RequestMapping(value = "/delivery-receipt", method = {RequestMethod.GET, RequestMethod.POST})
     public void handleDeliveryReceipt(@RequestParam Map<String, String> deliveryReceiptParams) {
         log.info("handleDeliveryReceipt: {}", deliveryReceiptParams);
         DeliveryReceipts deliveryReceipts = deliveryReceiptsFactory.create(deliveryReceiptParams);
         deliveryReceiptService.processDeliveryReceipt(deliveryReceipts);
-    }
-
-    @PostMapping("/send")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void sendMessage(@RequestBody UserForNotificationDto userForNotificationDto) {
-        vonageSmsService.send(userForNotificationDto, "Test message Wyverns s7");
     }
 }

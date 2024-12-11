@@ -26,9 +26,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -57,27 +55,23 @@ public class DeliveryReceiptServiceTest {
     private DeliveryReceipts deliveryReceipt;
     private SmsMessage smsMessage;
     private String clientRef;
-    private String messageId;
     private double price;
     private Long receiverId = 1L;
     private Map<String, String> values;
     private DeliveryReceiptsProps.FieldsName fieldsNames;
 
-    private String clientRefFieldName;
-    private String messageIdFieldName;
-    private String priceFieldName;
     private String errorCodeFieldName;
 
     @BeforeEach
     void setUp() {
         clientRef = "123";
-        messageId = "msg123";
+        String messageId = "msg123";
         price = 0.05;
         receiverId = 1L;
 
-        clientRefFieldName = "client-ref";
-        messageIdFieldName = "message-id";
-        priceFieldName = "price";
+        String clientRefFieldName = "client-ref";
+        String messageIdFieldName = "message-id";
+        String priceFieldName = "price";
         errorCodeFieldName = "error-code";
 
         fieldsNames = new DeliveryReceiptsProps.FieldsName();
