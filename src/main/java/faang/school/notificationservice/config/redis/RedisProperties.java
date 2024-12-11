@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RedisProperties {
 
+    @Value("${spring.data.redis.channel.event-participation}")
+    private String eventParticipationChannel;
+
     @Value("${spring.data.redis.host}")
     private String host;
 
