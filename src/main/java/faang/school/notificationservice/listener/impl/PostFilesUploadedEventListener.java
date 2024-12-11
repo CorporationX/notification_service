@@ -5,12 +5,10 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.event.FilesUploadedEvent;
 import faang.school.notificationservice.listener.AbstractEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.Topic;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -40,12 +38,7 @@ public class PostFilesUploadedEventListener extends AbstractEventListener<FilesU
     }
 
     @Override
-    public MessageListenerAdapter getAdapter() {
-        return new MessageListenerAdapter(this);
-    }
-
-    @Override
-    public Topic getTopic() {
+    public ChannelTopic getTopic() {
         return new ChannelTopic(filesUploadedChannel);
     }
 }
