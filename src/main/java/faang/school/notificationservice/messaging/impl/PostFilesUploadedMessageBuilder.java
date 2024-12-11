@@ -1,6 +1,7 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.messaging.impl;
 
 import faang.school.notificationservice.event.FilesUploadedEvent;
+import faang.school.notificationservice.messaging.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,8 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class PostFilesUploadedMessageBuilder implements MessageBuilder<FilesUploadedEvent> {
+
+    private static final String MESSAGE_KEY = "files.uploaded";
 
     private final MessageSource messageSource;
 
@@ -26,6 +29,6 @@ public class PostFilesUploadedMessageBuilder implements MessageBuilder<FilesUplo
         String message = keyToFileName.entrySet().stream()
                 .map(entry -> entry.getKey() + ": " + entry.getValue())
                 .collect(Collectors.joining(", \n\n"));
-        return messageSource.getMessage("files.uploaded", new Object[] {message}, locale);
+        return messageSource.getMessage(MESSAGE_KEY, new Object[] {message}, locale);
     }
 }
