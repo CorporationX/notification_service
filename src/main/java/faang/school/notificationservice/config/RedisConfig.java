@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class RedisConfig {
     private final RedisProperties redisProperties;
     private final RecommendationReceivedEventListener recommendationReceivedEventListener;
     private final LikeEventListener likeEventListener;
+    private final CommentEventListener commentEventListener;
 
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
@@ -39,6 +41,11 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic commentTopic() {
+        return new ChannelTopic(redisProperties.getChannel().getComment());
+    }
+
+    @Bean
     RedisMessageListenerContainer redisMessageListenerContainer(
             JedisConnectionFactory jedisConnectionFactory,
             ChannelTopic recommendationTopic,
@@ -48,6 +55,7 @@ public class RedisConfig {
         container.setConnectionFactory(jedisConnectionFactory);
         container.addMessageListener(recommendationReceivedEventListener, recommendationTopic);
         container.addMessageListener(likeEventListener, likeTopic);
+        container.addMessageListener(commentEventListener, commentTopic());
         return container;
     }
 }

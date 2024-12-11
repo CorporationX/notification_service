@@ -18,5 +18,6 @@ public class RedisProperties {
         private String achievement;
         private String recommendation;
         private String likeEvent;
+        private String comment;
     }
 }

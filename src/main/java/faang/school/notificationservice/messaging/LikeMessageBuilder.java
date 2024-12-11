@@ -18,7 +18,7 @@ public class LikeMessageBuilder implements MessageBuilder<LikeEvent> {
     }
 
     @Override
-    public Class<?> getInstance() {
+    public Class<LikeEvent> getInstance() {
         return LikeEvent.class;
     }
 }
