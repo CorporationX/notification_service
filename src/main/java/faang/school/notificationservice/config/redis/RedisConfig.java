@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
-import faang.school.notificationservice.eventlistener.recommendation.RecommendationReceivedEventListener;
+import faang.school.notificationservice.listener.recommendation.RecommendationReceivedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
