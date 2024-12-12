@@ -11,6 +11,7 @@ spring:
         achievement: achievement_channel
         comment: comment_channel
         event_start: event_start
+        files-uploaded: files_uploaded_channel
         mentorship:
           accepted: mentorship_accepted_channel
 
