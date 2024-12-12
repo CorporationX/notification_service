@@ -1,7 +1,8 @@
 package faang.school.notificationservice.dto;
 
-import com.vonage.client.voice.ncco.SpeechSettings;
 import lombok.Builder;
+
+import java.util.Locale;
 
 @Builder
 public record UserForNotificationDto(
@@ -9,7 +10,15 @@ public record UserForNotificationDto(
         String username,
         String email,
         String phone,
-        SpeechSettings.Language locale,
+        Language locale,
         PreferredContact preference
 ) {
+
+    public Locale getLocaleFromLanguage() {
+        return Locale.forLanguageTag(locale.getTag());
+    }
+
+    public boolean isSamePreferredContact(PreferredContact preference) {
+        return this.preference == preference;
+    }
 }

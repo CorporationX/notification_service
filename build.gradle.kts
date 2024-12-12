@@ -28,21 +28,38 @@ dependencies {
     /**
      * Database
      */
+    implementation("org.liquibase:liquibase-core")
     implementation("redis.clients:jedis:4.3.2")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("com.h2database:h2")
 
     /**
+     * Vonage
+     */
+    implementation("com.vonage:client:7.7.0")
+
+    /**
      * Utils & Logging
      */
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("org.slf4j:slf4j-api:2.0.5")
     implementation("ch.qos.logback:logback-classic:1.4.6")
     implementation("org.projectlombok:lombok:1.18.26")
     annotationProcessor("org.projectlombok:lombok:1.18.26")
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
-    implementation("com.vonage:client:7.3.0")
+
+    /**
+     * Resilience4j
+     */
+    implementation("io.github.resilience4j:resilience4j-spring-boot3:2.1.0")
+    implementation("io.github.resilience4j:resilience4j-reactor:2.1.0")
+
+    /**
+     * Hutool
+     */
+    implementation("cn.hutool:hutool-core:5.8.20")
 
     /**
      * Test containers
