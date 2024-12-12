@@ -46,15 +46,15 @@ public abstract class AbstractEventListener<T> {
                         ("No message builder found for event: " + event.getClass().getName()));
     }
 
-    protected void sendNotification(Long userId, String message){
+    public void sendNotification(Long userId, String message){
         UserDto user = userServiceClient.getUser(userId);
-        notificationServices.stream()
-                .filter(service -> service.getPreferredContact().equals(user.getPreference()))
+        NotificationService notificationService = notificationServices.stream()
+                .filter(service -> service.getPreferredContact() == user.getPreference())
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException
-                        ("No notification service found for the user preferred communication method : "
-                                + user.getPreference()))
-                .send(user, message);
+                .orElseThrow(() -> new IllegalArgumentException(String.format("No notification service found for the user preferred communication method : "
+                        + user.getPreference())));
+
+        notificationService.send(user, message);
     }
 
 

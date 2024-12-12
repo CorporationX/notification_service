@@ -36,7 +36,7 @@ class ProfileViewMessageBuilderTest {
     }
 
     @Test
-    public void testGetInstance() {
+    void testGetInstance() {
         Class<?> actual = profileViewMessageBuilder.getInstance();
         assertEquals(actual, ProfileViewEvent.class);
     }
