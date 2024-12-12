@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
@@ -38,38 +39,42 @@ class CommentEventListenerTest {
     private UserServiceClient userServiceClient;
 
     @Mock
-    private NotificationService notificationService;
+    private NotificationService emailNotificationService;
 
     private CommentEventListener listener;
 
     @BeforeEach
     void setUp() {
-        listener = new CommentEventListener(commentMessageBuilder, objectMapper, userServiceClient, List.of(notificationService));
+        listener = new CommentEventListener(commentMessageBuilder, objectMapper, userServiceClient, List.of(emailNotificationService));
     }
 
     @Test
     void onMessageShouldSendNotificationWhenMessageIsValid() throws Exception {
         String json = "{\"postAuthorId\":1,\"commentAuthorId\":2,\"comment\":\"Nice post!\"}";
-        CommentEvent event = CommentEvent.builder().commentId(1L).postAuthorId(2L).commentAuthorId(3L).postId(4L).build();
+        CommentEvent event = CommentEvent.builder()
+                .postAuthorId(1L)
+                .commentAuthorId(2L)
+                .postId(1L)
+                .build();
+
         UserContactsDto userContactsDto = UserContactsDto.builder()
                 .id(1L)
                 .email("test@example.com")
                 .username("test")
-                .preference(NotificationChannel.EMAIL) // Добавлено значение
+                .preference(NotificationChannel.EMAIL)
                 .build();
         String expectedMessage = "User 2 commented on post 1";
 
         Message redisMessage = mock(Message.class);
         when(redisMessage.getBody()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
-
         when(objectMapper.readValue(json, CommentEvent.class)).thenReturn(event);
-        when(userServiceClient.getUserContacts(2L)).thenReturn(userContactsDto);
-        when(notificationService.getPreferredContact()).thenReturn(NotificationChannel.EMAIL);
-        when(commentMessageBuilder.buildMessage(event, Locale.US)).thenReturn(expectedMessage);
+        when(userServiceClient.getUserContacts(1L)).thenReturn(userContactsDto);
+        when(emailNotificationService.getPreferredContact()).thenReturn(NotificationChannel.EMAIL);
+        when(commentMessageBuilder.buildMessage(event, LocaleContextHolder.getLocale())).thenReturn(expectedMessage);
 
         listener.onMessage(redisMessage, null);
 
-        verify(notificationService).send(userContactsDto, expectedMessage);
+        verify(emailNotificationService).send(userContactsDto, expectedMessage);
     }
 
     @Test
@@ -85,6 +90,6 @@ class CommentEventListenerTest {
 
         listener.onMessage(redisMessage, null);
 
-        verifyNoInteractions(notificationService, commentMessageBuilder);
+        verifyNoInteractions(emailNotificationService, commentMessageBuilder);
     }
 }

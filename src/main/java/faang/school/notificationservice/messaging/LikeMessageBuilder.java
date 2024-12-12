@@ -14,7 +14,7 @@ public class LikeMessageBuilder implements MessageBuilder<LikeEvent> {
 
     @Override
     public String buildMessage(LikeEvent event, Locale locale) {
-        return messageSource.getMessage("like.add", new Object[]{event.getLikeAuthorId(), event.getPostId()}, locale);
+        return messageSource.getMessage("like.add", new Object[]{event.getPostAuthorName(), event.getPostId()}, locale);
     }
 
     @Override

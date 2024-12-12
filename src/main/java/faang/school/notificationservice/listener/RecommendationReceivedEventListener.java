@@ -48,9 +48,12 @@ public class RecommendationReceivedEventListener implements MessageListener {
             String message = recommendationMessageBuilder.buildMessage(event, LocaleContextHolder.getLocale());
 
             notificationServices.stream()
-                    .filter(service -> receiverDto.getPreference() == service.getPreferredContact())
+                    .filter(service -> receiverDto.getPreference().equals(service.getPreferredContact()))
                     .findFirst()
-                    .ifPresent(service -> service.send(receiverDto, message));
+                    .ifPresentOrElse(
+                            service -> service.send(receiverDto, message),
+                            () -> log.error("No notification service found for user {}", receiverDto.getId())
+                    );
             log.info("Message sent to user {} via {}", receiverDto.getId(), receiverDto.getPreference());
     }
 

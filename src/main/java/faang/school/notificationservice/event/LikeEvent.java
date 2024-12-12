@@ -15,4 +15,5 @@ public class LikeEvent {
     private Long postAuthorId;
     private Long likeAuthorId;
     private Long postId;
+    private String postAuthorName;
 }

@@ -14,6 +14,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.redis.connection.Message;
 
 import java.nio.charset.StandardCharsets;
@@ -71,7 +72,7 @@ class LikeEventListenerTest {
         when(objectMapper.readValue(new String(body, StandardCharsets.UTF_8), LikeEvent.class)).thenReturn(event);
         when(userServiceClient.getUserContacts(1L)).thenReturn(userContactsDto);
         when(emailNotificationService.getPreferredContact()).thenReturn(NotificationChannel.EMAIL);
-        when(likeMessageBuilder.buildMessage(event, Locale.US)).thenReturn(expectedMessage);
+        when(likeMessageBuilder.buildMessage(event, LocaleContextHolder.getLocale())).thenReturn(expectedMessage);
 
         likeEventListener.onMessage(redisMessage, null);
 

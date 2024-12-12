@@ -16,4 +16,5 @@ public class CommentEvent {
     private Long postAuthorId;
     private Long postId;
     private Long commentId;
+    private String postAuthorName;
 }

@@ -1,12 +1,16 @@
 package faang.school.notificationservice.messaging;
 
+import faang.school.notificationservice.data.NotificationChannel;
+import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.event.CommentEvent;
+import faang.school.notificationservice.listener.CommentEventListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.util.Locale;
 
@@ -22,6 +26,9 @@ class CommentMessageBuilderTest {
 
     private CommentMessageBuilder commentMessageBuilder;
 
+    @Mock
+    private CommentEventListener commentEventListener;
+
     @BeforeEach
     void setUp() {
         commentMessageBuilder = new CommentMessageBuilder(messageSource);
@@ -29,16 +36,23 @@ class CommentMessageBuilderTest {
 
     @Test
     void buildMessageShouldReturnFormattedMessageWhenEventIsValid() {
-        CommentEvent event = CommentEvent.builder().commentAuthorId(1L).postId(2L).commentId(3L).postAuthorId(4L).build();
-        Locale locale = Locale.ENGLISH;
-        String expectedMessage = "User 1 commented on post 2";
+        CommentEvent event = CommentEvent.builder()
+                .commentAuthorId(2L)
+                .postId(2L)
+                .commentId(3L)
+                .postAuthorId(1L)
+                .postAuthorName("test")
+                .build();
 
-        when(messageSource.getMessage("comment.add", new Object[]{1L, 2L}, locale)).thenReturn(expectedMessage);
+        Locale locale = LocaleContextHolder.getLocale();
+        String expectedMessage = "Congrats, test! You''ve added a new comment to your post with id: 2";
+
+        when(messageSource.getMessage("comment.add", new Object[]{"test", 2L}, locale)).thenReturn(expectedMessage);
 
         String result = commentMessageBuilder.buildMessage(event, locale);
 
         assertEquals(expectedMessage, result);
-        verify(messageSource, times(1)).getMessage("comment.add", new Object[]{1L, 2L}, locale);
+        verify(messageSource, times(1)).getMessage("comment.add", new Object[]{"test", 2L}, locale);
     }
 
     @Test
