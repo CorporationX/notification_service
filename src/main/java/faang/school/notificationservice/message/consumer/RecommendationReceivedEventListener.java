@@ -2,9 +2,11 @@ package faang.school.notificationservice.message.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.config.resilience4j.Resilience4jProperties;
 import faang.school.notificationservice.message.event.RecommendationReceivedEvent;
 import faang.school.notificationservice.builder.message.MessageBuilder;
 import faang.school.notificationservice.service.notification.NotificationService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
@@ -27,7 +29,8 @@ public class RecommendationReceivedEventListener extends AbstractEventListener<R
     }
 
     @Override
-    @Retryable(maxAttempts = 5, backoff = @Backoff(multiplier = 2.0))
+    @Retry(name = Resilience4jProperties.DEFAULT_RETRY_CONFIG_NAME)
+    @CircuitBreaker(name = Resilience4jProperties.DEFAULT_RETRY_CONFIG_NAME)
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, RecommendationReceivedEvent.class);
     }
