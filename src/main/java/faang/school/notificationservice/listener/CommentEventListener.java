@@ -32,9 +32,7 @@ public class CommentEventListener implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            String json = new String(message.getBody(), StandardCharsets.UTF_8);
-
-            CommentEvent event = objectMapper.readValue(json, CommentEvent.class);
+            CommentEvent event = objectMapper.readValue(message.getBody(), CommentEvent.class);
 
             UserContactsDto user = getUserContacts(event.getPostAuthorId());
             event.setPostAuthorName(user.getUsername());

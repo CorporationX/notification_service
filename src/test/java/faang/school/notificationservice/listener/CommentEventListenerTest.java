@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -67,7 +68,7 @@ class CommentEventListenerTest {
 
         Message redisMessage = mock(Message.class);
         when(redisMessage.getBody()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
-        when(objectMapper.readValue(json, CommentEvent.class)).thenReturn(event);
+        when(objectMapper.readValue(eq(json.getBytes(StandardCharsets.UTF_8)), eq(CommentEvent.class))).thenReturn(event);
         when(userServiceClient.getUserContacts(1L)).thenReturn(userContactsDto);
         when(emailNotificationService.getPreferredContact()).thenReturn(NotificationChannel.EMAIL);
         when(commentMessageBuilder.buildMessage(event, LocaleContextHolder.getLocale())).thenReturn(expectedMessage);

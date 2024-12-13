@@ -32,9 +32,7 @@ public class LikeEventListener implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            String json = new String(message.getBody(), StandardCharsets.UTF_8);
-
-            LikeEvent event = objectMapper.readValue(json, LikeEvent.class);
+            LikeEvent event = objectMapper.readValue(message.getBody(), LikeEvent.class);
 
             UserContactsDto user = getUserContacts(event.getPostAuthorId());
             event.setPostAuthorName(user.getUsername());

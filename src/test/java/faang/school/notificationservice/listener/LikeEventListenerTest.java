@@ -69,7 +69,8 @@ class LikeEventListenerTest {
         byte[] body = "{\"likeId\":1,\"postId\":1,\"postAuthorId\":1}".getBytes(StandardCharsets.UTF_8);
         when(redisMessage.getBody()).thenReturn(body);
 
-        when(objectMapper.readValue(new String(body, StandardCharsets.UTF_8), LikeEvent.class)).thenReturn(event);
+        when(objectMapper.readValue(eq(body), eq(LikeEvent.class))).thenReturn(event);
+
         when(userServiceClient.getUserContacts(1L)).thenReturn(userContactsDto);
         when(emailNotificationService.getPreferredContact()).thenReturn(NotificationChannel.EMAIL);
         when(likeMessageBuilder.buildMessage(event, LocaleContextHolder.getLocale())).thenReturn(expectedMessage);
