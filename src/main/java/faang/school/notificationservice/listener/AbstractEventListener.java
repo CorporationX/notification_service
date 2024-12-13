@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 public abstract class AbstractEventListener<T> {
 
     private final ObjectMapper objectMapper;
-    private final UserServiceClient userServiceClient;
+    protected final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationServices;
     private final List<MessageBuilder<T>> messageBuilders;
 
