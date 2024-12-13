@@ -6,12 +6,9 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-      channels:
-        mentorship-channel:
-          name: mentorship_channel
-        follower-event-channel:
-          name: follower_event
-        mentorship_accepted: mentorship_accepted_topic
+        mentorship-channel: mentorship_channel
+        follower-event-channel: follower_event
+        mentorship-accepted: mentorship_accepted_topic
 
   mail:
     host: smtp.gmail.com

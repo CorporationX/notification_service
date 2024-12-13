@@ -1,5 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
+import faang.school.notificationservice.listener.ProjectFollowerEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +9,7 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -19,9 +22,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
-    @Value("${spring.data.redis.channel.mentorship_accepted}")
+    @Value("${spring.data.redis.channel.mentorship-accepted}")
     private String mentorshipAcceptedTopic;
-    @Value("${spring.data.redis.channels.follower-event-channel.name}")
+    @Value("${spring.data.redis.channel.follower-event-channel}")
     private String folowerTopic;
 
     @Bean
@@ -56,7 +59,8 @@ public class RedisConfig {
 
     @Bean
     RedisMessageListenerContainer redisContainer(JedisConnectionFactory redisConnectionFactory,
-                                                 MessageListenerAdapter mentorshipAcceptedListener) {
+                                                 MessageListenerAdapter mentorshipAcceptedListener,
+                                                 MessageListenerAdapter projectFollowerListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
         container.addMessageListener(mentorshipAcceptedListener, mentorshipAcceptedTopic());
@@ -65,6 +69,7 @@ public class RedisConfig {
         return container;
     }
 
+    @Bean
     public ChannelTopic followerEventChannel() {
         return new ChannelTopic(folowerTopic);
     }
