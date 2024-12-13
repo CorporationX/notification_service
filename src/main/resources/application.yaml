@@ -11,6 +11,7 @@ spring:
           name: mentorship_channel
         follower-event-channel:
           name: follower_event
+        mentorship_accepted: mentorship_accepted_topic
 
   mail:
     host: smtp.gmail.com
@@ -36,6 +37,12 @@ server:
 logging:
   level:
     root: info
+
+#можно зарегистрировать аккаунт, на счёт дают тестовых 50 рублей
+smsaero: #https://smsaero.ru/
+  api:
+    email: #email зарегистрированного аккаунта
+    key: #api ключ
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
