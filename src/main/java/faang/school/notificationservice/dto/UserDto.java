@@ -1,8 +1,14 @@
 package faang.school.notificationservice.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
+@Builder
 public class UserDto {
     private long id;
     private String username;
@@ -11,6 +17,6 @@ public class UserDto {
     private PreferredContact preference;
 
     public enum PreferredContact {
-        EMAIL, SMS, TELEGRAM
+        EMAIL, SMS, TELEGRAM, PHONE
     }
 }

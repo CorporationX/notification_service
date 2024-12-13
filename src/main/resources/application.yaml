@@ -4,6 +4,7 @@ spring:
       port: 6379
       host: localhost
       channel:
+        like: like_channel
         follower: follower_channel
         achievement: achievement_channel
 
@@ -37,6 +38,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+  from:
+    Stas_Kozh
 
 project-service:
     host: localhost
@@ -44,3 +47,6 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+post-service:
+    host: localhost
+    port: 8081
