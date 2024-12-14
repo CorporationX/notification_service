@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.achievement.AchievementEventListener;
 import faang.school.notificationservice.listener.recommendation.RecommendationReceivedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.recommendation}")
     private String recommendationChannel;
 
+    @Value("${spring.data.redis.channel.achievement}")
+    private String achievementChannel;
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
@@ -47,15 +51,27 @@ public class RedisConfig {
     }
 
     @Bean
+    public MessageListenerAdapter AchievementListener(AchievementEventListener listener) {
+        return new MessageListenerAdapter(listener);
+    }
+
+    @Bean
     public ChannelTopic recommendationTopic() {
         return new ChannelTopic(recommendationChannel);
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedListener) {
+    public ChannelTopic achievementTopic() {
+        return new ChannelTopic(achievementChannel);
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedListener,
+                                                        MessageListenerAdapter achievementListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(recommendationReceivedListener, recommendationTopic());
+        container.addMessageListener(achievementListener, achievementTopic());
         return container;
     }
 }
