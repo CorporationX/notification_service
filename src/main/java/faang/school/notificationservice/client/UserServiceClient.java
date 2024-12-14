@@ -12,6 +12,9 @@ public interface UserServiceClient {
     @GetMapping("/api/v1/users/{id}")
     UserDto getUser(@PathVariable long id);
 
+    @GetMapping("/api/v1/users/findByPhone/{phone}")
+    Long findUserByPhone(@PathVariable String phone);
+
     @GetMapping("/api/v1/skills/{skillId}")
     SkillDto getSkill(@PathVariable long skillId);
 }

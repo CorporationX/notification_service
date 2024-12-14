@@ -73,3 +73,6 @@ user-service:
 
 email-service:
   thread-pool-size: 10
+
+telegram-service:
+  telegram-thread-pool-size: 10
