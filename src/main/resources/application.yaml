@@ -7,6 +7,7 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         recommendation: recommendation_channel
+        mentorship-accepted: mentorship_accept_channel
 
   mail:
     host: smtp.gmail.com
