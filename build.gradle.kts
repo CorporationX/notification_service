@@ -25,6 +25,8 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
+    implementation("ru.smsaero:smsaero:3.0.0")
+
     /**
      * Database
      */
