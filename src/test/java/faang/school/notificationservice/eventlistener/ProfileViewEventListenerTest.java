@@ -1,9 +1,10 @@
-package faang.school.notificationservice.listener.profile;
+package faang.school.notificationservice.eventlistener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.profile.ProfileViewEvent;
+import faang.school.notificationservice.listener.profile.ProfileViewEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.Assertions;

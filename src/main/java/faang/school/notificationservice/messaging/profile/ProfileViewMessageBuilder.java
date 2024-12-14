@@ -20,7 +20,7 @@ public class ProfileViewMessageBuilder implements MessageBuilder<ProfileViewEven
     private final UserServiceClient userServiceClient;
 
     @Override
-    public Class<?> getInstance() {
+    public Class<ProfileViewEvent> getInstance() {
         return ProfileViewEvent.class;
     }
 

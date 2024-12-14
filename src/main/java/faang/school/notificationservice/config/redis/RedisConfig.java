@@ -24,6 +24,12 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
+    @Value("${spring.data.redis.channel.recommendation}")
+    private String recommendationChannel;
+
+    @Value("${spring.data.redis.channel.profile_view}")
+    private String profileViewChannel;
+
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
