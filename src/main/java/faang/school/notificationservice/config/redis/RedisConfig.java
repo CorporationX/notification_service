@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.profile.ProfileViewEventListener;
+import faang.school.notificationservice.listener.recommendation.RecommendationReceivedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +24,6 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
-    @Value("${spring.data.redis.channel.profile_view}")
-    private String profileViewChannel;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -42,8 +41,18 @@ public class RedisConfig {
     }
 
     @Bean
+    public MessageListenerAdapter recommendationReceivedListener(RecommendationReceivedEventListener recommendationReceivedEventListener) {
+        return new MessageListenerAdapter(recommendationReceivedEventListener);
+    }
+
+    @Bean
     MessageListenerAdapter profileViewEventListener(ProfileViewEventListener profileViewEventListener) {
         return new MessageListenerAdapter(profileViewEventListener);
+    }
+
+    @Bean
+    public ChannelTopic recommendationTopic() {
+        return new ChannelTopic(recommendationChannel);
     }
 
     @Bean
@@ -52,9 +61,10 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedListener) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
+        container.addMessageListener(recommendationReceivedListener, recommendationTopic());
         container.addMessageListener(recommendationReceivedListener, profileViewTopic());
         return container;
     }
