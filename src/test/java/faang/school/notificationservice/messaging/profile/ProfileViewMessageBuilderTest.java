@@ -1,5 +1,7 @@
 package faang.school.notificationservice.messaging.profile;
 
+import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.profile.ProfileViewEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,9 +25,14 @@ class ProfileViewMessageBuilderTest {
     @Mock
     private MessageSource messageSource;
 
+    @Mock
+    private UserServiceClient userServiceClient;
+
     @Test
     void testBuildMessage() {
-        ProfileViewEvent mockEvent = ProfileViewEvent.builder().build();
+        ProfileViewEvent mockEvent = ProfileViewEvent.builder().viewerId(1L).build();
+
+        when(userServiceClient.getUser(mockEvent.getViewerId())).thenReturn(UserDto.builder().username("123").build());
 
         String expectedMessage = "User 123 viewed the profile at 2024-07-18T12:00:00Z";
         when(messageSource.getMessage(any(), any(), any()))

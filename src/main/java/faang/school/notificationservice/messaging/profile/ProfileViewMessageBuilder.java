@@ -1,5 +1,6 @@
 package faang.school.notificationservice.messaging.profile;
 
+import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.profile.ProfileViewEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ public class ProfileViewMessageBuilder implements MessageBuilder<ProfileViewEven
     @Value("profile_view.new")
     private String profileViewKey;
     private final MessageSource messageSource;
+    private final UserServiceClient userServiceClient;
 
     @Override
     public Class<?> getInstance() {
@@ -25,7 +27,7 @@ public class ProfileViewMessageBuilder implements MessageBuilder<ProfileViewEven
     @Override
     public String buildMessage(ProfileViewEvent event, Locale locale) {
         return messageSource.getMessage(profileViewKey,
-                new Object[]{event.getViewerId(),
+                new Object[]{userServiceClient.getUser(event.getViewerId()).getUsername(),
                         event.getVisitingTime()}, locale);
     }
 }
