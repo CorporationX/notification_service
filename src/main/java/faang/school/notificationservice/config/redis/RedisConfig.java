@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.deserializer.LocalDateTimeArrayDeserializer;
 import faang.school.notificationservice.listener.FollowerEventListener;
+import faang.school.notificationservice.listener.FollowerProjectEventListener;
 import faang.school.notificationservice.listener.UnfollowEventListener;
+import faang.school.notificationservice.listener.UnfollowProjectEventListener;
 import faang.school.notificationservice.subscriber.EventRegistrationListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,15 +49,23 @@ public class RedisConfig {
     @Bean
     public RedisMessageListenerContainer container(LettuceConnectionFactory lettuceConnectionFactory,
                                                    MessageListenerAdapter followerListenerAdapter,
-                                                   MessageListenerAdapter unfollowListenerAdapter) {
+                                                   MessageListenerAdapter unfollowListenerAdapter,
+                                                   MessageListenerAdapter followerProjectListenerAdapter,
+                                                   MessageListenerAdapter unfollowProjectListenerAdapter,
                                                    MessageListenerAdapter eventRegistrationListenerAdapter) {
         log.info("Настройка RedisMessageListenerContainer...");
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory);
+        container.addMessageListener(followerProjectListenerAdapter, new ChannelTopic(redisProperties.getFollowerProjectChannel()));
+        log.info("RedisMessageListenerContainer успешно настроен для канала 'followerProjectChannel'.");
+        container.addMessageListener(unfollowProjectListenerAdapter, new ChannelTopic(redisProperties.getUnfollowProjectChannel()));
+        log.info("RedisMessageListenerContainer успешно настроен для канала 'unfollowProjectChannel'.");
         container.addMessageListener(followerListenerAdapter, new ChannelTopic(redisProperties.getFollowerChannel()));
-        container.addMessageListener(eventRegistrationListenerAdapter, new ChannelTopic(redisProperties.getEventParticipationChannel()));
-        container.addMessageListener(unfollowListenerAdapter, new ChannelTopic(redisProperties.getUnfollowChannel()));
         log.info("RedisMessageListenerContainer успешно настроен для канала 'followerChannel'.");
+        container.addMessageListener(eventRegistrationListenerAdapter, new ChannelTopic(redisProperties.getEventParticipationChannel()));
+        log.info("RedisMessageListenerContainer успешно настроен для канала 'eventParticipationChannel'.");
+        container.addMessageListener(unfollowListenerAdapter, new ChannelTopic(redisProperties.getUnfollowChannel()));
+        log.info("RedisMessageListenerContainer успешно настроен для канала 'unfollowChannel'.");
         return container;
     }
 
@@ -87,17 +97,29 @@ public class RedisConfig {
     public MessageListenerAdapter followerListenerAdapter(FollowerEventListener followerEventListener) {
         log.info("Настройка FollowerListenerAdapter для обработки сообщений...");
         return new MessageListenerAdapter(followerEventListener, "onMessage");
-
     }
-        @Bean MessageListenerAdapter unfollowListenerAdapter (UnfollowEventListener unfollowEventListener){
-            log.info("Настройка UnfollowListenerAdapter для обработки сообщений...");
+
+    @Bean
+    MessageListenerAdapter unfollowListenerAdapter(UnfollowEventListener unfollowEventListener) {
+        log.info("Настройка UnfollowListenerAdapter для обработки сообщений...");
+        return new MessageListenerAdapter(unfollowEventListener, "onMessage");
+    }
+
+    @Bean
     MessageListenerAdapter eventRegistrationListenerAdapter(EventRegistrationListener eventRegistrationListener) {
-            log.info("Настройка UnfollowListenerAdapter для обработки сообщений...");
-            return new MessageListenerAdapter(eventRegistrationListener, "onMessage");
+        log.info("Настройка UnfollowListenerAdapter для обработки сообщений...");
+        return new MessageListenerAdapter(eventRegistrationListener, "onMessage");
     }
 
-        MessageListenerAdapter unfollowListenerAdapter(UnfollowEventListener unfollowEventListener) {
-    log.info("Настройка UnfollowListenerAdapter для обработки сообщений...");
-            return new MessageListenerAdapter(unfollowEventListener, "onMessage");
-        }
+    @Bean
+    MessageListenerAdapter followerProjectListenerAdapter(FollowerProjectEventListener followerProjectEventListener) {
+        log.info("Настройка FollowerProjectListenerAdapter для обработки сообщений...");
+        return new MessageListenerAdapter(followerProjectEventListener, "onMessage");
     }
+
+    @Bean
+    MessageListenerAdapter unfollowProjectListenerAdapter(UnfollowProjectEventListener unfollowProjectEventListener) {
+        log.info("Настройка UnfollowProjectListenerAdapter для обработки сообщений...");
+        return new MessageListenerAdapter(unfollowProjectEventListener, "onMessage");
+    }
+}
