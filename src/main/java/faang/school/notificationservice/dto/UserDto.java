@@ -8,7 +8,6 @@ import lombok.Data;
 
 @Builder
 @Data
-@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
     private long id;
