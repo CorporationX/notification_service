@@ -3,8 +3,8 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserContactsDto;
-import faang.school.notificationservice.event.LikeEvent;
-import faang.school.notificationservice.messaging.LikeMessageBuilder;
+import faang.school.notificationservice.event.CommentEvent;
+import faang.school.notificationservice.messaging.CommentMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class LikeEventListener implements MessageListener {
-    private final LikeMessageBuilder likeMessageBuilder;
+public class CommentEventListener implements MessageListener {
+    private final CommentMessageBuilder commentMessageBuilder;
     private final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationServices;
@@ -32,7 +32,7 @@ public class LikeEventListener implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            LikeEvent event = objectMapper.readValue(message.getBody(), LikeEvent.class);
+            CommentEvent event = objectMapper.readValue(message.getBody(), CommentEvent.class);
 
             UserContactsDto user = getUserContacts(event.getPostAuthorId());
             event.setPostAuthorName(user.getUsername());
@@ -41,7 +41,7 @@ public class LikeEventListener implements MessageListener {
                     .filter(service -> user.getPreference().equals(service.getPreferredContact()))
                     .findFirst()
                     .ifPresentOrElse(
-                            service -> service.send(user, likeMessageBuilder.buildMessage(event, LocaleContextHolder.getLocale())),
+                            service -> service.send(user, commentMessageBuilder.buildMessage(event, LocaleContextHolder.getLocale())),
                             () -> log.error("No notification service found for user {}", user.getId())
                     );
         } catch (IOException e) {

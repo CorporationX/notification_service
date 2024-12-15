@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LikeEvent {
+public class CommentEvent {
+    private Long commentAuthorId;
     private Long postAuthorId;
-    private Long likeAuthorId;
     private Long postId;
+    private Long commentId;
     private String postAuthorName;
 }
