@@ -25,10 +25,10 @@ public class TelegramBot extends TelegramLongPollingBot{
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
-            long chat_id = update.getMessage().getChatId();
+            long chatId = update.getMessage().getChatId();
 
             SendMessage message = SendMessage.builder()
-                    .chatId(chat_id)
+                    .chatId(chatId)
                     .text(messageText)
                     .build();
 

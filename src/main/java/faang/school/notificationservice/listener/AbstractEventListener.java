@@ -49,7 +49,7 @@ public abstract class AbstractEventListener<T> {
     protected void sendNotification(Long userId, String message){
         UserDto user = userServiceClient.getUser(userId);
         notificationServices.stream()
-                .filter(service -> service.getPreferredContact().equals(user.getPreference()))
+                .filter(service -> service.getPreferredContact() == user.getPreference())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(String.format("No notification service found for the user preferred communication method : "
                         + user.getPreference())));
