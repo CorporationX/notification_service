@@ -67,11 +67,12 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedListener) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedListener,
+                                                        MessageListenerAdapter profileViewEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(recommendationReceivedListener, recommendationTopic());
-        container.addMessageListener(recommendationReceivedListener, profileViewTopic());
+        container.addMessageListener(profileViewEventListener, profileViewTopic());
         return container;
     }
 }
