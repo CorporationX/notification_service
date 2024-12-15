@@ -11,7 +11,7 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class MentroshipAcceptedMessageBuilder implements MessageBuilder<MentorshipAcceptedEvent> {
+public class MentorshipAcceptedMessageBuilder implements MessageBuilder<MentorshipAcceptedEvent> {
 
     @Value("mentorship_accepted.new")
     private String mentorshipKey;
