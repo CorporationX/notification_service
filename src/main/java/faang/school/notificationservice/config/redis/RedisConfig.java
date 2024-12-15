@@ -7,8 +7,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.deserializer.LocalDateTimeArrayDeserializer;
 import faang.school.notificationservice.listener.UnfollowEventListener;
 import faang.school.notificationservice.subscriber.EventRegistrationListener;
+import faang.school.notificationservice.subscriber.GoalCompletedEventListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -45,14 +47,15 @@ public class RedisConfig {
 
     @Bean
     public RedisMessageListenerContainer container(LettuceConnectionFactory lettuceConnectionFactory,
-                                                   MessageListenerAdapter followerListenerAdapter,
-                                                   MessageListenerAdapter unfollowListenerAdapter) {
-                                                   MessageListenerAdapter eventRegistrationListenerAdapter) {
+                                                   @Qualifier("unfollowListenerAdapter") MessageListenerAdapter unfollowListenerAdapter,
+                                                   @Qualifier("eventRegistrationListenerAdapter") MessageListenerAdapter eventRegistrationListenerAdapter,
+                                                   @Qualifier("goalCompletedEventListenerAdapter") MessageListenerAdapter goalCompletedEventListener) {
         log.info("Настройка RedisMessageListenerContainer...");
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory);
         container.addMessageListener(eventRegistrationListenerAdapter, new ChannelTopic(redisProperties.getEventParticipationChannel()));
         container.addMessageListener(unfollowListenerAdapter, new ChannelTopic(redisProperties.getUnfollowChannel()));
+        container.addMessageListener(goalCompletedEventListener, goalCompletedChannel());
         log.info("RedisMessageListenerContainer успешно настроен для канала 'followerChannel'.");
         return container;
     }
@@ -83,14 +86,24 @@ public class RedisConfig {
 
     @Bean
     MessageListenerAdapter eventRegistrationListenerAdapter(EventRegistrationListener eventRegistrationListener) {
-            log.info("Настройка UnfollowListenerAdapter для обработки сообщений...");
-            return new MessageListenerAdapter(eventRegistrationListener, "onMessage");
+        log.info("Настройка UnfollowListenerAdapter для обработки сообщений...");
+        return new MessageListenerAdapter(eventRegistrationListener, "onMessage");
     }
 
     @Bean
-        MessageListenerAdapter unfollowListenerAdapter(UnfollowEventListener unfollowEventListener) {
-    log.info("Настройка UnfollowListenerAdapter для обработки сообщений...");
-            return new MessageListenerAdapter(unfollowEventListener, "onMessage");
-        }
+    MessageListenerAdapter unfollowListenerAdapter(UnfollowEventListener unfollowEventListener) {
+        log.info("Настройка UnfollowListenerAdapter для обработки сообщений...");
+        return new MessageListenerAdapter(unfollowEventListener, "onMessage");
+    }
+
+    @Bean
+    MessageListenerAdapter goalCompletedEventListenerAdapter(GoalCompletedEventListener goalCompletedEventListener) {
+        log.info("Create a GoalCompletedEventListenerAdapter to process incoming messages");
+        return new MessageListenerAdapter(goalCompletedEventListener, "onMessage");
+    }
+
+    @Bean
+    ChannelTopic goalCompletedChannel() {
+        return new ChannelTopic(redisProperties.getGoalCompletedChannel());
     }
 }

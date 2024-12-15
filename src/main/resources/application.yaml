@@ -8,6 +8,7 @@ spring:
         achievement: achievement_channel
         event-participation: event_participation_channel
         unfollow: unfollower_channel
+        goal_completed_channel: goal_completed_channel
 
   mail:
     host: smtp.gmail.com

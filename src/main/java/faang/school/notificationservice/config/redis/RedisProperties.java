@@ -22,4 +22,7 @@ public class RedisProperties {
 
     @Value("${spring.data.redis.channel.unfollow}")
     private String unfollowChannel;
+
+    @Value("${spring.data.redis.channel.goal_completed_channel}")
+    private String goalCompletedChannel;
 }
