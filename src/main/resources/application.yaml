@@ -9,6 +9,8 @@ spring:
         mentorship-channel: mentorship_channel
         follower-event-channel: follower_event
         mentorship-accepted: mentorship_accepted_topic
+        skill_acquired: skill_acquire
+
 
   mail:
     host: smtp.gmail.com
