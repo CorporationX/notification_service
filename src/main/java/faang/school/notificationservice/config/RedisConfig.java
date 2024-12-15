@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.CommentEventListener;
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class RedisConfig {
     private final RecommendationReceivedEventListener recommendationReceivedEventListener;
     private final LikeEventListener likeEventListener;
     private final CommentEventListener commentEventListener;
+    private final GoalCompletedEventListener goalCompletedEventListener;
 
     @Bean
     LettuceConnectionFactory lettuceConnectionFactory() {
