@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class RedisConfig {
     private final RedisProperties redisProperties;
     private final RecommendationReceivedEventListener recommendationReceivedEventListener;
     private final LikeEventListener likeEventListener;
+    private final GoalCompletedEventListener goalCompletedEventListener;
 
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
@@ -39,15 +41,23 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic goalCompletedTopic() {
+        return new ChannelTopic(redisProperties.getChannel().getGoal_channel());
+    }
+
+    @Bean
     RedisMessageListenerContainer redisMessageListenerContainer(
             JedisConnectionFactory jedisConnectionFactory,
             ChannelTopic recommendationTopic,
-            ChannelTopic likeTopic
+            ChannelTopic likeTopic,
+            ChannelTopic goalCompletedTopic
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory);
         container.addMessageListener(recommendationReceivedEventListener, recommendationTopic);
         container.addMessageListener(likeEventListener, likeTopic);
+        container.addMessageListener(goalCompletedEventListener, goalCompletedTopic);
+        log.info("RedisMessageListenerContainer is configured and listening to channels");
         return container;
     }
 }
