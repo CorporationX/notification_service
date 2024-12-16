@@ -104,6 +104,7 @@ public class RedisConfig {
 
     @Bean
     ChannelTopic goalCompletedChannel() {
+        log.info("Create a Goal Completed Channel");
         return new ChannelTopic(redisProperties.getGoalCompletedChannel());
     }
 }
