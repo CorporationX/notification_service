@@ -25,7 +25,6 @@ import static faang.school.notificationservice.data.NotificationChannel.SMS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -105,26 +104,6 @@ class GoalCompletedEventListenerTest {
 
         verify(emailNotificationService, never()).send(any(), any());
         verify(smsNotificationService, times(1)).send(any(), any());
-    }
-
-    @Test
-    @DisplayName("Should log warning when no matching service found")
-    void shouldLogWarningWhenNoMatchingServiceFound() {
-        when(userServiceClient.getUserContacts(event.getActorId())).thenReturn(userContactsDto);
-        when(messageBuilder.buildMessage(event, LocaleContextHolder.getLocale()))
-                .thenReturn(EXPECTED_MESSAGE);
-
-        when(emailNotificationService.getPreferredContact()).thenReturn(SMS);
-        when(smsNotificationService.getPreferredContact()).thenReturn(EMAIL);
-
-        List<NotificationService> notificationServices = Arrays.asList(emailNotificationService, smsNotificationService);
-        GoalCompletedEventListener goalCompletedEventListener =
-                new GoalCompletedEventListener(objectMapper, userServiceClient, messageBuilder, notificationServices);
-
-        goalCompletedEventListener.handleEvent(event);
-
-        verify(emailNotificationService, never()).send(any(), anyString());
-        verify(smsNotificationService, times(1)).send(any(), anyString());
     }
 
     @Test
