@@ -74,7 +74,7 @@ public class RecommendationReceivedEventListenerTest {
         when(userServiceClient.getUser(3L)).thenReturn(user);
         when(objectMapper.readValue(messageBody, RecommendationReceivedEvent.class)).thenReturn(event);
         when(messageBuilders.get(0).buildMessage(event, Locale.getDefault())).thenReturn("Test message");
-        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
+        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS);
 
         eventListener.onMessage(message, null);
 
@@ -93,12 +93,13 @@ public class RecommendationReceivedEventListenerTest {
         when(userServiceClient.getUser(3L)).thenReturn(user);
         when(objectMapper.readValue(messageBody, RecommendationReceivedEvent.class)).thenReturn(event);
         when(messageBuilders.get(0).buildMessage(event, Locale.getDefault())).thenReturn("Test message");
+        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 eventListener.onMessage(message, null)
         );
 
-        assertEquals("Mo notification service found for the user's preferred communication method.", exception.getMessage());
+        assertEquals("No notification service found for the user preferred communication method: SMS", exception.getMessage());
     }
 
     @Test
@@ -115,7 +116,7 @@ public class RecommendationReceivedEventListenerTest {
                 eventListener.onMessage(message, null)
         );
 
-        assertEquals("Mo message builder found for the given event type: " + event.getClass().getName(), exception.getMessage());
+        assertEquals("No message builder found for event: " + event.getClass().getName(), exception.getMessage());
     }
 
     private RecommendationReceivedEvent prepareEvent() {
@@ -131,7 +132,7 @@ public class RecommendationReceivedEventListenerTest {
     private UserDto prepareUser() {
         return UserDto.builder()
                 .id(3L)
-                .preference(UserDto.PreferredContact.EMAIL)
+                .preference(UserDto.PreferredContact.SMS)
                 .build();
     }
 }
