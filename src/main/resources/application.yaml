@@ -6,7 +6,9 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-        mentorship_accepted: mentorship_accepted_topic
+        mentorship-channel: mentorship_channel
+        follower-event-channel: follower_event
+        mentorship-accepted: mentorship_accepted_topic
         skill_acquired: skill_acquire
         recommendation_received: recommendation_received
 
