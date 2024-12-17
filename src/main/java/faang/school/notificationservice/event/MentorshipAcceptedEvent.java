@@ -14,4 +14,5 @@ public class MentorshipAcceptedEvent {
     private Long receiverId;
     private String receiverUserName;
     private Long requesterId;
+    private String requesterUserName;
 }

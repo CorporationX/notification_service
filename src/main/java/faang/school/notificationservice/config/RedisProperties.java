@@ -19,6 +19,6 @@ public class RedisProperties {
         private String recommendation;
         private String like;
         private String comment;
-        private String mentorship_acceptedChannel;
+        private String mentorshipAcceptedChannel;
     }
 }

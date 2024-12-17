@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class MentorshipAcceptedMessageBuilderTest {
     @Mock
@@ -27,22 +28,24 @@ class MentorshipAcceptedMessageBuilderTest {
     private MentorshipAcceptedMessageBuilder messageBuilder;
 
     private MentorshipAcceptedEvent event;
+    private String message;
 
     @BeforeEach
     void setUp() {
-        event = new MentorshipAcceptedEvent(1L, "Request", 2L, "John", 3L);
+        event = new MentorshipAcceptedEvent(1L, "Study of gophers", 2L, "John", 3L,"Mark");
+        message = "Congrats, John accept you request Request";
     }
 
     @Test
     void testBuildMessageWithPlaceholdersSuccess() {
-        Object[] placeholders = {"John", "Request"};
+        Object[] placeholders = {"Mark", "John","Study of gophers"};
         String code = "mentorship_accepted.new";
-        when(messageSource.getMessage(code, placeholders, Locale.getDefault())).thenReturn("Congrats, John accept you request Request");
+        when(messageSource.getMessage(code, placeholders, Locale.getDefault())).thenReturn(message);
 
         String result = messageBuilder.buildMessage(event, Locale.getDefault());
-        verify(messageSource, times(1)).getMessage(code, placeholders,Locale.getDefault());
+        verify(messageSource, times(1)).getMessage(code, placeholders, Locale.getDefault());
 
-        assertEquals("Congrats, John accept you request Request", result);
+        assertEquals(message, result);
     }
 
     @Test
