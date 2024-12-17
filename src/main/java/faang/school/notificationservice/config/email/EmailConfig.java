@@ -1,6 +1,8 @@
 package faang.school.notificationservice.config.email;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,27 +10,42 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+
+@Getter
+@Setter
 @Configuration
+@ConfigurationProperties(prefix = "mail")
 public class EmailConfig {
     private final static String protocol = "smtp";
 
-    @Value("${mail.host}")
+    @Getter
+    @Setter
+    public static class PropertiesConfig {
+        EmailPropertiesConfig mail;
+    }
+
+    @Getter
+    @Setter
+    public static class EmailPropertiesConfig {
+        private Smtp smtp;
+        private String debug;
+    }
+
+    @Getter
+    @Setter
+    public static class Smtp {
+        private String auth;
+        private String starttlsEnable;
+        private int connectionTimeout;
+        private int timeout;
+        private int writeTimeout;
+    }
+
     private String host;
-
-    @Value("${mail.port}")
     private int port;
-
-    @Value("${mail.username}")
     private String username;
-
-    @Value("${mail.password}")
     private String password;
-
-    @Value("${mail.properties.mail.smtp.auth}")
-    private String auth;
-
-    @Value("${mail.properties.mail.smtp.starttls.enable}")
-    private String starttlsEnable;
+    private PropertiesConfig properties;
 
     @Bean
     public JavaMailSender getJavaMailSender() {
@@ -41,9 +58,9 @@ public class EmailConfig {
 
         Properties properties = mailSender.getJavaMailProperties();
         properties.put("mail.transport.protocol", protocol);
-        properties.put("mail.smtp.auth", auth);
-        properties.put("mail.smtp.starttls.enable", starttlsEnable);
-        properties.put("mail.debug", "true"); // ???????
+        properties.put("mail.smtp.auth", this.properties.mail.smtp.auth);
+        properties.put("mail.smtp.starttls.enable", this.properties.mail.smtp.starttlsEnable);
+        properties.put("mail.debug", this.properties.mail.debug);
 
         return mailSender;
     }
