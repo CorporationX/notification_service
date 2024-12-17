@@ -20,9 +20,4 @@ public class NotificationServiceApp {
                 .bannerMode(Banner.Mode.OFF)
                 .run(args);
     }
-
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
 }

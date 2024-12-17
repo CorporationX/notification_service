@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config;
+package faang.school.notificationservice.config.redis;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,7 +14,7 @@ public class RedisProperties {
 
     @Data
     public static class Channel {
-        private String follower;
+        private String subscriptionChannel;
         private String achievement;
         private String recommendation;
         private String like;

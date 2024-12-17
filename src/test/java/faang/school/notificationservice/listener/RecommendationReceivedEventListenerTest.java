@@ -1,13 +1,12 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.config.RetryProperties;
 import faang.school.notificationservice.data.NotificationChannel;
 import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.event.RecommendationReceivedEvent;
 import faang.school.notificationservice.messaging.RecommendationMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.UserFeignService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,16 +29,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class RecommendationReceivedEventlistenerTest {
-
-    @Mock
-    RetryProperties retryProperties;
+class RecommendationReceivedEventListenerTest {
 
     @Mock
     private RecommendationMessageBuilder recommendationMessageBuilder;
 
     @Mock
-    private UserServiceClient userServiceClient;
+    private UserFeignService userFeignService;
 
     @Mock
     private ObjectMapper objectMapper;
@@ -56,9 +52,8 @@ class RecommendationReceivedEventlistenerTest {
     @BeforeEach
     void setUp() {
         listener = new RecommendationReceivedEventListener(
-                retryProperties,
                 objectMapper,
-                userServiceClient,
+                userFeignService,
                 recommendationMessageBuilder,
                 List.of(emailNotificationService, smsNotificationService)
         );
@@ -89,7 +84,7 @@ class RecommendationReceivedEventlistenerTest {
 
         when(objectMapper.readValue(any(byte[].class), eq(RecommendationReceivedEvent.class))).thenReturn(event);
 
-        when(userServiceClient.getUserContacts(2L)).thenReturn(receiver);
+        when(userFeignService.getUserContacts(2L)).thenReturn(receiver);
 
         when(recommendationMessageBuilder.buildMessage(event, Locale.getDefault()))
                 .thenReturn(generatedMessage);
@@ -97,7 +92,7 @@ class RecommendationReceivedEventlistenerTest {
         listener.onMessage(redisMessage, null);
 
         verify(objectMapper, times(1)).readValue(any(byte[].class), eq(RecommendationReceivedEvent.class));
-        verify(userServiceClient, times(1)).getUserContacts(2L);
+        verify(userFeignService, times(1)).getUserContacts(2L);
         verify(recommendationMessageBuilder, times(1)).buildMessage(event, Locale.getDefault());
     }
 }

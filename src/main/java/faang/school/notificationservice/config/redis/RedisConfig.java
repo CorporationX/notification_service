@@ -1,8 +1,9 @@
-package faang.school.notificationservice.config;
+package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
+import faang.school.notificationservice.listener.SubscriptionEventListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ public class RedisConfig {
     private final RecommendationReceivedEventListener recommendationReceivedEventListener;
     private final LikeEventListener likeEventListener;
     private final CommentEventListener commentEventListener;
+    private final SubscriptionEventListener subscriptionEventListener;
 
     @Bean
     LettuceConnectionFactory lettuceConnectionFactory() {
@@ -46,6 +48,11 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic subscriptionTopic() {
+        return new ChannelTopic(redisProperties.getChannel().getSubscriptionChannel());
+    }
+
+    @Bean
     RedisMessageListenerContainer redisMessageListenerContainer(
             LettuceConnectionFactory lettuceConnectionFactory,
             ChannelTopic recommendationTopic,
@@ -56,6 +63,7 @@ public class RedisConfig {
         container.addMessageListener(recommendationReceivedEventListener, recommendationTopic);
         container.addMessageListener(likeEventListener, likeTopic);
         container.addMessageListener(commentEventListener, commentTopic());
+        container.addMessageListener(subscriptionEventListener, subscriptionTopic());
         return container;
     }
 }

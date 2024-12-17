@@ -1,12 +1,12 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.data.NotificationChannel;
 import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.event.CommentEvent;
 import faang.school.notificationservice.messaging.CommentMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.UserFeignService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,15 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.redis.connection.Message;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -37,7 +33,7 @@ class CommentEventListenerTest {
     private ObjectMapper objectMapper;
 
     @Mock
-    private UserServiceClient userServiceClient;
+    private UserFeignService userFeignService;
 
     @Mock
     private NotificationService emailNotificationService;
@@ -46,7 +42,7 @@ class CommentEventListenerTest {
 
     @BeforeEach
     void setUp() {
-        listener = new CommentEventListener(commentMessageBuilder, objectMapper, userServiceClient, List.of(emailNotificationService));
+        listener = new CommentEventListener(commentMessageBuilder, objectMapper, userFeignService, List.of(emailNotificationService));
     }
 
     @Test
@@ -69,7 +65,7 @@ class CommentEventListenerTest {
         Message redisMessage = mock(Message.class);
         when(redisMessage.getBody()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
         when(objectMapper.readValue(eq(json.getBytes(StandardCharsets.UTF_8)), eq(CommentEvent.class))).thenReturn(event);
-        when(userServiceClient.getUserContacts(1L)).thenReturn(userContactsDto);
+        when(userFeignService.getUserContacts(1L)).thenReturn(userContactsDto);
         when(emailNotificationService.getPreferredContact()).thenReturn(NotificationChannel.EMAIL);
         when(commentMessageBuilder.buildMessage(event, LocaleContextHolder.getLocale())).thenReturn(expectedMessage);
 
@@ -87,7 +83,7 @@ class CommentEventListenerTest {
         when(redisMessage.getBody()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
 
         when(objectMapper.readValue(json, CommentEvent.class)).thenReturn(event);
-        when(userServiceClient.getUserContacts(1L)).thenThrow(new RuntimeException("User service unavailable"));
+        when(userFeignService.getUserContacts(1L)).thenThrow(new RuntimeException("User service unavailable"));
 
         listener.onMessage(redisMessage, null);
 
