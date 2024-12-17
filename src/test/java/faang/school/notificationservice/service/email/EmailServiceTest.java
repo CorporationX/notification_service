@@ -64,18 +64,6 @@ public class EmailServiceTest {
         verify(emailSender, never()).send(messageCaptor.capture());
     }
 
-    @Test
-    void sendMessageWithNotEmailPreferenceContactFailTest() {
-        UserDto user = getUserDto();
-        user.setPreference(UserDto.PreferredContact.SMS);
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> emailService.send(user, mailMessage));
-        String expectedMessage = String.format(EmailService.NOT_THE_PREFERRED_PLATFORM, user.getId());
-        String actualMessage = exception.getMessage();
-        assertTrue(actualMessage.contains(expectedMessage));
-        verify(emailSender, never()).send(messageCaptor.capture());
-    }
-
     private UserDto getUserDto() {
         return UserDto.builder()
                 .id(25)

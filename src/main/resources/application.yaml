@@ -21,11 +21,11 @@ mail:
     mail:
       smtp:
         auth: true
-        starttls:
-          enable: true
+        starttlsenable: true
         connectiontimeout: 5000
         timeout: 5000
         writetimeout: 5000
+      debug: true
 
 messages:
   basename: messages
