@@ -5,9 +5,11 @@ spring:
       host: localhost
       channel:
         follower: follower_channel
+        unfollow: unfollower_channel
         achievement: achievement_channel
         event-participation: event_participation_channel
-        unfollow: unfollower_channel
+        follower_project: follower_project_channel
+        unfollow_project: unfollow_project_channel
         goal_completed_channel: goal_completed_channel
 
   mail:
