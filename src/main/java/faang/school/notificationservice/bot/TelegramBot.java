@@ -14,7 +14,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
@@ -22,13 +21,14 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Collections;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Getter
 public class TelegramBot extends TelegramLongPollingBot {
     private final UserServiceClient userServiceClient;
+    private final TelegramBotMessageProperties properties;
 
     @Value("${spring.telegram.bot.username}")
     private String botUsername;
@@ -37,28 +37,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     private String botToken;
 
     @Override
-    public String getBotUsername() {
-        return botUsername;
-    }
-
-    @Override
-    public String getBotToken() {
-        return botToken;
-    }
-
-    @Override
-    public void onRegister() {
-        super.onRegister();
-    }
-
-    @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
             log.info("The bot has received a message with text {}", update.getMessage().getText());
             Message message = update.getMessage();
             Long chatId = message.getChatId();
-            User user = message.getFrom();
-            String languageCode = user.getLanguageCode();
 
             if (message.hasText()) {
                 if ("/start".equals(message.getText())) {
@@ -68,7 +51,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     unsubscribingUserFromNotifications(chatId);
                 }
                 if ("No".equals(message.getText())) {
-                    sendTextMessage(chatId, "You chose not to subscribe. If you want to subscribe again, enter /start");
+                    sendTextMessage(chatId, properties.getUserChoseNotSubscribedMessage());
                 }
             }
             if (message.hasContact()) {
@@ -79,8 +62,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void checkIfTheUserIsSubscriber(Long chatId) {
         ContactDto contactDto = userServiceClient.getContactByNumber(String.valueOf(chatId));
+        log.debug("Check if the user is a subscriber: {}", contactDto);
         if (contactDto != null) {
-            sendTextMessage(chatId, "You have already subscribed to notifications");
+            sendTextMessage(chatId, properties.getUserAlreadySubscribedMessage());
         } else {
             sendRequestContactMessage(chatId);
         }
@@ -92,7 +76,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         KeyboardRow keyboardRow = new KeyboardRow();
 
         KeyboardButton contactButton = new KeyboardButton();
-        contactButton.setText("Subscribe on notifications");
+        contactButton.setText(properties.getSubscribeButtonText());
         contactButton.setRequestContact(true);
 
         keyboardRow.add(contactButton);
@@ -100,7 +84,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         replyKeyboardMarkup.setKeyboard(Collections.singletonList(keyboardRow));
 
         SendMessage message = new SendMessage();
-        message.setText("Do you want to receive notifications in a telegram?");
+        message.setText(properties.getOfferToSubscribeMessage());
         message.setChatId(chatId);
         message.setReplyMarkup(replyKeyboardMarkup);
 
@@ -124,10 +108,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         userServiceClient.createContact(contactDto);
         log.debug("Contact created: {}", contactDto);
 
-        sendTextMessage(chatId, "Now this telegram bot will send you notifications");
+        sendTextMessage(chatId, properties.getSuccessSubscribedMessage());
     }
 
-    private void sendTextMessage(Long chatId, String text) {
+    public void sendTextMessage(Long chatId, String text) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(text);
         sendMessage.setChatId(chatId);
@@ -147,9 +131,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         ContactDto contactDto = userServiceClient.getContactByNumber(String.valueOf(chatId));
         if (contactDto != null) {
             userServiceClient.deleteContactByNumber(String.valueOf(chatId));
-            sendTextMessage(chatId, "You have unsubscribed from notifications. If you want to subscribe again, enter /start");
+            log.info("The user {} has unsubscribed from notifications in the telegram bot", chatId);
+            sendTextMessage(chatId, properties.getSuccessUnsubscribedMessage());
         } else {
-            sendTextMessage(chatId, "You are not subscribed to notifications. To subscribe, enter /start");
+            sendTextMessage(chatId, properties.getUserNotSubscribedMessage());
         }
     }
 
@@ -160,10 +145,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             return userServiceClient.getUserByPhone(userPhone);
         } catch (FeignException e) {
             log.error("Telegram bot failed to check that user is not a user of the platform", e);
-            sendTextMessage(chatId, """
-                     The user with the phone number listed in your telegram profile has not been found.\s
-                     Please update the phone number in your profile on the platform or register.
-                    \s""");
+            sendTextMessage(chatId, properties.getUserNotFoundMessage());
             throw new IllegalArgumentException("Telegram bot failed to check that user is not a user of the platform", e);
         }
     }

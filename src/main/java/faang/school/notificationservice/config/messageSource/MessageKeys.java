@@ -9,4 +9,5 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class MessageKeys {
     private String likePost;
+    private String commentPost;
 }

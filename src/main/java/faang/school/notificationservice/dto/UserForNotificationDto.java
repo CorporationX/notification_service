@@ -1,7 +1,9 @@
 package faang.school.notificationservice.dto;
 
 import lombok.Builder;
+import lombok.Data;
 
+import java.util.List;
 import java.util.Locale;
 
 @Builder
@@ -11,7 +13,8 @@ public record UserForNotificationDto(
         String email,
         String phone,
         Language locale,
-        PreferredContact preference
+        PreferredContact preference,
+        List<ContactDto> contacts
 ) {
 
     public Locale getLocaleFromLanguage() {

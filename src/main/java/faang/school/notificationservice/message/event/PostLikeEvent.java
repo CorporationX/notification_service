@@ -11,8 +11,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PostLikeEvent extends NotificationEvent {
+public class PostLikeEvent {
 
+    private Long receiverId;
     private Long authorId;
     private String authorName;
     private Long postId;

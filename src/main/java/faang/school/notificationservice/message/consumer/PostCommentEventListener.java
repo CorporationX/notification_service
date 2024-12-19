@@ -12,22 +12,17 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class CommentEventListener extends AbstractEventListener<CommentEvent> implements MessageListener {
+public class PostCommentEventListener extends AbstractEventListener<CommentEvent> implements MessageListener {
 
 
-    protected CommentEventListener(ObjectMapper mapper, UserServiceClient userServiceClient,
-                                   List<NotificationService> notificationServices,
-                                   MessageBuilder<CommentEvent> messageBuilder) {
+    protected PostCommentEventListener(ObjectMapper mapper, UserServiceClient userServiceClient,
+                                       List<NotificationService> notificationServices,
+                                       MessageBuilder<CommentEvent> messageBuilder) {
         super(mapper, userServiceClient, notificationServices, messageBuilder);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-/*        try {
-            CommentEvent commentEvent = objectMapper.readValue(message.getBody(), CommentEvent.class);
-            sendNotification(commentEvent.commentAuthorId(), getMessage(commentEvent, Locale.ENGLISH));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
+        handleEvent(message, CommentEvent.class, CommentEvent::getReceiverId);
     }
 }

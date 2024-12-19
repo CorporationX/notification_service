@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentEvent extends NotificationEvent {
-    private long commentId;
-    private long commentAuthorId;
-    private long postId;
+public class CommentEvent {
+    private long receiverId;
+    private String commentContent;
+    private String commentAuthorUserName;
 }
