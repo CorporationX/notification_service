@@ -20,6 +20,6 @@ public class EventService {
         String message = builder.buildMessage(new MentorshipOfferedEvent(idRequest, idAuthor, idRequester), Locale.ENGLISH);
         UserDto userDto = new UserDto();
         userDto.setId(idRequester);
-        emailService.send(userDto, message);
+        // emailService.send(userDto, message);
     }
 }
