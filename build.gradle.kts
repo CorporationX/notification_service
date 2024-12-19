@@ -45,7 +45,7 @@ dependencies {
     implementation("org.telegram:telegrambots:6.9.7.1")
 
     implementation("org.springframework.boot:spring-boot-starter-mail:3.4.0")
-
+    implementation ("commons-validator:commons-validator:1.9.0")
 
     /**
      * Test containers

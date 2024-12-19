@@ -1,45 +1,25 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.client.ContactPreferenceClient;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.event.MentorshipOfferedEvent;
 import faang.school.notificationservice.messaging.MentorshipOfferedMessageBuilder;
-import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.messaging.MessageBuilderManager;
-import faang.school.notificationservice.model.ContactPreference;
+import faang.school.notificationservice.service.email.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
+
 @Service
 @RequiredArgsConstructor
-public class EventService implements NotificationService {
+public class EventService {
 
-    private final ContactPreferenceClient contactPreferenceClient;
-    private final MessageBuilderManager messageBuilderManager;
-  private final MentorshipOfferedMessageBuilder builder = new MentorshipOfferedMessageBuilder();
-    MentorshipOfferedEvent event = new MentorshipOfferedEvent("John Doe", "Jane Smith");
-
-    String messageEnglish = builder.buildMessage(event, Locale.ENGLISH);
-    String messageFrench = builder.buildMessage(event, Locale.FRENCH);
-
-    @Override
-    public void send(UserDto user, String message) {
-
-    }
-
-    @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return null;
-    }
+    private final MentorshipOfferedMessageBuilder builder;
+    private final EmailService emailService;
 
     public void mentorshipOffered(long idRequest, long idAuthor, long idRequester) {
-
-        String preferredChannel = String.valueOf(contactPreferenceClient.getContactPreferenceByUserId(idRequester));
-        String message = messageBuilderManager.buildMessageForEvent(event);
-
-        // Получить нужный канал отправки уведомлений
-        NotificationChannel channel = notificationChannelFactory.getChannel(preferredChannel);
-
-        // Отправить сообщение
-        channel.send(userId, message);
+        String message = builder.buildMessage(new MentorshipOfferedEvent(idRequest, idAuthor, idRequester), Locale.ENGLISH);
+        UserDto userDto = new UserDto();
+        userDto.setId(idRequester);
+        emailService.send(userDto, message);
     }
 }
