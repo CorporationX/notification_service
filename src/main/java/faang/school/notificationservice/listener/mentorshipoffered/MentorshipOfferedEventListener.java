@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.event.MentorshipOfferedEvent;
 import faang.school.notificationservice.listener.AbstractEventListener;
 import faang.school.notificationservice.service.EventService;
-import faang.school.notificationservice.service.NotificationService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.stereotype.Service;
@@ -22,6 +21,6 @@ public class MentorshipOfferedEventListener extends AbstractEventListener<Mentor
     @Override
     public void onMessage(@NotNull Message message, byte[] pattern) {
         handleEvent(message, MentorshipOfferedEvent.class, event
-                -> eventService.mentorshipOffered(event.idRequest(), event.idAuthor(), event.idRequester()));
+                -> eventService.sendMentorshipOfferedMessage(event.idRequest(), event.idAuthor(), event.idReceiver()));
     }
 }
