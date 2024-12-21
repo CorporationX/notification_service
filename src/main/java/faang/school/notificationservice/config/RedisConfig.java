@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listener.AchievementEventListener;
 import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
@@ -20,6 +21,7 @@ public class RedisConfig {
     private final RecommendationReceivedEventListener recommendationReceivedEventListener;
     private final LikeEventListener likeEventListener;
     private final CommentEventListener commentEventListener;
+    private final AchievementEventListener achievementEventListener;
 
     @Bean
     LettuceConnectionFactory lettuceConnectionFactory() {
@@ -46,6 +48,11 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic achievementTopic() {
+        return new ChannelTopic(redisProperties.getChannel().getAchievement());
+    }
+
+    @Bean
     RedisMessageListenerContainer redisMessageListenerContainer(
             LettuceConnectionFactory lettuceConnectionFactory,
             ChannelTopic recommendationTopic,
@@ -56,6 +63,7 @@ public class RedisConfig {
         container.addMessageListener(recommendationReceivedEventListener, recommendationTopic);
         container.addMessageListener(likeEventListener, likeTopic);
         container.addMessageListener(commentEventListener, commentTopic());
+        container.addMessageListener(achievementEventListener, achievementTopic());
         return container;
     }
 }
