@@ -14,7 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 import org.springframework.data.redis.connection.Message;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import static org.mockito.ArgumentMatchers.eq;
@@ -35,19 +38,22 @@ public class GoalCompletedEventListenerTest {
     private NotificationService mockNotificationService;
 
     @Mock
-    private GoalCompletedMessageBuilder mockMessageBuilder;
-
-
-    @Mock
     private Message redisMessage;
 
-    private List<GoalCompletedMessageBuilder> messageBuilders;
+    @Mock
+    private MessageSource messageSource;
+
+    @Mock
+    private GoalCompletedMessageBuilder mockMessageBuilder;
+
+    private List<MessageBuilder<GoalCompletedEventDto>> messageBuilders;
     private List<NotificationService> notificationServices;
 
     @BeforeEach
     void init() {
+        mockMessageBuilder = spy(new GoalCompletedMessageBuilder(messageSource));
         notificationServices = List.of(mockNotificationService);
-        messageBuilders = List.of(mockMessageBuilder);
+        messageBuilders = new ArrayList<>(List.of(mockMessageBuilder));
         goalCompletedEventListener = new GoalCompletedEventListener(objectMapper, userServiceClient, notificationServices, messageBuilders);
     }
 
@@ -62,20 +68,20 @@ public class GoalCompletedEventListenerTest {
 
     @Test
     public void testOnMessageWhenInputIsValid() throws Exception {
-        GoalCompletedEventDto eventDto = new GoalCompletedEventDto(1L, 1L, null);
+        GoalCompletedEventDto eventDto = new GoalCompletedEventDto(1L, 1L, LocalDateTime.now());
         UserDto userDto = new UserDto();
         userDto.setId(1L);
         userDto.setEmail("email");
         userDto.setPreference(UserDto.PreferredContact.EMAIL);
         String messageText = "Goal completed message";
+        messageBuilders.add(new GoalCompletedMessageBuilder(messageSource));
 
         String eventJson = "{\"userId\":1,\"goalId\":1}";
         when(redisMessage.getBody()).thenReturn(eventJson.getBytes());
-
         when(objectMapper.readValue(Mockito.<byte[]>any(), eq(GoalCompletedEventDto.class)))
                 .thenReturn(eventDto);
         when(userServiceClient.getUser(eventDto.getUserId())).thenReturn(userDto);
-        when(messageBuilder.buildMessage(eventDto, Locale.getDefault())).thenReturn(messageText);
+        when(mockMessageBuilder.buildMessage(eventDto, Locale.getDefault())).thenReturn(messageText);
         when(mockNotificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
 
         goalCompletedEventListener.onMessage(redisMessage, null);

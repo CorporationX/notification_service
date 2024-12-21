@@ -27,17 +27,4 @@ public class GoalCompletedMessageBuilder implements MessageBuilder<GoalCompleted
                 new Object[] {event.getCompletedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", locale))},
                 locale);
     }
-
-//    @Override
-//    public String buildMessage(Object event, Locale locale) {
-//        GoalCompletedEventDto goalEvent = (GoalCompletedEventDto) event;
-//        log.info("Received a request to build a message, {}", "goalcompleted.message");
-//        String eventDate = goalEvent.getCompletedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", locale));
-//        String result = messageSource.getMessage(
-//                "goalcompleted.message",
-//                new Object[]{eventDate},
-//                locale
-//        );
-//        return result;
-//    }
 }
