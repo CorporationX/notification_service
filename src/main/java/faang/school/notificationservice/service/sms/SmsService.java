@@ -24,9 +24,9 @@ public class SmsService implements NotificationService {
 
     @Override
     public void send(UserDto user, String message) {
-        validateUserHasPhoneNumber(user);
         log.info("Sending SMS to: {}", user.getPhone());
         log.info("Message: {}", message);
+        validateUserHasPhoneNumber(user);
         TextMessage sms = new TextMessage(from, user.getPhone(), message);
         log.info("From: {}", from);
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(sms);
