@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component;
 @Data
 public class BotConfig {
 
-    private String botName;
+    private String username;
     private String token;
 }

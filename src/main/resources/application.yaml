@@ -6,6 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        profile_view: profile_view_channel
 
   mail:
     host: smtp.gmail.com
@@ -47,5 +48,5 @@ user-service:
 
 telegram:
   bot:
-    username: "указать свое name"
-    token: "указать свой token"
+    username: "username"
+    token: "token"
