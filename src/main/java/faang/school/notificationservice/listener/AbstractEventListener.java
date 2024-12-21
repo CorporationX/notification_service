@@ -5,6 +5,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
 
@@ -15,6 +16,7 @@ import java.util.function.Consumer;
 
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
+    private final UserValidator userValidator;
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationServices;
@@ -29,7 +31,7 @@ public abstract class AbstractEventListener<T> {
         }
     }
 
-    protected String getMessage (T event, Locale userLocale) {
+    protected String getMessage(T event, Locale userLocale) {
         return messageBuilders.stream()
                 .filter(messageBuilder -> messageBuilder.getInstance() == event.getClass())
                 .findFirst()
@@ -40,8 +42,7 @@ public abstract class AbstractEventListener<T> {
     }
 
     protected void sendNotification(Long id, String message) {
-        UserDto user = userServiceClient.getUser(id);
-//        UserDto follower = userServiceClient.getUser(event.getFollowerId());
+        UserDto user = userValidator.getUserWithValidate(id);
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact() == user.getPreference())
                 .findFirst()
