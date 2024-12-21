@@ -5,6 +5,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.GoalCompletedEventDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.GoalCompletedMessageBuilder;
+import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,17 +35,20 @@ public class GoalCompletedEventListenerTest {
     private NotificationService mockNotificationService;
 
     @Mock
-    private GoalCompletedMessageBuilder messageBuilder;
+    private GoalCompletedMessageBuilder mockMessageBuilder;
+
 
     @Mock
     private Message redisMessage;
 
+    private List<GoalCompletedMessageBuilder> messageBuilders;
     private List<NotificationService> notificationServices;
 
     @BeforeEach
     void init() {
         notificationServices = List.of(mockNotificationService);
-        goalCompletedEventListener = new GoalCompletedEventListener(objectMapper, userServiceClient, notificationServices, messageBuilder);
+        messageBuilders = List.of(mockMessageBuilder);
+        goalCompletedEventListener = new GoalCompletedEventListener(objectMapper, userServiceClient, notificationServices, messageBuilders);
     }
 
     @Test
