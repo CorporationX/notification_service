@@ -24,22 +24,22 @@ public class RedisConfig {
 
     @Bean
     ChannelTopic recommendationTopic() {
-        return new ChannelTopic(redisProperties.getChannel().getRecommendation());
+        return new ChannelTopic(redisProperties.channel().recommendation());
     }
 
     @Bean
     public ChannelTopic likeTopic() {
-        return new ChannelTopic(redisProperties.getChannel().getLike());
+        return new ChannelTopic(redisProperties.channel().like());
     }
 
     @Bean
     public ChannelTopic commentTopic() {
-        return new ChannelTopic(redisProperties.getChannel().getComment());
+        return new ChannelTopic(redisProperties.channel().comment());
     }
 
     @Bean
     public ChannelTopic subscriptionTopic() {
-        return new ChannelTopic(redisProperties.getChannel().getSubscriptionChannel());
+        return new ChannelTopic(redisProperties.channel().subscriptionChannel());
     }
 
     @Bean

@@ -1,23 +1,14 @@
 package faang.school.notificationservice.config.redis;
 
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
-@Data
-@Component
 @ConfigurationProperties(prefix = "spring.data.redis")
-public class RedisProperties {
-    private int port;
-    private String host;
-    private Channel channel;
+public record RedisProperties(String host, int port, Channel channel) {
 
-    @Data
-    public static class Channel {
-        private String subscriptionChannel;
-        private String achievement;
-        private String recommendation;
-        private String like;
-        private String comment;
+    public record Channel(String subscriptionChannel,
+                          String achievement,
+                          String recommendation,
+                          String like,
+                          String comment) {
     }
 }
