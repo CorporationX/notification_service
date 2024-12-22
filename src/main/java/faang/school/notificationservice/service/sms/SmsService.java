@@ -24,22 +24,17 @@ public class SmsService implements NotificationService {
 
     @Override
     public void send(UserDto user, String message) {
-        log.info("Sending SMS to: {}", user.getPhone());
-        log.info("Message: {}", message);
+        log.debug("Sending SMS message: {} to: {}", message, user.getPhone());
         validateUserHasPhoneNumber(user);
         TextMessage sms = new TextMessage(from, user.getPhone(), message);
-        log.info("From: {}", from);
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(sms);
-        log.info("Response: {}", response);
-
         if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
-            log.info("Message sent successfully. {}", sms);
+            log.debug("Message sent successfully. {}", sms);
         } else {
             String errorMessage = response.getMessages().get(0).getErrorText();
             log.error("SMS sending failed: {}", errorMessage);
             throw new NotificationServiceException("Message sending failed: " + errorMessage);
         }
-
     }
 
     @Override
@@ -51,6 +46,5 @@ public class SmsService implements NotificationService {
         if (user.getPhone().isBlank()) {
             throw new NotificationServiceException("The User has no phone number!");
         }
-
     }
 }

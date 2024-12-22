@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service.sms;
 
 import com.vonage.client.VonageClient;
+import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsClient;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
@@ -13,8 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,18 +66,18 @@ public class SmsServiceTest {
 
         SmsSubmissionResponse receivedResponse = vonageClient.getSmsClient().submitMessage(sms);
         assertEquals(response, receivedResponse);
-        verify(smsClient, times(1)).submitMessage(sms);
+        verify(smsClient, only()).submitMessage(sms);
     }
 
     @Test
     public void sendUnsuccessfulTest() {
-        when(vonageClient.getSmsClient()).thenReturn(smsClient);
-        when(smsClient.submitMessage(sms)).thenReturn(response);
-        when(vonageClient.getSmsClient().submitMessage(sms)).thenReturn(response);
-
-        SmsSubmissionResponse receivedResponse = vonageClient.getSmsClient().submitMessage(sms);
-        assertEquals(response, receivedResponse);
-        verify(smsClient, times(1)).submitMessage(sms);
-
+        VonageClient client = VonageClient.builder().apiKey("0").apiSecret("0").build();
+        TextMessage message = new TextMessage("Vonage APIs",
+                "0",
+                "A text message sent using the Vonage SMS API"
+        );
+        SmsSubmissionResponse response1 = client.getSmsClient().submitMessage(message);
+        assertEquals(response1.getMessages().get(0).getStatus(), MessageStatus.INVALID_CREDENTIALS);
     }
+
 }

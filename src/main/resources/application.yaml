@@ -41,8 +41,8 @@ telegram:
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   from: Vonage APIs
   api:
-    key: ea3cbdef
-    secret: t6qqwTma9etW5JwR
+    key: whatever
+    secret: whatever
 
 project-service:
     host: localhost
