@@ -47,5 +47,5 @@ user-service:
 
 telegram:
   bot:
-    username: "указать свое name"
-    token: "указать свой token"
+    username: "username"
+    token: "token"
