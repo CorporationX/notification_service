@@ -21,7 +21,6 @@ public class GoalMessageBuilder implements MessageBuilder<GoalCompletedEvent> {
 
     @Override
     public String buildMessage(GoalCompletedEvent event, Locale locale) {
-       Object[] placeholders = {event.getGoalId(), event.getActorId()};
-       return messageSource.getMessage("goal.completed", placeholders, locale);
+        return messageSource.getMessage("goal.completed", null, locale);
     }
 }

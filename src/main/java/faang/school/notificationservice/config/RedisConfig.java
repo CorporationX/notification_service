@@ -48,8 +48,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic goalCompletedTopic() {
-        return new ChannelTopic(redisProperties.getChannel().getGoal_channel());
+    public ChannelTopic goalTopic() {
+        return new ChannelTopic(redisProperties.getChannel().getGoal());
     }
 
     @Bean
@@ -57,14 +57,14 @@ public class RedisConfig {
             LettuceConnectionFactory lettuceConnectionFactory,
             ChannelTopic recommendationTopic,
             ChannelTopic likeTopic,
-            ChannelTopic goalCompletedTopic
+            ChannelTopic goalTopic
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory);
         container.addMessageListener(recommendationReceivedEventListener, recommendationTopic);
         container.addMessageListener(likeEventListener, likeTopic);
         container.addMessageListener(commentEventListener, commentTopic());
-        container.addMessageListener(goalCompletedEventListener, goalCompletedTopic);
+        container.addMessageListener(goalCompletedEventListener, goalTopic);
         log.info("RedisMessageListenerContainer is configured and listening to channels");
         return container;
     }

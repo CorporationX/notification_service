@@ -1,7 +1,6 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.event.GoalCompletedEvent;
-import faang.school.notificationservice.event.LikeEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class GoalMessageBuilderTest {
-    private static final String EXPECTED_MESSAGE = "Goal with id: 1 was completed by user with id: 1";
+    private static final String EXPECTED_MESSAGE = "Congrats you've completed goal";
 
     @Mock
     private MessageSource messageSource;
@@ -33,7 +32,7 @@ public class GoalMessageBuilderTest {
         GoalCompletedEvent event = new GoalCompletedEvent(1L, 1L);
         Locale locale = Locale.ENGLISH;
 
-        when(messageSource.getMessage(eq("goal.completed"), any(Object[].class), eq(locale)))
+        when(messageSource.getMessage(eq("goal.completed"), any(), eq(locale)))
                 .thenReturn(EXPECTED_MESSAGE);
 
         String message = goalMessageBuilder.buildMessage(event, locale);

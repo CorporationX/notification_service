@@ -2,6 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.data.NotificationChannel;
 import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.event.GoalCompletedEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
@@ -14,6 +15,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -56,15 +58,24 @@ public class GoalCompletedEventListener extends AbstractListener<GoalCompletedEv
 
     private void sendNotification(UserContactsDto user, GoalCompletedEvent event) {
         String message = messageBuilder.buildMessage(event, LocaleContextHolder.getLocale());
-        notificationServices.stream()
-                .filter(service -> user.getPreference() == service.getPreferredContact())
-                .findFirst()
+        if (message == null || user.getPreference() == null) {
+            log.warn("Cannot send notification. Message or user preference is null for user {}.", user.getId());
+            return;
+        }
+
+        findNotificationService(user.getPreference())
                 .ifPresentOrElse(
                         service -> {
                             service.send(user, message);
                             log.info("Message sent to user {} via {}", user.getId(), user.getPreference());
                         },
-                        () -> log.warn("No notification service found for user preference: {}. Message not sent.", user.getPreference())
+                        () -> log.warn("No notification service found for user {} with preference: {}.", user.getId(), user.getPreference())
                 );
+    }
+
+    private Optional<NotificationService> findNotificationService(NotificationChannel preference) {
+        return notificationServices.stream()
+                .filter(service -> service.getPreferredContact() == preference)
+                .findFirst();
     }
 }
