@@ -9,7 +9,6 @@ spring:
         mentorshipOfferedChannel:
           name: mentorship_offered_channel
 
-
 mail:
   subject: CorporationX notification
   from: CorporationX
