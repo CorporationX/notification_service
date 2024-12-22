@@ -15,7 +15,7 @@ public class GoalMessageBuilder implements MessageBuilder<GoalCompletedEvent> {
     private final MessageSource messageSource;
 
     @Override
-    public Class<?> getInstance() {
+    public Class<GoalCompletedEvent> getInstance() {
         return GoalCompletedEvent.class;
     }
 
