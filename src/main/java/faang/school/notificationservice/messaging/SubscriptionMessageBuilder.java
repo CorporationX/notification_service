@@ -14,7 +14,7 @@ public class SubscriptionMessageBuilder implements MessageBuilder<SubscriptionEv
     private final MessageSource messageSource;
 
     @Override
-    public Class<?> getInstance() {
+    public Class<SubscriptionEvent> getInstance() {
         return SubscriptionEvent.class;
     }
 
