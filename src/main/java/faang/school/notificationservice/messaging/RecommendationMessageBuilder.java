@@ -13,7 +13,7 @@ public class RecommendationMessageBuilder implements MessageBuilder<Recommendati
     private final MessageSource messageSource;
 
     @Override
-    public Class<?> getInstance() {
+    public Class<RecommendationReceivedEvent> getInstance() {
         return RecommendationReceivedEvent.class;
     }
 
