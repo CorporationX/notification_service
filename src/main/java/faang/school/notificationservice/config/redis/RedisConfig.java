@@ -8,8 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
@@ -22,15 +21,6 @@ public class RedisConfig {
     private final LikeEventListener likeEventListener;
     private final CommentEventListener commentEventListener;
     private final SubscriptionEventListener subscriptionEventListener;
-
-    @Bean
-    LettuceConnectionFactory lettuceConnectionFactory() {
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-        configuration.setHostName(redisProperties.getHost());
-        configuration.setPort(redisProperties.getPort());
-        log.info("Lettuce client for Redis is configured: host = {}, port = {}", redisProperties.getHost(), redisProperties.getPort());
-        return new LettuceConnectionFactory(configuration);
-    }
 
     @Bean
     ChannelTopic recommendationTopic() {
@@ -54,12 +44,12 @@ public class RedisConfig {
 
     @Bean
     RedisMessageListenerContainer redisMessageListenerContainer(
-            LettuceConnectionFactory lettuceConnectionFactory,
+            RedisConnectionFactory redisConnectionFactory,
             ChannelTopic recommendationTopic,
             ChannelTopic likeTopic
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(lettuceConnectionFactory);
+        container.setConnectionFactory(redisConnectionFactory);
         container.addMessageListener(recommendationReceivedEventListener, recommendationTopic);
         container.addMessageListener(likeEventListener, likeTopic);
         container.addMessageListener(commentEventListener, commentTopic());
