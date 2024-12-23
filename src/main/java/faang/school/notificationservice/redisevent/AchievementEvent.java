@@ -1,4 +1,4 @@
-package faang.school.notificationservice.dto.redisevent;
+package faang.school.notificationservice.redisevent;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package faang.school.notificationservice.messaging;
 
-import faang.school.notificationservice.dto.redisevent.AchievementEvent;
+import faang.school.notificationservice.redisevent.AchievementEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -20,6 +20,6 @@ public class AchievementMessageBuilder implements MessageBuilder<AchievementEven
 
     @Override
     public String buildMessage(AchievementEvent event, Locale locale) {
-        return messageSource.getMessage("achievement.notification", new Object[]{ event.getAchievement() }, locale);
+        return messageSource.getMessage("achievement.notification", new Object[]{event.getAchievement()}, locale);
     }
 }

@@ -1,8 +1,10 @@
 package faang.school.notificationservice.config.reddis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.listener.achievment.AchievementEventListener;
 import faang.school.notificationservice.listener.mentorshipoffered.MentorshipOfferedEventListener;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,7 @@ import java.util.List;
 public class RedisConfiguration {
     private final RedisProperties redisProperties;
     private final ObjectMapper objectMapper;
+
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
@@ -48,6 +51,7 @@ public class RedisConfiguration {
                                                         JedisConnectionFactory jedisConnectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory);
+
         requesters.forEach(
                 (requester) -> container.addMessageListener(requester.getFirst(), requester.getSecond())
         );
@@ -55,18 +59,34 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public ChannelTopic mentorshipOfferedTopic() {
+    ChannelTopic mentorshipOfferedTopic() {
         return new ChannelTopic(redisProperties.getChannels().getMentorshipOfferedChannel().getName());
     }
 
     @Bean
-    public MessageListenerAdapter mentorshipOfferedListener(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
+    public ChannelTopic achievementTopic() {
+        return new ChannelTopic(redisProperties.getChannels().getAchievementChannel().getName());
+    }
+
+    @Bean
+    @Qualifier("mentorshipListener")
+    MessageListenerAdapter mentorshipOfferedListener(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
         return new MessageListenerAdapter(mentorshipOfferedEventListener);
     }
 
     @Bean
-    public Pair<MessageListenerAdapter, ChannelTopic> mentorshipOfferedEventPair(MessageListenerAdapter mentorshipOfferedMessageListener,
-                                                                                 ChannelTopic mentorshipOfferedEvent) {
-        return Pair.of(mentorshipOfferedMessageListener, mentorshipOfferedEvent);
+    @Qualifier("achievementListener")
+    public MessageListenerAdapter achievementListener(AchievementEventListener achievementEventListener) {
+        return new MessageListenerAdapter(achievementEventListener);
+    }
+
+    @Bean
+    public Pair<MessageListenerAdapter, ChannelTopic> mentorshipOfferedEventPair(@Qualifier("mentorshipListener") MessageListenerAdapter mentorshipOfferedListener) {
+        return Pair.of(mentorshipOfferedListener, mentorshipOfferedTopic());
+    }
+
+    @Bean
+    public Pair<MessageListenerAdapter, ChannelTopic> achievementEventPair(@Qualifier("achievementListener") MessageListenerAdapter achievementListener) {
+        return Pair.of(achievementListener, achievementTopic());
     }
 }

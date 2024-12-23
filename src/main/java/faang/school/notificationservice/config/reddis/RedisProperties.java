@@ -16,6 +16,7 @@ public class RedisProperties {
     @Setter
     protected static class Channels {
         private Channel mentorshipOfferedChannel;
+        private Channel achievementChannel;
 
         @Getter
         @Setter
