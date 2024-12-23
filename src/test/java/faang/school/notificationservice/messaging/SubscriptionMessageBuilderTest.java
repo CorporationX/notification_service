@@ -1,7 +1,6 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.event.SubscriptionEvent;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,18 +25,14 @@ class SubscriptionMessageBuilderTest {
 
     @Test
     void testBuildMessageSuccess() {
-        SubscriptionEvent subscriptionEvent = SubscriptionEvent.builder()
-                .followeeName("Followee")
-                .followerName("Follower")
-                .subscribedAt(LocalDateTime.now())
-                .build();
+        SubscriptionEvent subscriptionEvent = new SubscriptionEvent(1L, 2L, LocalDateTime.now(), "followerName",
+                "followeeName");
         Locale locale = Locale.ENGLISH;
-        String code = "subscription.new";
-        Object[] placeholders = {subscriptionEvent.getFolloweeName(), subscriptionEvent.getFollowerName(),
-                subscriptionEvent.getSubscribedAt()};
+        Object[] placeholders = {subscriptionEvent.followeeName(), subscriptionEvent.followerName(),
+                subscriptionEvent.subscribedAt()};
         String message = "Hello, {0}! {1} started following you at {2}. Congratulations!";
 
-        when(messageSource.getMessage(code, placeholders, locale)).thenReturn(message);
+        when(messageSource.getMessage(null, placeholders, locale)).thenReturn(message);
 
         String result = subscriptionMessageBuilder.buildMessage(subscriptionEvent, locale);
 

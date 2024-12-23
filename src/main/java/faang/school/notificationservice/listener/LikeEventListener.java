@@ -6,6 +6,7 @@ import faang.school.notificationservice.event.LikeEvent;
 import faang.school.notificationservice.messaging.LikeMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.UserFeignService;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -26,7 +27,7 @@ public class LikeEventListener implements MessageListener {
     private final List<NotificationService> notificationServices;
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
+    public void onMessage(@Nonnull Message message, byte[] pattern) {
         try {
             LikeEvent event = objectMapper.readValue(message.getBody(), LikeEvent.class);
 

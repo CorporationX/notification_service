@@ -6,6 +6,7 @@ import faang.school.notificationservice.event.RecommendationReceivedEvent;
 import faang.school.notificationservice.messaging.RecommendationMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.UserFeignService;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -27,13 +28,15 @@ public class RecommendationReceivedEventListener implements MessageListener {
     private final List<NotificationService> notificationServices;
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
+    public void onMessage(@Nonnull Message message, byte[] pattern) {
         try {
             RecommendationReceivedEvent event = objectMapper.readValue(message.getBody(), RecommendationReceivedEvent.class);
             handleEvent(event);
         } catch (IOException e) {
             String messageBody = new String(message.getBody(), StandardCharsets.UTF_8);
             log.error("Error while serializing {} from redis. Error: {}", messageBody, e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("An error occurred while sending subscription event to user. Error: {}", e.getMessage(), e);
         }
     }
 

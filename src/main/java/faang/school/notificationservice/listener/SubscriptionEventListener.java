@@ -6,6 +6,7 @@ import faang.school.notificationservice.event.SubscriptionEvent;
 import faang.school.notificationservice.messaging.SubscriptionMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.UserFeignService;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -27,7 +28,7 @@ public class SubscriptionEventListener implements MessageListener {
     private final List<NotificationService> notificationServices;
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
+    public void onMessage(@Nonnull Message message, byte[] pattern) {
         try {
             SubscriptionEvent event = objectMapper.readValue(message.getBody(), SubscriptionEvent.class);
             handleEvent(event);
@@ -40,7 +41,7 @@ public class SubscriptionEventListener implements MessageListener {
     }
 
     private void handleEvent(SubscriptionEvent event) {
-        UserContactsDto receiverDto = userFeignService.getUserContacts(event.getFolloweeId());
+        UserContactsDto receiverDto = userFeignService.getUserContacts(event.followeeId());
 
         String message = subscriptionMessageBuilder.buildMessage(event, LocaleContextHolder.getLocale());
 

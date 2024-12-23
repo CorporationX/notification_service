@@ -2,6 +2,7 @@ package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.event.SubscriptionEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -10,8 +11,11 @@ import java.util.Locale;
 @Component
 @RequiredArgsConstructor
 public class SubscriptionMessageBuilder implements MessageBuilder<SubscriptionEvent> {
-    private static final String CODE = "subscription.new";
+
     private final MessageSource messageSource;
+
+    @Value("${spring.messages.code.subscription}")
+    private String messageCode;
 
     @Override
     public Class<SubscriptionEvent> getInstance() {
@@ -20,7 +24,7 @@ public class SubscriptionMessageBuilder implements MessageBuilder<SubscriptionEv
 
     @Override
     public String buildMessage(SubscriptionEvent event, Locale locale) {
-        Object[] placeholders = {event.getFolloweeName(), event.getFollowerName(), event.getSubscribedAt()};
-        return messageSource.getMessage(CODE, placeholders, locale);
+        Object[] placeholders = {event.followeeName(), event.followerName(), event.subscribedAt()};
+        return messageSource.getMessage(messageCode, placeholders, locale);
     }
 }

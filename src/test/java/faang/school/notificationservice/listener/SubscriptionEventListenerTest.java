@@ -17,10 +17,10 @@ import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -58,7 +58,8 @@ class SubscriptionEventListenerTest {
     private SubscriptionEventListener subscriptionEventListener;
 
     private List<NotificationService> notificationServices;
-    private Long userId;
+    private Long followeeId;
+    private Long followerId;
     private UserContactsDto userContactsDto;
     private SubscriptionEvent subscriptionEvent;
     private String messageText;
@@ -72,16 +73,14 @@ class SubscriptionEventListenerTest {
         subscriptionEventListener = new SubscriptionEventListener(objectMapper, userFeignService,
                 subscriptionMessageBuilder, notificationServices);
 
-        userId = 1L;
+        followeeId = 1L;
+        followerId = 2L;
         userContactsDto = UserContactsDto.builder()
-                .id(userId)
+                .id(followeeId)
                 .preference(NotificationChannel.EMAIL)
                 .build();
-        subscriptionEvent = SubscriptionEvent.builder()
-                .followeeId(userId)
-                .followerName("follower")
-                .followeeName("followee")
-                .build();
+        subscriptionEvent = new SubscriptionEvent(followerId, followeeId, LocalDateTime.now(),
+                "followerName", "followeeName");
         messageText = "notification message!";
         locale = Locale.getDefault();
         validJson = "{\"followerId\":1,\"followeeId\":2}";
@@ -93,7 +92,7 @@ class SubscriptionEventListenerTest {
         when(message.getBody()).thenReturn(validJson.getBytes(StandardCharsets.UTF_8));
         when(objectMapper.readValue(validJson.getBytes(StandardCharsets.UTF_8), SubscriptionEvent.class))
                 .thenReturn(subscriptionEvent);
-        when(userFeignService.getUserContacts(userId)).thenReturn(userContactsDto);
+        when(userFeignService.getUserContacts(followeeId)).thenReturn(userContactsDto);
         when(subscriptionMessageBuilder.buildMessage(subscriptionEvent, locale)).thenReturn(messageText);
         when(emailNotificationService.getPreferredContact()).thenReturn(NotificationChannel.EMAIL);
         doNothing().when(emailNotificationService).send(userContactsDto, messageText);
@@ -101,7 +100,7 @@ class SubscriptionEventListenerTest {
         subscriptionEventListener.onMessage(message, null);
 
         verify(objectMapper, times(1)).readValue(validJson.getBytes(StandardCharsets.UTF_8), SubscriptionEvent.class);
-        verify(userFeignService, times(1)).getUserContacts(userId);
+        verify(userFeignService, times(1)).getUserContacts(followeeId);
         verify(subscriptionMessageBuilder, times(1)).buildMessage(subscriptionEvent, locale);
         verify(emailNotificationService, times(1)).send(userContactsDto, messageText);
     }
@@ -124,14 +123,14 @@ class SubscriptionEventListenerTest {
         when(message.getBody()).thenReturn(validJson.getBytes(StandardCharsets.UTF_8));
         when(objectMapper.readValue(validJson.getBytes(StandardCharsets.UTF_8), SubscriptionEvent.class))
                 .thenReturn(subscriptionEvent);
-        when(userFeignService.getUserContacts(userId)).thenReturn(userContactsDto);
+        when(userFeignService.getUserContacts(followeeId)).thenReturn(userContactsDto);
         when(subscriptionMessageBuilder.buildMessage(subscriptionEvent, locale)).thenReturn(messageText);
         when(emailNotificationService.getPreferredContact()).thenReturn(null);
 
         subscriptionEventListener.onMessage(message, null);
 
         verify(objectMapper, times(1)).readValue(validJson.getBytes(StandardCharsets.UTF_8), SubscriptionEvent.class);
-        verify(userFeignService, times(1)).getUserContacts(userId);
+        verify(userFeignService, times(1)).getUserContacts(followeeId);
         verify(subscriptionMessageBuilder, times(1)).buildMessage(subscriptionEvent, locale);
         verify(emailNotificationService, times(0)).send(any(), any());
         verify(smsNotificationService, times(0)).send(any(), any());

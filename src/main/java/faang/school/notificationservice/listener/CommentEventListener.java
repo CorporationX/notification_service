@@ -6,6 +6,7 @@ import faang.school.notificationservice.event.CommentEvent;
 import faang.school.notificationservice.messaging.CommentMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.UserFeignService;
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -26,7 +27,7 @@ public class CommentEventListener implements MessageListener {
     private final List<NotificationService> notificationServices;
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
+    public void onMessage(@Nonnull Message message, byte[] pattern) {
         try {
             CommentEvent event = objectMapper.readValue(message.getBody(), CommentEvent.class);
 
