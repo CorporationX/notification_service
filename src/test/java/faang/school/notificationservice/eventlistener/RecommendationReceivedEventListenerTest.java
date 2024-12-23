@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 
@@ -46,8 +45,6 @@ public class RecommendationReceivedEventListenerTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
-
         messageBuilders = new ArrayList<>();
         MessageBuilder<RecommendationReceivedEvent> mockedMessageBuilder = mock(MessageBuilder.class);
         when(mockedMessageBuilder.getInstance()).thenReturn(RecommendationReceivedEvent.class);
@@ -91,6 +88,7 @@ public class RecommendationReceivedEventListenerTest {
         when(message.getBody()).thenReturn(messageBody);
 
         when(userServiceClient.getUser(3L)).thenReturn(user);
+        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.TELEGRAM);
         when(objectMapper.readValue(messageBody, RecommendationReceivedEvent.class)).thenReturn(event);
         when(messageBuilders.get(0).buildMessage(event, Locale.getDefault())).thenReturn("Test message");
 

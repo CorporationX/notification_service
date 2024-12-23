@@ -23,10 +23,6 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
-  telegram-bot:
-    name: CorporationX
-    token: 7058984957:AAG8WNhoPG-CbydS-ykd3AOTT_dwGiKA2OQ
-
   messages:
     basename: messages
 

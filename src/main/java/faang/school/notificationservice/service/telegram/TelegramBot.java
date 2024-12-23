@@ -24,21 +24,28 @@ public class TelegramBot extends TelegramLongPollingBot{
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            String messageText = update.getMessage().getText();
+            String text = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
 
-            SendMessage message = SendMessage.builder()
-                    .chatId(chatId)
-                    .text(messageText)
-                    .build();
-
-            try {
-                execute(message);
-                log.info("Message was sent to user {} device!", message.getChatId());
-            } catch (TelegramApiException e) {
-                log.error("Error while sending telegram notification to user: {}", message.getChatId(), e);
-                throw new RuntimeException(e);
+            String responseText;
+            if (text.equalsIgnoreCase("/start")) {
+                responseText = "Hello";
+                SendMessage message = SendMessage.builder()
+                        .chatId(chatId)
+                        .text(responseText)
+                        .build();
+                send(message);
             }
+        }
+    }
+
+    public void send(SendMessage message) {
+        try {
+            execute(message);
+            log.info("Message was sent to user {} device!", message.getChatId());
+        } catch (TelegramApiException e) {
+            log.error("Error while sending telegram notification to user: {}", message.getChatId(), e);
+            throw new RuntimeException(String.format("Error while sending telegram notification to user: " + message.getChatId(), e));
         }
     }
 
