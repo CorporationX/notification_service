@@ -1,14 +1,14 @@
 package faang.school.notificationservice.messaging;
 
 
-import faang.school.notificationservice.event.MentorshipOfferedEvent;
-import org.springframework.stereotype.Component;
+import faang.school.notificationservice.redisevent.MentorshipOfferedEvent;
 import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 
 @Component
-public class MentorshipOfferedMessageBuilder implements MessageBuilder <MentorshipOfferedEvent>{
+public class MentorshipOfferedMessageBuilder implements MessageBuilder<MentorshipOfferedEvent> {
 
     private final MessageSource messageSource;
 

@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.reddis;
+package faang.school.notificationservice.config.redis;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +16,7 @@ public class RedisProperties {
     @Setter
     protected static class Channels {
         private Channel mentorshipOfferedChannel;
+        private Channel achievementChannel;
 
         @Getter
         @Setter

@@ -5,7 +5,8 @@ spring:
       host: localhost
       channels:
         follower: follower_channel
-        achievement: achievement_channel
+        achievementChannel:
+          name: achievement_channel
         mentorshipOfferedChannel:
           name: mentorship_offered_channel
 
