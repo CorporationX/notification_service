@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.reddis;
+package faang.school.notificationservice.config.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.listener.achievment.AchievementEventListener;
@@ -59,7 +59,7 @@ public class RedisConfiguration {
     }
 
     @Bean
-    ChannelTopic mentorshipOfferedTopic() {
+    public ChannelTopic mentorshipOfferedTopic() {
         return new ChannelTopic(redisProperties.getChannels().getMentorshipOfferedChannel().getName());
     }
 
@@ -70,7 +70,7 @@ public class RedisConfiguration {
 
     @Bean
     @Qualifier("mentorshipListener")
-    MessageListenerAdapter mentorshipOfferedListener(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
+    public MessageListenerAdapter mentorshipOfferedListener(MentorshipOfferedEventListener mentorshipOfferedEventListener) {
         return new MessageListenerAdapter(mentorshipOfferedEventListener);
     }
 

@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.reddis;
+package faang.school.notificationservice.config.redis;
 
 import lombok.Getter;
 import lombok.Setter;
