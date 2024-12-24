@@ -2,7 +2,7 @@ package faang.school.notificationservice.listeners;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.publisher_events.RecommendationReceivedEvent;
+import faang.school.notificationservice.dto.events.RecommendationReceivedEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.data.redis.connection.Message;

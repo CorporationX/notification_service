@@ -1,4 +1,4 @@
-package faang.school.notificationservice.dto.publisher_events;
+package faang.school.notificationservice.dto.events;
 
 import lombok.Data;
 

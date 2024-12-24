@@ -1,6 +1,6 @@
 package faang.school.notificationservice.messaging;
 
-import faang.school.notificationservice.dto.publisher_events.RecommendationReceivedEvent;
+import faang.school.notificationservice.dto.events.RecommendationReceivedEvent;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
