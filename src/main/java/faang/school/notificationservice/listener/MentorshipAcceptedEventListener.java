@@ -8,7 +8,7 @@ import faang.school.notificationservice.event.MentorshipAcceptedEvent;
 import faang.school.notificationservice.messaging.MentorshipAcceptedMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import feign.FeignException;
-import jakarta.validation.constraints.NotNull;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -33,7 +33,7 @@ public class MentorshipAcceptedEventListener implements MessageListener {
     private final MentorshipAcceptedMessageBuilder mentorshipAcceptedMessageBuilder;
 
     @Override
-    public void onMessage(@NotNull Message message, byte[] pattern) {
+    public void onMessage(@NonNull Message message, byte[] pattern) {
         try {
             MentorshipAcceptedEvent event = objectMapper.readValue(message.getBody(), MentorshipAcceptedEvent.class);
             handleEvent(event);
