@@ -15,7 +15,7 @@ public class MentorshipAcceptedMessageBuilder implements MessageBuilder<Mentorsh
     private final MessageSource messageSource;
 
     @Override
-    public Class<?> getInstance() {
+    public Class<MentorshipAcceptedEvent> getInstance() {
         return MentorshipAcceptedEvent.class ;
     }
 
