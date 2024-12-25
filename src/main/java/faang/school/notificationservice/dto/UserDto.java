@@ -3,6 +3,7 @@ package faang.school.notificationservice.dto;
 import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
 import lombok.Data;
 
 @Builder
