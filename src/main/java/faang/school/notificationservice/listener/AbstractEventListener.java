@@ -37,7 +37,7 @@ public abstract class AbstractEventListener<T> {
         }
     }
 
-    protected String getMessage(T event, Locale locale){
+    protected String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
                 .filter(builder -> builder.getInstance().equals(event.getClass()))
                 .findFirst()
@@ -46,7 +46,7 @@ public abstract class AbstractEventListener<T> {
                         ("No message builder found for event: " + event.getClass().getName()));
     }
 
-    protected void sendNotification(Long userId, String message){
+    protected void sendNotification(Long userId, String message) {
         UserDto user = userServiceClient.getUser(userId);
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact().equals(user.getPreference()))
