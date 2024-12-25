@@ -54,4 +54,4 @@ out/
 ### VS Code ###
 .vscode/
 
-telegram.yaml
+application-telegram.yaml

@@ -40,17 +40,16 @@ public class RecommendationReceivedEventListenerTest {
     private NotificationService notificationService;
 
     private RecommendationReceivedEventListener eventListener;
-    private List<NotificationService> notificationServices;
     private List<MessageBuilder<RecommendationReceivedEvent>> messageBuilders;
 
     @BeforeEach
     public void setUp() {
         messageBuilders = new ArrayList<>();
-        MessageBuilder<RecommendationReceivedEvent> mockedMessageBuilder = mock(MessageBuilder.class);
+        MessageBuilder mockedMessageBuilder = mock(MessageBuilder.class);
         when(mockedMessageBuilder.getInstance()).thenReturn(RecommendationReceivedEvent.class);
         messageBuilders.add(mockedMessageBuilder);
 
-        notificationServices = new ArrayList<>();
+        List<NotificationService> notificationServices = new ArrayList<>();
         notificationServices.add(notificationService);
 
         eventListener = new RecommendationReceivedEventListener(objectMapper,
