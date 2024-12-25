@@ -11,6 +11,7 @@ import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
@@ -48,12 +49,7 @@ public class GoalCompletedEventListener extends AbstractListener<GoalCompletedEv
             )
     )
     private UserContactsDto getUserContacts(Long userId) {
-        try {
-            return userServiceClient.getUserContacts(userId);
-        } catch (FeignException e) {
-            log.error("Error occurred while fetching user contacts for user {}", userId, e);
-            throw e;
-        }
+        return userServiceClient.getUserContacts(userId);
     }
 
     private void sendNotification(UserContactsDto user, GoalCompletedEvent event) {
@@ -77,5 +73,11 @@ public class GoalCompletedEventListener extends AbstractListener<GoalCompletedEv
         return notificationServices.stream()
                 .filter(service -> service.getPreferredContact() == preference)
                 .findFirst();
+    }
+
+    @Recover
+    private UserContactsDto recoverFromFeignException(FeignException e, Long userId) {
+        log.error("Retries exhausted while fetching user contacts for user {}", userId, e);
+        throw e;
     }
 }
