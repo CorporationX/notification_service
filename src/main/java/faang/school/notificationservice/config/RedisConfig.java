@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.CommentEventListener;
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
@@ -22,6 +23,7 @@ public class RedisConfig {
     private final LikeEventListener likeEventListener;
     private final CommentEventListener commentEventListener;
     private final MentorshipAcceptedEventListener mentorshipAcceptedEventListener;
+    private final GoalCompletedEventListener goalCompletedEventListener;
 
     @Bean
     LettuceConnectionFactory lettuceConnectionFactory() {
@@ -52,10 +54,16 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic goalTopic() {
+        return new ChannelTopic(redisProperties.getChannel().getGoal());
+    }
+
+    @Bean
     RedisMessageListenerContainer redisMessageListenerContainer(
             LettuceConnectionFactory lettuceConnectionFactory,
             ChannelTopic recommendationTopic,
             ChannelTopic likeTopic,
+            ChannelTopic goalTopic,
             ChannelTopic mentorshipAcceptedTopic
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
@@ -64,6 +72,8 @@ public class RedisConfig {
         container.addMessageListener(likeEventListener, likeTopic);
         container.addMessageListener(commentEventListener, commentTopic());
         container.addMessageListener(mentorshipAcceptedEventListener, mentorshipAcceptedTopic);
+        container.addMessageListener(goalCompletedEventListener, goalTopic);
+        log.info("RedisMessageListenerContainer is configured and listening to channels");
         return container;
     }
 }

@@ -10,6 +10,7 @@ spring:
         recommendation: recommendation_channel
         comment: comment_channel
         mentorship-accepted-channel: mentorshipAccepted_channel
+        goal: goal_channel
 
   mail:
     host: smtp.gmail.com
