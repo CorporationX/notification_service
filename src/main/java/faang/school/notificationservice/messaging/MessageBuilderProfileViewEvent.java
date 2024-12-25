@@ -15,7 +15,7 @@ public class MessageBuilderProfileViewEvent implements MessageBuilder<ProfileVie
     private final UserServiceClient userServiceClient;
 
     @Override
-    public Class<ProfileViewEvent> getInstance() {
+    public Class<?> getInstance() {
         return ProfileViewEvent.class;
     }
 

@@ -79,11 +79,6 @@ public class ProfileViewEventListenerIT {
         registry.add("spring.data.redis.port", () -> REDIS_CONTAINER.getMappedPort(6379));
         registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
 
-        try {
-            Thread.sleep(11000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Test
@@ -103,7 +98,7 @@ public class ProfileViewEventListenerIT {
                 Collections.singletonList(messageBuilderProfileViewEvent),
                 userServiceClient,
                 notificationServices
-        ) {
+        ){
             @Override
             public void onMessage(Message message, byte[] pattern) {
                 try {

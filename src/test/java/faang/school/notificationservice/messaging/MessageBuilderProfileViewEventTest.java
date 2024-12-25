@@ -9,8 +9,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
+
+import java.util.Locale;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,5 +45,11 @@ public class MessageBuilderProfileViewEventTest {
         when(messageSource.getMessage(any(),any(),any())).thenReturn(followerKey);
         String result2 = messageSource.getMessage(any(),any(),any());
         assertEquals(result2,followerKey);
+        messageBuilderProfileViewEvent.buildMessage(event,any(Locale.class));
+    }
+    @Test
+    void testGetInstance() {
+        Class<?> actual = messageBuilderProfileViewEvent.getInstance();
+        assertEquals(actual, ProfileViewEvent.class);
     }
 }
