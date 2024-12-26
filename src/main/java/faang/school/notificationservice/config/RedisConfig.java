@@ -2,7 +2,9 @@ package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.listener.CommentEventListener;
 import faang.school.notificationservice.listener.EventStartEventListener;
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
+import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
 import faang.school.notificationservice.listener.EventStartEventListener;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ public class RedisConfig {
     private final RecommendationReceivedEventListener recommendationReceivedEventListener;
     private final LikeEventListener likeEventListener;
     private final CommentEventListener commentEventListener;
+    private final MentorshipAcceptedEventListener mentorshipAcceptedEventListener;
+    private final GoalCompletedEventListener goalCompletedEventListener;
 
     @Bean
     LettuceConnectionFactory lettuceConnectionFactory() {
@@ -60,16 +64,31 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic mentorshipAcceptedTopic() {
+        return new ChannelTopic(redisProperties.getChannel().getMentorshipAcceptedChannel());
+    }
+
+    @Bean
+    public ChannelTopic goalTopic() {
+        return new ChannelTopic(redisProperties.getChannel().getGoal());
+    }
+
+    @Bean
     RedisMessageListenerContainer redisMessageListenerContainer(
             LettuceConnectionFactory lettuceConnectionFactory,
             ChannelTopic recommendationTopic,
-            ChannelTopic likeTopic
+            ChannelTopic likeTopic,
+            ChannelTopic goalTopic,
+            ChannelTopic mentorshipAcceptedTopic
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(lettuceConnectionFactory);
         container.addMessageListener(recommendationReceivedEventListener, recommendationTopic);
         container.addMessageListener(likeEventListener, likeTopic);
         container.addMessageListener(commentEventListener, commentTopic());
+        container.addMessageListener(mentorshipAcceptedEventListener, mentorshipAcceptedTopic);
+        container.addMessageListener(goalCompletedEventListener, goalTopic);
+        log.info("RedisMessageListenerContainer is configured and listening to channels");
         return container;
     }
 
