@@ -12,7 +12,6 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class MessageBuilderProfileViewEvent implements MessageBuilder<ProfileViewEvent> {
     private final MessageSource messageSource;
-    private final UserServiceClient userServiceClient;
 
     @Override
     public Class<?> getInstance() {
@@ -22,6 +21,6 @@ public class MessageBuilderProfileViewEvent implements MessageBuilder<ProfileVie
     @Override
     public String buildMessage(ProfileViewEvent event, Locale locale) {
         return messageSource.getMessage("profile_view.new",
-                new Object[]{userServiceClient.getUser(event.getViewerId()).getUsername()}, locale);
+                new Object[]{event.getViewerName()}, locale);
     }
 }

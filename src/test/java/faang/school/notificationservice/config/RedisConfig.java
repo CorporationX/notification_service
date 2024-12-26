@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;

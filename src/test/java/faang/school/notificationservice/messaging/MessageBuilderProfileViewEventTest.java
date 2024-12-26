@@ -27,25 +27,19 @@ public class MessageBuilderProfileViewEventTest {
     @Mock
     private MessageSource messageSource;
 
-    @Mock
-    private UserServiceClient userServiceClient;
 
     @Test
     void testbuildMessage() {
         ProfileViewEvent event = new ProfileViewEvent();
         event.setAuthorId(1l);
-        event.setViewerId(2l);
+        event.setViewerName("Name");
         UserDto userDto = new UserDto();
         userDto.setUsername("123");
-        when(userServiceClient.getUser(event.getViewerId())).thenReturn(userDto);
-        UserDto result = userServiceClient.getUser(event.getViewerId());
-        assertEquals("123", result.getUsername());
-        String followerKey ="222";
 
+        String followerKey ="222";
         when(messageSource.getMessage(any(),any(),any())).thenReturn(followerKey);
-        String result2 = messageSource.getMessage(any(),any(),any());
-        assertEquals(result2,followerKey);
-        messageBuilderProfileViewEvent.buildMessage(event,any(Locale.class));
+        String result = messageBuilderProfileViewEvent.buildMessage(event,Locale.getDefault());
+        assertEquals(result,followerKey);
     }
     @Test
     void testGetInstance() {

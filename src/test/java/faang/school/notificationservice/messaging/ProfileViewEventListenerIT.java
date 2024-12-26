@@ -15,7 +15,6 @@ import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguratio
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -26,13 +25,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import static org.hibernate.validator.internal.util.Contracts.assertTrue;
+import java.util.Locale;
+import static faang.school.notificationservice.dto.UserDto.PreferredContact.TELEGRAM;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,21 +45,20 @@ public class ProfileViewEventListenerIT {
 
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private ProfileViewEventListener listener;
 
     @MockBean
     private UserServiceClient userServiceClient;
 
     @MockBean
-    private MessageBuilderProfileViewEvent messageBuilderProfileViewEvent;
+    private List<MessageBuilder<ProfileViewEvent>> messageBuilders;
 
     @MockBean
     private TelegramService telegramService;
 
     @MockBean
     private List<NotificationService> notificationServices;
-
-    @MockBean
-    private Message message;
 
     @Container
     public static PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
@@ -83,42 +81,29 @@ public class ProfileViewEventListenerIT {
 
     @Test
     public void test() throws IOException, InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
+        MessageBuilder messageBuilder = mock(MessageBuilder.class);
+        when(messageBuilder.getInstance()).thenReturn(ProfileViewEvent.class);
+        messageBuilders = List.of(messageBuilder);
+        NotificationService notificationService = mock(NotificationService.class);
+        when(notificationService.getPreferredContact()).thenReturn(TELEGRAM);
+        notificationServices = List.of(notificationService);
         ProfileViewEvent profileViewEvent = ProfileViewEvent.builder()
                 .authorId(1L)
-                .viewerId(2L)
+                .viewerName("name")
                 .localDateTime(LocalDateTime.now())
                 .build();
         UserDto userDto = new UserDto();
         userDto.setId(1L);
+        userDto.setUsername("123");
+        userDto.setPreference(TELEGRAM);
         when(userServiceClient.getUser(1L)).thenReturn(userDto);
 
-        ProfileViewEventListener listener = new ProfileViewEventListener(
-                objectMapper,
-                Collections.singletonList(messageBuilderProfileViewEvent),
-                userServiceClient,
-                notificationServices
-        ){
-            @Override
-            public void onMessage(Message message, byte[] pattern) {
-                try {
-                    ProfileViewEvent event = objectMapper.readValue(message.getBody(), ProfileViewEvent.class);
-                    UserDto user = userServiceClient.getUser(event.getAuthorId());
-                    telegramService.send(user, "Some notification message");
-                    latch.countDown();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        new Thread(() -> {
-            redisTemplate.getConnectionFactory().getConnection().subscribe(listener, "profile_view_channel".getBytes());
-        }).start();
+        when(messageBuilders.get(0).buildMessage(profileViewEvent, Locale.UK)).thenReturn("iii");
+        when(telegramService.getPreferredContact()).thenReturn(TELEGRAM);
         String eventJson = objectMapper.writeValueAsString(profileViewEvent);
         redisTemplate.convertAndSend("profile_view_channel", eventJson);
-        boolean completed = latch.await(15, TimeUnit.SECONDS);
-        assertTrue(completed, "Test timed out waiting for message to be processed");
-        verify(telegramService).send(any(UserDto.class),anyString());
-        verify(userServiceClient).getUser(1L);
+        Thread.sleep(15000);
+        verify(userServiceClient, times(1)).getUser(1L);
+        verify(telegramService).send(any(UserDto.class), anyString());
     }
 }

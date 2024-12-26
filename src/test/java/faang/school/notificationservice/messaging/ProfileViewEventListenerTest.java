@@ -61,13 +61,13 @@ public class ProfileViewEventListenerTest {
     void testOnMessage() throws IOException {
         ProfileViewEvent event = new ProfileViewEvent();
         event.setAuthorId(1L);
-        event.setViewerId(2L);
+        event.setViewerName("Name");
         byte[] body = "word".getBytes();
         String text = "text";
 
         when(message.getBody()).thenReturn(body);
         when(objectMapper.readValue(body, ProfileViewEvent.class)).thenReturn(event);
-        when(messageBuilders.get(0).buildMessage(event, Locale.UK)).thenReturn(text);
+        when(messageBuilders.get(0).buildMessage(event, Locale.getDefault())).thenReturn(text);
 
         UserDto userDto = new UserDto();
         userDto.setUsername("123");

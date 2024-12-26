@@ -2,6 +2,7 @@ package faang.school.notificationservice.config.context;
 
 import faang.school.notificationservice.listener.ProfileViewEventListener;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +14,7 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
@@ -46,7 +47,9 @@ public class RedisConfig {
 
     @Bean
     MessageListenerAdapter profileViewListener(ProfileViewEventListener profileViewEventListener) {
+        log.info("Repid: {}", profileViewEventListener);
         return new MessageListenerAdapter(profileViewEventListener);
+
     }
 
     @Bean
@@ -59,6 +62,8 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(messageListenerAdapter, topic());
+        log.info("RedisMessageListenerContainer created and listening on topic: {}", profileViewTopic);
+
         return container;
     }
 }
