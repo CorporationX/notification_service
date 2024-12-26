@@ -16,6 +16,8 @@ public class EmailService implements NotificationService  {
 
     @Override
     public void send(UserDto user, String message) {
+        log.info("Sending email to: {}", user.getEmail());
+        log.info("Message: {}", message);
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("Notification");
