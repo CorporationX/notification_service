@@ -1,24 +1,26 @@
 package faang.school.notificationservice.dto;
 
+import faang.school.notificationservice.data.NotificationChannel;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
-
-    @PositiveOrZero(message = "Id must be positive or zero")
+public class UserContactsDto {
+    @Positive(message = "Id must be a positive integer")
     @NotNull(message = "Id is required")
-    private long id;
+    private Long id;
 
     @Size(min = 5, max = 30, message = "Username must be between 5 and 30 characters")
     private String username;
@@ -33,9 +35,10 @@ public class UserDto {
     private String phone;
 
     @NotNull(message = "Preferred contact is required")
-    private PreferredContact preference;
+    private NotificationChannel preference;
 
-    public enum PreferredContact {
-        EMAIL, SMS, TELEGRAM
-    }
+    private List<Long> menteesId;
+    private List<Long> mentorsId;
+    private List<Long> skillsId;
 }
+

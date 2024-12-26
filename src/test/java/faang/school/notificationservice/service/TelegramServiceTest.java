@@ -1,8 +1,7 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.bot.TelegramBotImpl;
-import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.exception.TelegramBotInitException;
+import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.exception.TelegramBotMessageSendException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,11 +31,11 @@ class TelegramServiceTest {
     @InjectMocks
     private TelegramService telegramService;
 
-    private UserDto user;
+    private UserContactsDto user;
     private String message;
     @BeforeEach
     void setUp() {
-        user = UserDto.builder()
+        user = UserContactsDto.builder()
                 .id(123456789L)
                 .build();
         message = "Test message";

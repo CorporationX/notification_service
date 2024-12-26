@@ -1,0 +1,19 @@
+package faang.school.notificationservice.event;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class LikeEvent {
+    private Long postAuthorId;
+    private Long likeAuthorId;
+    private Long postId;
+    private String postAuthorName;
+}

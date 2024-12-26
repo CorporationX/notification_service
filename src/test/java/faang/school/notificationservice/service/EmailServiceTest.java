@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserContactsDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +24,7 @@ public class EmailServiceTest {
 
     @Test
     void testEmailSending() {
-        UserDto user = UserDto.builder()
+        UserContactsDto user = UserContactsDto.builder()
                 .email("doniyor.kurbanov.21@gmail.com")
                 .build();
 

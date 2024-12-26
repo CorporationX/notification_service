@@ -6,14 +6,17 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        like: like_event_channel
+        recommendation: recommendation_channel
+        comment: comment_channel
         event-start-event-channel: event_start_event_channel
 
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: spring.mail.username
-    password: spring.mail.password
+    username: coprorationsxinfo@gmail.com
+    password: kkzl klci owng azqk
     properties:
       mail:
         smtp:
@@ -27,6 +30,12 @@ spring:
   messages:
     basename: messages
 
+  retry:
+    maxAttempts: 3
+    initialDelay: 1000
+    multiplier: 2
+    maxDelay: 10000
+
 server:
   port: 8083
   servlet:
@@ -39,15 +48,18 @@ logging:
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: whatever
-    secret: whatever
+    key: ea3cbdef
+    secret: t6qqwTma9etW5JwR
+  number:
+    message-sender: 31687519767
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
+
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
 
 telegram:
   bot:
