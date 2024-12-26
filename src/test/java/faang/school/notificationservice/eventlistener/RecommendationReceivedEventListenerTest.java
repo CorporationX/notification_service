@@ -40,17 +40,16 @@ public class RecommendationReceivedEventListenerTest {
     private NotificationService notificationService;
 
     private RecommendationReceivedEventListener eventListener;
-    private List<NotificationService> notificationServices;
     private List<MessageBuilder<RecommendationReceivedEvent>> messageBuilders;
 
     @BeforeEach
     public void setUp() {
         messageBuilders = new ArrayList<>();
-        MessageBuilder<RecommendationReceivedEvent> mockedMessageBuilder = mock(MessageBuilder.class);
+        MessageBuilder mockedMessageBuilder = mock(MessageBuilder.class);
         when(mockedMessageBuilder.getInstance()).thenReturn(RecommendationReceivedEvent.class);
         messageBuilders.add(mockedMessageBuilder);
 
-        notificationServices = new ArrayList<>();
+        List<NotificationService> notificationServices = new ArrayList<>();
         notificationServices.add(notificationService);
 
         eventListener = new RecommendationReceivedEventListener(objectMapper,
@@ -71,7 +70,7 @@ public class RecommendationReceivedEventListenerTest {
         when(userServiceClient.getUser(3L)).thenReturn(user);
         when(objectMapper.readValue(messageBody, RecommendationReceivedEvent.class)).thenReturn(event);
         when(messageBuilders.get(0).buildMessage(event, Locale.getDefault())).thenReturn("Test message");
-        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
+        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS);
 
         eventListener.onMessage(message, null);
 
@@ -91,12 +90,13 @@ public class RecommendationReceivedEventListenerTest {
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.TELEGRAM);
         when(objectMapper.readValue(messageBody, RecommendationReceivedEvent.class)).thenReturn(event);
         when(messageBuilders.get(0).buildMessage(event, Locale.getDefault())).thenReturn("Test message");
+        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 eventListener.onMessage(message, null)
         );
 
-        assertEquals("No notification service found for the user preferred communication method : " + user.getPreference(), exception.getMessage());
+        assertEquals("No notification service found for the user preferred communication method: SMS", exception.getMessage());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class RecommendationReceivedEventListenerTest {
     private UserDto prepareUser() {
         return UserDto.builder()
                 .id(3L)
-                .preference(UserDto.PreferredContact.EMAIL)
+                .preference(UserDto.PreferredContact.SMS)
                 .build();
     }
 }

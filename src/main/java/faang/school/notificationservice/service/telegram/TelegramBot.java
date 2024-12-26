@@ -14,10 +14,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @RequiredArgsConstructor
 public class TelegramBot extends TelegramLongPollingBot{
 
-    @Value("${spring.telegram-bot.name}")
+    @Value("${telegram-bot.name}")
     private String name;
 
-    @Value("${spring.telegram-bot.token}")
+    @Value("${telegram-bot.token}")
     private String token;
 
 
