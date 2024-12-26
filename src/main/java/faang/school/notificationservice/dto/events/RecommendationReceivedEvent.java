@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class RecommendationReceivedEvent {
     private Long id;
     private Long authorId;
+    private String authorName;
     private Long receiverId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

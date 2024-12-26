@@ -1,7 +1,6 @@
-package faang.school.notificationservice.listeners;
+package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.dto.events.RecommendationReceivedEvent;
-import faang.school.notificationservice.messaging.RecommendationReceivedMessageBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +26,7 @@ public class RecommendationReceivedMessageBuilderTest {
 
     @Test
     public void testBuildMessage(){
-        RecommendationReceivedEvent event = new RecommendationReceivedEvent(100L, 1L, 2L, LocalDateTime.now());
+        RecommendationReceivedEvent event = new RecommendationReceivedEvent(100L, 1L, "Alex", 2L, LocalDateTime.now());
         Mockito.when(messageSource.getMessage(any(), any(), any()))
                 .thenReturn("User {0} given recommendation for You");
 

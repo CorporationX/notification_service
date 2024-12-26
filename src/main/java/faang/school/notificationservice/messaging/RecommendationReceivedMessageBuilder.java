@@ -11,7 +11,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class RecommendationReceivedMessageBuilder implements MessageBuilder<RecommendationReceivedEvent> {
 
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     @Override
     public Class<RecommendationReceivedEvent> getInstance() {
@@ -20,6 +20,6 @@ public class RecommendationReceivedMessageBuilder implements MessageBuilder<Reco
 
     @Override
     public String buildMessage(RecommendationReceivedEvent event, Locale locale) {
-        return messageSource.getMessage("recommendation.new", new Object[]{event.getAuthorId()}, locale);
+        return messageSource.getMessage("recommendation.new", new Object[]{event.getAuthorName()}, locale);
     }
 }
