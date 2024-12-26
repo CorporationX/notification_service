@@ -2,7 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.event.EventStartEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -28,7 +28,7 @@ public class EventStartEventListener extends AbstractEventListener<EventStartEve
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, EventStartEvent.class, eventStartEvent -> {
             List<Long> attendeesIds = eventStartEvent.getAttendeesIds();
-            List<UserDto> users = attendeesIds.stream().map(userServiceClient::getUser).toList();
+            List<UserContactsDto> users = attendeesIds.stream().map(userServiceClient::getUserContacts).toList();
             users.forEach(user -> sendNotification(user.getId(), getMessage(eventStartEvent, Locale.getDefault())));
             log.info("Event start event received: {}", eventStartEvent);
         });

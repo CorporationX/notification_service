@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ public class AbstractEventListener<T> {
     }
 
     protected void sendNotification(Long id, String message) {
-        UserDto user = userServiceClient.getUser(id);
+        UserContactsDto user = userServiceClient.getUserContacts(id);
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
