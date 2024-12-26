@@ -17,6 +17,7 @@ import org.springframework.data.redis.connection.MessageListener;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.nio.charset.StandardCharsets;
 
 @RequiredArgsConstructor
 @Slf4j

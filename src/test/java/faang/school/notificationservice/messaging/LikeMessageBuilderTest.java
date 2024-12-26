@@ -17,6 +17,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LikeMessageBuilderTest {
+    private static final String EXPECTED_MESSAGE = "User with id: 1 liked your post with id: 2";
+
     @InjectMocks
     private LikeMessageBuilder likeMessageBuilder;
 
@@ -32,11 +34,11 @@ class LikeMessageBuilderTest {
         Locale locale = Locale.ENGLISH;
 
         when(messageSource.getMessage(eq("like.add"), any(Object[].class), eq(locale)))
-                .thenReturn("User with id: 1 liked your post with id: 2");
+                .thenReturn(EXPECTED_MESSAGE);
 
         String message = likeMessageBuilder.buildMessage(event, locale);
 
-        assertEquals("User with id: 1 liked your post with id: 2", message);
+        assertEquals(EXPECTED_MESSAGE, message);
     }
 
     @Test
