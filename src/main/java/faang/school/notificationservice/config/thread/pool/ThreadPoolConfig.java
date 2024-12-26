@@ -10,7 +10,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Data
 public class ThreadPoolConfig {
 
-    @Value("${thread-pool.sms-message-pool.num-of-threads}")
+    @Value("${thread-pool.default-pool.num-of-threads}")
     private int smsMessagePoolNumOfThreads;
 
     public static final String DEFAULT_POOL_BEAN_NAME = "smsMessagePool";
