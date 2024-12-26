@@ -44,7 +44,7 @@ spring:
     basename: messages
 
 server:
-  port: 8083
+  port: 9083
 
 logging:
   level:
@@ -101,7 +101,7 @@ resilience4j:
         permitted-number-of-calls-in-half-open-state: 3
 
 thread-pool:
-  sms-message-pool:
+  default-pool:
     name: "smsMessagePool"
     num-of-threads: 5
 

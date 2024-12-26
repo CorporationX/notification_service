@@ -46,16 +46,6 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic likeEventTopic() {
-        return new ChannelTopic(likeEventTopicName);
-    }
-
-    @Bean
-    public ChannelTopic failedSmsMessageTopic() {
-        return new ChannelTopic(failedSmsMessageTopicName);
-    }
-
-    @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory,
                                                        ObjectMapper objectMapper) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -69,5 +59,15 @@ public class RedisConfig {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
+    }
+
+    @Bean
+    public ChannelTopic likeEventTopic() {
+        return new ChannelTopic(likeEventTopicName);
+    }
+
+    @Bean
+    public ChannelTopic failedSmsMessageTopic() {
+        return new ChannelTopic(failedSmsMessageTopicName);
     }
 }

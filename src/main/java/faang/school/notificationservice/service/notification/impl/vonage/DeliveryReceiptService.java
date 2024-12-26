@@ -46,12 +46,10 @@ public class DeliveryReceiptService {
         smsMessage.setCost(deliveryReceipt.getPrice());
 
         if (ErrorCode.DELIVERED == deliveryReceipt.getErrorCode()) {
-
             smsMessage.setDeliveryStatus(MessageDeliveryStatus.DELIVERED);
             log.info("Message with uid {} was delivered", deliveryReceipt.getClientRef());
 
         } else if (ErrorCode.isRetryable(deliveryReceipt.getErrorCode())) {
-
             smsMessage.setDeliveryStatus(MessageDeliveryStatus.REPROCESSING);
             UserForNotificationDto messageReceiver =
                     userServiceClient.getUserForNotificationById(smsMessage.getReceiverId());

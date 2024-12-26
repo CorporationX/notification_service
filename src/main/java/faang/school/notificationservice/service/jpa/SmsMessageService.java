@@ -18,7 +18,7 @@ public class SmsMessageService {
 
     private final SmsMessageRepository smsMessageRepository;
 
-    @Async(value = ThreadPoolConfig.SMS_MESSAGE_POOL_BEAN_NAME)
+    @Async(value = ThreadPoolConfig.DEFAULT_POOL_BEAN_NAME)
     public CompletableFuture<SmsMessage> saveSmsMessageAsync(SmsMessage smsMessage) {
         SmsMessage savedMsg = smsMessageRepository.save(smsMessage);
         return CompletableFuture.completedFuture(savedMsg);
