@@ -59,8 +59,6 @@ public class AbstractListenerTest {
 
     private AchievementEvent achievementEvent;
 
-
-
     @BeforeEach
     public void setUp() {
         achievementEvent = new AchievementEvent("User name", 1L, "Achievement title", 1L);
