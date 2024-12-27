@@ -27,7 +27,7 @@ public class EventStartEventListener extends AbstractEventListener<EventStartEve
     @Override
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, EventStartEvent.class, eventStartEvent -> {
-            List<Long> attendeesIds = eventStartEvent.getAttendeesIds();
+            List<Long> attendeesIds = eventStartEvent.attendeesIds();
             List<UserContactsDto> users = attendeesIds.stream().map(userServiceClient::getUserContacts).toList();
             users.forEach(user -> sendNotification(user.getId(), getMessage(eventStartEvent, Locale.getDefault())));
             log.info("Event start event received: {}", eventStartEvent);

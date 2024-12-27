@@ -1,16 +1,10 @@
 package faang.school.notificationservice.event;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class EventStartEvent {
-    private long eventId;
-    private List<Long> attendeesIds;
+@Builder
+public record EventStartEvent (Long eventId, String eventTitle, LocalDateTime eventStartTime, List<Long> attendeesIds) {
 }
