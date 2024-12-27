@@ -6,6 +6,7 @@ import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.event.AchievementEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.UserFeignService;
 import feign.FeignException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,7 +33,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class AchievementEventListenerTest {
     @Mock
-    private UserServiceClient userServiceClient;
+    private UserFeignService userFeignService;
 
     @Mock
     private MessageBuilder<AchievementEvent> messageBuilder;
@@ -47,7 +49,7 @@ public class AchievementEventListenerTest {
 
     @BeforeEach
     void setUp() {
-        event = new AchievementEvent(1L, 1L);
+        event = new AchievementEvent("User name", 1L, "Achievement title", 1L);
         userContactsDto = UserContactsDto.builder()
                 .id(1L)
                 .username("john_doe")
@@ -61,35 +63,35 @@ public class AchievementEventListenerTest {
     }
 
     @Test
-    @DisplayName("Test handleEvent method")
+    @DisplayName("Test handleEvent method success")
     void testHandleEventSuccess() {
-        when(userServiceClient.getUserContacts(event.getUserId())).thenReturn(userContactsDto);
+        when(userFeignService.getUserContacts(event.getUserId())).thenReturn(userContactsDto);
 
         when(messageBuilder.buildMessage(event, LocaleContextHolder.getLocale())).thenReturn("Achievement unlocked!");
 
         NotificationService mockNotificationService = mock(NotificationService.class);
         when(notificationServices.stream()).thenReturn(Stream.of(mockNotificationService));
-
-        when(mockNotificationService.getPreferredContact()).thenReturn(NotificationChannel.EMAIL); // Убедитесь, что это возвращает правильный канал
-
+        when(mockNotificationService.getPreferredContact()).thenReturn(NotificationChannel.EMAIL);
         doNothing().when(mockNotificationService).send(eq(userContactsDto), eq("Achievement unlocked!"));
 
         achievementEventListener.handleEvent(event);
 
-        verify(userServiceClient, times(1)).getUserContacts(event.getUserId());
+        verify(userFeignService, times(1)).getUserContacts(event.getUserId());
         verify(mockNotificationService, times(1)).send(eq(userContactsDto), eq("Achievement unlocked!"));
     }
 
     @Test
-    @DisplayName("Test handleEvent method with exception")
+    @DisplayName("Test handleEvent method with UserService failure")
     void testHandleEventUserServiceFailure() {
-        when(userServiceClient.getUserContacts(event.getUserId())).thenThrow(FeignException.class);
+        when(userFeignService.getUserContacts(event.getUserId())).thenThrow(FeignException.class);
 
         FeignException exception = assertThrows(FeignException.class, () -> {
             achievementEventListener.handleEvent(event);
         });
 
         assertNotNull(exception);
-        verify(userServiceClient, times(1)).getUserContacts(event.getUserId());
+        verify(userFeignService, times(1)).getUserContacts(event.getUserId());
+
+        verify(notificationServices, never()).stream();
     }
 }

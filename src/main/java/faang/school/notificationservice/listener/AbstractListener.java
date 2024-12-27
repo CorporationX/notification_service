@@ -3,8 +3,8 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.event.EventHandler;
-import faang.school.notificationservice.exception.InvalidMessageException;
 import faang.school.notificationservice.exception.EventDeserializationException;
+import faang.school.notificationservice.exception.InvalidMessageException;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.NonNull;
@@ -16,8 +16,8 @@ import org.springframework.data.redis.connection.MessageListener;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
-import java.nio.charset.StandardCharsets;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -29,17 +29,27 @@ public abstract class AbstractListener<T> implements MessageListener {
 
     protected abstract void handleEvent(T event);
 
-    @SuppressWarnings("unchecked")
     protected Class<T> getEventType() {
-        ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
-        return (Class<T>) type.getActualTypeArguments()[0];
+        Type superclass = getClass().getGenericSuperclass();
+
+        if (!(superclass instanceof ParameterizedType)) {
+            throw new IllegalStateException("Superclass is not parameterized.");
+        }
+
+        Type typeArgument = ((ParameterizedType) superclass).getActualTypeArguments()[0];
+
+        if (typeArgument instanceof Class<?>) {
+            return (Class<T>) typeArgument;
+        } else {
+            throw new IllegalStateException("Type argument is not a class.");
+        }
     }
 
     protected T listenEvent(Message message) {
-        if (message.getBody().length == 0) {
-            log.error("Message body is empty: {}", message.getBody());
-            throw new InvalidMessageException("Message body is empty");
-        }
+            if (message.getBody().length == 0) {
+                log.error("Message body is empty: {}", message.getBody());
+                throw new InvalidMessageException("Message body is empty");
+            }
 
         try {
             return objectMapper.readValue(message.getBody(), getEventType());
@@ -54,7 +64,7 @@ public abstract class AbstractListener<T> implements MessageListener {
 
         if (receiverDto.getPreference() == null) {
             log.error("User {} has no preference set", receiverDto.getId());
-            return;
+            throw new IllegalArgumentException(String.format("User %s has no preference set", receiverDto.getId()));
         }
 
         notificationServices.stream()
