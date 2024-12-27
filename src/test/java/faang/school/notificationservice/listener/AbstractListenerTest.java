@@ -103,7 +103,7 @@ public class AbstractListenerTest {
     public void testSendNotification_NotificationServiceFound() {
         UserContactsDto receiverDto = UserContactsDto.builder()
                 .id(1L)
-                .preference(NotificationChannel.EMAIL) // Предпочтение пользователя
+                .preference(NotificationChannel.EMAIL)
                 .build();
 
         NotificationService notificationService = mock(NotificationService.class);
@@ -123,7 +123,7 @@ public class AbstractListenerTest {
 
         UserContactsDto userContactsDto = new UserContactsDto();
         userContactsDto.setId(1L);
-        userContactsDto.setPreference(NotificationChannel.EMAIL); // Set the preference to EMAIL
+        userContactsDto.setPreference(NotificationChannel.EMAIL);
         when(userFeignService.getUserContacts(1L)).thenReturn(userContactsDto);
 
         AchievementEventListener listener
