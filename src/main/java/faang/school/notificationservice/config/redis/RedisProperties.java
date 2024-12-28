@@ -9,6 +9,8 @@ public record RedisProperties(String host, int port, Channel channel) {
                           String achievement,
                           String recommendation,
                           String like,
-                          String comment) {
+                          String comment,
+                          String goal,
+                          String mentorshipAcceptedChannel) {
     }
 }

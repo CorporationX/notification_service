@@ -43,12 +43,12 @@ public class RedisConfig {
 
     @Bean
     public ChannelTopic mentorshipAcceptedTopic() {
-        return new ChannelTopic(redisProperties.getChannel().getMentorshipAcceptedChannel());
+        return new ChannelTopic(redisProperties.channel().mentorshipAcceptedChannel());
     }
 
     @Bean
     public ChannelTopic goalTopic() {
-        return new ChannelTopic(redisProperties.getChannel().getGoal());
+        return new ChannelTopic(redisProperties.channel().goal());
     }
 
     @Bean
@@ -64,8 +64,8 @@ public class RedisConfig {
         container.addMessageListener(likeEventListener, likeTopic());
         container.addMessageListener(commentEventListener, commentTopic());
         container.addMessageListener(subscriptionEventListener, subscriptionTopic());
-        container.addMessageListener(mentorshipAcceptedEventListener, mentorshipAcceptedTopic);
-        container.addMessageListener(goalCompletedEventListener, goalTopic);
+        container.addMessageListener(mentorshipAcceptedEventListener, mentorshipAcceptedTopic());
+        container.addMessageListener(goalCompletedEventListener, goalTopic());
         log.info("RedisMessageListenerContainer is configured and listening to channels");
         return container;
     }
