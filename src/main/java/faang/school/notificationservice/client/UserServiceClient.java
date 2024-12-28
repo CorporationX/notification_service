@@ -14,3 +14,4 @@ public interface UserServiceClient {
     @GetMapping("/api/v1/users/{id}/contacts")
     UserContactsDto getUserContacts(@PathVariable long id);
 }
+

@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RecommendationMessageBuilderTest {
+    private static final String EXPECTED_MESSAGE = "Congrats, Receiver! You've got a new recommendation from Author!";
 
     @Mock
     private MessageSource messageSource;
@@ -41,12 +42,12 @@ class RecommendationMessageBuilderTest {
     void testBuildMessageWithPlaceholdersSuccess() {
         Object[] placeholders = {"Receiver", "Author"};
         String code = "recommendation.new";
-        when(messageSource.getMessage(code, placeholders, locale)).thenReturn("Congrats, Receiver! You've got a new recommendation from Author!");
+        when(messageSource.getMessage(code, placeholders, locale)).thenReturn(EXPECTED_MESSAGE);
 
         String result = recommendationMessageBuilder.buildMessage(event, locale);
         verify(messageSource, times(1)).getMessage(code, placeholders, locale);
 
-        assertEquals("Congrats, Receiver! You've got a new recommendation from Author!", result);
+        assertEquals(EXPECTED_MESSAGE, result);
     }
 
     @Test
