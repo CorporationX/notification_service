@@ -6,11 +6,13 @@ import faang.school.notificationservice.dto.UserContactsDto;
 import faang.school.notificationservice.event.EventStartEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,12 +27,12 @@ public class EventStartEventListener extends AbstractEventListener<EventStartEve
     }
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
+    public void onMessage(@NonNull Message message, byte[] pattern) {
         handleEvent(message, EventStartEvent.class, eventStartEvent -> {
             List<Long> attendeesIds = eventStartEvent.attendeesIds();
             List<UserContactsDto> users = attendeesIds.stream().map(userServiceClient::getUserContacts).toList();
             users.forEach(user -> sendNotification(user.getId(), getMessage(eventStartEvent, Locale.getDefault())));
-            log.info("Event start event received: {}", eventStartEvent);
+            log.info("Event start event received at {}: {}", LocalDateTime.now(), eventStartEvent);
         });
     }
 }
