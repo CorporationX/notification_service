@@ -13,6 +13,7 @@ spring:
         achievement-channel:
           name: achievement_channel
 
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -53,5 +54,5 @@ user-service:
 
 telegram:
   bot:
-    username: "указать свое name"
-    token: "указать свой token"
+    username: "username"
+    token: "token"
