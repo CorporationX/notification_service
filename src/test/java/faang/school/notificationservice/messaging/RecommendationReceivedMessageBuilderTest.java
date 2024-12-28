@@ -28,9 +28,9 @@ public class RecommendationReceivedMessageBuilderTest {
     public void testBuildMessage(){
         RecommendationReceivedEvent event = new RecommendationReceivedEvent(100L, 1L, "Alex", 2L, LocalDateTime.now());
         Mockito.when(messageSource.getMessage(any(), any(), any()))
-                .thenReturn("User {0} given recommendation for You");
+                .thenReturn("User Alex given recommendation for You");
 
         String result = recommendationReceivedMessageBuilder.buildMessage(event, Locale.UK);
-        Assertions.assertEquals(result, "User {0} given recommendation for You");
+        Assertions.assertEquals(result, "User Alex given recommendation for You");
     }
 }

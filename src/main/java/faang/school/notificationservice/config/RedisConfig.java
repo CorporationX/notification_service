@@ -52,7 +52,6 @@ public class RedisConfig {
         return container;
     }
 
-    @Bean
     ChannelTopic topic(String channel) {
         return new ChannelTopic(channel);
     }
