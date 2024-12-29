@@ -24,8 +24,8 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
-    @Value("${spring.data.redis.channel.recommendation}")
-    private String recommendationChannel;
+    @Value("${spring.data.redis.channel.recommendation-received}")
+    private String recommendationReceivedChannel;
 
     @Value("${spring.data.redis.channel.mentorship-accepted}")
     private String mentorshipAcceptedChannel;
@@ -51,8 +51,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic recommendationTopic() {
-        return new ChannelTopic(recommendationChannel);
+    public ChannelTopic recommendationReceivedTopic() {
+        return new ChannelTopic(recommendationReceivedChannel);
     }
 
     @Bean
@@ -70,7 +70,7 @@ public class RedisConfig {
                                                         MessageListenerAdapter mentorshipAcceptedListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(recommendationReceivedListener, recommendationTopic());
+        container.addMessageListener(recommendationReceivedListener, recommendationReceivedTopic());
         container.addMessageListener(mentorshipAcceptedListener, mentorshipAcceptedTopic());
         return container;
     }

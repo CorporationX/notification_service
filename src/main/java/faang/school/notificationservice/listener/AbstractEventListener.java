@@ -52,7 +52,7 @@ public abstract class AbstractEventListener<T> {
                 .filter(service -> service.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException
-                        ("No notification service found for the user preferred communication method : "
+                        ("No notification service found for the user preferred communication method: "
                                 + user.getPreference()))
                 .send(user, message);
     }
