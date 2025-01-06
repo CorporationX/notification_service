@@ -28,7 +28,7 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
-    @Value("${spring.data.redis.channel.recommendation-received}")k
+    @Value("${spring.data.redis.channel.recommendation-received}")
     private String recommendationReceivedChannel;
     @Value("${spring.data.redis.channel.skill_acquire}")
     private String skillAcquireTopic;
