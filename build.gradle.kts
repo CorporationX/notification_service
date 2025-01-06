@@ -25,6 +25,8 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.telegram:telegrambots-spring-boot-starter:6.5.0")
+    implementation("org.telegram:telegrambots:6.9.7.1")
+
 
     /**
      * Database
