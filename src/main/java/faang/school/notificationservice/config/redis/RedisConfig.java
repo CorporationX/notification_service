@@ -1,17 +1,22 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.eventlistener.skill.SkillAcquiredEventListener;
 import faang.school.notificationservice.listener.recommendation.RecommendationReceivedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
@@ -23,7 +28,7 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
-    @Value("${spring.data.redis.channel.recommendation-received}")
+    @Value("${spring.data.redis.channel.recommendation-received}")k
     private String recommendationReceivedChannel;
     @Value("${spring.data.redis.channel.skill_acquire}")
     private String skillAcquireTopic;
@@ -43,23 +48,9 @@ public class RedisConfig {
         return template;
     }
 
-    @Bean
-    public MessageListenerAdapter recommendationReceivedListener(RecommendationReceivedEventListener recommendationReceivedEventListener) {
-        return new MessageListenerAdapter(recommendationReceivedEventListener);
-    }
-
-    @Bean
-    public ChannelTopic recommendationReceivedTopic() {
-        return new ChannelTopic(recommendationReceivedChannel);
-    }
-
-    @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedListener) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(recommendationReceivedListener, recommendationReceivedTopic());
     public Map<String, ChannelTopic> topics() {
         Map<String, ChannelTopic> result = new HashMap<>();
+        result.put(RecommendationReceivedEventListener.class.getName(), new ChannelTopic(recommendationReceivedChannel));
         result.put(SkillAcquiredEventListener.class.getName(), new ChannelTopic(skillAcquireTopic));
         return result;
     }
