@@ -35,8 +35,8 @@ logging:
 
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: whatever
-    secret: whatever
+    key: f8ab0e69
+    secret: 5vvhY2SUbdWi33zv
 
 project-service:
     host: localhost
