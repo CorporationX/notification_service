@@ -11,6 +11,7 @@ spring:
         mentorship-accepted: mentorship_accepted_topic
         skill_acquired: skill_acquire
         recommendation_received: recommendation_received
+        recommendation_requested_topic: recommendation_requested_topic
 
 
   mail:
