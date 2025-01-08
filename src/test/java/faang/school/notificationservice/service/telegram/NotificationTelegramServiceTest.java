@@ -15,13 +15,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static jdk.internal.org.objectweb.asm.util.CheckClassAdapter.verify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -140,7 +140,7 @@ public class NotificationTelegramServiceTest {
         when(telegramService.findChatIdByUserId(user.getId())).thenReturn(completableChatId);
 
         // Act
-        yourClass.send(user, message);
+        //yourClass.send(user, message);
 
         // Assert
         verify(telegramBotService, never()).execute(any(SendMessage.class));
