@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.recommendation.RecommendationReceivedEventListener;
+import faang.school.notificationservice.listener.subscription.FollowerEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,9 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.channel.recommendation-received}")
     private String recommendationReceivedChannel;
+
+    @Value("${spring.data.redis.channel.follower}")
+    private String followerChannel;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -52,10 +56,22 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedListener) {
+    public MessageListenerAdapter followerListener(FollowerEventListener followerEventListener) {
+        return new MessageListenerAdapter(followerEventListener);
+    }
+
+    @Bean
+    public ChannelTopic followerTopic() {
+        return new ChannelTopic(followerChannel);
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedListener,
+                                                        MessageListenerAdapter followerListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(recommendationReceivedListener, recommendationReceivedTopic());
+        container.addMessageListener(followerListener, followerTopic());
         return container;
     }
 }

@@ -1,10 +1,9 @@
-package faang.school.notificationservice.eventlistener;
+package faang.school.notificationservice.listener.recommendation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.recommendation.RecommendationReceivedEvent;
-import faang.school.notificationservice.listener.recommendation.RecommendationReceivedEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,17 +39,16 @@ public class RecommendationReceivedEventListenerTest {
     private NotificationService notificationService;
 
     private RecommendationReceivedEventListener eventListener;
-    private List<NotificationService> notificationServices;
     private List<MessageBuilder<RecommendationReceivedEvent>> messageBuilders;
 
     @BeforeEach
     public void setUp() {
         messageBuilders = new ArrayList<>();
-        MessageBuilder<RecommendationReceivedEvent> mockedMessageBuilder = mock(MessageBuilder.class);
+        MessageBuilder mockedMessageBuilder = mock(MessageBuilder.class);
         when(mockedMessageBuilder.getInstance()).thenReturn(RecommendationReceivedEvent.class);
         messageBuilders.add(mockedMessageBuilder);
 
-        notificationServices = new ArrayList<>();
+        List<NotificationService> notificationServices = new ArrayList<>();
         notificationServices.add(notificationService);
 
         eventListener = new RecommendationReceivedEventListener(objectMapper,

@@ -1,12 +1,12 @@
 package faang.school.notificationservice.config.telegram;
 
 import faang.school.notificationservice.service.telegram.TelegramBot;
-import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -15,6 +15,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Configuration
 @Getter
 @RequiredArgsConstructor
+@PropertySource(factory = ApplicationTelegramYamlPropertySourceFactory.class, value = "classpath:application-telegram.yaml")
 public class TelegramBotConfig {
 
     private final TelegramBot telegramBot;

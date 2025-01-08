@@ -1,0 +1,130 @@
+package faang.school.notificationservice.listener.subscription;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.subscription.FollowerEvent;
+import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.service.NotificationService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.connection.Message;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+public class FollowerEventListenerTest {
+
+    @Mock
+    private ObjectMapper objectMapper;
+
+    @Mock
+    private UserServiceClient userServiceClient;
+
+    @Mock
+    private NotificationService notificationService;
+
+    private FollowerEventListener eventListener;
+    private List<MessageBuilder<FollowerEvent>> messageBuilders;
+
+    @BeforeEach
+    public void setUp() {
+        messageBuilders = new ArrayList<>();
+        MessageBuilder mockedMessageBuilder = mock(MessageBuilder.class);
+        when(mockedMessageBuilder.getInstance()).thenReturn(FollowerEvent.class);
+        messageBuilders.add(mockedMessageBuilder);
+
+        List<NotificationService> notificationServices = new ArrayList<>();
+        notificationServices.add(notificationService);
+
+        eventListener = new FollowerEventListener(objectMapper,
+                userServiceClient,
+                notificationServices,
+                messageBuilders);
+    }
+
+    @Test
+    public void testOnMessageSuccess() throws Exception {
+        FollowerEvent event = prepareEvent();
+        UserDto user = prepareUser();
+
+        Message message = mock(Message.class);
+        byte[] messageBody = objectMapper.writeValueAsBytes(event);
+        when(message.getBody()).thenReturn(messageBody);
+
+        when(userServiceClient.getUser(2L)).thenReturn(user);
+        when(objectMapper.readValue(messageBody, FollowerEvent.class)).thenReturn(event);
+        when(messageBuilders.get(0).buildMessage(event, Locale.getDefault())).thenReturn("Test message");
+        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS);
+
+        eventListener.onMessage(message, null);
+
+        verify(notificationService).send(any(UserDto.class), eq("Test message"));
+    }
+
+    @Test
+    public void testGetMessage_NoNotificationServiceFound() throws Exception {
+        FollowerEvent event = prepareEvent();
+        UserDto user = prepareUser();
+
+        Message message = mock(Message.class);
+        byte[] messageBody = objectMapper.writeValueAsBytes(event);
+        when(message.getBody()).thenReturn(messageBody);
+
+        when(userServiceClient.getUser(2L)).thenReturn(user);
+        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.TELEGRAM);
+        when(objectMapper.readValue(messageBody, FollowerEvent.class)).thenReturn(event);
+        when(messageBuilders.get(0).buildMessage(event, Locale.getDefault())).thenReturn("Test message");
+        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                eventListener.onMessage(message, null)
+        );
+
+        assertEquals("No notification service found for the user preferred communication method: SMS", exception.getMessage());
+    }
+
+    @Test
+    public void testGetMessage_NoMessageBuilderFound() throws Exception {
+        FollowerEvent event = prepareEvent();
+
+        Message message = mock(Message.class);
+        byte[] messageBody = objectMapper.writeValueAsBytes(event);
+        when(message.getBody()).thenReturn(messageBody);
+
+        when(objectMapper.readValue(messageBody, FollowerEvent.class)).thenReturn(event);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                eventListener.onMessage(message, null)
+        );
+
+        assertEquals("No message builder found for event: " + event.getClass().getName(), exception.getMessage());
+    }
+
+    private FollowerEvent prepareEvent() {
+        return new FollowerEvent(
+                1L,
+                2L
+        );
+    }
+
+    private UserDto prepareUser() {
+        return UserDto.builder()
+                .id(2L)
+                .preference(UserDto.PreferredContact.SMS)
+                .build();
+    }
+}
