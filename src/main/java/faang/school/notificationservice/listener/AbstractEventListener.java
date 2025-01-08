@@ -29,7 +29,7 @@ public abstract class AbstractEventListener<T> {
             log.info("mapping message to event class");
             return objectMapper.readValue(convertedMessage, tClass);
         } catch (JsonProcessingException e) {
-            log.error("invalid json body for class "+tClass.getSimpleName(),e);
+            log.error("invalid json body for class " + tClass.getSimpleName(), e);
             throw new IllegalArgumentException("Неверный Json класс", e);
         }
     }
@@ -46,6 +46,8 @@ public abstract class AbstractEventListener<T> {
         UserDto userDto = userServiceClient.getUser(userId);
 
         log.info("getting notification and send message");
+        log.info(userDto.getUsername());
+        log.info(userDto.getPreference().toString());
         notificationService.stream()
                 .filter(service -> service.getPreferredContact() == userDto.getPreference())
                 .findFirst()

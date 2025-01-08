@@ -21,9 +21,10 @@ public interface TelegramChatRepository extends JpaRepository<TelegramChat, Long
     void saveOrUpdateChatId(@Param("chatId") long chatId, @Param("userId") long userId);
 
     @Query(nativeQuery = true, value = """
-            SELECT c.id* FROM telegram_chat c
-            WHERE u.id = : userId
-            """)
+        SELECT c.chat_id FROM telegram_chat c
+        WHERE c.user_id = :userId
+    """)
     Long findChatIdByUserId(@Param("userId") long userId);
+
 }
 

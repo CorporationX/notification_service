@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import faang.school.notificationservice.listener.ProjectFollowerEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
@@ -32,6 +33,9 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.channel.recommendation_received}")
     private String recommendationReceivedTopic;
+
+    @Value("${spring.data.redis.channel.goal_completed_topic}")
+    private String goalCompletedTopic;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -74,6 +78,11 @@ public class RedisConfig {
     }
 
     @Bean
+    public MessageListenerAdapter goalCompleteEventListener(GoalCompletedEventListener listener) {
+        return new MessageListenerAdapter(listener);
+    }
+
+    @Bean
     public ChannelTopic skillAcquireTopic() {
         return new ChannelTopic(skillAcquiredTopic);
     }
@@ -84,16 +93,23 @@ public class RedisConfig {
     }
 
     @Bean
+    public ChannelTopic goalCompletedTopic() {
+        return new ChannelTopic(goalCompletedTopic);
+    }
+
+    @Bean
     RedisMessageListenerContainer redisContainer(JedisConnectionFactory redisConnectionFactory,
                                                  MessageListenerAdapter mentorshipAcceptedListener,
                                                  MessageListenerAdapter skillAcquiredMessageListener,
                                                  MessageListenerAdapter recommendationReceivedListener,
+                                                 MessageListenerAdapter goalCompleteEventListener,
                                                  ChannelTopic skillAcquireTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
         container.addMessageListener(mentorshipAcceptedListener, mentorshipAcceptedTopic());
         container.addMessageListener(skillAcquiredMessageListener, skillAcquireTopic);
         container.addMessageListener(recommendationReceivedListener, recommendationReceivedTopic());
+        container.addMessageListener(goalCompleteEventListener, goalCompletedTopic());
         return container;
     }
 }
