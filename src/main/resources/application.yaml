@@ -38,6 +38,7 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
+  #https://t.me/Minotaur7_Bot
   telegram:
     bot.name: Minotaur7_Bot
     bot.token: 7464826082:AAEaIIuBnn1C1JJAY1zEGoPyERTO0kg9eNw
@@ -46,7 +47,7 @@ spring:
     basename: messages
 
 server:
-  port: 8084
+  port: 8085
 
 logging:
   level:
