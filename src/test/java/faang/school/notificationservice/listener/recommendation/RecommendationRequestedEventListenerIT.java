@@ -6,9 +6,11 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.recommendation.RecommendationRequestedEvent;
 import faang.school.notificationservice.service.EmailService;
+import faang.school.notificationservice.service.telegram.TelegramBot;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -56,6 +58,9 @@ class RecommendationRequestedEventListenerIT {
     private EmailService emailService;
     @MockBean
     private UserServiceClient userServiceClient;
+    @MockBean
+    @Qualifier("createBot")
+    private TelegramBot telegramBot;
 
     @Test
     public void shouldSendEmailWhenEventReceived() throws JsonProcessingException, InterruptedException {
