@@ -122,7 +122,7 @@ class AbstractEventListenerTest {
         IllegalArgumentException thrownException = assertThrows(IllegalArgumentException.class,
                 () -> testEventListener.sendNotification(userId, message));
 
-        assertEquals("No notification service found for the user preferred communication method : "
+        assertEquals("No notification service found for the user preferred communication method: "
                 + userDto.getPreference(), thrownException.getMessage());
     }
 
