@@ -3,7 +3,7 @@ package faang.school.notificationservice.listener.skill;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.skill.SkillAcquiredEvent;
-import faang.school.notificationservice.eventlistener.AbstractEventListener;
+import faang.school.notificationservice.listener.AbstractEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
