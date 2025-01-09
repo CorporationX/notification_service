@@ -19,13 +19,15 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
     @Value("${spring.data.redis.host}")
     private String redisHost;
+
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
-    @Value("${spring.data.redis.channel.recommendation}")
-    private String recommendationChannel;
     @Value("${spring.data.redis.channel.recommendation-requested}")
     private String recommendationRequestedChannel;
+
+    @Value("${spring.data.redis.channel.recommendation-received}")
+    private String recommendationReceivedChannel;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -48,8 +50,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic recommendationTopic() {
-        return new ChannelTopic(recommendationChannel);
+    public ChannelTopic recommendationReceivedTopic() {
+        return new ChannelTopic(recommendationReceivedChannel);
     }
 
     @Bean
@@ -62,7 +64,7 @@ public class RedisConfig {
                                                         MessageListener recommendationRequestedEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(recommendationReceivedListener, recommendationTopic());
+        container.addMessageListener(recommendationReceivedListener, recommendationReceivedTopic());
         container.addMessageListener(recommendationRequestedEventListener, recommendationRequestedTopic());
         return container;
     }
