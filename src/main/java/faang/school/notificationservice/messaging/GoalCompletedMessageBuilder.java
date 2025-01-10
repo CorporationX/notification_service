@@ -9,7 +9,7 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class GoalComplettedMessageBuilder implements MessageBuilder<GoalCompletedEvent> {
+public class GoalCompletedMessageBuilder implements MessageBuilder<GoalCompletedEvent> {
     private final MessageSource messageSource;
 
     @Override

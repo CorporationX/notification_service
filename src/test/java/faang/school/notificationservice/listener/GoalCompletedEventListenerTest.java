@@ -1,105 +1,107 @@
-//package faang.school.notificationservice.listener;
-//
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import faang.school.notificationservice.client.UserServiceClient;
-//import faang.school.notificationservice.dto.UserDto;
-//import faang.school.notificationservice.dto.event.GoalCompletedEvent;
-//import faang.school.notificationservice.messaging.MessageBuilder;
-//import faang.school.notificationservice.service.EmailService;
-//import faang.school.notificationservice.service.SmsService;
-//import faang.school.notificationservice.service.telegram.NotificationTelegramService;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.*;
-//import org.springframework.data.redis.connection.Message;
-//
-//import static org.mockito.Mockito.*;
-//
-//class GoalCompletedEventListenerTest {
-//
-//    @Mock
-//    private UserServiceClient userServiceClient;
-//
-//    @Mock
-//    private EmailService emailService;
-//
-//    @Mock
-//    private NotificationTelegramService telegramService;
-//
-//    @Mock
-//    private SmsService smsService;
-//
-//    @Mock
-//    private ObjectMapper objectMapper;
-//
-//    @Mock
-//    private MessageBuilder<GoalCompletedEvent> messageBuilder;
-//
-//    @InjectMocks
-//    private GoalCompletedEventListener goalCompletedEventListener;
-//
-//    private GoalCompletedEvent goalCompletedEvent;
-//
-//    @BeforeEach
-//    void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//
-//        goalCompletedEvent = new GoalCompletedEvent();
-//        goalCompletedEvent.setGoalId(1L);
-//        goalCompletedEvent.setUserId(100L);
-//    }
-//
-//    @Test
-//    void testOnMessage_Success() {
-//        // Мокируем поведение userServiceClient
-//        when(userServiceClient.getUserById(anyLong())).thenReturn(new UserDto(100L, "email"));
-//
-//        // Мокируем получение сообщения
-//        Message message = mock(Message.class);
-//        when(objectMapper.readValue(message.getBody(), GoalCompletedEvent.class)).thenReturn(goalCompletedEvent);
-//
-//        // Вызываем onMessage
-//        goalCompletedEventListener.onMessage(message, new byte[]{});
-//
-//        // Проверяем, что сервисы уведомлений были вызваны
-//        verify(telegramService, times(1)).sendNotification(anyString());
-//        verify(smsService, times(0)).sendSms(anyString(), anyString()); // Если пользователь не предпочел SMS
-//        verify(emailService, times(0)).sendEmail(anyString(), anyString()); // Если пользователь не предпочел Email
-//    }
-//
-//    @Test
-//    void testOnMessage_EmailNotification() {
-//        // Предположим, что пользователь выбрал email
-//        when(userServiceClient.getUserById(anyLong())).thenReturn(new User(100L, "email@example.com"));
-//
-//        // Мокируем получение сообщения
-//        Message message = mock(Message.class);
-//        when(objectMapper.readValue(message.getBody(), GoalCompletedEvent.class)).thenReturn(goalCompletedEvent);
-//
-//        // Вызываем onMessage
-//        goalCompletedEventListener.onMessage(message, new byte[]{});
-//
-//        // Проверяем, что email-уведомление было отправлено
-//        verify(emailService, times(1)).sendEmail(anyString(), anyString());
-//        verify(smsService, times(0)).sendSms(anyString(), anyString()); // SMS не должно быть отправлено
-//        verify(telegramService, times(0)).sendNotification(anyString()); // Telegram не должно быть отправлено
-//    }
-//
-//    @Test
-//    void testOnMessage_TelegramNotification() {
-//        // Предположим, что пользователь выбрал Telegram
-//        when(userServiceClient.getUserById(anyLong())).thenReturn(new User(100L, "telegram"));
-//
-//        // Мокируем получение сообщения
-//        Message message = mock(Message.class);
-//        when(objectMapper.readValue(message.getBody(), GoalCompletedEvent.class)).thenReturn(goalCompletedEvent);
-//
-//        // Вызываем onMessage
-//        goalCompletedEventListener.onMessage(message, new byte[]{});
-//
-//        // Проверяем, что Telegram-уведомление было отправлено
-//        verify(telegramService, times(1)).sendNotification(anyString());
-//        verify(smsService, times(0)).sendSms(anyString(), anyString()); // SMS не должно быть отправлено
-//        verify(emailService, times(0)).sendEmail(anyString(), anyString()); // Email не должно быть отправлено
-//    }
-//}
+package faang.school.notificationservice.listener;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.event.GoalCompletedEvent;
+import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.service.NotificationService;
+import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.connection.Message;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class GoalCompletedEventListenerTest {
+    @InjectMocks
+    private GoalCompletedEventListener goalCompletedEventListener;
+    @Spy
+    private ObjectMapper objectMapper;
+    @Mock
+    private UserServiceClient userServiceClient;
+    @Mock
+    private NotificationService notificationService;
+    @Mock
+    private MessageBuilder<GoalCompletedEvent> messageBuilder;
+    @Mock
+    private Message message;
+    private GoalCompletedEvent goalCompletedEvent;
+    private UserDto userDto;
+
+    @BeforeEach
+    void setUp() {
+        List<NotificationService> notifications = new ArrayList<>(List.of(notificationService));
+        goalCompletedEventListener = new GoalCompletedEventListener(objectMapper, userServiceClient, notifications, messageBuilder);
+        goalCompletedEvent = new GoalCompletedEvent();
+        userDto = new UserDto();
+        userDto.setId(3L);
+        userDto.setLocale(Locale.UK);
+    }
+
+    @Test
+    void testMapMessage() throws JsonProcessingException {
+        goalCompletedEvent.setUserId(1L);
+        goalCompletedEvent.setGoalId(2L);
+
+        String json = objectMapper.writeValueAsString(goalCompletedEvent);
+
+        when(message.getBody()).thenReturn(json.getBytes());
+
+        GoalCompletedEvent event = goalCompletedEventListener.mapMessage(message, GoalCompletedEvent.class);
+        assertEquals(event.getGoalId(), 2L);
+        assertEquals(event.getUserId(), 1L);
+    }
+
+    @Test
+    void testMapMessageThrowsException() {
+        when(message.getBody()).thenReturn("".getBytes());
+
+        assertThrows(IllegalArgumentException.class,
+                () -> goalCompletedEventListener.mapMessage(message, GoalCompletedEvent.class));
+    }
+
+    @Test
+    void testGetMessage() {
+        when(userServiceClient.getUser(3L)).thenReturn(userDto);
+
+        goalCompletedEventListener.getMessage(goalCompletedEvent, 3L);
+
+        verify(messageBuilder).buildMessage(goalCompletedEvent, userDto.getLocale());
+    }
+
+    @Test
+    void testSendMessage() {
+        userDto.setPreference(UserDto.PreferredContact.EMAIL);
+
+        when(userServiceClient.getUser(3L)).thenReturn(userDto);
+        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
+
+        goalCompletedEventListener.sendMessage(3L, "message");
+
+        verify(notificationService).send(userDto, "message");
+    }
+
+    @Test
+    void testSendMessageThrownException() {
+        userDto.setPreference(UserDto.PreferredContact.EMAIL);
+
+        when(userServiceClient.getUser(3L)).thenReturn(userDto);
+        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS);
+
+        assertThrows(EntityNotFoundException.class,
+                () -> goalCompletedEventListener.sendMessage(3L, "message"));
+    }
+}
