@@ -33,11 +33,9 @@ logging:
   level:
     root: info
 
-vonage: #https://dashboard.nexmo.com/getting-started/sms
-  api:
-    key: f8ab0e69
-    secret: 5vvhY2SUbdWi33zv
-
+sms-aero:
+  email: ${SMS_AERO_EMAIL:test}
+  api-key: ${SMS_AERO_API_KEY:test}
 project-service:
     host: localhost
     port: 8082

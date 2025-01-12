@@ -1,21 +1,21 @@
 package faang.school.notificationservice.config.sms;
 
-import com.vonage.client.VonageClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.smsaero.SmsAero;
 
 @Configuration
-public class SmsConfig {
+public class SmsAeroConfig {
 
-    @Value("${vonage.api.key}")
+    @Value("${sms-aero.api-key}")
     private String apiKey;
 
-    @Value("${vonage.api.secret}")
-    private String apiSecret;
+    @Value("${sms-aero.email}")
+    private String email;
 
     @Bean
-    public VonageClient vonageClient() {
-        return VonageClient.builder().apiKey(apiKey).apiSecret(apiSecret).build();
+    public SmsAero smsAero() {
+        return new SmsAero(email, apiKey);
     }
 }
