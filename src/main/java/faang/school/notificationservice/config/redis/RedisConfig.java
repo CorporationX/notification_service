@@ -4,6 +4,7 @@ import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import faang.school.notificationservice.listener.ProjectFollowerEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
+import faang.school.notificationservice.listener.RecommendationRequestedEventListener;
 import faang.school.notificationservice.listener.SkillAcquiredEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -34,8 +35,12 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.recommendation_received}")
     private String recommendationReceivedTopic;
 
+
     @Value("${spring.data.redis.channel.goal_completed_topic}")
     private String goalCompletedTopic;
+  
+    @Value("${spring.data.redis.channel.recommendation_requested_topic}")
+    private String recommendationRequestedTopic;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -79,6 +84,10 @@ public class RedisConfig {
 
     @Bean
     public MessageListenerAdapter goalCompleteEventListener(GoalCompletedEventListener listener) {
+
+    @Bean
+    public MessageListenerAdapter recommendationRequestedListener(RecommendationRequestedEventListener listener) {
+
         return new MessageListenerAdapter(listener);
     }
 
@@ -93,8 +102,13 @@ public class RedisConfig {
     }
 
     @Bean
+
     public ChannelTopic goalCompletedTopic() {
         return new ChannelTopic(goalCompletedTopic);
+    
+    @Bean
+    public ChannelTopic recommendationRequestedTopic() {
+        return new ChannelTopic(recommendationRequestedTopic);
     }
 
     @Bean
@@ -103,6 +117,7 @@ public class RedisConfig {
                                                  MessageListenerAdapter skillAcquiredMessageListener,
                                                  MessageListenerAdapter recommendationReceivedListener,
                                                  MessageListenerAdapter goalCompleteEventListener,
+                                                 MessageListenerAdapter recommendationRequestedListener,
                                                  ChannelTopic skillAcquireTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
@@ -110,6 +125,7 @@ public class RedisConfig {
         container.addMessageListener(skillAcquiredMessageListener, skillAcquireTopic);
         container.addMessageListener(recommendationReceivedListener, recommendationReceivedTopic());
         container.addMessageListener(goalCompleteEventListener, goalCompletedTopic());
+        container.addMessageListener(recommendationRequestedListener, recommendationRequestedTopic());
         return container;
     }
 }

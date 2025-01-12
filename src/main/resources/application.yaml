@@ -21,7 +21,7 @@ spring:
         skill_acquired: skill_acquire
         recommendation_received: recommendation_received
         goal_completed_topic: goal_complete_topic
-
+        recommendation_requested_topic: recommendation_requested_topic
 
 
   mail:
