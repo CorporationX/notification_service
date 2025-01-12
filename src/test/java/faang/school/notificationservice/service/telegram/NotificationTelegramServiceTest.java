@@ -71,7 +71,6 @@ public class NotificationTelegramServiceTest {
 
     @Test
     void testSendMessageWhenChatIdIsNull() throws Exception {
-        // Arrange
         UserDto user = new UserDto();
         user.setId(1L);
         String message = "Hello!";
@@ -79,17 +78,13 @@ public class NotificationTelegramServiceTest {
         CompletableFuture<Long> completableChatId = CompletableFuture.completedFuture(null);
         when(telegramService.findChatIdByUserId(user.getId())).thenReturn(completableChatId);
 
-        // Act
         notificationTelegramService.send(user, message);
 
-        // Assert
         verify(telegramBotService, never()).execute(any(SendMessage.class));
-        // Здесь вы можете также проверить вызов логирования с помощью библиотеки, например, LogCaptor
     }
 
     @Test
     void testSendMessageHandlesTelegramApiException() throws Exception {
-        // Arrange
         UserDto user = new UserDto();
         user.setId(1L);
         String message = "Hello!";
@@ -101,17 +96,13 @@ public class NotificationTelegramServiceTest {
         doThrow(new TelegramApiException("API Error"))
                 .when(telegramBotService).execute(any(SendMessage.class));
 
-        // Act
         notificationTelegramService.send(user, message);
 
-        // Assert
         verify(telegramBotService, timeout(1000)).execute(any(SendMessage.class));
-        // Также можно проверить логирование
     }
 
     @Test
     void testSendMessageHandlesInterruptedException() throws Exception {
-        // Arrange
         UserDto user = new UserDto();
         user.setId(1L);
         String message = "Hello!";
@@ -123,28 +114,6 @@ public class NotificationTelegramServiceTest {
 
         notificationTelegramService.send(user, message);
 
-        // Assert
         verify(telegramBotService, never()).execute(any(SendMessage.class));
     }
-
-    @Test
-    void testSendMessageHandlesExecutionException() throws Exception {
-        // Arrange
-        UserDto user = new UserDto();
-        user.setId(1L);
-        String message = "Hello!";
-
-        CompletableFuture<Long> completableChatId = new CompletableFuture<>();
-        completableChatId.completeExceptionally(new ExecutionException("Execution failed", null));
-
-        when(telegramService.findChatIdByUserId(user.getId())).thenReturn(completableChatId);
-
-        // Act
-        //yourClass.send(user, message);
-
-        // Assert
-        verify(telegramBotService, never()).execute(any(SendMessage.class));
-        // Также можно проверить логирование
-    }
-
 }
