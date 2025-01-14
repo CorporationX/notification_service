@@ -14,9 +14,9 @@ public interface TelegramChatRepository extends JpaRepository<TelegramChat, Long
     @Modifying
     @Transactional
     @Query(nativeQuery = true, value = """
-                INSERT INTO telegram_chat (chat_id, user_id)
-                VALUES (:chatId, :userId)
-                ON CONFLICT (chat_id) DO UPDATE SET chat_id = EXCLUDED.chat_id;
+            INSERT INTO telegram_chat (chat_id, user_id)
+            VALUES (:chatId, :userId)
+            ON CONFLICT (chat_id) DO UPDATE SET user_id = EXCLUDED.user_id;
             """)
     void saveOrUpdateChatId(@Param("chatId") long chatId, @Param("userId") long userId);
 

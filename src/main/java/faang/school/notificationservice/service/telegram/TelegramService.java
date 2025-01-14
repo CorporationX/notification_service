@@ -18,7 +18,7 @@ public class TelegramService{
 
     @Async("telegramBotExecutor")
     protected CompletableFuture<String> authorizeUser(long chatId, String phoneNumber) {
-        Long userId = userServiceClient.findUserByPhone(phoneNumber);
+        Long userId = userServiceClient.findUserIdByPhone(phoneNumber);
 
         if (userId != null) {
             saveOrUpdateChatId(chatId, userId);

@@ -16,7 +16,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class TelegramInitializer {
 
     @Autowired
-    TelegramBotService bot;
+    private TelegramBotService bot;
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() {

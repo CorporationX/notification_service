@@ -84,9 +84,11 @@ public class RedisConfig {
 
     @Bean
     public MessageListenerAdapter goalCompleteEventListener(GoalCompletedEventListener listener) {
+        return new MessageListenerAdapter(listener);
+    }
 
     @Bean
-    public MessageListenerAdapter recommendationRequestedListener(RecommendationRequestedEventListener listener) {
+    public MessageListenerAdapter recommendationRequestedListener (RecommendationRequestedEventListener listener) {
 
         return new MessageListenerAdapter(listener);
     }
@@ -102,9 +104,9 @@ public class RedisConfig {
     }
 
     @Bean
-
     public ChannelTopic goalCompletedTopic() {
         return new ChannelTopic(goalCompletedTopic);
+    }
     
     @Bean
     public ChannelTopic recommendationRequestedTopic() {

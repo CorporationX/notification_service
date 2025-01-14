@@ -2,6 +2,7 @@ package faang.school.notificationservice.service.telegram;
 
 import faang.school.notificationservice.config.notification.TelegramConfig;
 
+import faang.school.notificationservice.telegram.components.BotCommands;
 import faang.school.notificationservice.telegram.components.Buttons;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -24,13 +25,14 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static faang.school.notificationservice.telegram.components.BotCommands.HELP_TEXT;
 
 @Slf4j
 @Component
 public class TelegramBotService extends TelegramLongPollingBot {
     private final TelegramConfig config;
     private final TelegramService telegramService;
+
+    BotCommands botCommands = new BotCommands();
 
     public TelegramBotService(TelegramConfig config, TelegramService telegramService) {
         this.config = config;
@@ -107,7 +109,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
                 startBot(chatId, userName);
                 break;
             case "/help":
-                sendMessageText(chatId, HELP_TEXT);
+                sendMessageText(chatId, botCommands.getHELP_TEXT());
                 break;
             case "/log_in":
                 requestContact(chatId);
