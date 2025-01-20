@@ -27,7 +27,7 @@ public class RedisConfig {
     @Value("${spring.data.redis.channels.recommendation-channel.name}")
     private String channelRecommendation;
 
-    @Value("${spring.data.redis.channel.like}")
+    @Value("${spring.data.redis.channels.like-channel.name}")
     private String likeChannelName;
 
     @Bean

@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 public abstract class AbstractEventListener <T> {
     protected final ObjectMapper objectMapper;
     protected final List<MessageBuilder<T>> messageBuilders;
-    private final UserServiceClient userServiceClient;
+    protected final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationServices;
 
     protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {

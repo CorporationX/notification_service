@@ -24,7 +24,7 @@ public class LikeEventListener extends AbstractEventListener<LikeEvent> implemen
             List<MessageBuilder<LikeEvent>> messageBuilders,
             List<NotificationService> notificationServices
     ) {
-        super(objectMapper, userServiceClient, messageBuilders, notificationServices);
+        super(objectMapper, messageBuilders, userServiceClient, notificationServices);
     }
 
     @Override
