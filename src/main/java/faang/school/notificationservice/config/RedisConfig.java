@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.listeners.RecommendationReceivedEventListener;
 import faang.school.notificationservice.listener.LikeEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,23 +24,30 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
+    @Value("${spring.data.redis.channels.recommendation-channel.name}")
+    private String channelRecommendation;
+
     @Value("${spring.data.redis.channel.like}")
     private String likeChannelName;
 
     @Bean
-    public JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration redisConfig =
-                new RedisStandaloneConfiguration(redisHost, redisPort);
+    JedisConnectionFactory jedisConnectionFactory() {
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
         return new JedisConnectionFactory(redisConfig);
     }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        final RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new StringRedisSerializer());
         return template;
+    }
+
+    @Bean
+    MessageListenerAdapter recommendationReceivedEventListener(RecommendationReceivedEventListener recommendationReceivedEventListener) {
+        return new MessageListenerAdapter(recommendationReceivedEventListener);
     }
 
     @Bean
@@ -53,10 +61,15 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter likeListener) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+    RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedEventListener, MessageListenerAdapter likeListener) {
+        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
+        container.addMessageListener(recommendationReceivedEventListener, topic(channelRecommendation));
         container.addMessageListener(likeListener, likeTopic());
         return container;
+    }
+
+    ChannelTopic topic(String channel) {
+        return new ChannelTopic(channel);
     }
 }

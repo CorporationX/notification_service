@@ -3,10 +3,17 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        like: like_channel
-        follower: follower_channel
-        achievement: achievement_channel
+      channels:
+        mentorship-channel:
+          name: mentorship_channel
+        follower-channel:
+          name: follower_channel
+        recommendation-channel:
+          name: recommendation_channel
+        achievement-channel:
+          name: achievement_channel
+        like-channel:
+          name: like_channel
 
   mail:
     host: smtp.gmail.com
@@ -38,8 +45,6 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
-  from:
-    Stas_Kozh
 
 project-service:
     host: localhost
@@ -50,3 +55,8 @@ user-service:
 post-service:
     host: localhost
     port: 8081
+
+telegram:
+  bot:
+    username: "username"
+    token: "token"

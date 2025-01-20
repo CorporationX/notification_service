@@ -12,7 +12,12 @@ repositories {
     mavenCentral()
 }
 
+
 dependencies {
+    /**
+    Telegram
+    */
+    implementation("org.telegram:telegrambots:5.3.0")
     /**
      * Spring boot starters
      */
