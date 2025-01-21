@@ -1,10 +1,9 @@
-package faang.school.notificationservice.eventlistener;
+package faang.school.notificationservice.listener.recommendation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.recommendation.RecommendationReceivedEvent;
-import faang.school.notificationservice.listener.recommendation.RecommendationReceivedEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;

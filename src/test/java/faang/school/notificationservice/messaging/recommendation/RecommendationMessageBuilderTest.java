@@ -1,7 +1,6 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.messaging.recommendation;
 
 import faang.school.notificationservice.dto.recommendation.RecommendationReceivedEvent;
-import faang.school.notificationservice.messaging.recommendation.RecommendationMessageBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
