@@ -6,6 +6,8 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        recommendation: recommendation_channel
+        recommendation-requested: recommendation_requested_channel
         recommendation-received: recommendation_received_channel
 
   mail:
@@ -39,11 +41,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
 
 company:
   name: "CorporationX"
