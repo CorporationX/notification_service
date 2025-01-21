@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -115,10 +116,11 @@ public class FollowerEventListenerTest {
     }
 
     private FollowerEvent prepareEvent() {
-        return new FollowerEvent(
-                1L,
-                2L
-        );
+        return FollowerEvent.builder()
+                .followerUserId(1L)
+                .targetUserId(2L)
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 
     private UserDto prepareUser() {

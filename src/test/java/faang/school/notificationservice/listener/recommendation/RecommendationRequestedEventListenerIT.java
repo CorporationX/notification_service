@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.recommendation.RecommendationRequestedEvent;
-import faang.school.notificationservice.service.EmailService;
+import faang.school.notificationservice.service.mail.EmailService;
 import faang.school.notificationservice.service.telegram.TelegramBot;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

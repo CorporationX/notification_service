@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,10 +29,11 @@ public class FollowerMessageBuilderTest {
 
     @Test
     public void testBuildMessage() {
-        FollowerEvent event = new FollowerEvent(
-                1L,
-                2L
-        );
+        FollowerEvent event = FollowerEvent.builder()
+                .followerUserId(1L)
+                .targetUserId(2L)
+                .createdAt(LocalDateTime.now())
+                .build();
         when(builder.buildMessage(event, Locale.getDefault())).thenReturn("Some text");
 
         String text = builder.buildMessage(event, Locale.getDefault());

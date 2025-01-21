@@ -30,7 +30,7 @@ public class FollowerEventListener extends AbstractEventListener<FollowerEvent> 
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, FollowerEvent.class, event -> {
             String text = getMessage(event, Locale.getDefault());
-            sendNotification(event.getFolloweeId(), text);
+            sendNotification(event.getTargetUserId(), text);
         });
     }
 }

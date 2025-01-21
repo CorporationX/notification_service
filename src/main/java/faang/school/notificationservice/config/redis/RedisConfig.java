@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.recommendation.RecommendationReceivedEventListener;
+import faang.school.notificationservice.listener.recommendation.RecommendationRequestedEventListener;
 import faang.school.notificationservice.listener.subscription.FollowerEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +13,11 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
@@ -49,40 +53,22 @@ public class RedisConfig {
     }
 
     @Bean
-    public MessageListenerAdapter recommendationReceivedListener(RecommendationReceivedEventListener recommendationReceivedEventListener) {
-        return new MessageListenerAdapter(recommendationReceivedEventListener);
+    public Map<String, ChannelTopic> topics() {
+        Map<String, ChannelTopic> result = new HashMap<>();
+        result.put(RecommendationReceivedEventListener.class.getName(), new ChannelTopic(recommendationReceivedChannel));
+        result.put(RecommendationRequestedEventListener.class.getName(), new ChannelTopic(recommendationRequestedChannel));
+        result.put(FollowerEventListener.class.getName(), new ChannelTopic(followerChannel));
+        return result;
     }
 
     @Bean
-    public ChannelTopic recommendationReceivedTopic() {
-        return new ChannelTopic(recommendationReceivedChannel);
-    }
-
-    @Bean
-    public MessageListenerAdapter followerListener(FollowerEventListener followerEventListener) {
-        return new MessageListenerAdapter(followerEventListener);
-    }
-
-    @Bean
-    public ChannelTopic followerTopic() {
-        return new ChannelTopic(followerChannel);
-    }
-
-    @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedListener,
-                                                        MessageListenerAdapter followerListener) {
-    public ChannelTopic recommendationRequestedTopic() {
-        return new ChannelTopic(recommendationRequestedChannel);
-    }
-
-    @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedListener,
-                                                        MessageListener recommendationRequestedEventListener) {
+    public RedisMessageListenerContainer redisContainer(List<MessageListener> listeners) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(recommendationReceivedListener, recommendationReceivedTopic());
-        container.addMessageListener(followerListener, followerTopic());
-        container.addMessageListener(recommendationRequestedEventListener, recommendationRequestedTopic());
+        Map<String, ChannelTopic> topics = topics();
+        for (MessageListener listener : listeners) {
+            container.addMessageListener(listener, topics.get(listener.getClass().getName()));
+        }
         return container;
     }
 }
