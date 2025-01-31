@@ -12,6 +12,6 @@ public class FeignUserInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        template.header("x-user-id", String.valueOf(userContext.getUserId()));
+        template.header("x-user-id", String.valueOf(1L) /*String.valueOf(userContext.getUserId())*/);
     }
 }

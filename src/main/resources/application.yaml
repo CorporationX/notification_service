@@ -8,8 +8,8 @@ spring:
         achievement: achievement_channel
         like: notification_like_channel
         failed-sms-message: failed_sms_message_channel
+        comment: comment_channel
         profile-view-channel: profile_view_event
-
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
@@ -44,6 +44,11 @@ spring:
 
   messages:
     basename: messages
+
+  telegram:
+    bot:
+      username: corpnotification_bot
+      token: 8175053802:AAGhCg2Mgm4RwATkeqOUzzkQz9xlmxk9Wyg
 
 server:
   port: 8083
@@ -97,7 +102,6 @@ thread-pool:
 messages:
   keys:
     like-post: like.post
-    profile-view: profile.view
 
 snowflake:
   worker-id: 1

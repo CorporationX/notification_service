@@ -6,17 +6,17 @@ import faang.school.notificationservice.builder.message.MessageBuilder;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserForNotificationDto;
 import faang.school.notificationservice.exceptions.PreferredContactNotExistException;
-import faang.school.notificationservice.message.event.NotificationEvent;
 import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Function;
 
 
 @Slf4j
-public abstract class AbstractEventListener<T extends NotificationEvent> {
+public abstract class AbstractEventListener<T> {
 
     private final ObjectMapper mapper;
     private final UserServiceClient userServiceClient;
@@ -35,11 +35,11 @@ public abstract class AbstractEventListener<T extends NotificationEvent> {
         this.messageBuilder = messageBuilder;
     }
 
-    public void handleEvent(Message redisMessage, Class<T> eventType) {
+    public void handleEvent(Message redisMessage, Class<T> eventType, Function<T, Long> receiverIdExtractor) {
         try {
-            JsonNode jsonNode = mapper.readTree(redisMessage.getBody());
-            T event = mapper.convertValue(jsonNode, eventType);
-            UserForNotificationDto receiver = userServiceClient.getUserForNotificationById(event.getReceiverId());
+            T event = mapper.readValue(redisMessage.getBody(), eventType);
+            UserForNotificationDto receiver =
+                    userServiceClient.getUserForNotificationById(receiverIdExtractor.apply(event));
             String message = messageBuilder.build(event, receiver.getLocaleFromLanguage());
             sendNotification(receiver, message);
         } catch (IOException | IllegalArgumentException e) {
