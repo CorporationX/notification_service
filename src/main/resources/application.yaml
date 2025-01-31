@@ -9,6 +9,7 @@ spring:
         like: notification_like_channel
         failed-sms-message: failed_sms_message_channel
         comment: comment_channel
+        profile-view-channel: profile_view_event
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
@@ -101,7 +102,6 @@ thread-pool:
 messages:
   keys:
     like-post: like.post
-    comment-post: comment.post
 
 snowflake:
   worker-id: 1

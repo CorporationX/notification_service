@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.message.consumer.PostCommentEventListener;
+import faang.school.notificationservice.message.consumer.ProfileViewEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,11 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
+
+    private final ProfileViewEventListener profileViewEventListener;
+
+    @Value("${spring.data.redis.channel.profile-view-channel}")
+    private String profileViewTopicName;
 
     @Value("${spring.data.redis.channel.comment}")
     private String commentEventTopicName;
@@ -38,4 +44,18 @@ public class RedisConfig {
     public ChannelTopic postCommentTopic() {
         return new ChannelTopic(commentEventTopicName);
     }
+
+    @Bean
+    public RedisMessageListenerContainer listenerContainer(RedisConnectionFactory redisConnectionFactory) {
+        RedisMessageListenerContainer listenerContainer = new RedisMessageListenerContainer();
+        listenerContainer.setConnectionFactory(redisConnectionFactory);
+
+        MessageListenerAdapter profileViewEventListenerAdapter
+                = new MessageListenerAdapter(profileViewEventListener);
+        ChannelTopic profileViewEventTopic = new ChannelTopic(profileViewTopicName);
+        listenerContainer.addMessageListener(profileViewEventListenerAdapter, profileViewEventTopic);
+
+        return listenerContainer;
+    }
+
 }
