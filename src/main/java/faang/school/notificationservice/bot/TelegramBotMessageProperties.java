@@ -10,6 +10,16 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:tgBotMessages.properties")
 public class TelegramBotMessageProperties {
 
+    @Value("${start-message}")
+    private String startMessage;
+
+    @Value("${stop-message}")
+    private String stopMessage;
+
+    @Value("{rejection-message}")
+    private String rejectionMessage;
+
+
     @Value("${user-chose-not-subscribed}")
     private String userChoseNotSubscribedMessage;
 

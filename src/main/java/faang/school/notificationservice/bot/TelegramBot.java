@@ -44,13 +44,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             Long chatId = message.getChatId();
 
             if (message.hasText()) {
-                if ("/start".equals(message.getText())) {
+                if (properties.getStartMessage().equals(message.getText())) {
                     checkIfTheUserIsSubscriber(chatId);
                 }
-                if ("/stop".equals(message.getText())) {
+                if (properties.getStopMessage().equals(message.getText())) {
                     unsubscribingUserFromNotifications(chatId);
                 }
-                if ("No".equals(message.getText())) {
+                if (properties.getRejectionMessage().equals(message.getText())) {
                     sendTextMessage(chatId, properties.getUserChoseNotSubscribedMessage());
                 }
             }
