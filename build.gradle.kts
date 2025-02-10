@@ -32,6 +32,16 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     /**
+     * Kafka
+     */
+    implementation("org.springframework.kafka:spring-kafka")
+
+    /**
+     * JSON (для сериализации/десериализации Kafka сообщений)
+     */
+    implementation("com.fasterxml.jackson.core:jackson-databind")
+
+    /**
      * Utils & Logging
      */
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
@@ -42,6 +52,8 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
     implementation("com.vonage:client:7.3.0")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("com.sun.mail:jakarta.mail:2.0.1")
 
     /**
      * Test containers
