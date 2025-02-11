@@ -17,8 +17,8 @@ public class EmailServiceTest {
 
     private final List<String> emailsTo = List.of(
             "dda20040609@gmail.com",
-            "salikhdev@gmail.com",
-            "vladerm2000@yandex.ru");
+            "salikhdev@gmail.com"
+    );
 
     @Test
     public void sendEmailTest() {
