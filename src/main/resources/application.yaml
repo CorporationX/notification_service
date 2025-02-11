@@ -27,6 +27,8 @@ spring:
 
 server:
   port: 8083
+  servlet:
+    context-path: /notifications/api/
 
 logging:
   level:
@@ -37,6 +39,10 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+
+telegram:
+  name: phoenix8_notification_bot
+  token: 7410599309:AAHyhYJRlBzEq9r6A981_Q7C3YeHrFdMjfE
 
 project-service:
     host: localhost
