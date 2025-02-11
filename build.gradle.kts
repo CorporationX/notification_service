@@ -28,7 +28,7 @@ dependencies {
     /**
      * Telegram bots
      */
-    implementation ("org.telegram:telegrambots-spring-boot-starter:6.8.0")
+    implementation("org.telegram:telegrambots:6.9.7.1")
 
     /**
      * Database
