@@ -9,6 +9,7 @@ public class UserDto {
     private String email;
     private String phone;
     private PreferredContact preference;
+    private String locale;
 
     public enum PreferredContact {
         EMAIL, SMS, TELEGRAM
