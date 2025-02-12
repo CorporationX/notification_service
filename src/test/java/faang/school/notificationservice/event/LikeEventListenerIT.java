@@ -2,7 +2,7 @@ package faang.school.notificationservice.event;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.event.listener.EventListenerImpl;
+import faang.school.notificationservice.event.listener.LikeEventListener;
 import faang.school.notificationservice.service.NotificationServiceHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +12,16 @@ import org.springframework.context.MessageSource;
 
 import java.util.Locale;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-class EventListenerIT {
+class LikeEventListenerIT {
 
     @Autowired
-    private EventListenerImpl eventListener;
+    private LikeEventListener likeEventListener;
 
     @MockBean
     private NotificationServiceHandler notificationServiceHandler;
@@ -32,24 +32,21 @@ class EventListenerIT {
     @MockBean
     private MessageSource messageSource;
 
-    private static final String EVENT_JSON = "{\"userId\": 1, \"username\": \"test_user\", \"email\": \"test@example.com\"}";
+    private static final String EVENT_JSON = "{\"postId\": 1, \"userId\": 2, \"authorId\": 3}";
 
     @Test
     void shouldSendNotificationWithRealMessageSource() {
         UserDto user = new UserDto();
-        user.setId(1L);
+        user.setId(3L);
         user.setUsername("test_user");
-        user.setLocale("fr");
+        user.setLocale("es");
 
-        System.out.println("User locale: " + user.getLocale());
+        when(userServiceClient.getUser(3L)).thenReturn(user);
+        when(messageSource.getMessage(eq("like.notification"), any(), eq(Locale.forLanguageTag("es"))))
+                .thenReturn("¡El usuario 2 le gustó tu publicación 1!");
 
-        when(userServiceClient.getUser(1L)).thenReturn(user);
+        likeEventListener.handleLikeEvent(EVENT_JSON);
 
-        when(messageSource.getMessage(eq("follower.new"), isNull(), eq(Locale.FRENCH)))
-                .thenReturn("Félicitations ! Vous avez un nouveau follower !");
-
-        eventListener.processEvent(EVENT_JSON);
-
-        verify(notificationServiceHandler).sendNotification(eq(user), eq("Félicitations ! Vous avez un nouveau follower !"));
+        verify(notificationServiceHandler).sendNotification(eq(user), eq("¡El usuario 2 le gustó tu publicación 1!"));
     }
 }

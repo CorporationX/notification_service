@@ -25,9 +25,9 @@ public class SmsService {
 
         response.getMessages().forEach(msg -> {
             if (msg.getStatus() == MessageStatus.OK) {
-                log.info("SMS успешно отправлено на {}", phone);
+                log.info("SMS successfully sent to {}", phone);
             } else {
-                log.error("Ошибка при отправке SMS: {}", msg.getErrorText());
+                log.error("Error when sending SMS: {}", msg.getErrorText());
             }
         });
     }
