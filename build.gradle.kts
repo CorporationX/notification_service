@@ -24,12 +24,18 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail:3.0.6")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("org.springframework.retry:spring-retry:2.0.11")
 
     /**
      * Database
      */
     implementation("redis.clients:jedis:4.3.2")
     runtimeOnly("org.postgresql:postgresql")
+
+    /**
+     * Telegram
+     */
+    implementation("org.telegram:telegrambots:6.9.7.1")
 
     /**
      * Utils & Logging

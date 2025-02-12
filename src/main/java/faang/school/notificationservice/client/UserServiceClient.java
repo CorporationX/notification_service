@@ -1,13 +1,19 @@
 package faang.school.notificationservice.client;
 
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserChatIdUpdateDto;
+import faang.school.notificationservice.dto.UserNotificationDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}")
 public interface UserServiceClient {
 
-    @GetMapping("/users/{id}")
-    UserDto getUser(@PathVariable long id);
+    @GetMapping("/api/v1/users/{id}/notification")
+    UserNotificationDto getUserNotificationDto(@PathVariable long id);
+
+    @PutMapping("/api/v1/users/chat")
+    UserNotificationDto updateUserChat(@RequestBody UserChatIdUpdateDto userChatIdUpdateDto);
 }
