@@ -1,4 +1,4 @@
-package faang.school.notificationservice.event;
+package faang.school.notificationservice.event.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
@@ -7,6 +7,7 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;

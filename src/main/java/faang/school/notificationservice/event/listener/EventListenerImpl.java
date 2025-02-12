@@ -1,8 +1,9 @@
-package faang.school.notificationservice.event;
+package faang.school.notificationservice.event.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.event.UserRegisteredEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationServiceHandler;
 import lombok.extern.slf4j.Slf4j;
