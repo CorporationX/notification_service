@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
+    private static long DUMMY_USER = 0L;
     private final TelegramBotConfig botConfig;
 
     public TelegramBot(TelegramBotConfig botConfig) {
@@ -25,7 +26,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             Message message = update.getMessage();
             if (message.hasText()) {
                 String text = message.getText();
-                sendMessage(0L, text);
+                sendMessage(DUMMY_USER, text);
             }
         }
     }
