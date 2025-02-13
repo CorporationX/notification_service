@@ -21,8 +21,9 @@ public class TelegramService extends TelegramLongPollingBot implements Notificat
 
     @Override
     public void send(UserDto user, String message) {
+        long userId = user.getId();
         SendMessage botMessage = SendMessage.builder()
-                .chatId(String.valueOf(user.getId()))
+                .chatId(String.valueOf(userId))
                 .text(message)
                 .build();
 
@@ -60,7 +61,7 @@ public class TelegramService extends TelegramLongPollingBot implements Notificat
             try {
                 execute(message);
             } catch (TelegramApiException e) {
-                e.printStackTrace();
+                log.error("Ошибка при отправке ответа Пользователю с ID {}: {}", chatId, e.getMessage());
             }
         }
     }
