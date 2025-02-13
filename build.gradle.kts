@@ -26,6 +26,11 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     /**
+     * Telegram bots
+     */
+    implementation("org.telegram:telegrambots:6.9.7.1")
+
+    /**
      * Database
      */
     implementation("redis.clients:jedis:4.3.2")

@@ -44,3 +44,8 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+telegram:
+  token: 8171946759:AAGmvntLJpTluxaVH6g0m_R2aACZJqgWCSM
+  username: faang_asdfghjkl_bot
+  chatId: 429759386
