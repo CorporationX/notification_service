@@ -44,6 +44,11 @@ dependencies {
     implementation("com.vonage:client:7.3.0")
 
     /**
+     * Email sending
+     */
+    implementation("org.springframework.boot:spring-boot-starter-mail:3.4.2")
+
+    /**
      * Test containers
      */
     implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
