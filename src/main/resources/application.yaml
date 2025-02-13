@@ -27,6 +27,8 @@ spring:
 
   messages:
     basename: messages
+    like_event_channel_topic_name: likeEvent
+
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
