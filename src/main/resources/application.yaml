@@ -27,6 +27,8 @@ spring:
 
   messages:
     basename: messages
+    like_event_channel_topic_name: likeEvent
+
 
 server:
   port: 8083
