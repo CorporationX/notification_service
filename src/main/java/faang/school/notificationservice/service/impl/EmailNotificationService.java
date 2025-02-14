@@ -5,8 +5,10 @@ import faang.school.notificationservice.service.EmailService;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class EmailNotificationService implements NotificationService {
 
@@ -20,6 +22,6 @@ public class EmailNotificationService implements NotificationService {
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {
-        return null;
+        return UserDto.PreferredContact.EMAIL;
     }
 }
