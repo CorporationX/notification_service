@@ -51,6 +51,11 @@ dependencies {
     testImplementation("org.testcontainers:postgresql")
 
     /**
+     * External SDK
+     */
+    implementation("com.vonage:server-sdk:8.16.2")
+
+    /**
      * Tests
      */
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
