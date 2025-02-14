@@ -14,4 +14,5 @@ public class MailProperties {
     Integer port;
     String username;
     String password;
+    String replyTo;
 }

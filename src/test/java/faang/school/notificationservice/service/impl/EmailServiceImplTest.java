@@ -19,7 +19,6 @@ class EmailServiceImplTest {
 
     @Test
     void sendSimpleMessage() {
-
         String email = "test@mail.ru";
         String body = "testBody";
         SimpleMailMessage message = new SimpleMailMessage();
