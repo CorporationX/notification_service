@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "spring.mail")
 public class MailProperties {
-    String host;
-    Integer port;
-    String username;
-    String password;
-    String replyTo;
+    private String host;
+    private Integer port;
+    private String username;
+    private String password;
+    private String replyTo;
 }

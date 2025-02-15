@@ -31,7 +31,6 @@ public class MailSenderConfig {
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.debug", "true");
 
-        log.info("Java mail sender created");
         return mailSender;
     }
 }
