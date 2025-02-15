@@ -1,8 +1,8 @@
 package faang.school.notificationservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.telegram.TelegramBot;
 import faang.school.notificationservice.config.email.MailProperties;
+import faang.school.notificationservice.telegram.TelegramBot;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
