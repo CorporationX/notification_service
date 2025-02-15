@@ -1,0 +1,6 @@
+user-profile-viewed:
+  topic-name: "user-profile-viewed"
+user-profile-viewed-DeadLetterQueue:
+  topic-name: "user-profile-viewed.DLT"
+  partitions: 1
+  replicas: 1
