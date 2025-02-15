@@ -1,10 +1,10 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserServiceDto;
 
 public interface NotificationService {
 
-    void send(UserDto user, String message);
+    void send(UserServiceDto user, String message);
 
-    UserDto.PreferredContact getPreferredContact();
+    UserServiceDto.PreferredContact getPreferredContact();
 }
