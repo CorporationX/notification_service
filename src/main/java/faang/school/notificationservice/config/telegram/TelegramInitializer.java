@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config.telegram;
 
-import faang.school.notificationservice.service.TelegramService;
+import faang.school.notificationservice.service.telegram.TelegramBot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
@@ -14,16 +14,16 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Configuration
 @RequiredArgsConstructor
 public class TelegramInitializer implements ApplicationListener<ContextRefreshedEvent> {
-    private final TelegramService telegramService;
+    private final TelegramBot telegramBot;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(telegramService);
+            telegramBotsApi.registerBot(telegramBot);
             log.info("Работа Телеграм бота запущена");
         } catch (TelegramApiException e) {
-            log.error("Ошибка при регистрации Telegram Bot: {}", e.getMessage());
+            log.error("Ошибка при регистрации Телеграм бота: {}", e.getMessage());
         }
     }
 }
