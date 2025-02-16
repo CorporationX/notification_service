@@ -68,16 +68,17 @@ public class RecommendationEventListenerTest {
         userDto.setId(2L);
         userDto.setUsername("testUser");
         userDto.setPreference(UserDto.PreferredContact.TELEGRAM);
-        messageText = "Test message";
+        messageText = "You received a recommendation request from ";
 
-        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.TELEGRAM);
+
     }
 
     @Test
     void testOnMessage_Success() throws IOException {
         when(message.getBody()).thenReturn("{\"requesterId\":1,\"receiverId\":2,\"recommendationId\":3}".getBytes());
         when(objectMapper.readValue(any(byte[].class), eq(RecommendationEvent.class))).thenReturn(recommendationEvent);
-        when(userServiceClient.getUser(1L)).thenReturn(userDto); // Исправлено: getUser(1L) вместо getUser(2L)
+        when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
+        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.TELEGRAM);
         when(messageSource.getMessage(
                 eq("You received a recommendation request from "),
                 eq(new Object[]{userDto.getUsername()}),
@@ -86,26 +87,29 @@ public class RecommendationEventListenerTest {
 
         recommendationEventListener.onMessage(message, null);
 
-        verify(objectMapper, times(1)).readValue(any(byte[].class), eq(RecommendationEvent.class));
-        verify(userServiceClient, times(1)).getUser(1L); // Исправлено: getUser(1L)
+        verify(objectMapper, times(1)).readValue(any(byte[].class),
+                eq(RecommendationEvent.class));
+        verify(userServiceClient, times(1)).getUser(1L);
         verify(notificationService, times(1)).send(userDto, messageText);
     }
 
     @Test
     void testOnMessage_IOException() throws IOException {
         when(message.getBody()).thenReturn("{\"requesterId\":1,\"receiverId\":2,\"recommendationId\":3}".getBytes());
-        when(objectMapper.readValue(any(byte[].class), eq(RecommendationEvent.class))).thenThrow(new IOException("JSON error"));
+        when(objectMapper.readValue(any(byte[].class), eq(RecommendationEvent.class)))
+                .thenThrow(new IOException("JSON error"));
 
         assertThrows(RuntimeException.class, () -> recommendationEventListener.onMessage(message, null));
 
-        verify(objectMapper, times(1)).readValue(any(byte[].class), eq(RecommendationEvent.class));
+        verify(objectMapper, times(1)).readValue(any(byte[].class),
+                eq(RecommendationEvent.class));
         verify(userServiceClient, never()).getUser(anyLong());
         verify(notificationService, never()).send(any(), anyString());
     }
 
     @Test
     void testGetMessage_Success() {
-        when(userServiceClient.getUser(1L)).thenReturn(userDto); // Исправлено: getUser(1L) вместо getUser(2L)
+        when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
         when(messageSource.getMessage(
                 eq("You received a recommendation request from "),
                 eq(new Object[]{userDto.getUsername()}),
@@ -115,12 +119,13 @@ public class RecommendationEventListenerTest {
         String result = recommendationEventListener.getMessage(2L, recommendationEvent);
 
         assertEquals(messageText, result);
-        verify(userServiceClient, times(1)).getUser(1L); // Исправлено: getUser(1L)
+        verify(userServiceClient, times(1)).getUser(1L);
     }
 
     @Test
     void testSendNotification_Success() {
         when(userServiceClient.getUser(2L)).thenReturn(userDto);
+        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.TELEGRAM);
 
         recommendationEventListener.sendNotification(2L, messageText);
 
