@@ -13,7 +13,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class RecommendationEventMessageBuilder implements MessageBuilder<RecommendationEvent> {
     private final MessageSource messageSource;
-    private final UserServiceClient userService;
+    private final UserServiceClient userServiceClient;
 
     @Override
     public Class<?> getInstance() {
@@ -22,8 +22,8 @@ public class RecommendationEventMessageBuilder implements MessageBuilder<Recomme
 
     @Override
     public String buildMessage(RecommendationEvent event, Locale locale) {
-        UserDto user = userService.getUser(event.requesterId());
-        return messageSource.getMessage("Recommendation request received from ",
+        UserDto user = userServiceClient.getUser(event.requesterId());
+        return messageSource.getMessage("You received a recommendation request from ",
                 new Object[]{user.getUsername()}, locale);
     }
 }

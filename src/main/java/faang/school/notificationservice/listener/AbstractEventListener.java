@@ -7,12 +7,11 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.redis.connection.Message;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
-import static java.util.Locale.ENGLISH;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,7 +39,7 @@ public abstract class AbstractEventListener<T> {
         return messageBuilders.stream()
                 .filter(messageBuilder -> messageBuilder.getInstance() == event.getClass())
                 .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event, ENGLISH))
+                .map(messageBuilder -> messageBuilder.buildMessage(event, LocaleContextHolder.getLocale()))
                 .orElseThrow(() -> {
                     log.error("No message builder found for the given event type: {}", event.getClass().getName());
                     return new IllegalArgumentException("No message builder found for the given event type: "
@@ -52,7 +51,6 @@ public abstract class AbstractEventListener<T> {
         UserDto user = userServiceClient.getUser(userId);
 
         log.info("User {} details retrieved", userId);
-
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
