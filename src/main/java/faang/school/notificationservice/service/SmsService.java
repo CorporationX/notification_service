@@ -30,12 +30,12 @@ public class SmsService implements NotificationService {
 
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(sms);
 
-        if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
-            log.info("Message sent successfully to {}", phone);
-        } else {
+        if (response.getMessages().get(0).getStatus() != MessageStatus.OK) {
             log.error("Failed to send message to {}", phone);
             throw new SmsSendingException("Failed to send message to " + phone);
         }
+
+        log.info("Message sent successfully to {}", phone);
     }
 
     @Override
