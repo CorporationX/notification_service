@@ -4,6 +4,7 @@ import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
+import faang.school.notificationservice.config.sms.SmsServiceProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +17,11 @@ import org.springframework.stereotype.Service;
 public class SmsService implements NotificationService {
 
     private final VonageClient client;
+    private final SmsServiceProperties properties;
 
     @Override
     public void send(UserDto user, String message) {
-        String from = "Vonage APIs: Basilisk8";
-
-        TextMessage textMessage = new TextMessage(from, user.getPhone(), message);
+        TextMessage textMessage = new TextMessage(properties.getFrom(), user.getPhone(), message);
 
         SmsSubmissionResponse response = client.getSmsClient().submitMessage(textMessage);
         if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {

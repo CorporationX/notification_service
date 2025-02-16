@@ -5,6 +5,7 @@ import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsClient;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.SmsSubmissionResponseMessage;
+import faang.school.notificationservice.config.sms.SmsServiceProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.impl.SmsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,8 @@ public class SmsServiceTest {
 
     @Mock
     private VonageClient vonageClientMock;
+    @Mock
+    private SmsServiceProperties properties;
     @Mock
     private SmsClient smsClientMock;
     @InjectMocks
@@ -46,6 +49,7 @@ public class SmsServiceTest {
 
     @Test
     public void testSendSuccess(){
+        Mockito.when(properties.getFrom()).thenReturn("from Basilisk 8");
         Mockito.when(smsClientMock.submitMessage(any())).thenReturn(response);
         Mockito.when(vonageClientMock.getSmsClient()).thenReturn(smsClientMock);
         Mockito.when(response.getMessages()).thenReturn(Collections.singletonList(responseMessage));
