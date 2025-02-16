@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LikeEvent {
+public class LikeEvent implements Event {
     private Long postId;
     private Long userId;
     private Long authorId;

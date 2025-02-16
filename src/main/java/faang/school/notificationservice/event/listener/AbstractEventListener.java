@@ -3,32 +3,29 @@ package faang.school.notificationservice.event.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.messaging.MessageBuilder;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
+
     private final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
-    private final Map<Class<?>, MessageBuilder<?>> messageBuilders;
-    private static final Logger log = LoggerFactory.getLogger(AbstractEventListener.class);
-
-    public String getMessage(Class<?> eventType, Locale locale, Object... args) {
-        MessageBuilder<T> messageBuilder = (MessageBuilder<T>) messageBuilders.get(eventType);
-        if (messageBuilder == null) {
-            throw new IllegalArgumentException("MessageBuilder не найден для события: " + eventType.getSimpleName());
-        }
-        return messageBuilder.buildMessage((T) args[0], locale);
-    }
 
     public UserDto getUser(Long userId) {
         return Optional.ofNullable(userServiceClient.getUser(userId))
-                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден: " + userId));
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+    }
+
+    protected T parseEvent(String eventJson, Class<T> eventType) {
+        try {
+            return objectMapper.readValue(eventJson, eventType);
+        } catch (Exception e) {
+            log.error("Error parsing event: {}", eventJson, e);
+            throw new RuntimeException("Failed to parse event", e);
+        }
     }
 }

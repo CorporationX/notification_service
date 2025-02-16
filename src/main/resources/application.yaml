@@ -1,6 +1,10 @@
 spring:
   kafka:
     bootstrap-servers: localhost:9092
+    topic:
+      like-events: "like-events"
+    partitions: 3
+    replicas: 1
     consumer:
       group-id: notification-group
       auto-offset-reset: earliest

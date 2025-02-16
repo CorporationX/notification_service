@@ -37,7 +37,7 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
 
     /**
-     * JSON (для сериализации/десериализации Kafka сообщений)
+     * JSON
      */
     implementation("com.fasterxml.jackson.core:jackson-databind")
 
