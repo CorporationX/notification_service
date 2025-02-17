@@ -17,10 +17,13 @@ public class EmailServiceImpl implements EmailService {
     private final MailProperties mailProperties;
 
     @Override
-    public void sendSimpleMessage(String toAddress, String subject, String text) {
+    public void sendSimpleMessage(
+            String toAddress,
+            String subject,
+            String text) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(mailProperties.getFrom());
+        message.setFrom(mailProperties.getReplyTo());
         message.setTo(toAddress);
         message.setSubject(subject);
         message.setText(text);
