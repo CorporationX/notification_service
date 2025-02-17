@@ -1,13 +1,13 @@
 package faang.school.notificationservice.service.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserServiceDto;
 import faang.school.notificationservice.dto.kafka.UserProfileViewedDto;
+import faang.school.notificationservice.exception.handler.EventHandler;
+import faang.school.notificationservice.exception.handler.KafkaMapperHandler;
+import faang.school.notificationservice.exception.handler.MessageHandler;
+import faang.school.notificationservice.exception.handler.NotificationServiceHandler;
+import faang.school.notificationservice.exception.handler.UserServiceHandler;
 import faang.school.notificationservice.exception.impl.non_retryable.NotFoundElementException;
-import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.EventService;
-import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -23,12 +23,13 @@ import java.util.stream.Collectors;
 @Service
 public class UserProfileViewedListener extends AbstractEventListener<UserProfileViewedDto> {
 
-    public UserProfileViewedListener(ObjectMapper objectMapper,
-                                     UserServiceClient userServiceClient,
-                                     List<MessageBuilder<UserProfileViewedDto>> messageBuilders,
-                                     List<NotificationService> notificationServices,
-                                     EventService eventService) {
-        super(objectMapper, userServiceClient, messageBuilders, notificationServices, eventService);
+    public UserProfileViewedListener(
+            EventHandler eventHandler,
+            UserServiceHandler userServiceHandler,
+            NotificationServiceHandler notificationServiceHandler,
+            MessageHandler<UserProfileViewedDto> messageHandler,
+            KafkaMapperHandler kafkaMapperHandler) {
+        super(eventHandler, userServiceHandler, notificationServiceHandler, messageHandler, kafkaMapperHandler);
     }
 
     @KafkaListener(topics = "${user-profile-viewed.topic-name}")

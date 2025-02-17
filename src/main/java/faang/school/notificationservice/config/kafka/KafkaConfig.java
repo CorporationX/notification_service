@@ -1,12 +1,10 @@
 package faang.school.notificationservice.config.kafka;
 
-import faang.school.notificationservice.config.Listeners.UserProfileViewTopicsConfig;
 import faang.school.notificationservice.exception.NonRetryableException;
 import faang.school.notificationservice.exception.RetryableException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -19,7 +17,6 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
@@ -42,7 +39,6 @@ public class KafkaConfig {
     @Value("${spring.kafka.consumer.max-attempts}")
     private Long retryMaxAttempts;
 
-    private final UserProfileViewTopicsConfig profileViewTopicsConfig;
     private final Environment environment;
 
     @Bean
@@ -81,16 +77,6 @@ public class KafkaConfig {
         errorHandler.addRetryableExceptions(RetryableException.class);
 
         return errorHandler;
-    }
-
-    @Bean
-    public KafkaAdmin.NewTopics myTopics() {
-        return new KafkaAdmin.NewTopics(
-                new NewTopic(
-                        profileViewTopicsConfig.getDlqTopicName(),
-                        profileViewTopicsConfig.getDlqPartitions(),
-                        profileViewTopicsConfig.getDlqReplicas())
-        );
     }
 
     @Bean

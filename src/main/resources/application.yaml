@@ -2,6 +2,13 @@ spring:
   profiles:
     active: local
 
+  cloud:
+    openfeign:
+      httpclient:
+        connection-timeout: 2000
+        ok-http:
+          read-timeout: 5000
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=notification_service
