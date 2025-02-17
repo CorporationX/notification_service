@@ -25,9 +25,12 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    like_post_event_topic_name: like_post_event
+
   messages:
     basename: messages
-    like_event_channel_topic_name: likeEvent
 
 
   kafka:
