@@ -40,7 +40,6 @@ public abstract class AbstractEventListener<T> {
 
     protected String getMessage(T inputDto, UserServiceDto profileOwner, List<String> additionalWordsForOwnerMessage) {
         return messageHandler.getMessage(inputDto, profileOwner, additionalWordsForOwnerMessage);
-
     }
 
     protected void sendSingleNotification(UserServiceDto profileOwner, String message) {
