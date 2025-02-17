@@ -68,6 +68,12 @@ dependencies {
      * Vonage
      */
     implementation("com.vonage:client:6.5.0")
+
+    /**
+     * Kafka
+     */
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.springframework.kafka:spring-kafka-test")
 }
 
 tasks.withType<Test> {
