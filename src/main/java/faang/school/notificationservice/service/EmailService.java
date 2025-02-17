@@ -1,7 +1,6 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.exception.NotificationPreferenceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,23 +20,6 @@ public class EmailService implements NotificationService {
 
     @Override
     public void send(UserDto user, String message) {
-        if (user.getPreference() != UserDto.PreferredContact.EMAIL) {
-            log.error("Уведомление не отправлено, пользователь {} (ID: {}) предпочитает отправку по: {}",
-                    user.getUsername(),
-                    user.getId(),
-                    user.getPreference());
-
-            throw new NotificationPreferenceException(
-                    String.format("""
-                                    Невозможно отправить уведомление:
-                                    Пользователь %s (ID: %d) предпочитает способ уведомлений через %s.
-                                    """,
-                            user.getUsername(),
-                            user.getId(),
-                            user.getPreference()
-                    )
-            );
-        }
         templateMessage.setSubject(subject);
         templateMessage.setFrom(user.getUsername());
         templateMessage.setTo(user.getEmail());

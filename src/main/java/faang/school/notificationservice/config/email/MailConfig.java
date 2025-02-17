@@ -8,7 +8,6 @@ import org.springframework.mail.SimpleMailMessage;
 public class MailConfig {
     @Bean
     public SimpleMailMessage templateSimpleMessage() {
-        SimpleMailMessage message = new SimpleMailMessage();
-        return message;
+        return new SimpleMailMessage();
     }
 }
