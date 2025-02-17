@@ -56,7 +56,8 @@ class TelegramBotServiceTest {
 
     @Test
     void testSendMessageThrowsException() throws TelegramApiException {
-        UserDto user = new UserDto();
+        UserDto user = UserDto.builder()
+                .build();
         user.setTelegramChatId("123456");
         String message = "Test Message";
 
