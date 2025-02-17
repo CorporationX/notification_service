@@ -15,13 +15,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.context.i18n.LocaleContextHolder;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,9 +65,7 @@ public class RecommendationEventListenerTest {
         userDto.setId(2L);
         userDto.setUsername("testUser");
         userDto.setPreference(UserDto.PreferredContact.TELEGRAM);
-        messageText = "You received a recommendation request from ";
-
-
+        messageText = "You have received a recommendation request from a user testUser";
     }
 
     @Test
@@ -80,9 +75,9 @@ public class RecommendationEventListenerTest {
         when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.TELEGRAM);
         when(messageSource.getMessage(
-                eq("You received a recommendation request from "),
+                eq("recommendation.new"),
                 eq(new Object[]{userDto.getUsername()}),
-                eq(LocaleContextHolder.getLocale()))
+                eq(Locale.ENGLISH))
         ).thenReturn(messageText);
 
         recommendationEventListener.onMessage(message, null);
@@ -111,9 +106,9 @@ public class RecommendationEventListenerTest {
     void testGetMessage_Success() {
         when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
         when(messageSource.getMessage(
-                eq("You received a recommendation request from "),
+                eq("recommendation.new"),
                 eq(new Object[]{userDto.getUsername()}),
-                eq(LocaleContextHolder.getLocale()))
+                eq(Locale.ENGLISH))
         ).thenReturn(messageText);
 
         String result = recommendationEventListener.getMessage(2L, recommendationEvent);

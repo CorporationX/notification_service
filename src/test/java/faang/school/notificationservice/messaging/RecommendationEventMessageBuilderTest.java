@@ -31,6 +31,7 @@ public class RecommendationEventMessageBuilderTest {
     private RecommendationEvent recommendationEvent;
     private UserDto userDto;
     private Locale locale;
+    private String messageText;
 
     @BeforeEach
     void setUp() {
@@ -38,6 +39,7 @@ public class RecommendationEventMessageBuilderTest {
         userDto = new UserDto();
         userDto.setUsername("testUser");
         locale = Locale.ENGLISH;
+        messageText = "You have received a recommendation request from a user testUser";
     }
 
     @Test
@@ -51,17 +53,17 @@ public class RecommendationEventMessageBuilderTest {
     void testBuildMessage() {
         when(userServiceClient.getUser(1L)).thenReturn(userDto);
         when(messageSource.getMessage(
-                eq("You received a recommendation request from "),
+                eq("recommendation.new"),
                 eq(new Object[]{userDto.getUsername()}),
                 eq(locale))
-        ).thenReturn("You received a recommendation request from testUser");
+        ).thenReturn(messageText);
 
         String result = recommendationEventMessageBuilder.buildMessage(recommendationEvent, locale);
 
-        assertEquals("You received a recommendation request from testUser", result);
+        assertEquals(messageText, result);
         verify(userServiceClient, times(1)).getUser(1L);
         verify(messageSource, times(1)).getMessage(
-                eq("You received a recommendation request from "),
+                eq("recommendation.new"),
                 eq(new Object[]{userDto.getUsername()}),
                 eq(locale)
         );
