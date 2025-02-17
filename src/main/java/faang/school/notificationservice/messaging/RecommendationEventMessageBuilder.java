@@ -23,7 +23,7 @@ public class RecommendationEventMessageBuilder implements MessageBuilder<Recomme
     @Override
     public String buildMessage(RecommendationEvent event, Locale locale) {
         UserDto user = userServiceClient.getUser(event.requesterId());
-        return messageSource.getMessage("You received a recommendation request from ",
+        return messageSource.getMessage("recommendation.new",
                 new Object[]{user.getUsername()}, locale);
     }
 }
