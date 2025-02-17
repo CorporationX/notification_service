@@ -1,8 +1,10 @@
 package faang.school.notificationservice.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class UserDto {
     private long id;
     private String username;
