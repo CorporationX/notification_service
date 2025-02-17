@@ -13,6 +13,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -39,7 +40,10 @@ public class UserProfileViewedListener extends AbstractEventListener<UserProfile
         UserServiceDto profileOwner = userMap.get(inputDto.profileOwnerId());
         UserServiceDto viewer = userMap.get(inputDto.viewerId());
 
-        List<String> additionalWordsForOwnerMessage = List.of(viewer.getUsername());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
+        String formattedDate = inputDto.viewedTime().format(formatter);
+
+        List<String> additionalWordsForOwnerMessage = List.of(viewer.getUsername(), formattedDate);
         String message = getMessage(inputDto, profileOwner, additionalWordsForOwnerMessage);
 
         log.info("sending message {}", message);
