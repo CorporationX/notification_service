@@ -15,7 +15,7 @@ public class TelegramBotController {
     private final TelegramBotService telegramBotService;
 
     @PostMapping("/notify")
-    public void send (@RequestBody UserDto user) {
+    public void send(@RequestBody UserDto user) {
         telegramBotService.send(user, "Привет! Это тестовое уведомление 🚀");
     }
 }
