@@ -43,8 +43,14 @@ class TelegramBotServiceTest {
 
     @Test
     void testSendMessage() throws TelegramApiException {
-        UserDto user = new UserDto();
-        user.setTelegramChatId("123456");
+        UserDto user = UserDto.builder()
+                .email("test@mail.com")
+                .id(1L)
+                .phone("+71234567878")
+                .telegramChatId("123456")
+                .username("testuser")
+                .preference(UserDto.PreferredContact.TELEGRAM)
+                .build();
         String message = "Test Message";
 
         when(telegramClient.execute(any(SendMessage.class))).thenReturn(null);
@@ -57,8 +63,13 @@ class TelegramBotServiceTest {
     @Test
     void testSendMessageThrowsException() throws TelegramApiException {
         UserDto user = UserDto.builder()
+                .email("test@mail.com")
+                .id(1L)
+                .phone("+71234567878")
+                .telegramChatId("123456")
+                .username("testuser")
+                .preference(UserDto.PreferredContact.TELEGRAM)
                 .build();
-        user.setTelegramChatId("123456");
         String message = "Test Message";
 
         doThrow(new TelegramApiException("Error"))
