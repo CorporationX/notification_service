@@ -17,7 +17,7 @@ public class UserProfileViewedMessageBuilder implements MessageBuilder<UserProfi
     public String buildMessage(UserProfileViewedDto inputDto, UserServiceDto profileOwner, List<String> additionalWordsForOwnerMessage) {
         return messageSource.getMessage(
                 "notification.user.profile.viewed",
-                new Object[]{additionalWordsForOwnerMessage.get(0)},
+                new Object[]{additionalWordsForOwnerMessage.get(0), additionalWordsForOwnerMessage.get(1)},
                 profileOwner.getLocale()
         );
     }
