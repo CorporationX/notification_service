@@ -44,3 +44,8 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+telegram:
+  bot:
+    username: CorpXNotificationBot
+    token: ${NOTIFICATION_TELEGRAM_BOT_TOKEN:123456:BOT_TOKEN}
