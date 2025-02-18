@@ -41,14 +41,15 @@ public class SmsServiceTest {
 
     @BeforeEach
     void setUp() {
-        userDto = new UserDto();
-        userDto.setId(123L);
-        userDto.setPhone("12345678"); //"31687519767"
+        userDto = UserDto.builder()
+                .id(123L)
+                .phone("12345678")//"31687519767"
+                .build();
         message = "Test message";
     }
 
     @Test
-    public void testSendSuccess(){
+    public void testSendSuccess() {
         Mockito.when(properties.getFrom()).thenReturn("from Basilisk 8");
         Mockito.when(smsClientMock.submitMessage(any())).thenReturn(response);
         Mockito.when(vonageClientMock.getSmsClient()).thenReturn(smsClientMock);
