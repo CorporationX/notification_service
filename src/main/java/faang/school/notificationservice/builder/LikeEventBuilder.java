@@ -1,11 +1,13 @@
 package faang.school.notificationservice.builder;
 
-import faang.school.notificationservice.LikeEvent;
+import faang.school.notificationservice.dto.LikeEvent;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class LikeEventBuilder implements EventBuilder<LikeEvent> {
     @Override
     public LikeEvent build(String message) {

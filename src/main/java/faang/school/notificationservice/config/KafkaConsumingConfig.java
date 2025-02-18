@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config;
 
-import faang.school.notificationservice.LikeEvent;
+import faang.school.notificationservice.dto.LikeEvent;
 import faang.school.notificationservice.builder.LikeEventBuilder;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -21,7 +21,7 @@ import java.util.Map;
 public class KafkaConsumingConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
-    private LikeEventBuilder likeEventBuilder;
+
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
@@ -37,14 +37,5 @@ public class KafkaConsumingConfig {
                 factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
-    }
-
-    @KafkaListener(topics = "${spring.kafka.like_post_event_topic_name}", groupId = "group-id")
-    public void onLikePostEvent(String message) {
-        System.out.println("LIKE EVENT DETECTED: " + message);
-        LikeEvent event = likeEventBuilder.build(message);
-        /// ...
-        /// ...
-        /// ...
     }
 }
