@@ -41,10 +41,10 @@ public class TelegramBotService implements LongPollingSingleThreadUpdateConsumer
         System.out.println("Получено обновление: " + update);
 
         if (update.hasMessage() && update.getMessage().hasText()) {
-            long chatId = update.getMessage().getChatId();
+            Long chatId = update.getMessage().getChatId();
             String messageText = update.getMessage().getText();
 
-            System.out.println("Сообщение от пользователя: " + messageText);
+            log.info("Сообщение от пользователя: " + messageText);
 
         }
     }
@@ -65,7 +65,7 @@ public class TelegramBotService implements LongPollingSingleThreadUpdateConsumer
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {
-        return null;
+        return UserDto.PreferredContact.TELEGRAM;
     }
 
 }
