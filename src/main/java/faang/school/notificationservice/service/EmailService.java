@@ -2,8 +2,10 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.config.email.EmailProperties;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.validator.NotificationValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.cfg.beanvalidation.IntegrationException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -16,10 +18,15 @@ public class EmailService implements NotificationService {
 
     private final EmailProperties emailProperties;
     private final JavaMailSender emailSender;
+    private final NotificationValidator notificationValidator;
 
     @Override
     public void send(UserDto user, String message) {
-        user.setPreference(getPreferredContact());
+        notificationValidator.validateNotification(user, message);
+
+        if (user.getPreference() != getPreferredContact()){
+            return;
+        }
 
         try {
             var mailMessage = new SimpleMailMessage();
@@ -28,7 +35,9 @@ public class EmailService implements NotificationService {
             mailMessage.setText(message);
             emailSender.send(mailMessage);
         } catch (MailException ex) {
-            log.error(ex.getMessage(), ex);
+            String error = "Не удалось отправить mail";
+            log.error("Не удалось отправить mail", ex);
+            throw new IntegrationException(error);
         }
     }
 
