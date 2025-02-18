@@ -18,10 +18,8 @@ import java.util.Locale;
 public class UserProfileViewEventListener extends AbstractEventListener<UserProfileViewEvent> implements MessageListener {
     public UserProfileViewEventListener(ObjectMapper objectMapper,
                                         UserServiceClient userServiceClient,
-                                        //List<MessageBuilder<UserProfileViewEvent>> messageBuilders,
                                         MessageBuilder<UserProfileViewEvent> messageBuilder,
                                         List<NotificationService> notificationServices) {
-        //super(objectMapper, userServiceClient, messageBuilders, notificationServices);
         super(objectMapper, userServiceClient, messageBuilder, notificationServices);
     }
 
@@ -29,9 +27,6 @@ public class UserProfileViewEventListener extends AbstractEventListener<UserProf
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, UserProfileViewEvent.class, (event) -> {
             Long visitedUserId = event.visitedUserId();
-            //Long visitorUserId = event.visitorUserId();
-            //UserDto visitedUserDto = userServiceClient.getUser(visitedUserId);
-
             String notificationMessage = getMessage(event, Locale.ENGLISH);
             sendNotification(visitedUserId, notificationMessage);
         });
