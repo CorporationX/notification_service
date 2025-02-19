@@ -30,6 +30,7 @@ dependencies {
      */
     implementation("redis.clients:jedis:4.3.2")
     runtimeOnly("org.postgresql:postgresql")
+    implementation("org.springframework.kafka:spring-kafka")
 
     /**
      * Utils & Logging
