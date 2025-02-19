@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
 public class EmailService implements NotificationService {
 
     private final JavaMailSender emailSender;
-    private final SimpleMailMessage templateMessage;
     @Value("${email.subject}")
     private String subject;
 
     @Override
     public void send(UserDto user, String message) {
+        SimpleMailMessage templateMessage = new SimpleMailMessage();
         templateMessage.setSubject(subject);
         templateMessage.setFrom(user.getUsername());
         templateMessage.setTo(user.getEmail());
