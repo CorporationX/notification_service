@@ -1,8 +1,10 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.config.context.UserContext;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.RecommendationEvent;
+import faang.school.notificationservice.listener.EventType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +15,7 @@ import org.springframework.context.MessageSource;
 
 import java.util.Locale;
 
+import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_RECOMMENDATION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -24,6 +27,9 @@ public class RecommendationEventMessageBuilderTest {
 
     @Mock
     private UserServiceClient userServiceClient;
+
+    @Mock
+    private UserContext userContext;
 
     @InjectMocks
     private RecommendationEventMessageBuilder recommendationEventMessageBuilder;
@@ -43,14 +49,14 @@ public class RecommendationEventMessageBuilderTest {
     }
 
     @Test
-    void testGetInstance() {
-        Class<?> result = recommendationEventMessageBuilder.getInstance();
+    void testGetEventTypeSuccess() {
+        EventType eventType = recommendationEventMessageBuilder.getEventType();
 
-        assertEquals(RecommendationEvent.class, result);
+        assertEquals(EVENT_TYPE_RECOMMENDATION, eventType);
     }
 
     @Test
-    void testBuildMessage() {
+    void testBuildMessageSuccess() {
         when(userServiceClient.getUser(1L)).thenReturn(userDto);
         when(messageSource.getMessage(
                 eq("recommendation.new"),

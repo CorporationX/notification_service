@@ -2,6 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.config.context.UserContext;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.RecommendationEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
@@ -37,6 +38,9 @@ public class RecommendationEventListenerTest {
     @Mock
     private NotificationService notificationService;
 
+    @Mock
+    UserContext userContext;
+
     @InjectMocks
     private RecommendationEventListener recommendationEventListener;
 
@@ -48,7 +52,7 @@ public class RecommendationEventListenerTest {
     @BeforeEach
     void setUp() {
         List<MessageBuilder<RecommendationEvent>> builders = new ArrayList<>();
-        builders.add(new RecommendationEventMessageBuilder(messageSource, userServiceClient));
+        builders.add(new RecommendationEventMessageBuilder(messageSource, userServiceClient, userContext));
 
         List<NotificationService> notificationServices = new ArrayList<>();
         notificationServices.add(notificationService);
@@ -57,7 +61,8 @@ public class RecommendationEventListenerTest {
                 builders,
                 objectMapper,
                 userServiceClient,
-                notificationServices);
+                notificationServices,
+                userContext);
 
         recommendationEvent = new RecommendationEvent(1L, 2L, 3L);
         message = mock(Message.class);
@@ -70,6 +75,7 @@ public class RecommendationEventListenerTest {
 
     @Test
     void testOnMessage_Success() throws IOException {
+        byte[] pattern = new byte[0];
         when(message.getBody()).thenReturn("{\"requesterId\":1,\"receiverId\":2,\"recommendationId\":3}".getBytes());
         when(objectMapper.readValue(any(byte[].class), eq(RecommendationEvent.class))).thenReturn(recommendationEvent);
         when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
@@ -80,7 +86,7 @@ public class RecommendationEventListenerTest {
                 eq(Locale.ENGLISH))
         ).thenReturn(messageText);
 
-        recommendationEventListener.onMessage(message, null);
+        recommendationEventListener.onMessage(message, pattern);
 
         verify(objectMapper, times(1)).readValue(any(byte[].class),
                 eq(RecommendationEvent.class));
