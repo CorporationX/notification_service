@@ -35,6 +35,5 @@ public class CommentEventListener {
                 .orElseThrow(() -> new SmsSendingException("Type lalala"));
         service.send(authorPost, message);
 
-
     }
 }
