@@ -1,4 +1,18 @@
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    topic:
+      like-events: "create-comment-events"
+    partitions: 3
+    replicas: 1
+    consumer:
+      group-id: notification-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "faang.school.notificationservice.event"
+
   data:
     redis:
       port: 6379

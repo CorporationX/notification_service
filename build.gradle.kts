@@ -28,6 +28,11 @@ dependencies {
     implementation("org.springframework.retry:spring-retry:2.0.11")
 
     /**
+     * Kafka
+     */
+    implementation("org.springframework.kafka:spring-kafka")
+
+    /**
      * Database
      */
     implementation("redis.clients:jedis:4.3.2")
