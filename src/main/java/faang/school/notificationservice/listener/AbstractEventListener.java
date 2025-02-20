@@ -9,20 +9,17 @@ import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
-
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Slf4j
 public abstract class AbstractEventListener<T> implements MessageListener {
-    protected final List<MessageBuilder<T>> messageBuilders;
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
-    protected final List<NotificationService> notificationServices;
     protected final Map<EventType, MessageBuilder<T>> messageBuildersMap;
     protected final Map<UserDto.PreferredContact, NotificationService> notificationServiceMap;
     protected final UserContext userContext;
@@ -32,21 +29,21 @@ public abstract class AbstractEventListener<T> implements MessageListener {
                                  UserServiceClient userServiceClient,
                                  List<NotificationService> notificationServices,
                                  UserContext userContext) {
-        this.messageBuilders = messageBuilders;
         this.objectMapper = objectMapper;
         this.userServiceClient = userServiceClient;
-        this.notificationServices = notificationServices;
         this.userContext = userContext;
 
-        messageBuildersMap = new HashMap<>();
-        messageBuilders.forEach(tMessageBuilder -> {
-            messageBuildersMap.put(tMessageBuilder.getEventType(), tMessageBuilder);
-        });
+        this.messageBuildersMap = messageBuilders.stream()
+                .collect(Collectors.toMap(
+                        MessageBuilder::getEventType,
+                        tMessageBuilder -> tMessageBuilder
+                ));
 
-        notificationServiceMap = new HashMap<>();
-        notificationServices.forEach(notificationService -> {
-            notificationServiceMap.put(notificationService.getPreferredContact(), notificationService);
-        });
+        this.notificationServiceMap = notificationServices.stream()
+                .collect(Collectors.toMap(
+                        NotificationService::getPreferredContact,
+                        notificationService -> notificationService
+                ));
     }
 
     public abstract EventType getEventType();
