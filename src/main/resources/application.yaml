@@ -42,15 +42,14 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
-services:
-  project-service:
-    host: http://localhost
-    port: 8082
-  user-service:
-    host: http://localhost
-    port: 8080
-    path: /users/api/v1
-    url: ${services.user-service.host}:${services.user-service.port}${services.user-service.path}
+project-service:
+  host: http://localhost
+  port: 8082
+user-service:
+  host: http://localhost
+  port: 8080
+  path: /users/api/v1
+  url: ${user-service.host}:${user-service.port}${user-service.path}
 
 telegram:
   name: phoenix8_notification_bot
