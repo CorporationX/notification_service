@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}")
+@FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}${user-service.servlet_path}")
 public interface UserServiceClient {
 
-    @GetMapping("/api/v1/users/{id}/notification")
+    @GetMapping("/users/{id}/notification")
     UserNotificationDto getUserNotificationDto(@PathVariable long id);
 
-    @PutMapping("/api/v1/users/chat")
+    @PutMapping("/users/chat")
     UserNotificationDto updateUserChat(@RequestBody UserChatIdUpdateDto userChatIdUpdateDto);
 }
