@@ -1,6 +1,8 @@
 package faang.school.notificationservice.service;
 
+import faang.school.notificationservice.dto.PregerredContactNotification;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserEventDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +25,7 @@ public class MailServiceTest {
 
     @Test
     public void send_ShouldSendMessage() {
-        UserDto userDto = new UserDto();
+        UserEventDto userDto = new UserEventDto();
         userDto.setEmail("whatever@gmail.com");
         mailService.send(userDto, "Hello, whatever!");
         verify(mailSender, times(1)).send(any(SimpleMailMessage.class));
@@ -31,6 +33,8 @@ public class MailServiceTest {
 
     @Test
     public void getPreferredContact_ShouldReturnEmail() {
-        assertEquals(UserDto.PreferredContact.EMAIL, mailService.getPreferredContact());
+        UserEventDto dto = new UserEventDto();
+        dto.setPreference(PregerredContactNotification.EMAIL);
+        assertEquals(PregerredContactNotification.EMAIL, mailService.getPreferredContact(dto));
     }
 }

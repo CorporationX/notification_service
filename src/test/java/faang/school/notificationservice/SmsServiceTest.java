@@ -8,6 +8,7 @@ import com.vonage.client.sms.SmsSubmissionResponseMessage;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.config.VonageConfig;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserEventDto;
 import faang.school.notificationservice.exception.SmsSendingException;
 import faang.school.notificationservice.service.SmsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,12 +40,12 @@ public class SmsServiceTest {
     @Mock
     private SmsSubmissionResponse response;
 
-    private UserDto userDto;
+    private UserEventDto userDto;
     private String message;
 
     @BeforeEach
     void setup() {
-        userDto = new UserDto();
+        userDto = new UserEventDto();
         userDto.setPhone("1234567890");
         message = "Hello!";
         when(config.getFrom()).thenReturn("faang");
