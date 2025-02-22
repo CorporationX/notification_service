@@ -1,4 +1,4 @@
-package faang.school.notificationservice.exception.handler;
+package faang.school.notificationservice.handler;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,18 +9,21 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Set;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class KafkaMapperHandler {
     private final ObjectMapper objectMapper;
+
+    public KafkaMapperHandler(@Qualifier("globalObjectMapper") ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     public <R> R mapAndValidateKafkaEvent(Object kafkaEventValue, Class<R> clazz) {
         try {

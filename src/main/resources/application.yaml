@@ -11,7 +11,7 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=notification_service
+    url: jdbc:postgresql://localhost:5432/postgres
     username: user
     password: password
   jpa:
@@ -70,13 +70,9 @@ spring:
       bootstrap-servers: "localhost:9092"
       retry-interval-ms: 5000
       max-attempts: 5
+      concurrent-threads-count: 3
     producer:
       bootstrap-servers: "localhost:9092"
-
-cleanup:
-  job:
-    cron: "0 0 3 * * *" # at 03:00 every day
-    hours-interval: 24
 
 server:
   port: 8083

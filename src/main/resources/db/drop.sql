@@ -1,1 +1,1 @@
-DROP TABLE notification_service.events;
+DROP TABLE notifications.events;

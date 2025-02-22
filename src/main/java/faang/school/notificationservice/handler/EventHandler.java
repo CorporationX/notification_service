@@ -1,4 +1,4 @@
-package faang.school.notificationservice.exception.handler;
+package faang.school.notificationservice.handler;
 
 import faang.school.notificationservice.entity.Event;
 import faang.school.notificationservice.exception.impl.non_retryable.DuplicateEventException;
@@ -18,7 +18,13 @@ public class EventHandler {
     private final EventService eventService;
 
     public void checkEventDuplicatedThrow(ConsumerRecord<String, Object> kafkaEvent) {
-        UUID eventId = UUID.fromString(kafkaEvent.key());
+        String key = kafkaEvent.key();
+        if (key == null) {
+            log.warn("Received Kafka event without a key. Skipping duplicate check.");
+            return;
+        }
+
+        UUID eventId = UUID.fromString(key);
         if (eventService.existsById(eventId)) {
             String error = "Duplicate event received: " + eventId;
             log.warn(error);

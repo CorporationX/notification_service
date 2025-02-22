@@ -1,0 +1,50 @@
+spring:
+  profiles:
+    active: test
+
+  cloud:
+    openfeign:
+      httpclient:
+        connection-timeout: 2000
+        ok-http:
+          read-timeout: 5000
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  messages:
+    basename: messages
+
+  config:
+    import: classpath:kafka-topics.yaml
+
+  kafka:
+    consumer:
+      group-id: "notification-group"
+      retry-interval-ms: 5000
+      max-attempts: 5
+      concurrent-threads-count: 3
+
+server:
+  port: 8083
+
+project-service:
+  host: localhost
+  port: 8082
+
+user-service:
+  host: localhost
+  port: 8080

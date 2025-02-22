@@ -17,6 +17,6 @@ public interface UserServiceClient {
     @PostMapping("/users")
     List<UserServiceDto> getUsers(List<Long> userIds);
 
-    @PostMapping("/users/ordered")
-    List<UserServiceDto> getOrderedUsers(List<Long> userIds);
+    @PostMapping("/users/batch-get")
+    List<UserServiceDto> getUsersByIdsInGivenOrder(List<Long> userIds);
 }
