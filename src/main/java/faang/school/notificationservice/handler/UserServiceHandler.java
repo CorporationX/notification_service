@@ -1,4 +1,4 @@
-package faang.school.notificationservice.exception.handler;
+package faang.school.notificationservice.handler;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserServiceDto;
@@ -24,8 +24,8 @@ public class UserServiceHandler {
         return fetchUserWithHandling(() -> userServiceClient.getUsers(userIds));
     }
 
-    public List<UserServiceDto> getOrderedUsers(List<Long> userIds) {
-        return fetchUserWithHandling(() -> userServiceClient.getOrderedUsers(userIds));
+    public List<UserServiceDto> getUsersByIdsInGivenOrder(List<Long> userIds) {
+        return fetchUserWithHandling(() -> userServiceClient.getUsersByIdsInGivenOrder(userIds));
     }
 
     private <R> R fetchUserWithHandling(Supplier<R> fetcher) {

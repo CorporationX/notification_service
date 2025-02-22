@@ -15,9 +15,12 @@ public class UserProfileViewedMessageBuilder implements MessageBuilder<UserProfi
 
     @Override
     public String buildMessage(UserProfileViewedDto inputDto, UserServiceDto profileOwner, List<String> additionalWordsForOwnerMessage) {
+        String ownername = additionalWordsForOwnerMessage.get(0);
+        String formattedDateTime = additionalWordsForOwnerMessage.get(1);
+
         return messageSource.getMessage(
                 "notification.user.profile.viewed",
-                new Object[]{additionalWordsForOwnerMessage.get(0), additionalWordsForOwnerMessage.get(1)},
+                new Object[]{ownername, formattedDateTime},
                 profileOwner.getLocale()
         );
     }

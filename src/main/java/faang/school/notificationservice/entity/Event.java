@@ -17,7 +17,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "events")
+@Table(name = "events", schema = "notifications")
 public class Event {
     @Id
     private UUID id;
