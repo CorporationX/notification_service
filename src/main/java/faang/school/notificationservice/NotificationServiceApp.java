@@ -31,11 +31,13 @@ public class NotificationServiceApp {
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper;
     }
-
+/*
     @Bean
     public TelegramBotsApi telegramBotsApi(TelegramBot bot) throws TelegramApiException {
         TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
         api.registerBot(bot);
         return api;
     }
+
+ */
 }
