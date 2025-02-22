@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -30,13 +31,22 @@ public class SmsService implements NotificationService {
         SmsSubmissionResponse response = vonageClient.getSmsClient()
                 .submitMessage(smsMessage);
 
-        List<SmsSubmissionResponseMessage> responseMessages = response.getMessages();
+        checkMessagesOnErrors(response.getMessages());
+    }
 
+    private void checkMessagesOnErrors(List<SmsSubmissionResponseMessage> responseMessages) {
+        List<String> errors = new ArrayList<>(responseMessages.size());
         for (var responseMessage : responseMessages) {
             if (responseMessage.getStatus() != MessageStatus.OK) {
-                log.error("Message failed with error: {}", responseMessage.getErrorText());
-                throw new ExternalServiceException("Failed to send SMS");
+                errors.add(responseMessage.getErrorText());
             }
+        }
+        if (!errors.isEmpty()) {
+            log.error("Failed to send SMS, errors: {}", errors);
+            throw new ExternalServiceException(
+                    "Failed to send SMS: "
+                            + String.join(",", errors)
+            );
         }
     }
 
