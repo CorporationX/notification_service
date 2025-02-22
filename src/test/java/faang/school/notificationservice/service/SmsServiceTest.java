@@ -63,7 +63,7 @@ class SmsServiceTest {
     }
 
     @Test
-    void testSendFailureWithoutLogCaptor() {
+    void testSendFailure () {
 
         when(smsClient.submitMessage(any())).thenReturn(response);
         when(vonageClient.getSmsClient()).thenReturn(smsClient);
