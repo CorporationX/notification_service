@@ -3,17 +3,19 @@ package faang.school.notificationservice.service;
 import faang.school.notificationservice.entity.Event;
 import faang.school.notificationservice.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class EventService {
     private final EventRepository eventRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean existsById(UUID id) {
         return eventRepository.existsById(id);
     }

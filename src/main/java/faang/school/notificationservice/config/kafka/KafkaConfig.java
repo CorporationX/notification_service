@@ -36,8 +36,12 @@ import java.util.Map;
 public class KafkaConfig {
     @Value("${spring.kafka.consumer.retry-interval-ms}")
     private Long retryIntervalMillis;
+
     @Value("${spring.kafka.consumer.max-attempts}")
     private Long retryMaxAttempts;
+
+    @Value("${spring.kafka.consumer.concurrent-threads-count}")
+    private int concurrentThreadsCount;
 
     private final Environment environment;
 
@@ -64,6 +68,7 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         factory.setCommonErrorHandler(kafkaErrorHandler);
+        factory.setConcurrency(concurrentThreadsCount);
         return factory;
     }
 
