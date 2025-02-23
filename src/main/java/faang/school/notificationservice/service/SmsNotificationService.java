@@ -25,6 +25,7 @@ public class SmsNotificationService implements NotificationService {
     @Override
     public void send(UserDto user, String message) {
         log.info("Sending sms message");
+        checkPhoneNumber(user.getPhone());
         String sourceNumber = smsConnectionParam.getSourcePhoneNumber();
         String destinationNumber = user.getPhone();
         SmsSendRequestDto requestDto = new SmsSendRequestDto(sourceNumber, destinationNumber, message);
@@ -45,6 +46,13 @@ public class SmsNotificationService implements NotificationService {
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {
-        return null;
+        return UserDto.PreferredContact.SMS;
+    }
+
+    private void checkPhoneNumber(String phoneNumber) {
+        String regEx = "^7\\d{10}";
+        if (!phoneNumber.matches(regEx)) {
+            throw new SendNotificationException("Phone number is not valid");
+        }
     }
 }

@@ -2,15 +2,55 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.config.sms.SmsConnectionParam;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.SendNotificationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.client.HttpClientErrorException;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
+@ExtendWith(MockitoExtension.class)
 class SmsNotificationServiceTest {
 
     @Test
     void send() {
+        RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+        SmsConnectionParam param = new SmsConnectionParam();
+        param.setUrl("https://api.exolve.ru/messaging/v1/SendSMS");
+        param.setAuthorizationString("AUTH_KEY");
+        param.setSourcePhoneNumber("79990004433");
+        NotificationService smsNotificationService = new SmsNotificationService(restTemplate, param);
+
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        userDto.setPhone("79990004433");
+
+        String responseString = "{\n\t\"message_id\": \"123\"\n}";
+        Mockito.when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(responseString);
+
+        Assertions.assertDoesNotThrow(() ->
+                smsNotificationService.send(userDto, "Сообщение для абонента 1"));
+    }
+
+    @Test
+    void sendFailed() {
+        RestTemplate restTemplate = new RestTemplate();
+
+        SmsConnectionParam param = new SmsConnectionParam();
+        NotificationService smsNotificationService = new SmsNotificationService(restTemplate, param);
+
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        userDto.setPhone("12345678901");
+
+        Assertions.assertThrows(SendNotificationException.class, () ->
+                smsNotificationService.send(userDto, "Сообщение для абонента %d".formatted(userDto.getId())));
+    }
+
+    //    Для реальной проверки отправки SMS, необходимо ввести в переменные среды свои данные
+    //    @Test
+    void sendWithRealParameters() {
         RestTemplate restTemplate = new RestTemplate();
 
         SmsConnectionParam param = new SmsConnectionParam();
@@ -24,24 +64,6 @@ class SmsNotificationServiceTest {
         userDto.setPhone(System.getenv("SMS_DESTINATION_PHONE"));
 
         Assertions.assertDoesNotThrow(() ->
-                smsNotificationService.send(userDto, "Сообщение для абонента %d".formatted(userDto.getId())));
-    }
-
-    @Test
-    void sendFailed() {
-        RestTemplate restTemplate = new RestTemplate();
-
-        SmsConnectionParam param = new SmsConnectionParam();
-        param.setUrl("https://api.exolve.ru/messaging/v1/SendSMS");
-        param.setAuthorizationString(System.getenv("SMS_AUTH_KEY"));
-        param.setSourcePhoneNumber(System.getenv("SMS_SOURCE_PHONE"));
-        NotificationService smsNotificationService = new SmsNotificationService(restTemplate, param);
-
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setPhone("12345678901");
-
-        Assertions.assertThrows(HttpClientErrorException.BadRequest.class, () ->
                 smsNotificationService.send(userDto, "Сообщение для абонента %d".formatted(userDto.getId())));
     }
 }
