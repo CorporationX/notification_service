@@ -22,6 +22,13 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
+  sms:
+    exolve:
+      url: https://api.exolve.ru/messaging/v1/SendSMS
+      authorizationString: ${SMS_AUTH_KEY}
+      sourcePhoneNumber: ${SMS_SOURCE_PHONE}
+
+
   messages:
     basename: messages
 
@@ -39,8 +46,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
