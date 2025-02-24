@@ -45,3 +45,8 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+    servlet_path: "/api/v1"
+
+telegram:
+  bot_username: "Corporation_XBot"
+  botToken: "7686886258:AAGpaNweT6fE6PB7_p6uXIsF8L8ogGLFd5A"
