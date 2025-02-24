@@ -1,4 +1,32 @@
 spring:
+  profiles:
+    active: local
+
+  cloud:
+    openfeign:
+      httpclient:
+        connection-timeout: 2000
+        ok-http:
+          read-timeout: 5000
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
   data:
     redis:
       port: 6379
@@ -24,6 +52,19 @@ spring:
 
   messages:
     basename: messages
+
+  config:
+    import: classpath:kafka-topics.yaml
+
+  kafka:
+    consumer:
+      group-id: "notification-group"
+      bootstrap-servers: "localhost:9092"
+      retry-interval-ms: 5000
+      max-attempts: 5
+      concurrent-threads-count: 3
+    producer:
+      bootstrap-servers: "localhost:9092"
 
 server:
   port: 8083
