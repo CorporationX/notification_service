@@ -25,12 +25,12 @@ public class RecommendationRequestEventListener {
     private final ObjectMapper objectMapper;
 
     @KafkaListener(topics = "${kafka.recommendation.request.topic}", groupId = "notifications-group")
-    public void listen(String input) {
-        RecommendationRequestEvent recommendationRequestEvent = mapInputToRecommendationRequestEvent(input);
+    public void listen(String message) {
+        RecommendationRequestEvent recommendationRequestEvent = mapInputToRecommendationRequestEvent(message);
         log.info("Received recommendation request: {}", recommendationRequestEvent);
         UserDto receiverUser = userServiceClient.getUser(recommendationRequestEvent.getReceiverId());
-        String message = messageBuilder.buildMessage(recommendationRequestEvent, Locale.getDefault());
-        notificationService.send(receiverUser, message);
+        String messageToSend = messageBuilder.buildMessage(recommendationRequestEvent, Locale.getDefault());
+        notificationService.send(receiverUser, messageToSend);
     }
 
     private RecommendationRequestEvent mapInputToRecommendationRequestEvent(String input) {
