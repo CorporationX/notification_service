@@ -16,7 +16,9 @@ import java.util.Locale;
 
 @Slf4j
 @Component
-public class RecommendationEventListener extends AbstractEventListener<RecommendationRequestedEvent> implements MessageListener {
+public class RecommendationEventListener
+        extends AbstractEventListener<RecommendationRequestedEvent>
+        implements MessageListener {
 
     public RecommendationEventListener(ObjectMapper objectMapper,
                                        UserServiceClient userServiceClient,
