@@ -1,9 +1,9 @@
 package faang.school.notificationservice.service.bot;
 
 import faang.school.notificationservice.config.telegram.BotProperties;
+import faang.school.notificationservice.exception.IntegrationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.cfg.beanvalidation.IntegrationException;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.longpolling.BotSession;
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
