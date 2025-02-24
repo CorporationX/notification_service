@@ -31,10 +31,10 @@ public abstract class AbstractEventListener<T> {
         }
     }
 
-    protected void getMessage(T event, Locale locale) {
-        messageBuilders.stream()
+    protected String getMessage(T event, Locale locale) {
+        return messageBuilders.stream()
                 .filter(messageBuilder
-                        -> messageBuilder.getInstance() == event.getClass())
+                        -> messageBuilder.getInstance().equals(event.getClass()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Нет сообщения для текущего типа ивента"))
                 .buildMessage(event, locale);
