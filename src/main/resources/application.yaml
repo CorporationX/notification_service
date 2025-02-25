@@ -7,6 +7,9 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
 
+  kafka:
+    bootstrap-servers: localhost:9092
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -24,9 +27,6 @@ spring:
 
   messages:
     basename: messages
-
-  kafka:
-    bootstrap-servers: localhost:9092
 
 server:
   port: 8083
@@ -50,3 +50,7 @@ user-service:
 kafka:
   comment:
     topic: comment_event
+
+  recommendation:
+    request:
+      topic: recommendation-request-topic
