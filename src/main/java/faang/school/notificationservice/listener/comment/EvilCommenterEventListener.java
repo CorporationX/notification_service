@@ -1,8 +1,8 @@
 package faang.school.notificationservice.listener.comment;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.event.CommentEvent;
+import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.listener.EventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.comment.CommentEventNotificationService;
