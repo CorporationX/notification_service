@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RecommendationRequestEvent {
 
-    long authorId;
+    private long authorId;
 
-    long receiverId;
+    private long receiverId;
 
-    long requestId;
+    private long requestId;
 }
