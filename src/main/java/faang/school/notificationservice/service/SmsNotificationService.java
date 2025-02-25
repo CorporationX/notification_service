@@ -3,7 +3,7 @@ package faang.school.notificationservice.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.config.sms.SmsConnectionParam;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserServiceDto;
 import faang.school.notificationservice.dto.sms.SmsSendRequestDto;
 import faang.school.notificationservice.dto.sms.SmsSendResponseDto;
 import faang.school.notificationservice.exception.SendNotificationException;
@@ -13,6 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
@@ -21,9 +22,10 @@ import org.springframework.web.client.RestTemplate;
 public class SmsNotificationService implements NotificationService {
     private final RestTemplate restTemplate;
     private final SmsConnectionParam smsConnectionParam;
+    private final ObjectMapper objectMapper;
 
     @Override
-    public void send(UserDto user, String message) {
+    public void send(UserServiceDto user, String message) {
         log.info("Sending sms message");
         checkPhoneNumber(user.getPhone());
         String sourceNumber = smsConnectionParam.getSourcePhoneNumber();
@@ -34,19 +36,26 @@ public class SmsNotificationService implements NotificationService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", smsConnectionParam.getAuthorizationString());
         HttpEntity<SmsSendRequestDto> request = new HttpEntity<>(requestDto, headers);
-        String responseDto = restTemplate.postForObject(smsConnectionParam.getUrl(), request,
-                String.class);
+        String responseDto;
+
         try {
-            SmsSendResponseDto response = new ObjectMapper().readValue(responseDto, SmsSendResponseDto.class);
+            responseDto = restTemplate.postForObject(smsConnectionParam.getUrl(), request,
+                    String.class);
+        } catch (HttpClientErrorException e) {
+            throw new SendNotificationException("Send message by SMS failed - %s".formatted(e.getMessage()));
+        }
+
+        try {
+            SmsSendResponseDto response = objectMapper.readValue(responseDto, SmsSendResponseDto.class);
             log.info("send message id {}", response.getMessageId());
         } catch (JsonProcessingException e) {
-            throw new SendNotificationException("Send message by SMS failed");
+            throw new SendNotificationException("Send message by SMS failed, incorrect json format");
         }
     }
 
     @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.SMS;
+    public UserServiceDto.PreferredContact getPreferredContact() {
+        return UserServiceDto.PreferredContact.SMS;
     }
 
     private void checkPhoneNumber(String phoneNumber) {

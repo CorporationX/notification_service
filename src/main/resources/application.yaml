@@ -53,9 +53,10 @@ spring:
   sms:
     exolve:
       url: https://api.exolve.ru/messaging/v1/SendSMS
+      connectionTimeoutSeconds: 10
+      readTimeoutSeconds: 10
       authorizationString: ${SMS_AUTH_KEY}
       sourcePhoneNumber: ${SMS_SOURCE_PHONE}
-
 
   messages:
     basename: messages
