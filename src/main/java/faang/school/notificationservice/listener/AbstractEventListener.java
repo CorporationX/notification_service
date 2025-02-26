@@ -1,13 +1,11 @@
 package faang.school.notificationservice.listener;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.UserEventDto;
 import faang.school.notificationservice.exception.SmsSendingException;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,7 +32,8 @@ public abstract class AbstractEventListener<T> {
     protected void sendNotification(Long userId, String message) {
         UserEventDto user = userServiceClient.getUserForEvent(userId);
         notificationServiceList.stream()
-                .filter(notificationService -> notificationService.getPreferredContact(user).equals(user.getPreference()))
+                .filter(notificationService -> user.getPreference()
+                        .equals(notificationService.getPreferredContact(user)))
                 .findFirst()
                 .orElseThrow(
                         () -> new SmsSendingException("The preferred communication method has not been established."))

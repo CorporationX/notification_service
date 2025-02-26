@@ -1,7 +1,6 @@
 package faang.school.notificationservice.listener;
 
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.UserEventDto;
 import faang.school.notificationservice.listener.event.CommentEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
@@ -11,7 +10,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Locale;
 
 @Component
 public class CommentEventListener extends AbstractEventListener<CommentEvent> {

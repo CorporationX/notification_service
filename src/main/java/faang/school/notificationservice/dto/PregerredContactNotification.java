@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum PregerredContactNotification {
     EMAIL("EMAIL"),
-    SMS("SMS");
+    SMS("SMS"),
+    TELEGRAM("TELEGRAM");
 
     private final String value;
 

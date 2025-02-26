@@ -6,7 +6,6 @@ import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.config.VonageConfig;
 import faang.school.notificationservice.dto.PregerredContactNotification;
-import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.UserEventDto;
 import faang.school.notificationservice.exception.SmsSendingException;
 import lombok.RequiredArgsConstructor;
@@ -44,4 +43,4 @@ public class SmsService implements NotificationService {
     public PregerredContactNotification getPreferredContact(UserEventDto dto) {
         return dto.getPreference();
     }
-    }
+}
