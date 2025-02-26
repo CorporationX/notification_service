@@ -1,9 +1,6 @@
 spring:
   kafka:
     bootstrap-servers: localhost:9092
-    topic:
-      like-events: "create-comment-events"
-    partitions: 3
     replicas: 1
     consumer:
       group-id: notification-group
