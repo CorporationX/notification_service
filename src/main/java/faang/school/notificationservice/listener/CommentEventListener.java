@@ -6,7 +6,6 @@ import faang.school.notificationservice.dto.CommentEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
@@ -16,23 +15,25 @@ import java.util.Locale;
 
 @Slf4j
 @Component
-public class CommentEventListener extends AbstractEventListener<CommentEvent> implements  MessageListener {
+public class CommentEventListener extends AbstractEventListener<CommentEvent> {
 
-    public CommentEventListener(ObjectMapper objectMapper,
-                                UserServiceClient userServiceClient,
+    public CommentEventListener(UserServiceClient userServiceClient,
                                 List<MessageBuilder<CommentEvent>> messageBuilders,
                                 List<NotificationService> notificationServices) {
-        super(objectMapper, userServiceClient, messageBuilders, notificationServices);
+        super(userServiceClient, messageBuilders, notificationServices);
     }
 
-    @KafkaListener(topics = "comment_create")
+    @KafkaListener(
+            topics = "${spring.kafka.topics.comment_create_topic}",
+            properties = "spring.json.value.default.type=faang.school.notificationservice.dto.CommentEvent"
+    )
     @Override
-    public void onMessage(ConsumerRecord<String, String> record, Acknowledgment acknowledgment) {
-        handleEvent(record, CommentEvent.class, commentEvent -> {
-            String message = getMessage(commentEvent, Locale.UK);
-            sendNotification(commentEvent.getAuthorId(), message);
-        });
+    public void onMessage(CommentEvent event, Acknowledgment acknowledgment) {
+        //TODO: Добавить Locale в сущность пользователя, чтобы ее можно было получать
+        String message = getMessage(event, Locale.UK);
+        sendNotification(event.getAuthorId(), message);
 
         acknowledgment.acknowledge();
+        log.info("Processing message completed: {}", message);
     }
 }
