@@ -25,6 +25,7 @@ public class EmailService implements NotificationService {
         notificationValidator.validateNotification(user, message);
 
         if (user.getPreference() != getPreferredContact()){
+            log.info("Email не будет отправлен, так как Email не является предпочтительным контактом");
             return;
         }
 
@@ -35,9 +36,8 @@ public class EmailService implements NotificationService {
             mailMessage.setText(message);
             emailSender.send(mailMessage);
         } catch (MailException ex) {
-            String error = "Не удалось отправить mail";
-            log.error("Не удалось отправить mail", ex);
-            throw new IntegrationException(error);
+            log.error(ex.getMessage(), ex);
+            throw new IntegrationException("Не удалось отправить mail");
         }
     }
 

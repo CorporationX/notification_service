@@ -10,7 +10,7 @@ public class NotificationValidator {
         if (user == null) {
             throw new DataValidationException("UserDto не может быть null");
         }
-        if (message == null || message.trim().isEmpty()) {
+        if (message == null || message.isBlank()) {
             throw new DataValidationException("Сообщение не может быть пустым");
         }
         if (user.getEmail() == null || user.getEmail().isBlank()) {
