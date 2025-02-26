@@ -1,4 +1,4 @@
-package faang.school.notificationservice.dto.event;
+package faang.school.notificationservice.event;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

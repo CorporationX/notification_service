@@ -23,7 +23,7 @@ public class EmailServiceImpl implements EmailService {
             String text) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(mailProperties.getReplyTo());
+        message.setFrom(mailProperties.getFrom());
         message.setTo(toAddress);
         message.setSubject(subject);
         message.setText(text);

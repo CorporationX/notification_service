@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
-import faang.school.notificationservice.event.UserProfileViewEventListener;
+import faang.school.notificationservice.listener.RecommendationEventListener;
+import faang.school.notificationservice.listener.UserProfileViewEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,7 +46,7 @@ public class RedisConfig {
         container.setConnectionFactory(jedisConnectionFactory());
 
         addMessageListenerInContainer(recommendationEventListener, channels.getRecommendationChannel(), container);
-        addMessageListenerInContainer(userProfileViewEventListener, channels.getRecommendationChannel(), container);
+        addMessageListenerInContainer(userProfileViewEventListener, channels.getProfileView(), container);
         return container;
     }
 
