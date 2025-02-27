@@ -1,6 +1,7 @@
 package faang.school.notificationservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.config.email.MailProperties;
 import faang.school.notificationservice.telegram.TelegramBot;
 import org.springframework.boot.Banner;
@@ -26,7 +27,9 @@ public class NotificationServiceApp {
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
     }
 
     @Bean

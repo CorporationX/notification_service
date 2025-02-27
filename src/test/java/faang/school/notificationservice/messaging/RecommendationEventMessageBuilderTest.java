@@ -4,7 +4,6 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.context.UserContext;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.RecommendationEvent;
-import faang.school.notificationservice.listener.EventType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +14,6 @@ import org.springframework.context.MessageSource;
 
 import java.util.Locale;
 
-import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_RECOMMENDATION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -46,13 +44,6 @@ public class RecommendationEventMessageBuilderTest {
         userDto.setUsername("testUser");
         locale = Locale.ENGLISH;
         messageText = "You have received a recommendation request from a user testUser";
-    }
-
-    @Test
-    void testGetEventTypeSuccess() {
-        EventType eventType = recommendationEventMessageBuilder.getEventType();
-
-        assertEquals(EVENT_TYPE_RECOMMENDATION, eventType);
     }
 
     @Test

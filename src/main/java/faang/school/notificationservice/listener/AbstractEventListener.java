@@ -71,7 +71,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     }
 
     protected void sendNotification(long userId, String message) {
-        userContext.setUserId(userId);
+        //userContext.setUserId(userId); // убрал, так как UserId это тот, кому пойдет сообщение, а не пользователь
         UserDto user = userServiceClient.getUser(userId);
         log.info("User {} details retrieved", userId);
 
