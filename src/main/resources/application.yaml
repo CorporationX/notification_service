@@ -27,6 +27,7 @@ spring:
 
   messages:
     basename: messages
+    cacheseconds: 3600
 
 server:
   port: 8083
