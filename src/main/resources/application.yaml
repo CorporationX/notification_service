@@ -38,7 +38,7 @@ spring:
       group-id: notification-processing-group
 
     listener:
-      ack-mode: manual
+      ack-mode: record
 
     topics:
       comment_create_topic: comment-create

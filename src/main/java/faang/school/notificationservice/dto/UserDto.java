@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Locale;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,6 +17,9 @@ public class UserDto {
     private String email;
     private String phone;
     private PreferredContact preference;
+
+    @Builder.Default
+    private Locale locale = Locale.UK;
 
     public enum PreferredContact {
         EMAIL, SMS, TELEGRAM

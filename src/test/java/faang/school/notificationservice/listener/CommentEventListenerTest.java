@@ -1,18 +1,15 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.CommentEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.kafka.support.Acknowledgment;
 
 import java.util.List;
 import java.util.Locale;
@@ -32,16 +29,13 @@ class CommentEventListenerTest {
     @Mock
     private NotificationService notificationService;
 
-    @Mock
-    private Acknowledgment acknowledgment;
-
     private CommentEventListener commentEventListener;
 
     @BeforeEach
     void setUp() {
         List<MessageBuilder<CommentEvent>> messageBuilders = List.of(messageBuilder);
         List<NotificationService> notificationServices = List.of(notificationService);
-        commentEventListener = new CommentEventListener(userServiceClient, messageBuilders, notificationServices);
+        commentEventListener = new CommentEventListener(messageBuilders, notificationServices, userServiceClient);
     }
 
     @Test
@@ -66,13 +60,12 @@ class CommentEventListenerTest {
         when(userServiceClient.getUser(userId)).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
 
-       commentEventListener.onMessage(commentEvent, acknowledgment);
+       commentEventListener.onMessage(commentEvent);
 
         verify(messageBuilder).getInstance();
         verify(messageBuilder).buildMessage(commentEvent, Locale.UK);
         verify(userServiceClient).getUser(userId);
         verify(notificationService).getPreferredContact();
         verify(notificationService).send(userDto, "Built message");
-        verify(acknowledgment).acknowledge();
     }
 }
