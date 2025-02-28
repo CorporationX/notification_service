@@ -44,3 +44,9 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+telegram:
+  bot:
+    token: ${TELEGRAM_TOKEN}
+    chat_id: ${CHAT_ID}
+    username: "MyFaangNotificationBot"
