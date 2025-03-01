@@ -38,9 +38,14 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
+notification-service:
+  redis:
+    achievement-channel: achievement_channel
+
 project-service:
     host: localhost
     port: 8082
 user-service:
+    api-version: /api/v1
     host: localhost
     port: 8080
