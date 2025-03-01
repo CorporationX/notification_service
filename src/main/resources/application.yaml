@@ -6,7 +6,8 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-
+  config:
+    import: optional:file:.env.properties
   mail:
     host: smtp.gmail.com
     port: 587
@@ -44,9 +45,10 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+notification-service:
+  api-version: /api/v1
 
 telegram:
   bot:
     token: ${TELEGRAM_TOKEN}
-    chat_id: ${CHAT_ID}
     username: "MyFaangNotificationBot"

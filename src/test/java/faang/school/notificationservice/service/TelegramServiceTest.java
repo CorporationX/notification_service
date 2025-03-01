@@ -6,46 +6,41 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class TelegramServiceTest {
 
     @Mock
-    private NotificationBot notificationBot;
+    private NotificationBotService notificationBotService;
 
     @InjectMocks
     private TelegramService telegramService;
 
     @Test
-    void testSendNotificationSuccess() {
+    void testSendWithUserDtoSuccess() {
         UserDto user = new UserDto();
         user.setId(12345L);
         String message = "Test notification";
 
         telegramService.send(user, message);
 
-        verify(notificationBot).sendMessage("12345", "Test notification");
+        verify(notificationBotService).sendMessage("12345", "Test notification");
     }
 
     @Test
-    void testSendNotificationWithNullUser() {
-        assertThrows(IllegalArgumentException.class, () -> telegramService.send(null, "Test message"));
-        verify(notificationBot, never()).sendMessage(anyString(), anyString());
-    }
+    void testSendWithUserIdSuccess() {
+        Long userId = 12345L;
+        String message = "Test notification";
 
-    @Test
-    void testSendNotificationWithNullMessage() {
-        UserDto user = new UserDto();
-        user.setId(12345L);
+        ResponseEntity<String> response = telegramService.send(userId, message);
 
-        assertThrows(IllegalArgumentException.class, () -> telegramService.send(user, null));
-        verify(notificationBot, never()).sendMessage(anyString(), anyString());
+        verify(notificationBotService).sendMessage("12345", "Test notification");
+        assertEquals("Successfully sent", response.getBody());
+        assertEquals(200, response.getStatusCode().value());
     }
 
     @Test

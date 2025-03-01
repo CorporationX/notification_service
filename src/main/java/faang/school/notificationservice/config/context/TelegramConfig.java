@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config.context;
 
-import faang.school.notificationservice.service.NotificationBot;
+import faang.school.notificationservice.service.NotificationBotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,14 +14,14 @@ public class TelegramConfig {
     private final TelegramBotProperties telegramBotProperties;
 
     @Bean
-    public NotificationBot myTelegramBot() {
-        return new NotificationBot(telegramBotProperties.getToken(), telegramBotProperties.getUsername());
+    public NotificationBotService myTelegramBot() {
+        return new NotificationBotService(telegramBotProperties.getToken(), telegramBotProperties.getUsername());
     }
 
     @Bean
-    public TelegramBotsApi telegramBotsApi(NotificationBot notificationBot) throws TelegramApiException {
+    public TelegramBotsApi telegramBotsApi(NotificationBotService notificationBotService) throws TelegramApiException {
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-        botsApi.registerBot(notificationBot);
+        botsApi.registerBot(notificationBotService);
         return botsApi;
     }
 }

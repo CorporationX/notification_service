@@ -7,10 +7,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Log4j2
-public class NotificationBot extends TelegramLongPollingBot {
+public class NotificationBotService extends TelegramLongPollingBot {
     private final String botUsername;
 
-    public NotificationBot(String botToken, String botUsername) {
+    public NotificationBotService(String botToken, String botUsername) {
         super(botToken);
         this.botUsername = botUsername;
     }
@@ -33,8 +33,9 @@ public class NotificationBot extends TelegramLongPollingBot {
             execute(message);
             log.info("Message sent successfully to chatId: {}", userId);
         } catch (TelegramApiException e) {
-            log.error("Failed to send message to chatId: {}, error: {}", userId, e.getMessage());
-            throw new RuntimeException("Failed to send Telegram message: " + e.getMessage(), e);
+            String errorMessage = String.format("Failed to send message to chatId: %s, error: %s", userId, e.getMessage());
+            log.error(errorMessage);
+            throw new RuntimeException(errorMessage, e);
         }
     }
 }
