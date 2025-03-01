@@ -7,6 +7,7 @@ import faang.school.notificationservice.exception.EventHandlingException;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import java.util.function.Consumer;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public abstract class AbstractEventListener<T> {
     private final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
@@ -27,26 +29,30 @@ public abstract class AbstractEventListener<T> {
             T event = objectMapper.readValue(message.getBody(), eventType);
             consumer.accept(event);
         } catch (Exception e) {
-            throw new EventHandlingException("Ошибка при обработке ивента");
+            throw new EventHandlingException("Ошибка при обработке ивента", e);
         }
     }
 
     protected String getMessage(T event, Locale locale) {
-        return messageBuilders.stream()
+        MessageBuilder<T> builder = messageBuilders.stream()
                 .filter(messageBuilder
                         -> messageBuilder.getInstance().equals(event.getClass()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Нет сообщения для текущего типа ивента"))
-                .buildMessage(event, locale);
+                .orElseThrow(() -> new IllegalArgumentException("Нет MessageBuilder для типа ивента: "
+                        + event.getClass().getSimpleName()));
+        log.info("Выбран MessageBuilder: {}", builder.getClass().getSimpleName());
+        return builder.buildMessage(event, locale);
     }
 
     protected void sendNotification(Long id, String message) {
         UserDto user = userServiceClient.getUser(id);
-        notificationServices.stream()
+        NotificationService service = notificationServices.stream()
                 .filter(notificationService
                         -> notificationService.getPreferredContact() == user.getPreference())
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("У юзера нет предпочтения по сервису уведомлений"))
-                .send(user, message);
+                .orElseThrow(() -> new IllegalArgumentException("Нет NotificationService для предпочтения: "
+                        + user.getPreference()));
+        log.info("Выбран NotificationService: {}", service.getPreferredContact());
+        service.send(user, message);
     }
 }
