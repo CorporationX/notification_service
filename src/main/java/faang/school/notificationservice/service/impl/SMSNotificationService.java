@@ -1,8 +1,6 @@
 package faang.school.notificationservice.service.impl;
 
 import com.vonage.client.VonageClient;
-import com.vonage.client.VonageClientException;
-import com.vonage.client.VonageResponseParseException;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
@@ -25,7 +23,7 @@ public class SMSNotificationService implements NotificationService {
     private boolean isSMSEnabled;
 
     @Override
-    @Retryable(retryFor = {VonageClientException.class}, backoff = @Backoff(delay = 20000, multiplier = 2))
+    @Retryable(retryFor = {RuntimeException.class}, backoff = @Backoff(delay = 20000, multiplier = 2))
     public void send(UserDto user, String message) {
         if (IsSMSAvailable(user)) {
             return;
@@ -37,11 +35,8 @@ public class SMSNotificationService implements NotificationService {
         try {
             SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(textMessage);
             checkResponse(response);
-        } catch (VonageResponseParseException e) {
-            log.error("Error parse vonage response SMS", e);
-            throw e;
-        } catch (VonageClientException e) {
-            log.error("Error while sending SMS", e);
+        } catch (RuntimeException e) {
+            log.error("Error vonage", e);
             throw e;
         }
     }

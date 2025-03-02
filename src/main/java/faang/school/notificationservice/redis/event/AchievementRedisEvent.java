@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AchievementRedisEvent {
-    Long userId;
-    String achievementName;
+    private Long userId;
+    private String achievementName;
 }
