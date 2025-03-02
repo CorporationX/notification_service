@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableFeignClients("faang.school.notificationservice.client")
-@EnableConfigurationProperties
 public class NotificationServiceApp {
     public static void main(String[] args) {
         new SpringApplicationBuilder(NotificationServiceApp.class)
