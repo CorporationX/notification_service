@@ -10,7 +10,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 @Configuration
 public class MessageListenerConfig {
 
-    @Value("${spring.data.redis.channel.profile}")
+    @Value("${spring.data.redis.channel.profile-view}")
     private String profileTopic;
 
     @Bean
