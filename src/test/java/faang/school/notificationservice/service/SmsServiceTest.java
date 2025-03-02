@@ -64,7 +64,6 @@ class SmsServiceTest {
 
     @Test
     void testSendFailure () {
-
         when(smsClient.submitMessage(any())).thenReturn(response);
         when(vonageClient.getSmsClient()).thenReturn(smsClient);
         when(response.getMessages()).thenReturn(Collections.singletonList(responseMessage));
