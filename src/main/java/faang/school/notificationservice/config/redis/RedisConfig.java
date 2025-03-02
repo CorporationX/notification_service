@@ -16,9 +16,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
-    private final MessageListenerAdapter commentCreateMessageListenerAdapter;
 
-    private final ChannelTopic commentTopic;
+    private final MessageListenerAdapter profileViewMessageListenerAdapter;
+    private final ChannelTopic profileTopic;
 
     @Value("${spring.data.redis.host}")
     private String host;
@@ -47,7 +47,7 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory);
 
-        container.addMessageListener(commentCreateMessageListenerAdapter, commentTopic);
+        container.addMessageListener(profileViewMessageListenerAdapter, profileTopic);
         return container;
     }
 }
