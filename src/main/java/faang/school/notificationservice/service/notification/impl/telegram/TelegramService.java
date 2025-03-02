@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.telegram;
+package faang.school.notificationservice.service.notification.impl.telegram;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.notification.NotificationService;

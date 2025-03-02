@@ -1,8 +1,8 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.telegram.TelegramBot;
-import faang.school.notificationservice.service.telegram.TelegramService;
+import faang.school.notificationservice.service.notification.impl.telegram.TelegramBot;
+import faang.school.notificationservice.service.notification.impl.telegram.TelegramService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,9 +34,10 @@ public class TelegramServiceTest {
 
     @BeforeEach
     public void beforeEach() {
-        userDto = new UserDto();
-        userDto.setId(123L);
-        userDto.setPreference(UserDto.PreferredContact.TELEGRAM);
+        userDto = UserDto.builder()
+                .id(123L)
+                .preference(UserDto.PreferredContact.TELEGRAM)
+                .build();
 
         message = "Test message";
     }
