@@ -4,7 +4,6 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.context.UserContext;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.FollowerEvent;
-import faang.school.notificationservice.event.RecommendationEvent;
 import faang.school.notificationservice.listener.EventType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
