@@ -25,17 +25,12 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
-  kafka:
-    bootstrap-servers: localhost:9092
-    like_post_event_topic_name: like_post_event
-
   messages:
     basename: messages
 
 
-
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    bootstrap-servers: localhost:9092
     consumer:
       enable-auto-commit: false
       auto-offset-reset: earliest
@@ -48,9 +43,10 @@ spring:
 
     topics:
       comment_create_topic: comment-create
+      post_like_topic: like_post_event
 
 server:
-  port: ${SERVER_PORT:8083}
+  port: 8083
 
 logging:
   level:
