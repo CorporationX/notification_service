@@ -11,11 +11,12 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Configuration
 @RequiredArgsConstructor
 public class TelegramConfig {
-    private final TelegramBotProperties telegramBotProperties;
+    private final NotificationServiceProperties notificationServiceProperties;
 
     @Bean
     public NotificationBotService myTelegramBot() {
-        return new NotificationBotService(telegramBotProperties.getToken(), telegramBotProperties.getUsername());
+        return new NotificationBotService(notificationServiceProperties.getTelegramBot().getToken(),
+                notificationServiceProperties.getTelegramBot().getUsername());
     }
 
     @Bean
