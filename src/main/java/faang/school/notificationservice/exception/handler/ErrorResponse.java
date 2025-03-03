@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -20,8 +21,13 @@ public class ErrorResponse {
     private String url;
     private int status;
     private String message;
+    private List<Violation> violations;
 
     public ErrorResponse(String message) {
         this.message = message;
+    }
+
+    public ErrorResponse(List<Violation> violations) {
+        this.violations = violations;
     }
 }
