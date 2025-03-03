@@ -47,7 +47,7 @@ class EmailServiceTest {
     @Test
     void shouldSendMail() {
         Mockito.doNothing().when(emailSender).send(messageCaptor.capture());
-        Mockito.doNothing().when(validator).validateNotification(Mockito.any(UserDto.class), Mockito.anyString());
+        Mockito.doNothing().when(validator).validateEmailNotification(Mockito.any(UserDto.class), Mockito.anyString());
         emailService.send(userDto, "привет");
 
         Mockito.verify(emailSender).send(messageCaptor.capture());
@@ -56,7 +56,7 @@ class EmailServiceTest {
     @Test
     void shouldThrowSendMail() {
         var mailException = new MailException("Simulated MailException") {};
-        Mockito.doNothing().when(validator).validateNotification(Mockito.any(UserDto.class), Mockito.anyString());
+        Mockito.doNothing().when(validator).validateEmailNotification(Mockito.any(UserDto.class), Mockito.anyString());
         Mockito.doThrow(mailException).when(emailSender).send(Mockito.any(SimpleMailMessage.class));
         Assertions.assertThrows(IntegrationException.class ,() -> emailService.send(userDto, "привет"));
     }

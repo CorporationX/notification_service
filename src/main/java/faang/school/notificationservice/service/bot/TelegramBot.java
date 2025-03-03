@@ -33,7 +33,7 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
             telegramClient.execute(message);
         } catch (TelegramApiException e) {
             String errorMessage = "Отправка уведомления через телеграм для chat id " + telegramChatId +
-                    " завершилась с ошибкой";
+                    " завершилась с ошибкой: " + e.getMessage();
             log.error(errorMessage, e);
             throw new IntegrationException(errorMessage);
         }
@@ -60,6 +60,7 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
 
     @AfterBotRegistration
     public void afterRegistration(BotSession botSession) {
-        log.info("Registered bot with name {} running state is: {}", botProperties.getName(), botSession.isRunning());
+        log.info("Зарегистрированный бот с именем {} имеет статус работы: {}",
+                botProperties.getName(), botSession.isRunning());
     }
 }

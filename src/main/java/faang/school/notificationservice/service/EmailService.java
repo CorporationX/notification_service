@@ -22,7 +22,7 @@ public class EmailService implements NotificationService {
 
     @Override
     public void send(UserDto user, String message) {
-        notificationValidator.validateNotification(user, message);
+        notificationValidator.validateEmailNotification(user, message);
 
         if (user.getPreference() != getPreferredContact()){
             log.info("Email не будет отправлен, так как Email не является предпочтительным контактом");
