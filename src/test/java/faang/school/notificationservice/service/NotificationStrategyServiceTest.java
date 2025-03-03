@@ -3,6 +3,8 @@ package faang.school.notificationservice.service;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.BusinessException;
 import faang.school.notificationservice.exception.DataValidationException;
+import faang.school.notificationservice.service.notification.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationStrategyService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

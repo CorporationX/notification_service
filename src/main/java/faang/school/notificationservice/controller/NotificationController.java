@@ -2,8 +2,8 @@ package faang.school.notificationservice.controller;
 
 import faang.school.notificationservice.dto.NotificationRequest;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.service.NotificationService;
-import faang.school.notificationservice.service.NotificationStrategyService;
+import faang.school.notificationservice.service.notification.NotificationStrategyService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
