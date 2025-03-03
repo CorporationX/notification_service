@@ -41,6 +41,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
 project-service:
   host: localhost
   port: 8082
+
 user-service:
   host: localhost
   port: 8080
+
+telegram-bot:
+  token: "7866735424:AAGUj4VtdEgBOVfWPZKoSG-vh-X0HGNazU8"
+  name: "thestral8_bot"

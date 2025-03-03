@@ -6,7 +6,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class NotificationValidator {
-    public void validateNotification(UserDto user, String message) {
+
+    public void validateEmailNotification(UserDto user, String message) {
         if (user == null) {
             throw new DataValidationException("UserDto не может быть null");
         }
