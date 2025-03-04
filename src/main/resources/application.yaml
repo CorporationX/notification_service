@@ -42,6 +42,7 @@ spring:
 
     topics:
       comment_create_topic: comment-create
+      recommendation_request: recommendation-request
 
 server:
   port: ${SERVER_PORT:8083}

@@ -1,39 +1,32 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.RecommendationRequestedEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Locale;
 
 @Slf4j
 @Component
-public class RecommendationEventListener
-        extends AbstractEventListener<RecommendationRequestedEvent>
-        implements MessageListener {
+public class RecommendationEventListener extends AbstractEventListener<RecommendationRequestedEvent> {
 
-    public RecommendationEventListener(ObjectMapper objectMapper,
-                                       UserServiceClient userServiceClient,
+    public RecommendationEventListener(UserServiceClient userServiceClient,
                                        List<MessageBuilder<RecommendationRequestedEvent>> messageBuilders,
                                        List<NotificationService> notificationServices) {
-        super(objectMapper, userServiceClient, messageBuilders, notificationServices);
+        super(userServiceClient, messageBuilders, notificationServices);
     }
 
-    @KafkaListener(topics = "recommendation_request", groupId = "notification-processing-group")
+    @KafkaListener(
+            topics = "${spring.kafka.topics.recommendation_request}",
+            properties = "spring.json.value.default.type=faang.school.notificationservice.dto.RecommendationRequestedEvent"
+    )
     @Override
-    public void onMessage(ConsumerRecord<String, String> record, Acknowledgment acknowledgment) {
-        handleEvent(record, RecommendationRequestedEvent.class, event -> {
-            String message = getMessage(event, Locale.getDefault());
-            sendNotification(event.targetUserId(), message);
-        });
-        acknowledgment.acknowledge();
+    public void onMessage(RecommendationRequestedEvent event) {
+        handleMessage(event, event.targetUserId());
+        log.info("Processing recommendation event completed: {}", event);
     }
 }

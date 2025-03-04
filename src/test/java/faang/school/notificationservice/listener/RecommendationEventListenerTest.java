@@ -1,17 +1,15 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.RecommendationRequestedEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.kafka.support.Acknowledgment;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Locale;
@@ -19,10 +17,8 @@ import java.util.Locale;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class RecommendationEventListenerTest {
-
-    @Mock
-    private ObjectMapper objectMapper;
+@ExtendWith(MockitoExtension.class)
+class RecommendationEventListenerTest {
 
     @Mock
     private UserServiceClient userServiceClient;
@@ -33,37 +29,26 @@ public class RecommendationEventListenerTest {
     @Mock
     private NotificationService notificationService;
 
-    @Mock
-    private Acknowledgment acknowledgment;
-
-    @Mock
-    private ConsumerRecord<String, String> consumerRecord;
-
     private RecommendationEventListener listener;
 
     @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-        List<MessageBuilder<RecommendationRequestedEvent>> builders = List.of(messageBuilder);
+    void setUp() {
+        List<MessageBuilder<RecommendationRequestedEvent>> messageBuilders = List.of(messageBuilder);
         List<NotificationService> notificationServices = List.of(notificationService);
-        listener = new RecommendationEventListener(objectMapper, userServiceClient, builders, notificationServices);
+        listener = new RecommendationEventListener(userServiceClient, messageBuilders, notificationServices);
     }
 
     @Test
-    public void testOnMessage() {
-        // Создаем тестовое событие
+    void testOnMessage() {
         RecommendationRequestedEvent event = RecommendationRequestedEvent.builder()
                 .requestAuthorId(111L)
                 .targetUserId(222L)
                 .recommendationRequestId(333L)
                 .build();
 
-        // JSON-представление события
-        String jsonValue = "{\"requestAuthorId\":111,\"targetUserId\":222,\"recommendationRequestId\":333}";
-        when(consumerRecord.value()).thenReturn(jsonValue);
-        when(objectMapper.convertValue(jsonValue, RecommendationRequestedEvent.class)).thenReturn(event);
         when(messageBuilder.getInstance()).thenReturn((Class) RecommendationRequestedEvent.class);
-        when(messageBuilder.buildMessage(event, Locale.getDefault())).thenReturn("User 111 requested recommendation, request id 333");
+        when(messageBuilder.buildMessage(event, Locale.UK))
+                .thenReturn("User 111 requested recommendation, request id 333");
 
         UserDto userDto = UserDto.builder()
                 .id(222L)
@@ -75,12 +60,12 @@ public class RecommendationEventListenerTest {
         when(userServiceClient.getUser(222L)).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
 
-        listener.onMessage(consumerRecord, acknowledgment);
+        listener.onMessage(event);
 
-        verify(objectMapper).convertValue(jsonValue, RecommendationRequestedEvent.class);
-        verify(messageBuilder).buildMessage(event, Locale.getDefault());
+        verify(messageBuilder).getInstance();
+        verify(messageBuilder).buildMessage(event, Locale.UK);
         verify(userServiceClient).getUser(222L);
+        verify(notificationService).getPreferredContact();
         verify(notificationService).send(userDto, "User 111 requested recommendation, request id 333");
-        verify(acknowledgment).acknowledge();
     }
 }
