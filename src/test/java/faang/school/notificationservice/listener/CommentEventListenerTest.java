@@ -60,7 +60,7 @@ class CommentEventListenerTest {
         when(userServiceClient.getUser(userId)).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
 
-       commentEventListener.onMessage(commentEvent);
+        commentEventListener.onMessage(commentEvent);
 
         verify(messageBuilder).getInstance();
         verify(messageBuilder).buildMessage(commentEvent, Locale.UK);
