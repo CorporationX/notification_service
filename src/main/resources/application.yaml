@@ -10,10 +10,13 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: vladerm2081@gmail.com
+    password: qmqthhmnmsufpzdd
     properties:
       mail:
+        debug: true
+        transport:
+          protocol: smtp
         smtp:
           auth: true
           starttls:
@@ -31,11 +34,14 @@ spring:
       enable-auto-commit: false
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       group-id: notification-processing-group
 
     listener:
-      ack-mode: manual
+      ack-mode: record
+
+    topics:
+      comment_create_topic: comment-create
 
 server:
   port: ${SERVER_PORT:8083}
