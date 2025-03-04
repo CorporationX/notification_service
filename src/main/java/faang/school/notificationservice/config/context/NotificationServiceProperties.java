@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "notification-service")
 public class NotificationServiceProperties {
     private String apiVersion;
-    private TelegramBot telegramBot = new TelegramBot();
+    private TelegramBot telegramBot;
 
     @Data
     public static class TelegramBot {
