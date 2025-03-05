@@ -34,7 +34,6 @@ public abstract class AbstractEventListener<T> implements MessageListener {
                                  List<NotificationService> notificationServices,
                                  UserContext userContext) {
         this.objectMapper = objectMapper;
-        objectMapper.registerModule(new JavaTimeModule());
         this.userServiceClient = userServiceClient;
         this.userContext = userContext;
 

@@ -1,6 +1,7 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.context.UserContext;
 import faang.school.notificationservice.event.FollowerEvent;
@@ -22,7 +23,7 @@ public class FollowerEventListener extends AbstractEventListener<FollowerEvent> 
                                        UserServiceClient userServiceClient,
                                        List<NotificationService> notificationServices,
                                        UserContext userContext) {
-        super(messageBuilders, objectMapper, userServiceClient, notificationServices, userContext);
+        super(messageBuilders, objectMapper.registerModule(new JavaTimeModule()), userServiceClient, notificationServices, userContext);
     }
 
     @Override
