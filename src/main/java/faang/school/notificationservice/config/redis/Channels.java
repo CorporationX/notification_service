@@ -14,4 +14,5 @@ public class Channels {
     private String follower;
     private String achievement;
     private String profileView;
+    private String recommendationMentorshipOffered;
 }

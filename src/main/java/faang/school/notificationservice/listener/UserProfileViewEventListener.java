@@ -34,7 +34,7 @@ public class UserProfileViewEventListener extends AbstractEventListener<UserProf
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, UserProfileViewEvent.class, (event) -> {
             Long visitedUserId = event.visitedUserId();
-            String notificationMessage = getMessage(visitedUserId, event);
+            String notificationMessage = getMessage(event);
             sendNotification(visitedUserId, notificationMessage);
         });
     }

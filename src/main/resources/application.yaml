@@ -8,6 +8,7 @@ spring:
         achievement: achievement_channel
         recommendation-channel: recommendation_channel
         profile-view: profile_view
+        recommendation-mentorship-offered: recommendation_mentorship_offered
 
   mail:
     host: smtp.gmail.com
