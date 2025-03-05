@@ -3,6 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.context.UserContext;
+import faang.school.notificationservice.config.redis.Channels;
 import faang.school.notificationservice.event.UserProfileViewEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -16,18 +17,27 @@ import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_PRO
 
 @Slf4j
 @Component
-public class UserProfileViewEventListener extends AbstractEventListener<UserProfileViewEvent>{
+public class UserProfileViewEventListener extends AbstractEventListener<UserProfileViewEvent> {
+
+    private final Channels channels;
+
     public UserProfileViewEventListener(List<MessageBuilder<UserProfileViewEvent>> messageBuilders,
-                                       ObjectMapper objectMapper,
-                                       UserServiceClient userServiceClient,
-                                       List<NotificationService> notificationServices,
-                                       UserContext userContext) {
+                                        ObjectMapper objectMapper,
+                                        UserServiceClient userServiceClient,
+                                        List<NotificationService> notificationServices,
+                                        UserContext userContext, Channels channels) {
         super(messageBuilders, objectMapper, userServiceClient, notificationServices, userContext);
+        this.channels = channels;
     }
 
     public EventType getEventType() {
 
         return EVENT_TYPE_PROFILE_VIEW;
+    }
+
+    @Override
+    public String getTopicName() {
+        return channels.getProfileView();
     }
 
     @Override

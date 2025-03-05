@@ -9,6 +9,7 @@ import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -47,6 +48,8 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     }
 
     public abstract EventType getEventType();
+
+    public abstract String getTopicName();
 
     protected void handleEvent(Message message, Class<T> tClass, Consumer<T> consumer) {
         try {

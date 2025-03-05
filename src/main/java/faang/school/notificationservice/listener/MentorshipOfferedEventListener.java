@@ -3,6 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.context.UserContext;
+import faang.school.notificationservice.config.redis.Channels;
 import faang.school.notificationservice.event.MentorshipOfferedEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -18,18 +19,26 @@ import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_REC
 @Component
 public class MentorshipOfferedEventListener extends AbstractEventListener<MentorshipOfferedEvent> {
 
+    private final Channels channels;
+
     public MentorshipOfferedEventListener(List<MessageBuilder<MentorshipOfferedEvent>> messageBuilders,
                                           ObjectMapper objectMapper,
                                           UserServiceClient userServiceClient,
                                           List<NotificationService> notificationServices,
-                                          UserContext userContext) {
+                                          UserContext userContext, Channels channels) {
 
         super(messageBuilders, objectMapper, userServiceClient, notificationServices, userContext);
+        this.channels = channels;
     }
 
     @Override
     public EventType getEventType() {
         return EVENT_TYPE_RECOMMENDATION;
+    }
+
+    @Override
+    public String getTopicName() {
+        return channels.getRecommendationMentorshipOffered();
     }
 
     @Override

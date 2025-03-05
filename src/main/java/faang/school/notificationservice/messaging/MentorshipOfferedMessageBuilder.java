@@ -15,7 +15,7 @@ import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_REC
 
 @Component
 @RequiredArgsConstructor
-public class MentorshipOfferedMessageBuilder  implements MessageBuilder<MentorshipOfferedEvent> {
+public class MentorshipOfferedMessageBuilder implements MessageBuilder<MentorshipOfferedEvent> {
     private final MessageSource messageSource;
     private final UserServiceClient userServiceClient;
     private final UserContext userContext;

@@ -14,7 +14,7 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class UserProfileViewMessageBuilder implements MessageBuilder<UserProfileViewEvent>{
+public class UserProfileViewMessageBuilder implements MessageBuilder<UserProfileViewEvent> {
 
     private final UserServiceClient userServiceClient;
     private final MessageSource messageSource;
