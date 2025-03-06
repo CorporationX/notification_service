@@ -34,11 +34,15 @@ spring:
       enable-auto-commit: false
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       group-id: notification-processing-group
 
     listener:
-      ack-mode: manual
+      ack-mode: record
+
+    topics:
+      comment_create_topic: comment-create
+      goal-completed: goal_completed
 
 server:
   port: ${SERVER_PORT:8083}
@@ -54,8 +58,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-  host: localhost
-  port: 8082
+    host: localhost
+    port: 8082
 user-service:
-  host: localhost
-  port: 8080
+    host: localhost
+    port: 8080
