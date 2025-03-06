@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.service.notification.impl.EmailService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,11 +30,12 @@ public class EmailServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new UserDto();
-        user.setId(1L);
-        user.setUsername("test name");
-        user.setEmail("example@example.com");
-        user.setPreference(UserDto.PreferredContact.EMAIL);
+        user = UserDto.builder()
+                .id(1L)
+                .username("test name")
+                .email("example@example.com")
+                .preference(UserDto.PreferredContact.EMAIL)
+                .build();
     }
 
     @Test
