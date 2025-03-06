@@ -23,7 +23,7 @@ public class FollowerEventListener extends AbstractEventListener<FollowerEvent> 
                                        UserServiceClient userServiceClient,
                                        List<NotificationService> notificationServices,
                                        UserContext userContext) {
-        super(messageBuilders, objectMapper.registerModule(new JavaTimeModule()), userServiceClient, notificationServices, userContext);
+        super(messageBuilders, objectMapper, userServiceClient, notificationServices, userContext);
     }
 
     @Override
