@@ -8,6 +8,4 @@ public interface NotificationService {
     ResponseEntity<String> send(Long userId, String message);
 
     void send(UserDto user, String message);
-
-    UserDto.PreferredContact getPreferredContact();
 }
