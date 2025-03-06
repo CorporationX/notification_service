@@ -39,8 +39,12 @@ public class GoalCompletedEventListenerTest {
 
     @Test
     public void testOnMessage() {
+        // Создаем тестовое событие
         GoalCompletedEvent event = new GoalCompletedEvent(123L, 456L);
         String builtMessage = "Congratulations! You completed goal 456";
+
+        // Необходимо вернуть класс события, чтобы AbstractEventListener нашел нужный message builder
+        when(messageBuilder.getInstance()).thenReturn((Class) GoalCompletedEvent.class);
         when(messageBuilder.buildMessage(event, Locale.UK)).thenReturn(builtMessage);
 
         UserDto userDto = UserDto.builder()
@@ -53,8 +57,10 @@ public class GoalCompletedEventListenerTest {
         when(userServiceClient.getUser(123L)).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
 
+        // Вызываем обработчик события
         listener.onMessage(event);
 
+        // Проверяем, что message builder и сервисы были вызваны корректно
         verify(messageBuilder).buildMessage(event, Locale.UK);
         verify(userServiceClient).getUser(123L);
         verify(notificationService).send(userDto, builtMessage);
