@@ -1,37 +1,32 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.GoalCompletedEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Locale;
 
 @Component
 @Slf4j
-public class GoalCompletedEventListener extends AbstractEventListener<GoalCompletedEvent> implements MessageListener {
+public class GoalCompletedEventListener extends AbstractEventListener<GoalCompletedEvent> {
 
-    public GoalCompletedEventListener(ObjectMapper objectMapper,
-                                      UserServiceClient userServiceClient,
+    public GoalCompletedEventListener(UserServiceClient userServiceClient,
                                       List<MessageBuilder<GoalCompletedEvent>> messageBuilders,
                                       List<NotificationService> notificationServices) {
-        super(objectMapper, userServiceClient, messageBuilders, notificationServices);
+        super(userServiceClient, messageBuilders, notificationServices);
     }
 
-    @KafkaListener(topics = "goal_completed")
+    @KafkaListener(
+            topics = "${spring.kafka.topics.goal_completed}",
+            properties = "spring.json.value.default.type=faang.school.notificationservice.dto.GoalCompletedEvent"
+    )
     @Override
-    public void onMessage(ConsumerRecord<String, String> record, Acknowledgment acknowledgment) {
-        handleEvent(record, GoalCompletedEvent.class, event -> {
-            String message = getMessage(event, Locale.UK);
-            sendNotification(event.userId(), message);
-        });
-        acknowledgment.acknowledge();
+    public void onMessage(GoalCompletedEvent event) {
+        handleMessage(event, event.userId());
+        log.info("Processing message completed: {}", event);
     }
 }

@@ -63,3 +63,4 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+    api-path: /api/v1
