@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.context;
 
-import faang.school.notificationservice.service.NotificationBotService;
+import faang.school.notificationservice.properties.NotificationServiceProperties;
+import faang.school.notificationservice.service.impl.NotificationBotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
 package faang.school.notificationservice.controller;
 
-import faang.school.notificationservice.service.TelegramService;
+import faang.school.notificationservice.service.impl.TelegramServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 public class TelegramNotificationControllerTest {
 
     @Mock
-    private TelegramService telegramService;
+    private TelegramServiceImpl telegramService;
 
     @InjectMocks
     private TelegramNotificationController telegramNotificationController;

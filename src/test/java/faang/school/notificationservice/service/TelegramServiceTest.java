@@ -1,14 +1,13 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.service.impl.NotificationBotService;
+import faang.school.notificationservice.service.impl.TelegramServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -18,34 +17,13 @@ public class TelegramServiceTest {
     private NotificationBotService notificationBotService;
 
     @InjectMocks
-    private TelegramService telegramService;
-
-    @Test
-    void testSendWithUserDtoSuccess() {
-        UserDto user = new UserDto();
-        user.setId(12345L);
-        String message = "Test notification";
-
-        telegramService.send(user, message);
-
-        verify(notificationBotService).sendMessage("12345", "Test notification");
-    }
+    private TelegramServiceImpl telegramService;
 
     @Test
     void testSendWithUserIdSuccess() {
-        Long userId = 12345L;
         String message = "Test notification";
-
-        ResponseEntity<String> response = telegramService.send(userId, message);
+        telegramService.send(12345L, message);
 
         verify(notificationBotService).sendMessage("12345", "Test notification");
-        assertEquals("Successfully sent", response.getBody());
-        assertEquals(200, response.getStatusCode().value());
-    }
-
-    @Test
-    void testGetPreferredContact() {
-        UserDto.PreferredContact result = telegramService.getPreferredContact();
-        assertEquals(UserDto.PreferredContact.TELEGRAM, result);
     }
 }

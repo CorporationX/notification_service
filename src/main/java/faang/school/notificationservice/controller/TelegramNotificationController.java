@@ -1,6 +1,6 @@
 package faang.school.notificationservice.controller;
 
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.TelegramService;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("${notification-service.api-version}/telegram")
 public class TelegramNotificationController {
-    private final NotificationService notificationService;
+    private final TelegramService telegramService;
 
     @PostMapping("/send")
     public ResponseEntity<String> sendNotification(@NotNull(message = "Please enter the userId") @RequestParam("user_id") Long userId,
                                                    @NotEmpty(message = "Message is empty") @RequestParam("message") String message) {
-        return notificationService.send(userId, message);
+        return telegramService.send(userId, message);
     }
 }

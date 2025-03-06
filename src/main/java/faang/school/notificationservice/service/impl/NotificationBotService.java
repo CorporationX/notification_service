@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service;
+package faang.school.notificationservice.service.impl;
 
 import lombok.extern.log4j.Log4j2;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;

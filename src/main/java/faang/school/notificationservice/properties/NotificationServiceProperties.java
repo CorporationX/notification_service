@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.context;
+package faang.school.notificationservice.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
