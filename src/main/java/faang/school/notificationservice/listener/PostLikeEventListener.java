@@ -13,7 +13,9 @@ import java.util.List;
 @Component
 @Slf4j
 public class PostLikeEventListener extends  AbstractEventListener<LikePostEvent> {
-    public PostLikeEventListener(UserServiceClient userServiceClient, List<MessageBuilder<LikePostEvent>> messageBuilders, List<NotificationService> notificationServices) {
+    public PostLikeEventListener(UserServiceClient userServiceClient,
+                                 List<MessageBuilder<LikePostEvent>> messageBuilders,
+                                 List<NotificationService> notificationServices) {
         super(userServiceClient, messageBuilders, notificationServices);
     }
 
