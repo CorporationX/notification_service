@@ -43,7 +43,7 @@ spring:
 
     topics:
       comment_create_topic: comment-create
-      post_like_topic: like_post_event
+      post_like_topic: post-like
 
 server:
   port: 8083
