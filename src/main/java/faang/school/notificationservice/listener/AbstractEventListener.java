@@ -1,16 +1,13 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.BusinessException;
 import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.NotificationStrategyService;
 import faang.school.notificationservice.service.UserService;
 import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.MessageListener;
 
 import java.io.IOException;
