@@ -30,11 +30,12 @@ public class EmailServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new UserDto();
-        user.setId(1L);
-        user.setUsername("test name");
-        user.setEmail("example@example.com");
-        user.setPreference(UserDto.PreferredContact.EMAIL);
+        user = UserDto.builder()
+                .id(1L)
+                .username("test name")
+                .email("example@example.com")
+                .preference(UserDto.PreferredContact.EMAIL)
+                .build();
     }
 
     @Test

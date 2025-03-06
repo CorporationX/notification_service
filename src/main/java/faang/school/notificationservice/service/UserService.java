@@ -1,3 +1,4 @@
+
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.client.UserServiceClient;

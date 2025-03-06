@@ -4,7 +4,6 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.BusinessException;
 import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.service.notification.NotificationService;
-import faang.school.notificationservice.service.notification.NotificationStrategyService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,8 +31,9 @@ public class NotificationStrategyServiceTest {
 
     @Test
     void testGetNotificationServiceSuccessCase() {
-        UserDto userDto = new UserDto();
-        userDto.setPreference(UserDto.PreferredContact.TELEGRAM);
+        UserDto userDto = UserDto.builder()
+                .preference(UserDto.PreferredContact.TELEGRAM)
+                .build();
 
         Mockito.when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.TELEGRAM);
         Mockito.when(notificationServices.stream()).thenReturn(Stream.of(notificationService));
@@ -43,8 +43,9 @@ public class NotificationStrategyServiceTest {
 
     @Test
     void testGetNotificationServiceWithNoServiceMatchesPreference() {
-        UserDto userDto = new UserDto();
-        userDto.setPreference(UserDto.PreferredContact.EMAIL);
+        UserDto userDto = UserDto.builder()
+                .preference(UserDto.PreferredContact.EMAIL)
+                .build();
 
         Mockito.when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.TELEGRAM);
         Mockito.when(notificationServices.stream()).thenReturn(Stream.of(notificationService));
@@ -55,7 +56,7 @@ public class NotificationStrategyServiceTest {
 
     @Test
     void testGetNotificationServiceWithNoUserPreference() {
-        UserDto userDto = new UserDto();
+        UserDto userDto = UserDto.builder().build();
 
         assertThrows(DataValidationException.class,
                 () -> notificationStrategyService.getNotificationService(userDto));
