@@ -21,7 +21,7 @@ public class GoalCompletedEventListener extends AbstractEventListener<GoalComple
     }
 
     @KafkaListener(
-            topics = "${spring.kafka.topics.goal_completed}",
+            topics = "${spring.kafka.topics.goal-completed}",
             properties = "spring.json.value.default.type=faang.school.notificationservice.dto.GoalCompletedEvent"
     )
     @Override
