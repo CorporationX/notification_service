@@ -5,7 +5,7 @@ import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.config.VonageConfig;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserNotificationDto;
 import faang.school.notificationservice.exception.SmsSendingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class SmsService implements NotificationService {
     private final VonageClient vonageClient;
 
     @Override
-    public void send(UserDto user, String message) {
+    public void send(UserNotificationDto user, String message) {
         String phone = user.getPhone();
 
         TextMessage sms = new TextMessage(
@@ -39,7 +39,7 @@ public class SmsService implements NotificationService {
     }
 
     @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.SMS;
+    public UserNotificationDto.PreferredContact getPreferredContact() {
+        return UserNotificationDto.PreferredContact.SMS;
     }
 }
