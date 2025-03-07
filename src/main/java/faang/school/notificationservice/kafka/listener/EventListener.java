@@ -1,4 +1,4 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.kafka.listener;
 
 public interface EventListener {
 

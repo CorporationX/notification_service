@@ -13,7 +13,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class RecommendationServiceImpl implements RecommendationService {
 
-    private final RecommendationRequestNotificationService notificationService;
+    private final RecommendationRequestEventService recommendationRequestEventService;
     private final UserServiceClient userServiceClient;
     private final MessageBuilder<RecommendationRequestEvent> messageBuilder;
 
@@ -21,6 +21,6 @@ public class RecommendationServiceImpl implements RecommendationService {
     public void sendNotification(RecommendationRequestEvent recommendationRequestEvent) {
         UserDto receiverUser = userServiceClient.getUser(recommendationRequestEvent.getReceiverId());
         String messageToSend = messageBuilder.buildMessage(recommendationRequestEvent, Locale.getDefault());
-        notificationService.send(receiverUser, messageToSend);
+        recommendationRequestEventService.apply(receiverUser, messageToSend);
     }
 }
