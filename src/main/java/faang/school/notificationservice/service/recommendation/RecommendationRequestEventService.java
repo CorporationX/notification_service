@@ -3,6 +3,8 @@ package faang.school.notificationservice.service.recommendation;
 import faang.school.notificationservice.dto.user.UserDto;
 import faang.school.notificationservice.service.EventService;
 import faang.school.notificationservice.service.notification.NotificationService;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +15,15 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class RecommendationRequestEventService implements EventService {
 
-    private final Map<UserDto.PreferredContact, NotificationService> notificationServices;
+    private final List<NotificationService> notificationServices;
+    private Map<UserDto.PreferredContact, NotificationService> notificationServicesByPrefferedContact;
 
-    public RecommendationRequestEventService(List<NotificationService> notificationServices) {
-        this.notificationServices = notificationServices.stream()
+    @PostConstruct
+    public void init() {
+        this.notificationServicesByPrefferedContact = notificationServices.stream()
                 .collect(Collectors.toMap(NotificationService::getPreferredContact, Function.identity()));
     }
 
@@ -29,7 +34,7 @@ public class RecommendationRequestEventService implements EventService {
             throw new IllegalArgumentException("Contact preference is not valid");
         }
         log.info("Notification {} for user {} sending to preferred contact: {}", message, user.getId(), preference);
-        notificationServices.get(preference).send(user, message);
+        notificationServicesByPrefferedContact.get(preference).send(user, message);
     }
 
 }

@@ -11,6 +11,7 @@ spring:
     bootstrap-servers: localhost:9092
 
   mail:
+    from: faang-school-kelpie-8@noreply.com
     host: smtp.gmail.com
     port: 587
     username: your_email@gmail.com #https://www.baeldung.com/spring-email
@@ -56,3 +57,9 @@ kafka:
   recommendation:
     request:
       topic: recommendation-request-topic
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus,health,info,metric
