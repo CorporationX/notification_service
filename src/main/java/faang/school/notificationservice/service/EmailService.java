@@ -12,7 +12,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -53,7 +52,7 @@ public class EmailService implements NotificationService {
     }
 
     private String validateDto(UserServiceDto dto) {
-        if (!Objects.equals(dto.getPreference(), getPreferredContact())) {
+        if (dto.getPreference() != getPreferredContact()) {
             throw new NoSuchElementException(
                     String.format("User %s didn't set email notification option", dto.getUsername()));
         }
