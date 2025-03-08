@@ -1,16 +1,11 @@
 package faang.school.notificationservice.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+import lombok.Builder;
+
 @Builder
-public class RecommendationRequestedEvent {
-    long requestAuthorId;
-    long targetUserId;
-    long recommendationRequestId;
+public record RecommendationRequestedEvent(
+        long requestAuthorId,
+        long targetUserId,
+        long recommendationRequestId) {
 }

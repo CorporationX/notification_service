@@ -20,6 +20,6 @@ public class RecommendationMessageBuilder implements MessageBuilder<Recommendati
 
     @Override
     public String buildMessage(RecommendationRequestedEvent event, Locale locale) {
-        return messageSource.getMessage("recommendation.request", new Object[]{event.getRequestAuthorId()}, locale);
+        return messageSource.getMessage("recommendation.request", new Object[]{event.requestAuthorId()}, locale);
     }
 }
