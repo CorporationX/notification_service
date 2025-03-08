@@ -23,7 +23,8 @@ public class RecommendationRequestEventListener extends AbstractEventListener<Re
 
     @KafkaListener(
             topics = "${spring.kafka.topics.recommendation_requested}",
-            properties = "spring.json.value.default.type=faang.school.notificationservice.dto.RecommendationRequestedEvent"
+            properties = "spring.json.value.default.type=faang.school.notificationservice"
+                    + ".dto.RecommendationRequestedEvent"
     )
     @Override
     public void onMessage(RecommendationRequestedEvent event) {
