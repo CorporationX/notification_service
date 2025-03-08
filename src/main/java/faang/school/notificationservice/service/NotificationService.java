@@ -1,10 +1,9 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserProfileDto;
 
 public interface NotificationService {
-
-    void send(UserDto user, String message);
-
-    UserDto.PreferredContact getPreferredContact();
+    void send(UserProfileDto user, String message);
+    UserProfileDto.PreferredContact getPreferredContact();
+    boolean supports(UserProfileDto.PreferredContact preferredContact);
 }

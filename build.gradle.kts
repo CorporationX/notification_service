@@ -10,6 +10,8 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
+    maven("https://jitpack.io")
+
 }
 
 dependencies {
@@ -24,6 +26,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail:3.0.6")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
 
     /**
      * Database
@@ -42,6 +47,7 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
     implementation("com.vonage:client:7.3.0")
+    implementation("org.telegram:telegrambots:6.5.0")
 
     /**
      * Test containers

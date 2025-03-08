@@ -7,11 +7,31 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
 
+  kafka:
+    topics:
+      follower-events: follower_events
+    bootstrap-servers: localhost:9092
+    consumer:
+      properties:
+        spring.json.trusted.packages: "*"
+    listener:
+      missing-topics-fatal: false
+    admin:
+      auto-create: true
+    bindings:
+      follower-events:
+        consumer:
+          dlq-name: follower_events_dlq
+          dlq-partitions: 1
+
+  cache:
+    type: caffeine
+
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: your_email@gmail.com
+    password: whatever
     properties:
       mail:
         smtp:
@@ -24,6 +44,11 @@ spring:
 
   messages:
     basename: messages
+    encoding: UTF-8
+
+telegram:
+  bot-token: 7792126213:AAG0-KCz_gS9KkB5eWLgPp9XcATrz62hvn8
+  bot-username: "faang_school_test_api_bot"
 
 server:
   port: 8083
@@ -32,15 +57,15 @@ logging:
   level:
     root: info
 
-#Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
-vonage: #https://dashboard.nexmo.com/getting-started/sms
+vonage:
   api:
     key: whatever
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
+
 user-service:
-    host: localhost
-    port: 8080
+  port: 8080
+  host: localhost
