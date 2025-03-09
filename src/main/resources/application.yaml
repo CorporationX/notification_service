@@ -44,6 +44,8 @@ spring:
     topics:
       comment-create-topic: comment-create
       post-like-topic: post-like
+      goal-completed: goal-completed
+      recommendation_requested: recommendation-requested
 
 server:
   port: 8083
@@ -64,3 +66,4 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+    api-path: /api/v1

@@ -38,7 +38,6 @@ dependencies {
      * Utils & Logging
      */
     implementation("com.fasterxml.jackson.core:jackson-databind")
-
     implementation("org.slf4j:slf4j-api:2.0.5")
     implementation("ch.qos.logback:logback-classic:1.4.6")
     implementation("org.projectlombok:lombok:1.18.26")
@@ -54,7 +53,6 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
     testImplementation("org.springframework.kafka:spring-kafka-test")
-
     /**
      * Tests
      */
