@@ -43,6 +43,7 @@ spring:
     topics:
       comment_create_topic: comment-create
       goal-completed: goal-completed
+      recommendation_requested: recommendation-requested
 
 server:
   port: ${SERVER_PORT:8083}
