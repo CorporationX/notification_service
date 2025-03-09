@@ -26,7 +26,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail:3.4.2")
     implementation("org.springframework:spring-context-support:6.2.2")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
-    implementation("org.springframework.kafka:spring-kafka")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     /**

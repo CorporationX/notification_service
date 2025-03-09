@@ -42,8 +42,8 @@ spring:
       ack-mode: record
 
     topics:
-      comment_create_topic: comment-create
-      post_like_topic: post-like
+      comment-create-topic: comment-create
+      post-like-topic: post-like
 
 server:
   port: 8083

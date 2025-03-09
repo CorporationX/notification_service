@@ -21,7 +21,7 @@ public class CommentEventListener extends AbstractEventListener<CommentEvent> {
     }
 
     @KafkaListener(
-            topics = "${spring.kafka.topics.comment_create_topic}",
+            topics = "${spring.kafka.topics.comment-create-topic}",
             properties = "spring.json.value.default.type=faang.school.notificationservice.dto.CommentEvent"
     )
     @Override

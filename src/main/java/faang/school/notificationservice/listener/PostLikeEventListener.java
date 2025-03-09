@@ -20,7 +20,7 @@ public class PostLikeEventListener extends  AbstractEventListener<LikePostEvent>
     }
 
     @KafkaListener(
-            topics = "${spring.kafka.topics.post_like_topic}",
+            topics = "${spring.kafka.topics.post-like-topic}",
             properties = "spring.json.value.default.type=faang.school.notificationservice.dto.LikePostEvent"
     )
     @Override
