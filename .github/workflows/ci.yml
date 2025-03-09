@@ -1,0 +1,22 @@
+name: CI PipeLine
+
+on:
+  pull_request:
+    branches:
+      - phoenix-master-stream8
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: SetUp JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: 17
+
+      - name: Run tests
+        run: ./gradlew test --stacktrace
