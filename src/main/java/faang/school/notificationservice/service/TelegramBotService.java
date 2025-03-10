@@ -38,7 +38,7 @@ public class TelegramBotService implements LongPollingSingleThreadUpdateConsumer
 
     @Override
     public void consume(Update update) {
-        System.out.println("Получено обновление: " + update);
+        log.info("Получено обновление: " + update);
 
         if (update.hasMessage() && update.getMessage().hasText()) {
             Long chatId = update.getMessage().getChatId();
