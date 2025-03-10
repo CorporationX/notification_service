@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_RECOMMENDATION;
+import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_MENTORSHIP_OFFERED;
 
 @Slf4j
 @Component
@@ -33,7 +33,7 @@ public class MentorshipOfferedEventListener extends AbstractEventListener<Mentor
 
     @Override
     public EventType getEventType() {
-        return EVENT_TYPE_RECOMMENDATION;
+        return EVENT_TYPE_MENTORSHIP_OFFERED;
     }
 
     @Override

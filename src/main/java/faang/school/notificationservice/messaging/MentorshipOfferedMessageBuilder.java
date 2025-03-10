@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 
-import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_RECOMMENDATION;
+import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_MENTORSHIP_OFFERED;
 
 @Component
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class MentorshipOfferedMessageBuilder implements MessageBuilder<Mentorshi
 
     @Override
     public EventType getEventType() {
-        return EVENT_TYPE_RECOMMENDATION;
+        return EVENT_TYPE_MENTORSHIP_OFFERED;
     }
 
     @Override
