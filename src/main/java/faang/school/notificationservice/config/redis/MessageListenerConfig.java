@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.follow.FollowEventListener;
 import faang.school.notificationservice.listener.profileview.ProfileViewEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,9 @@ public class MessageListenerConfig {
     @Value("${spring.data.redis.channel.profile-view}")
     private String profileTopic;
 
+    @Value("${spring.data.redis.channel.follower}")
+    private String followerTopic;
+
     @Bean
     MessageListenerAdapter profileViewMessageListenerAdapter(
             ProfileViewEventListener profileViewEventListener
@@ -21,7 +25,19 @@ public class MessageListenerConfig {
     }
 
     @Bean
+    MessageListenerAdapter followerMessageListenerAdapter(
+            FollowEventListener followEventListener
+    ) {
+        return new MessageListenerAdapter(followEventListener);
+    }
+
+    @Bean
     ChannelTopic profileTopic() {
         return new ChannelTopic(profileTopic);
+    }
+
+    @Bean
+    ChannelTopic followerTopic() {
+        return new ChannelTopic(followerTopic);
     }
 }
