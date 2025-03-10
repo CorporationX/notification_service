@@ -1,6 +1,7 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.context.UserContext;
 import faang.school.notificationservice.dto.UserDto;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -24,6 +26,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     protected final Map<EventType, MessageBuilder<T>> messageBuildersMap;
     protected final Map<UserDto.PreferredContact, NotificationService> notificationServiceMap;
     protected final UserContext userContext;
+
 
     public AbstractEventListener(List<MessageBuilder<T>> messageBuilders,
                                  ObjectMapper objectMapper,

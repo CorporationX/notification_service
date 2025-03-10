@@ -1,5 +1,9 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.FollowerEventListener;
+import faang.school.notificationservice.listener.RecommendationEventListener;
+import faang.school.notificationservice.listener.RedisListenerRegistrationService;
+import faang.school.notificationservice.listener.UserProfileViewEventListener;
 import faang.school.notificationservice.listener.AbstractEventListener;
 import faang.school.notificationservice.listener.RedisListenerRegistrationService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RedisConfig {
     private final RedisProperties redisProperties;
+    private final Channels channels;
     private final List<AbstractEventListener> listeners;
 
     @Bean
@@ -45,4 +50,5 @@ public class RedisConfig {
                 registrationService.registerListener(container, listener, listener.getTopicName()));
         return container;
     }
+
 }
