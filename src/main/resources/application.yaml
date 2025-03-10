@@ -28,8 +28,9 @@ spring:
   messages:
     basename: messages
 
+
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    bootstrap-servers: localhost:9092
     consumer:
       enable-auto-commit: false
       auto-offset-reset: earliest
@@ -41,12 +42,13 @@ spring:
       ack-mode: record
 
     topics:
-      comment_create_topic: comment-create
+      comment-create-topic: comment-create
+      post-like-topic: post-like
       goal-completed: goal-completed
       recommendation_requested: recommendation-requested
 
 server:
-  port: ${SERVER_PORT:8083}
+  port: 8083
 
 logging:
   level:
