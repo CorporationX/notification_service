@@ -67,3 +67,7 @@ user-service:
     host: localhost
     port: 8080
     api-path: /api/v1
+telegram:
+  bot:
+    username: CorpXNotificationBot
+    token: ${NOTIFICATION_TELEGRAM_BOT_TOKEN:123456:BOT_TOKEN}

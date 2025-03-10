@@ -59,6 +59,12 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    /**
+     * Tg Bot
+     */
+    implementation ("org.telegram:telegrambots-longpolling:8.0.0")
+    implementation ("org.telegram:telegrambots-client:8.0.0")
 }
 
 dependencyManagement {

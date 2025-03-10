@@ -17,6 +17,7 @@ public class UserDto {
     private String email;
     private String phone;
     private PreferredContact preference;
+    private String telegramChatId;
 
     @Builder.Default
     private Locale locale = Locale.UK;
