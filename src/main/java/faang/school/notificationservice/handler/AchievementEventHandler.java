@@ -13,6 +13,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Locale;
 
 @Slf4j
@@ -22,7 +23,7 @@ public class AchievementEventHandler {
 
     private final UserServiceClient userServiceClient;
     private final MessageBuilder<AchievementEvent> messageBuilder;
-    private final NotificationService notificationService;
+    private final List<NotificationService> notificationService;
 
     @EventListener
     @Async
@@ -33,6 +34,6 @@ public class AchievementEventHandler {
         UserDto user = userServiceClient.getUser(event.getUserId());
         log.info("User found: {}", user);
         String message = messageBuilder.buildMessage(event, Locale.getDefault());
-        notificationService.send(user, message);
+        notificationService.parallelStream().forEach(n -> n.send(user, message));
     }
 }

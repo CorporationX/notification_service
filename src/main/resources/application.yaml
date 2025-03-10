@@ -33,21 +33,21 @@ logging:
   level:
     root: info
 
-#Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
-vonage: #https://dashboard.nexmo.com/getting-started/sms
-  api:
-    key: whatever
-    secret: whatever
 
 project-service:
   host: localhost
   port: 8082
 notification-service:
   api-version: /api/v1
+  sms:
+    enabled: false
+    vonage:
+      api-key: ${VONAGE_API_KEY}
+      api-secret: ${VONAGE_SECRET_API_KEY}
   telegram-bot:
     token: ${TELEGRAM_TOKEN}
     username: "MyFaangNotificationBot"
   redis:
     achievement-channel: achievement_channel
 user-service:
-  host: localhost:8080/api/v1
+    host: localhost:8080/api/v1
