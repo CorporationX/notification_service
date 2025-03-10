@@ -1,9 +1,9 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.context.UserContext;
+import faang.school.notificationservice.config.redis.Channels;
 import faang.school.notificationservice.event.FollowerEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -17,13 +17,15 @@ import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_SUB
 @Component
 public class FollowerEventListener extends AbstractEventListener<FollowerEvent> {
 
+    private final Channels channels;
 
     public FollowerEventListener(List<MessageBuilder<FollowerEvent>> messageBuilders,
-                                       ObjectMapper objectMapper,
-                                       UserServiceClient userServiceClient,
-                                       List<NotificationService> notificationServices,
-                                       UserContext userContext) {
+                                 ObjectMapper objectMapper,
+                                 UserServiceClient userServiceClient,
+                                 List<NotificationService> notificationServices,
+                                 UserContext userContext, Channels channels) {
         super(messageBuilders, objectMapper, userServiceClient, notificationServices, userContext);
+        this.channels = channels;
     }
 
     @Override
@@ -32,12 +34,15 @@ public class FollowerEventListener extends AbstractEventListener<FollowerEvent> 
     }
 
     @Override
+    public String getTopicName() {
+        return channels.getFollower();
+    }
+
+    @Override
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, FollowerEvent.class, event -> {
-            String messageText = getMessage(event.followeeId(), event);
+            String messageText = getMessage(event);
             sendNotification(event.followeeId(), messageText);
         });
     }
-
-
 }
