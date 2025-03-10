@@ -1,10 +1,16 @@
 package faang.school.notificationservice.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Locale;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDto {
     private long id;
     private String username;
@@ -12,6 +18,9 @@ public class UserDto {
     private String phone;
     private PreferredContact preference;
     private String telegramChatId;
+
+    @Builder.Default
+    private Locale locale = Locale.UK;
 
     public enum PreferredContact {
         EMAIL, SMS, TELEGRAM

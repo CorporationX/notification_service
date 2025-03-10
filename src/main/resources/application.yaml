@@ -28,8 +28,25 @@ spring:
   messages:
     basename: messages
 
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: notification-processing-group
+
+    listener:
+      ack-mode: record
+
+    topics:
+      comment_create_topic: comment-create
+      goal-completed: goal-completed
+      recommendation_requested: recommendation-requested
+
 server:
-  port: 8083
+  port: ${SERVER_PORT:8083}
 
 logging:
   level:
@@ -47,7 +64,7 @@ project-service:
 user-service:
     host: localhost
     port: 8080
-
+    api-path: /api/v1
 telegram:
   bot:
     username: CorpXNotificationBot
