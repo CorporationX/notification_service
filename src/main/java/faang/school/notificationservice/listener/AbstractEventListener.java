@@ -52,6 +52,8 @@ public abstract class AbstractEventListener<T> implements MessageListener {
 
     public abstract EventType getEventType();
 
+    public abstract String getTopicName();
+
     protected void handleEvent(Message message, Class<T> tClass, Consumer<T> consumer) {
         try {
             log.info("Received message: {}", new String(message.getBody()));
@@ -63,7 +65,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         }
     }
 
-    protected String getMessage(Long userId, T event) {
+    protected String getMessage(T event) {
         log.info("Building message for event type: {} ", getEventType());
         MessageBuilder<T> messageBuilder = messageBuildersMap.get(getEventType());
         if (messageBuilder == null) {
@@ -75,7 +77,6 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     }
 
     protected void sendNotification(long userId, String message) {
-        //userContext.setUserId(userId); // убрал, так как UserId это тот, кому пойдет сообщение, а не пользователь
         UserDto user = userServiceClient.getUser(userId);
         log.info("User {} details retrieved", userId);
 

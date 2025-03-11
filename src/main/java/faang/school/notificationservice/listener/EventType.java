@@ -3,5 +3,6 @@ package faang.school.notificationservice.listener;
 public enum EventType {
     EVENT_TYPE_RECOMMENDATION,
     EVENT_TYPE_PROFILE_VIEW,
-    EVENT_TYPE_SUBSCRIPTION
+    EVENT_TYPE_SUBSCRIPTION,
+    EVENT_TYPE_MENTORSHIP_OFFERED
 }
