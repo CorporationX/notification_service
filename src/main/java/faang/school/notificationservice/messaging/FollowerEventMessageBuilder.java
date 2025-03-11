@@ -7,6 +7,7 @@ import faang.school.notificationservice.event.FollowerEvent;
 import faang.school.notificationservice.listener.EventType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,9 @@ import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_SUB
 @Component
 @RequiredArgsConstructor
 public class FollowerEventMessageBuilder implements MessageBuilder<FollowerEvent> {
+
+    @Value("${spring.messages.property-follower}")
+    private final String followerNewProperty;
     private final MessageSource messageSource;
     private final UserServiceClient userServiceClient;
     private final UserContext userContext;
@@ -33,7 +37,7 @@ public class FollowerEventMessageBuilder implements MessageBuilder<FollowerEvent
         log.info("event.followeeId(): {}", event.followeeId());
         UserDto user = userServiceClient.getUser(event.followeeId());
         log.info("Getting user: {}", user);
-        return messageSource.getMessage("follower.new",
+        return messageSource.getMessage(followerNewProperty,
                 new Object[]{user.getUsername()}, locale);
     }
 }

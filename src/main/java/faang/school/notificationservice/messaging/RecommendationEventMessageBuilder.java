@@ -6,6 +6,7 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.RecommendationEvent;
 import faang.school.notificationservice.listener.EventType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,9 @@ import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_REC
 @Component
 @RequiredArgsConstructor
 public class RecommendationEventMessageBuilder implements MessageBuilder<RecommendationEvent> {
+
+    @Value("${spring.messages.property-recommendation}")
+    private final String recommendationProperty;
     private final MessageSource messageSource;
     private final UserServiceClient userServiceClient;
     private final UserContext userContext;
@@ -25,12 +29,11 @@ public class RecommendationEventMessageBuilder implements MessageBuilder<Recomme
         return EVENT_TYPE_RECOMMENDATION;
     }
 
-
     @Override
     public String buildMessage(RecommendationEvent event, Locale locale) {
         userContext.setUserId(event.requesterId());
         UserDto user = userServiceClient.getUser(event.requesterId());
-        return messageSource.getMessage("recommendation.new",
+        return messageSource.getMessage(recommendationProperty,
                 new Object[]{user.getUsername()}, locale);
     }
 }

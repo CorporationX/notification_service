@@ -6,6 +6,7 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.MentorshipOfferedEvent;
 import faang.school.notificationservice.listener.EventType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,9 @@ import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_MEN
 @Component
 @RequiredArgsConstructor
 public class MentorshipOfferedMessageBuilder implements MessageBuilder<MentorshipOfferedEvent> {
+
+    @Value("${spring.messages.property-mentorship-offered}")
+    private final String mentorshipOfferedProperty;
     private final MessageSource messageSource;
     private final UserServiceClient userServiceClient;
     private final UserContext userContext;
@@ -30,7 +34,7 @@ public class MentorshipOfferedMessageBuilder implements MessageBuilder<Mentorshi
         userContext.setUserId(event.getRequesterId());
         UserDto requesterDto = userServiceClient.getUser(event.getRequesterId());
         UserDto mentorDto = userServiceClient.getUser(event.getMentorId());
-        return messageSource.getMessage("mentorship.offered",
+        return messageSource.getMessage(mentorshipOfferedProperty,
                 new Object[]{mentorDto.getUsername(), requesterDto.getUsername()}, locale);
     }
 }

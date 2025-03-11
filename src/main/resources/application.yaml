@@ -30,6 +30,12 @@ spring:
     basename: messages
     cacheseconds: 3600
 
+    property-mentorship-offered: mentorship.offered
+    property-follower: follower.new
+    property-recommendation: recommendation.new
+    property-user-view-profile: user.view_profile
+
+
 server:
   port: 8083
 
@@ -50,6 +56,7 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+    version: /api/v1
 
 telegram:
   token: 8171946759:AAGmvntLJpTluxaVH6g0m_R2aACZJqgWCSM
