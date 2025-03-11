@@ -27,6 +27,10 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    /**
+     * Telegram
+     */
+    implementation("org.telegram:telegrambots:6.9.7.1")
 
     /**
      * Database

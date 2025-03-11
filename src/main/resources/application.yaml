@@ -6,7 +6,8 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-
+  config:
+    import: optional:file:.env.properties
   mail:
     host: smtp.gmail.com
     port: 587
@@ -33,17 +34,20 @@ logging:
     root: info
 
 
+project-service:
+  host: localhost
+  port: 8082
 notification-service:
+  api-version: /api/v1
   sms:
     enabled: false
     vonage:
       api-key: ${VONAGE_API_KEY}
       api-secret: ${VONAGE_SECRET_API_KEY}
+  telegram-bot:
+    token: ${TELEGRAM_TOKEN}
+    username: "MyFaangNotificationBot"
   redis:
     achievement-channel: achievement_channel
-
-project-service:
-    host: localhost
-    port: 8082
 user-service:
     host: localhost:8080/api/v1
