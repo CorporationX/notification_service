@@ -33,6 +33,11 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
 
     /**
+     * Kafka
+     */
+    implementation("org.springframework.kafka:spring-kafka")
+
+    /**
      * Database
      */
     implementation("redis.clients:jedis:4.3.2")
