@@ -9,7 +9,8 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "faang.school.notificationservice.event"
-
+      comment-create:
+        topic: "comment-create"
   data:
     redis:
       port: 6379
