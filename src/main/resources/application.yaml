@@ -10,6 +10,8 @@ spring:
         profile-view: profile_view
         recommendation-mentorship-offered: recommendation_mentorship_offered
 
+        request-status: request_status_notification_channel
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -34,6 +36,7 @@ spring:
     property-follower: follower.new
     property-recommendation: recommendation.new
     property-user-view-profile: user.view_profile
+    property-request-status: request.status
 
 
 server:

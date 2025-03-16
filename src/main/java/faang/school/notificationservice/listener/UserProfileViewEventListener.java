@@ -31,7 +31,6 @@ public class UserProfileViewEventListener extends AbstractEventListener<UserProf
     }
 
     public EventType getEventType() {
-
         return EVENT_TYPE_PROFILE_VIEW;
     }
 
