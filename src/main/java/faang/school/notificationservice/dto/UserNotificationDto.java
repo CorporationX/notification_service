@@ -12,7 +12,7 @@ public class UserNotificationDto {
     private String phone;
     private Long chatId;
     private PreferredContact preference;
-    private final Locale locale;
+    private Locale locale;
 
     public enum PreferredContact {
         EMAIL, SMS, TELEGRAM
