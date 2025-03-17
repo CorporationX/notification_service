@@ -2,6 +2,8 @@ package faang.school.notificationservice.dto;
 
 import lombok.Data;
 
+import java.util.Locale;
+
 @Data
 public class UserNotificationDto {
     private long id;
@@ -10,6 +12,7 @@ public class UserNotificationDto {
     private String phone;
     private Long chatId;
     private PreferredContact preference;
+    private Locale locale;
 
     public enum PreferredContact {
         EMAIL, SMS, TELEGRAM

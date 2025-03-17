@@ -25,6 +25,21 @@ spring:
   messages:
     basename: messages
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: notification-service
+      properties:
+        spring.json.trusted.packages: '*'
+        spring.json.use.type.headers: false
+    topics:
+      like:
+        name: "like_topic"
+        type: "faang.school.notificationservice.model.LikeEvent"
+
 server:
   port: 8083
 

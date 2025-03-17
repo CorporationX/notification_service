@@ -15,7 +15,7 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class AbstractEventListener<T> {
-    private final UserServiceClient userServiceClient;
+    protected final UserServiceClient userServiceClient;
     private final Map<UserNotificationDto.PreferredContact, NotificationService> notificationServicesMap;
     private final Map<Class<?>, MessageBuilder<?>> messageBuildersMap;
 
