@@ -9,6 +9,7 @@ spring:
         follower: user_follow_channel
         profile-view: profile_view
         recommendation-mentorship-offered: recommendation_mentorship_offered
+        mentorship-accepted-channel: mentorship_accepted_channel
 
   mail:
     host: smtp.gmail.com
@@ -28,9 +29,11 @@ spring:
 
   messages:
     basename: messages
+    encoding: UTF-8
     cacheseconds: 3600
 
     property-mentorship-offered: mentorship.offered
+    property-mentorship-accepted: mentorship.accepted
     property-follower: follower.new
     property-recommendation: recommendation.new
     property-user-view-profile: user.view_profile

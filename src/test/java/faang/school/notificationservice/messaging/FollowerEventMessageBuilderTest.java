@@ -2,6 +2,7 @@ package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.context.UserContext;
+import faang.school.notificationservice.config.message_source.MessageProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.FollowerEvent;
 import faang.school.notificationservice.listener.EventType;
@@ -25,15 +26,15 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FollowerEventMessageBuilderTest {
+
+    @Mock
+    private MessageProperties properties;
     @Mock
     private MessageSource messageSource;
-
     @Mock
     private UserServiceClient userServiceClient;
-
     @Mock
     private UserContext userContext;
-
     @InjectMocks
     private FollowerEventMessageBuilder followerEventMessageBuilder;
 
@@ -59,6 +60,7 @@ class FollowerEventMessageBuilderTest {
 
     @Test
     void testBuildMessageSuccess() {
+        when(properties.getPropertyFollower()).thenReturn("follower.new");
         when(userServiceClient.getUser(2L)).thenReturn(userDto);
         when(messageSource.getMessage(
                 eq("follower.new"),

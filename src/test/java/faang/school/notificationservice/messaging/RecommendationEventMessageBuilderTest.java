@@ -2,6 +2,7 @@ package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.context.UserContext;
+import faang.school.notificationservice.config.message_source.MessageProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.RecommendationEvent;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class RecommendationEventMessageBuilderTest {
+
+    @Mock
+    private MessageProperties messageProperties;
 
     @Mock
     private MessageSource messageSource;
@@ -48,6 +52,7 @@ public class RecommendationEventMessageBuilderTest {
 
     @Test
     void testBuildMessageSuccess() {
+        when(messageProperties.getPropertyRecommendation()).thenReturn("recommendation.new");
         when(userServiceClient.getUser(1L)).thenReturn(userDto);
         when(messageSource.getMessage(
                 eq("recommendation.new"),
