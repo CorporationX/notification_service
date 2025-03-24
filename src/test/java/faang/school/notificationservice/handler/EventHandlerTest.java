@@ -34,10 +34,10 @@ class EventHandlerTest {
 
     @BeforeEach
     void setUp() {
-        testEvent.setId(anyString());
+        testEvent.setId("2");
         testEvent.setProcessedAt(CURRENT_TIME);
         kafkaEvent = mock(ConsumerRecord.class);
-        when(kafkaEvent.key()).thenReturn(anyString());
+        when(kafkaEvent.key()).thenReturn("2");
     }
 
     @Test
