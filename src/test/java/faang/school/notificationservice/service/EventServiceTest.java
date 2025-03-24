@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,8 +31,9 @@ class EventServiceTest {
 
     @BeforeEach
     void setUp() {
-        eventId = anyString();
+        eventId = "3";
         event = new Event(eventId);
+        event.setProcessedAt(LocalDateTime.now());
     }
 
     @Test
