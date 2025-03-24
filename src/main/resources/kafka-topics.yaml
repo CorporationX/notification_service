@@ -3,3 +3,6 @@ user-profile-viewed:
 
 user-follows-user:
   topic-name: "user-follows-user"
+
+user-like-post:
+  topic-name: "user-like-post"

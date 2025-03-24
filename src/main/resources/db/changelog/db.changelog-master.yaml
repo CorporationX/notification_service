@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: db/changelog/changeset/events_V001__initial.sql
+  - include:
+      file: db/changelog/changeset/events_V002.sql

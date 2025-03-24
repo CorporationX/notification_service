@@ -2,32 +2,36 @@ package faang.school.notificationservice.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
+@Setter
 @ToString
 @NotNull
-@RequiredArgsConstructor
 @Builder
 public class LikeEvent {
     @NotNull
     @PositiveOrZero
-    private final Long postId;
+    private Long postId;
 
     @NotNull
     @PositiveOrZero
-    private final Long authorId;
+    private Long authorId;
 
     @NotNull
-    private final LocalDateTime likeTime;
+    private LocalDateTime likeTime;
 
     @NotNull
     @PositiveOrZero
-    private final Long userId;
+    private Long userId;
 
 }

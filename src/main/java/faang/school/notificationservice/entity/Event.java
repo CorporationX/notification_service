@@ -1,5 +1,6 @@
 package faang.school.notificationservice.entity;
 
+import com.vonage.client.voice.ncco.ConnectAction;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,7 +11,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @ToString
 @Setter
@@ -20,13 +20,17 @@ import java.util.UUID;
 @Table(name = "events", schema = "notifications")
 public class Event {
     @Id
-    private UUID id;
+    private String id;
 
     @Column(name = "processed_at", nullable = false, updatable = false, insertable = false,
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime processedAt;
 
-    public Event(UUID id) {
+    public Event(String id) {
         this.id = id;
+    }
+
+    public static ConnectAction.Builder builder() {
+        return null;
     }
 }

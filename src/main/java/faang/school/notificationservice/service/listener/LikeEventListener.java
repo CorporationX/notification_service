@@ -1,26 +1,46 @@
 package faang.school.notificationservice.service.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.LikeEvent;
-import faang.school.notificationservice.exception.LikeEventProcessingException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
-import org.springframework.stereotype.Component;
+import faang.school.notificationservice.dto.UserServiceDto;
+import faang.school.notificationservice.handler.EventHandler;
+import faang.school.notificationservice.handler.KafkaMapperHandler;
+import faang.school.notificationservice.handler.MessageHandler;
+import faang.school.notificationservice.handler.NotificationServiceHandler;
+import faang.school.notificationservice.handler.UserServiceHandler;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Service;
+import java.util.List;
 
-import java.io.IOException;
+@Slf4j
+@Service
+public class LikeEventListener extends AbstractEventListener<LikeEvent> {
 
-@Component
-@RequiredArgsConstructor
-public class LikeEventListener implements MessageListener {
+    private final UserServiceHandler userServiceHandler;
 
-    private final ObjectMapper objectMapper;
-    @Override
-    public void onMessage(Message message, byte[] pattern) {
-        try {
-            LikeEvent likeEvent = objectMapper.readValue(message.getBody(), LikeEvent.class);
-        } catch (IOException e) {
-            throw new LikeEventProcessingException("Failed to process LikeEvent message");
-        }
+    public LikeEventListener(EventHandler eventHandler,
+                             NotificationServiceHandler notificationServiceHandler,
+                             MessageHandler<LikeEvent> messageHandler,
+                             KafkaMapperHandler kafkaMapperHandler,
+                             UserServiceHandler userServiceHandler) {
+        super(eventHandler, notificationServiceHandler, messageHandler, kafkaMapperHandler);
+        this.userServiceHandler = userServiceHandler;
     }
+
+    @KafkaListener(topics = "${user-like-post.topic-name}")
+    public void listen(ConsumerRecord<String, Object> kafkaEvent) {
+        LikeEvent inputDto = handleUniqueEvent(kafkaEvent, LikeEvent.class);
+
+
+        UserServiceDto postAuthor = userServiceHandler.getSingleUser(inputDto.getAuthorId());
+        UserServiceDto liker =  userServiceHandler.getSingleUser(inputDto.getUserId());
+
+        List<String> additionalWordsForOwnerMessage = List.of(liker.getUsername());
+        String message = getMessage(inputDto, postAuthor, additionalWordsForOwnerMessage);
+
+        log.info("sending message {}", message);
+        sendSingleNotification(postAuthor, message);
+    }
+
 }
