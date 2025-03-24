@@ -1,25 +1,32 @@
 package faang.school.notificationservice.messaging;
 
+import faang.school.notificationservice.dto.LikeEvent;
+import faang.school.notificationservice.dto.UserServiceDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserPostLikedMessageBuilder {
+public class UserPostLikedMessageBuilder implements MessageBuilder<LikeEvent> {
     private final MessageSource messageSource;
 
-    public String getPredefinedMessage(Locale locale) {
-        return messageSource.getMessage("notification.user.post.liked",
-                new Object[]{followee, formattedDateTime},
-                profileOwner.getLocale());
+    @Override
+    public String buildMessage(LikeEvent inputDto, UserServiceDto postAuthor,
+                               List<String> additionalWordsForOwnerMessage) {
+        String ownername = additionalWordsForOwnerMessage.get(0);
+
+        return messageSource.getMessage(
+                "notification.user.post.liked",
+                new Object[]{ownername},
+                postAuthor.getLocale()
+        );
     }
 
-    public String getPredefinedMessageForCurrentLocale() {
-        Locale locale = LocaleContextHolder.getLocale();
-        return getPredefinedMessage(locale);
+    @Override
+    public Class<?> getInstance() {
+        return LikeEvent.class;
     }
 }

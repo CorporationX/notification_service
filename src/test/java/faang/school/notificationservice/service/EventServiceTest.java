@@ -9,11 +9,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,12 +24,12 @@ class EventServiceTest {
     @InjectMocks
     private EventService eventService;
 
-    private UUID eventId;
+    private String eventId;
     private Event event;
 
     @BeforeEach
     void setUp() {
-        eventId = UUID.randomUUID();
+        eventId = anyString();
         event = new Event(eventId);
     }
 

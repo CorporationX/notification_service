@@ -14,7 +14,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Component
 public class EventHandler {
-    private UUID kafkaEventKey;
+    private String kafkaEventKey;
     private final EventService eventService;
 
     public void checkEventDuplicatedThrow(ConsumerRecord<String, Object> kafkaEvent) {
@@ -24,13 +24,12 @@ public class EventHandler {
             return;
         }
 
-        UUID eventId = UUID.fromString(key);
-        if (eventService.existsById(eventId)) {
-            String error = "Duplicate event received: " + eventId;
+        if (eventService.existsById(key)) {
+            String error = "Duplicate event received: " + key;
             log.warn(error);
             throw new DuplicateEventException(error);
         }
-        kafkaEventKey = eventId;
+        kafkaEventKey = key;
     }
 
     public void saveEvent() {
