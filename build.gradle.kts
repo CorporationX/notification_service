@@ -19,7 +19,14 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web") {
+        exclude("com.fasterxml.jackson.datatype", "jackson-datatype-jdk8")
+        exclude("com.fasterxml.jackson.core", "jackson-annotations")
+        exclude("com.fasterxml.jackson.core", "jackson-databind")
+        exclude("com.fasterxml.jackson.core", "jackson-core")
+        exclude("com.fasterxml.jackson.datatype", "jackson-datatype-jsr310")
+        exclude("com.fasterxml.jackson.module", "jackson-module-parameter-names")
+    }
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-mail:3.0.6")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
@@ -36,7 +43,9 @@ dependencies {
     /**
      * Utils & Logging
      */
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.0")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.15.0")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.15.0")
     implementation("org.slf4j:slf4j-api:2.0.5")
     implementation("ch.qos.logback:logback-classic:1.4.6")
     implementation("org.projectlombok:lombok:1.18.32")
