@@ -15,5 +15,4 @@ public class UserNotificationDto {
     private String email;
     private String phone;
     public UserDto.PreferredContact preferredContact;
-//    private ContactPreference contactPreference;
 }
