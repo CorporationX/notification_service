@@ -9,6 +9,7 @@ spring:
         follower: user_follow_channel
         profile-view: profile_view
         recommendation-mentorship-offered: recommendation_mentorship_offered
+        stock-alert-channel: stock_alert
 
   mail:
     host: smtp.gmail.com
@@ -34,6 +35,7 @@ spring:
     property-follower: follower.new
     property-recommendation: recommendation.new
     property-user-view-profile: user.view_profile
+    property-stock-alert: stock.alert
 
 
 server:
