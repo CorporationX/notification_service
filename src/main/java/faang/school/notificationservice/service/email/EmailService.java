@@ -19,7 +19,7 @@ public class EmailService implements NotificationService {
     @Override
     public void send(UserNotificationDto userDto, String message) {
         simpleMailMessage.setTo(userDto.getEmail());
-        simpleMailMessage.setSubject("Like is set to your post" );
+        simpleMailMessage.setSubject("Like is set to your post");
         simpleMailMessage.setText(message);
 
         this.mailSender.send(simpleMailMessage);
