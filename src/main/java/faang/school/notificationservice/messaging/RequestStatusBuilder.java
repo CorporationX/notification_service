@@ -31,11 +31,11 @@ public class RequestStatusBuilder implements MessageBuilder<RequestStatusDto> {
 
     @Override
     public String buildMessage(RequestStatusDto event, Locale locale) {
-        log.info("event status: {}", event.getRequestStatus());
+        log.info("event status: {}", event.requestStatus());
 
-        UserDto user = userServiceClient.getUser(event.getCreatedBy());
+        UserDto user = userServiceClient.getUser(event.createdBy());
         log.info("getting user: {}", user);
         return messageSource.getMessage(requestStatusProperty,
-                new Object[]{user.getUsername(), event.getRequestStatus()}, locale);
+                new Object[]{user.getUsername(), event.requestStatus()}, locale);
     }
 }

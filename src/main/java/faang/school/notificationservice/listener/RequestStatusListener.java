@@ -44,7 +44,7 @@ public class RequestStatusListener extends AbstractEventListener<RequestStatusDt
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, RequestStatusDto.class, event -> {
             String messageText = getMessage(event);
-            sendNotification(event.getCreatedBy(), messageText);
+            sendNotification(event.createdBy(), messageText);
         });
     }
 }
