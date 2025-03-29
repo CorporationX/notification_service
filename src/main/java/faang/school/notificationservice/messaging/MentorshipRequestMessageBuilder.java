@@ -20,6 +20,6 @@ public class MentorshipRequestMessageBuilder implements MessageBuilder<Mentorshi
 
     @Override
     public String buildMessage(MentorshipRequestEvent eventType, Locale locale) {
-        return messageSource.getMessage("mentorship.request", new Object[]{}, locale);
+        return messageSource.getMessage("mentorship.request", new Object[]{eventType.getRequesterId()}, locale);
     }
 }

@@ -35,13 +35,18 @@ public abstract class EventsListener<T> {
                 .filter(messageBuilder -> messageBuilder.supportEventType() == event.getClass())
                 .findFirst()
                 .map(tMessageBuilder -> tMessageBuilder.buildMessage(event, userLocale))
-                .orElseThrow(() -> new IllegalArgumentException("not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Message not found"));
     }
 
     protected void sendNotification(UserDto receiver, String textMessage) {
         notifyServices.stream()
                 .filter(service -> service.getPreferredContact() == receiver.getPreference())
                 .findFirst()
-                .ifPresent(service -> service.send(receiver, textMessage));
+                .ifPresentOrElse(
+                        service -> service.send(receiver, textMessage),
+                        () -> {
+                            throw new IllegalArgumentException("No contact preference found");
+                        }
+                );
     }
 }
