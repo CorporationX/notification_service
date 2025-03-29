@@ -4,21 +4,17 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.context.UserContext;
 import faang.school.notificationservice.config.message_source.MessageProperties;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.event.FollowerEvent;
+import faang.school.notificationservice.event.MentorshipAcceptedEvent;
 import faang.school.notificationservice.listener.EventType;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 
-import static faang.school.notificationservice.listener.EventType.EVENT_TYPE_SUBSCRIPTION;
-
-@Slf4j
 @Component
 @RequiredArgsConstructor
-public class FollowerEventMessageBuilder implements MessageBuilder<FollowerEvent> {
+public class MentorshipAcceptedMessageBuilder implements MessageBuilder<MentorshipAcceptedEvent> {
 
     private final MessageProperties messageProperties;
     private final MessageSource messageSource;
@@ -27,16 +23,15 @@ public class FollowerEventMessageBuilder implements MessageBuilder<FollowerEvent
 
     @Override
     public EventType getEventType() {
-        return EVENT_TYPE_SUBSCRIPTION;
+        return EventType.EVENT_TYPE_MENTORSHIP_ACCEPTED;
     }
 
     @Override
-    public String buildMessage(FollowerEvent event, Locale locale) {
-        userContext.setUserId(event.followeeId());
-        log.info("event.followeeId(): {}", event.followeeId());
-        UserDto user = userServiceClient.getUser(event.followeeId());
-        log.info("Getting user: {}", user);
-        return messageSource.getMessage(messageProperties.getPropertyFollower(),
-                new Object[]{user.getUsername()}, locale);
+    public String buildMessage(MentorshipAcceptedEvent event, Locale locale) {
+        userContext.setUserId(event.requesterId());
+        UserDto requesterDto = userServiceClient.getUser(event.requestId());
+        UserDto mentorDto = userServiceClient.getUser(event.mentorId());
+        return messageSource.getMessage(messageProperties.getPropertyMentorshipAccepted(),
+                new Object[]{mentorDto.getUsername(), requesterDto.getUsername()}, locale);
     }
 }
