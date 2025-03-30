@@ -1,11 +1,11 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.config.message_source.MessageProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.UserProfileViewEvent;
 import faang.school.notificationservice.listener.EventType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +15,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class UserProfileViewMessageBuilder implements MessageBuilder<UserProfileViewEvent> {
 
-    @Value("${spring.messages.property-user-view-profile}")
-    private final String userViewProfileProperty;
+    private final MessageProperties messageProperties;
     private final UserServiceClient userServiceClient;
     private final MessageSource messageSource;
 
@@ -28,6 +27,7 @@ public class UserProfileViewMessageBuilder implements MessageBuilder<UserProfile
     @Override
     public String buildMessage(UserProfileViewEvent event, Locale locale) {
         UserDto visitorDto = userServiceClient.getUser(event.visitorUserId());
-        return messageSource.getMessage(userViewProfileProperty, new Object[]{visitorDto.getUsername()}, locale);
+        return messageSource.getMessage(messageProperties.getPropertyUserViewProfile(),
+                new Object[]{visitorDto.getUsername()}, locale);
     }
 }

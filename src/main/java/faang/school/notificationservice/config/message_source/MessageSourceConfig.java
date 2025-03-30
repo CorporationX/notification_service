@@ -1,7 +1,6 @@
 package faang.school.notificationservice.config.message_source;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,17 +15,14 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class MessageSourceConfig {
 
-    @Value("${spring.messages.basename}")
-    private final String baseName;
-    @Value("${spring.messages.cacheseconds}")
-    private final Integer cacheSeconds;
+    private final MessageProperties properties;
 
     @Bean
     public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasenames(baseName);
+        messageSource.setBasenames(properties.getBasename());
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
-        messageSource.setCacheSeconds(cacheSeconds);
+        messageSource.setCacheSeconds(properties.getCacheseconds());
         return messageSource;
     }
 

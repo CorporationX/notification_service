@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,13 +39,13 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         this.messageBuildersMap = messageBuilders.stream()
                 .collect(Collectors.toMap(
                         MessageBuilder::getEventType,
-                        tMessageBuilder -> tMessageBuilder
+                        Function.identity()
                 ));
 
         this.notificationServiceMap = notificationServices.stream()
                 .collect(Collectors.toMap(
                         NotificationService::getPreferredContact,
-                        notificationService -> notificationService
+                        Function.identity()
                 ));
     }
 

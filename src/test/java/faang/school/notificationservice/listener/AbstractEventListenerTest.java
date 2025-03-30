@@ -2,9 +2,10 @@ package faang.school.notificationservice.listener;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class AbstractEventListenerTest {
 
     @Mock
@@ -51,15 +53,11 @@ class AbstractEventListenerTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-
         messageBuildersMap = new HashMap<>();
         messageBuildersMap.put(EventType.EVENT_TYPE_RECOMMENDATION, messageBuilder);
-        when(messageBuilder.getEventType()).thenReturn(EventType.EVENT_TYPE_RECOMMENDATION);
 
         notificationServiceMap = new HashMap<>();
         notificationServiceMap.put(UserDto.PreferredContact.TELEGRAM, notificationService);
-        when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.TELEGRAM);
 
         testEventListener = new TestEventListener(messageBuilders,
                 objectMapper, userServiceClient, notificationServices, userContext);
@@ -98,10 +96,9 @@ class AbstractEventListenerTest {
     @Test
     void testGetMessageThrowsException() {
         String event = "test event";
-        doNothing().when(messageBuildersMap.get(EventType.EVENT_TYPE_RECOMMENDATION));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> testEventListener.getMessage(1L, event));
+                () -> testEventListener.getMessage(event));
 
         assertEquals(String.format("No message builder found for the given event type: EVENT_TYPE_RECOMMENDATION"),
                 exception.getMessage());
@@ -136,6 +133,11 @@ class TestEventListener extends AbstractEventListener<String> {
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
+    }
+
+    @Override
+    public String getTopicName(){
+        return "topic.name";
     }
 
     @Override
