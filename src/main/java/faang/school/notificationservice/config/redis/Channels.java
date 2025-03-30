@@ -15,5 +15,6 @@ public class Channels {
     private String achievement;
     private String profileView;
     private String recommendationMentorshipOffered;
+    private String requestStatus;
     private String mentorshipAcceptedChannel;
 }
