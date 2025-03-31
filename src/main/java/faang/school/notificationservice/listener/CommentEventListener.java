@@ -68,4 +68,3 @@ public class CommentEventListener implements MessageListener {
         }
     }
 }
-

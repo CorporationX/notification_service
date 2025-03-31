@@ -68,4 +68,3 @@ public class LikeEventListener implements MessageListener {
         }
     }
 }
-

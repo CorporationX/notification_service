@@ -33,11 +33,7 @@ public class ProfileViewEventListener implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
         try {
             ProfileViewEvent event = objectMapper.readValue(message.getBody(), ProfileViewEvent.class);
-            if (event != null) {
-                handleEvent(event);
-            } else {
-                log.error("Deserialized event is null");
-            }
+            handleEvent(event);
         } catch (IOException e) {
             String messageBody = new String(message.getBody(), StandardCharsets.UTF_8);
             log.error("Error while deserializing {} from Redis. Error: {}", messageBody, e.getMessage(), e);
@@ -45,7 +41,7 @@ public class ProfileViewEventListener implements MessageListener {
     }
 
     private void handleEvent(ProfileViewEvent event) {
-        UserContactsDto receiverDto = getUserContacts(event.getViewedId());
+        UserContactsDto receiverDto = getUserContacts(event.getProfileId());
 
         String notificationMessage = messageBuilder.buildMessage(event, LocaleContextHolder.getLocale());
 

@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProfileViewEvent {
     private Long viewerId;
-    private Long viewedId;
+    private Long profileId;
 }

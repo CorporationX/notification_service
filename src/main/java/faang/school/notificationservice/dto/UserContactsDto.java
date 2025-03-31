@@ -41,4 +41,3 @@ public class UserContactsDto {
     private List<Long> mentorsId;
     private List<Long> skillsId;
 }
-
