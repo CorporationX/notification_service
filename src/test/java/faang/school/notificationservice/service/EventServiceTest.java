@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -25,13 +25,14 @@ class EventServiceTest {
     @InjectMocks
     private EventService eventService;
 
-    private UUID eventId;
+    private String eventId;
     private Event event;
 
     @BeforeEach
     void setUp() {
-        eventId = UUID.randomUUID();
+        eventId = "3";
         event = new Event(eventId);
+        event.setProcessedAt(LocalDateTime.now());
     }
 
     @Test

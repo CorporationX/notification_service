@@ -12,16 +12,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EventHandlerTest {
-    private static final UUID EVENT_ID = UUID.randomUUID();
     public static final LocalDateTime CURRENT_TIME = LocalDateTime.now();
     private final Event testEvent = new Event();
 
@@ -35,29 +34,29 @@ class EventHandlerTest {
 
     @BeforeEach
     void setUp() {
-        testEvent.setId(EVENT_ID);
+        testEvent.setId("2");
         testEvent.setProcessedAt(CURRENT_TIME);
         kafkaEvent = mock(ConsumerRecord.class);
-        when(kafkaEvent.key()).thenReturn(EVENT_ID.toString());
+        when(kafkaEvent.key()).thenReturn("2");
     }
 
     @Test
     void checkEventDuplicatedThrow() {
-        when(eventService.existsById(EVENT_ID)).thenReturn(true);
+        when(eventService.existsById(anyString())).thenReturn(true);
 
         assertThrows(DuplicateEventException.class, () -> eventHandler.checkEventDuplicatedThrow(kafkaEvent));
     }
 
     @Test
     void checkEventDuplicatedNotThrow() {
-        when(eventService.existsById(EVENT_ID)).thenReturn(false);
+        when(eventService.existsById(anyString())).thenReturn(false);
 
         assertDoesNotThrow(() -> eventHandler.checkEventDuplicatedThrow(kafkaEvent));
     }
 
     @Test
     void saveEventSuccess() {
-        when(eventService.existsById(EVENT_ID)).thenReturn(false);
+        when(eventService.existsById(anyString())).thenReturn(false);
         eventHandler.checkEventDuplicatedThrow(kafkaEvent);
         assertDoesNotThrow(() -> eventHandler.saveEvent());
     }

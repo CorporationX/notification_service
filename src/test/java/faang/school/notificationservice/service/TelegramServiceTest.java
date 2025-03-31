@@ -8,18 +8,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-class SmsServiceTest {
-    private final SmsService smsService = new SmsService();
+class TelegramServiceTest {
+    private final TelegramService telegramService = new TelegramService();
     UserServiceDto userServiceDto = UserServiceDto.builder().build();
     @Test
     void testSend() {
-        smsService.send(userServiceDto, "Test message");
+        telegramService.send(userServiceDto, "Test message");
     }
 
     @Test
     void testGetPreferredContact() {
-        UserServiceDto.PreferredContact preferredContact = smsService.getPreferredContact();
+        UserServiceDto.PreferredContact preferredContact = telegramService.getPreferredContact();
 
-        assertEquals(UserServiceDto.PreferredContact.SMS, preferredContact);
+        assertEquals(UserServiceDto.PreferredContact.TELEGRAM, preferredContact);
     }
 }

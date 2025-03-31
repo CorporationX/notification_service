@@ -6,15 +6,15 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class SmsService implements NotificationService {
+public class TelegramService implements NotificationService {
     //dummy test service for postman test notifications
     @Override
     public void send(UserServiceDto user, String message) {
-      log.info("Send sms notification to user id {} name {}", user.getId(), user.getUsername());
+      log.info("Send telegram notification to user id {} name {}", user.getId(), user.getUsername());
     }
 
     @Override
     public UserServiceDto.PreferredContact getPreferredContact() {
-        return UserServiceDto.PreferredContact.SMS;
+        return UserServiceDto.PreferredContact.TELEGRAM;
     }
 }
