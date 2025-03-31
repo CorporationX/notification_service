@@ -1,0 +1,44 @@
+package faang.school.notificationservice.exception;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Slf4j
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            errors.put(error.getField(), error.getDefaultMessage());
+        });
+        log.error("Validation failed: {}", errors);
+        return buildErrorResponseEntity(HttpStatus.BAD_REQUEST, "Validation failed", errors);
+    }
+
+    @ExceptionHandler(SmsSendingException.class)
+    public ResponseEntity<Object> handleSmsSendingException(SmsSendingException ex) {
+        log.error("SMS sending: {}", ex.getMessage(), ex);
+        return buildErrorResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleException(Exception ex) {
+        log.error("Internal server error: {}", ex.getMessage(), ex);
+        return buildErrorResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", null);
+    }
+
+    private ResponseEntity<Object> buildErrorResponseEntity(
+            HttpStatus status, String message, Map<String, String> errors) {
+        ErrorResponse apiError = new ErrorResponse(status.value(), message, errors);
+        return ResponseEntity.status(status).body(apiError);
+    }
+}
