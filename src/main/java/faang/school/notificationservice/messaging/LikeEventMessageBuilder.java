@@ -4,7 +4,7 @@ import faang.school.notificationservice.client.PostServiceClient;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.LikePostEvent;
 import faang.school.notificationservice.dto.PostShortContentDto;
-import faang.school.notificationservice.dto.UserNotificationDto;
+import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -25,12 +25,12 @@ public class LikeEventMessageBuilder implements MessageBuilder<LikePostEvent>{
 
     @Override
     public String buildMessage(LikePostEvent event, Locale locale) {
-        UserNotificationDto userNotificationDtoAuthor = userServiceClient.getNotificationUser(event.getPostAuthorId());
-        UserNotificationDto userNotificationDtoUser = userServiceClient.getNotificationUser(event.getLikeUserId());
+        UserDto userDtoAuthor = userServiceClient.getUser(event.getPostAuthorId());
+        UserDto userDtoUser = userServiceClient.getUser(event.getLikeUserId());
         PostShortContentDto postShortContentDto = postServiceClient.getShortenedPost(event.getPostId());
         return messageSource.getMessage("postlike.new",
-                new Object[] { userNotificationDtoAuthor.getUsername(),
-                        userNotificationDtoUser.getUsername(),
+                new Object[] { userDtoAuthor.getUsername(),
+                        userDtoUser.getUsername(),
                         postShortContentDto.getShortContent()},
                 locale);
     }

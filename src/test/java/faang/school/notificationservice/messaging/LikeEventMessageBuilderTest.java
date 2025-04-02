@@ -4,7 +4,7 @@ import faang.school.notificationservice.client.PostServiceClient;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.LikePostEvent;
 import faang.school.notificationservice.dto.PostShortContentDto;
-import faang.school.notificationservice.dto.UserNotificationDto;
+import faang.school.notificationservice.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,8 +30,8 @@ public class LikeEventMessageBuilderTest {
     private final String postLikeParameter = "postlike.new";
     private  LikePostEvent event = new LikePostEvent();
     Locale locale = new Locale("en");
-    UserNotificationDto userNotificationDtoAuthor = new UserNotificationDto();
-    UserNotificationDto userNotificationDtoUser = new UserNotificationDto();
+    UserDto userNotificationDtoAuthor = new UserDto();
+    UserDto userNotificationDtoUser = new UserDto();
     PostShortContentDto postShortContentDto = new PostShortContentDto();
 
     @BeforeEach
@@ -47,9 +47,9 @@ public class LikeEventMessageBuilderTest {
 
     @Test
     void testBuildMessageIsSuccessful() {
-        Mockito.when(userServiceClient.getNotificationUser(event.getLikeUserId()))
+        Mockito.when(userServiceClient.getUser(event.getLikeUserId()))
                 .thenReturn(userNotificationDtoUser);
-        Mockito.when(userServiceClient.getNotificationUser(event.getPostAuthorId()))
+        Mockito.when(userServiceClient.getUser(event.getPostAuthorId()))
                 .thenReturn(userNotificationDtoAuthor);
         Mockito.when(postServiceClient.getShortenedPost(event.getPostId()))
                 .thenReturn(postShortContentDto);
@@ -62,5 +62,4 @@ public class LikeEventMessageBuilderTest {
                         postShortContentDto.getShortContent()},
                 locale);
     }
-
 }

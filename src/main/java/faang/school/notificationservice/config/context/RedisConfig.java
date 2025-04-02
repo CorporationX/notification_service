@@ -13,6 +13,7 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @Slf4j
@@ -26,22 +27,20 @@ public class RedisConfig {
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
-        JedisConnectionFactory factory = new JedisConnectionFactory(redisConfig);
-        factory.afterPropertiesSet();
-        return factory;
+        return new JedisConnectionFactory(redisConfig);
     }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
-        template.setKeySerializer(new Jackson2JsonRedisSerializer<>(LikePostEvent.class));
-        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(LikePostEvent.class));
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
         return template;
     }
 
     @Bean
-    ChannelTopic topic() {
+    ChannelTopic likeTopic() {
         return new ChannelTopic("like_topic");
     }
 
@@ -57,8 +56,8 @@ public class RedisConfig {
         RedisMessageListenerContainer container
                 = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(messageListenerAdapter, topic());
-        log.info("RedisMessageListenerContainer created and subscribed to topic: {}", topic().getTopic());
+        container.addMessageListener(messageListenerAdapter, likeTopic());
+        log.info("RedisMessageListenerContainer created and subscribed to topic: {}", likeTopic().getTopic());
         return container;
     }
 }

@@ -1,7 +1,6 @@
 package faang.school.notificationservice.service.email;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.dto.UserNotificationDto;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +16,13 @@ public class EmailService implements NotificationService {
     private final SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
     @Override
-    public void send(UserNotificationDto userDto, String message) {
-        simpleMailMessage.setTo(userDto.getEmail());
-        simpleMailMessage.setSubject("Like is set to your post");
+    public void send(String contactAddress, String emailSubject, String message) {
+        simpleMailMessage.setTo(contactAddress);
+        simpleMailMessage.setSubject(emailSubject);
         simpleMailMessage.setText(message);
 
         this.mailSender.send(simpleMailMessage);
-        log.info("post like notification");
+        log.info(emailSubject);
     }
 
     @Override

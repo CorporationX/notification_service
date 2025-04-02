@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service.email;
 
-import faang.school.notificationservice.dto.UserNotificationDto;
+import faang.school.notificationservice.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,20 +19,21 @@ public class EmailServiceTest {
     private EmailService emailService;
     private SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
-    private UserNotificationDto userDto;
+    private UserDto userDto;
     private String message = "test message";
+    private String subject = "Like is set to your post";
 
     @BeforeEach
     void setup() {
-        userDto = new UserNotificationDto();
+        userDto = new UserDto();
         userDto.setEmail("test@mail.com");
         simpleMailMessage.setText(message);
-        simpleMailMessage.setSubject("Like is set to your post");
+        simpleMailMessage.setSubject(subject);
         simpleMailMessage.setTo(userDto.getEmail());
     }
     @Test
     public void testSendEmail() {
-        emailService.send(userDto, message);
+        emailService.send(userDto.getEmail(), subject, message);
         Mockito.verify(mailSender).send(simpleMailMessage);
     }
 }

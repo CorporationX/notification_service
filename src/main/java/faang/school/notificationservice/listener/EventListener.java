@@ -2,7 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserNotificationDto;
+import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.Locale;
 
 @RequiredArgsConstructor
 @Slf4j
-public abstract class AbstractEventListener<T> {
+public class EventListener<T> {
     private final String NOTIFICATION_IS_SENT = "Notification is sent to userId={} username={} via {}";
     private final String ERROR_MESSAGE_NO_BUILDER = "No message builder found for given event type: ";
     public final List<NotificationService> notificationServices;
@@ -29,12 +29,12 @@ public abstract class AbstractEventListener<T> {
                 .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NO_BUILDER + event.getClass().getName()));
     }
 
-    public void sendNotification(Long id, String message) {
-        UserNotificationDto userNotificationDto = userServiceClient.getNotificationUser(id);
+    public void sendNotification(Long id, String subject, String message) {
+        UserDto userDto = userServiceClient.getUser(id);
         notificationServices.stream()
-                .filter(ns -> ns.getPreferredContact() == userNotificationDto.getPreferredContact())
+                .filter(ns -> ns.getPreferredContact() == userDto.getPreference())
                 .findFirst()
-                .ifPresent(ns -> ns.send(userNotificationDto, message));
-        log.info(NOTIFICATION_IS_SENT,id, userNotificationDto.getUsername(), userNotificationDto.preferredContact);
+                .ifPresent(ns -> ns.send(userDto.getEmail(), subject,  message));
+        log.info(NOTIFICATION_IS_SENT,id, userDto.getUsername(), userDto.getPreference());
     }
 }

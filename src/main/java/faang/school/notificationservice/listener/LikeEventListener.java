@@ -16,8 +16,9 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class LikeEventListener extends AbstractEventListener<LikePostEvent> implements MessageListener {
+public class LikeEventListener extends EventListener<LikePostEvent> implements MessageListener {
     private final String LOG_EVENT_RECEIVED = "LikePostEvent event is received: {}";
+    private final String LIKE_IS_SET_TO_POST = "Like is set to your post";
 
     public LikeEventListener(List<NotificationService> notificationServices,
                              List<MessageBuilder<LikePostEvent>> messageBuilders,
@@ -32,7 +33,7 @@ public class LikeEventListener extends AbstractEventListener<LikePostEvent> impl
             LikePostEvent likePostEvent = objectMapper.readValue(message.getBody(), LikePostEvent.class);
             log.info(LOG_EVENT_RECEIVED, likePostEvent.toString());
             String builtMessage = getMessage(likePostEvent, LocaleContextHolder.getLocale());
-            sendNotification(likePostEvent.getPostAuthorId(), builtMessage);
+            sendNotification(likePostEvent.getPostAuthorId(),LIKE_IS_SET_TO_POST, builtMessage);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

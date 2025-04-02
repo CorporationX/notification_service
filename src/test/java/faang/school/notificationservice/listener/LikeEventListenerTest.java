@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.LikePostEvent;
 import faang.school.notificationservice.dto.PostShortContentDto;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.dto.UserNotificationDto;
 import faang.school.notificationservice.service.email.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,7 @@ public class LikeEventListenerTest {
     private LikeEventListener likeEventListener;
 
     private LikePostEvent testEvent;
-    private UserNotificationDto testUserDto;
+    private UserDto testUserDto;
     private PostShortContentDto testPostDto;
     private EmailService emailService;
 
@@ -51,11 +50,11 @@ public class LikeEventListenerTest {
         testEvent.setPostAuthorId(2L);
         testEvent.setLikeUserId(3L);
 
-        testUserDto = new UserNotificationDto();
+        testUserDto = new UserDto();
         testUserDto.setId(2L);
         testUserDto.setUsername("testUser");
         testUserDto.setEmail("test@example.com");
-        testUserDto.setPreferredContact(UserDto.PreferredContact.EMAIL);
+        testUserDto.setPreference(UserDto.PreferredContact.EMAIL);
 
         testPostDto = new PostShortContentDto();
         testPostDto.setShortContent("Test post content");
