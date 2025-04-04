@@ -40,6 +40,10 @@ spring:
         name: "like_topic"
         type: "faang.school.notificationservice.model.LikeEvent"
 
+  redis:
+    topic:
+      goal-completed: goal-completed-topic
+
 server:
   port: 8083
 
