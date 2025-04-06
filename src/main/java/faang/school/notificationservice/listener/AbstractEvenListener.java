@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
+import static faang.school.notificationservice.messages.ErrorMessages.ERROR_DESERIALIZING_MESSAGE;
+import static faang.school.notificationservice.messages.ErrorMessages.NO_MESSAGE_BUILDER_FOUND_FOR_LOCALE;
+import static faang.school.notificationservice.messages.ErrorMessages.NO_NOTIFICATION_SERVICE_FOUND_FOR_PREFERRED_COMMUNICATION;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -31,25 +35,26 @@ public abstract class AbstractEvenListener<T> {
             T event = objectMapper.readValue(message.getBody(), type);
             consumer.accept(event);
         } catch (IOException e) {
-            log.error("Error deserializing message {}", message.getBody(), e);
+            log.error(ERROR_DESERIALIZING_MESSAGE, message.getBody(), e);
         }
     }
 
     protected String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
-                .filter(builder -> builder.getInstance().equals(event))
+                .filter(builder -> builder.getInstance().equals(event.getClass()))
                 .findFirst()
                 .map(builder -> builder.buildMessage(event, locale))
-                .orElseThrow(() -> new UnsupportedLocaleException("No message builder found for locale " + locale));
+                .orElseThrow(() -> new UnsupportedLocaleException(
+                        NO_MESSAGE_BUILDER_FOUND_FOR_LOCALE.formatted(locale)));
     }
 
-    protected void sendNotification(int userId, String message) {
+    protected void sendNotification(Long userId, String message) {
         UserDto user = userServiceClient.getUser(userId);
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
-                .orElseThrow(() -> new InvalidPreferredContactException("No notification service found for "
-                        + user.getPreference() + " preferred communication message"))
+                .orElseThrow(() -> new InvalidPreferredContactException(
+                        NO_NOTIFICATION_SERVICE_FOUND_FOR_PREFERRED_COMMUNICATION.formatted(user.getPreference())))
                 .send(user, message);
     }
 }
