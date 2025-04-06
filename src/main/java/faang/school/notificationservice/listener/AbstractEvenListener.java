@@ -1,0 +1,55 @@
+package faang.school.notificationservice.listener;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.InvalidPreferredContactException;
+import faang.school.notificationservice.exception.UnsupportedLocaleException;
+import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.service.NotificationService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.connection.Message;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.Consumer;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public abstract class AbstractEvenListener<T> {
+    protected final ObjectMapper objectMapper;
+    protected final UserServiceClient userServiceClient;
+    private final List<MessageBuilder<T>> messageBuilders;
+    private final List<NotificationService> notificationServices;
+
+    protected void processEvent(Message message, Class<T> type, Consumer<T> consumer) {
+        try {
+            T event = objectMapper.readValue(message.getBody(), type);
+            consumer.accept(event);
+        } catch (IOException e) {
+            log.error("Error deserializing message {}", message.getBody(), e);
+        }
+    }
+
+    protected String getMessage(T event, Locale locale) {
+        return messageBuilders.stream()
+                .filter(builder -> builder.getInstance().equals(event))
+                .findFirst()
+                .map(builder -> builder.buildMessage(event, locale))
+                .orElseThrow(() -> new UnsupportedLocaleException("No message builder found for locale " + locale));
+    }
+
+    protected void sendNotification(int userId, String message) {
+        UserDto user = userServiceClient.getUser(userId);
+        notificationServices.stream()
+                .filter(service -> service.getPreferredContact().equals(user.getPreference()))
+                .findFirst()
+                .orElseThrow(() -> new InvalidPreferredContactException("No notification service found for "
+                        + user.getPreference() + " preferred communication message"))
+                .send(user, message);
+    }
+}
