@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
 import com.vonage.client.VonageClient;
+import com.vonage.client.VonageClientException;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
@@ -29,16 +30,20 @@ public class SmsService implements NotificationService {
         TextMessage textMessage = new TextMessage(smsTitle, user.getPhone(), message);
 
         try {
-            SmsSubmissionResponse response = smsVonageClient.getSmsClient().submitMessage(textMessage);
-            if (!response.getMessages().isEmpty() && response.getMessages().get(0).getStatus() == MessageStatus.OK) {
+            SmsSubmissionResponse response = smsVonageClient
+                    .getSmsClient()
+                    .submitMessage(textMessage);
+            if (!response.getMessages().isEmpty()
+                    && response.getMessages().get(0).getStatus() == MessageStatus.OK) {
                 log.info("Message sent successfully to {}", user.getPhone());
             } else {
                 String error = response.getMessages().isEmpty()
                         ? "No messages in response"
                         : response.getMessages().get(0).getErrorText();
                 log.error("Message failed with error: {}", error);
+                throw new RuntimeException("Internal error: " + error);
             }
-        } catch (Exception e) {
+        } catch (VonageClientException e) {
             log.error("Failed to send SMS to {}: {}", user.getPhone(), e.getMessage());
             throw new RuntimeException("Failed to send SMS", e);
         }
