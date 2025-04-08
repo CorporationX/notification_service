@@ -43,6 +43,8 @@ dependencies {
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
     implementation("com.vonage:client:7.3.0")
 
+    implementation("org.telegram:telegrambots-spring-boot-starter:6.8.0")
+
     /**
      * Test containers
      */

@@ -25,6 +25,11 @@ spring:
   messages:
     basename: messages
 
+telegram:
+  bot:
+    username: titanStream9_bot
+    token: 7903002264:AAH6aG_-40_9jMtCbtnpt7qMuYTMFsMuFmQ
+
 server:
   port: 8083
 
