@@ -7,6 +7,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Этот контроллер создан только для тестирования корректности работы
+ * @see SmsService и его метода
+ * @see SmsService#send(UserDto, String) - отправляет уведомление СМС сообщением
+ * Просто так не играться, баланс мог закончиться
+ */
+
 @RestController
 @RequiredArgsConstructor
 public class SmsController {
