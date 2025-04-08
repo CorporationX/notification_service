@@ -1,6 +1,8 @@
 package faang.school.notificationservice.service.telegram;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.ExceptionMessage;
+import faang.school.notificationservice.exception.TelegramException;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -16,13 +18,13 @@ public class TelegramService implements NotificationService {
     @Override
     public void send(UserDto user, String message) {
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(user.getEmail());
+        sendMessage.setChatId(user.getTelegramId());
         sendMessage.setText(message);
 
         try {
             telegramBot.execute(sendMessage);
         } catch (TelegramApiException e) {
-            throw new RuntimeException("Error sending message in telegram", e);
+            throw new TelegramException(ExceptionMessage.TELEGRAM_EXCEPTION, e);
         }
     }
 
