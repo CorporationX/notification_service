@@ -38,6 +38,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
+smsc:
+  login: kapushkaantosh
+  password: n6W2v9Z4s2$6w2V0
+  toNumber: "79920412216"
+
 project-service:
     host: localhost
     port: 8082
