@@ -1,4 +1,4 @@
-package faang.school.notificationservice;
+package faang.school.notificationservice.service;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
