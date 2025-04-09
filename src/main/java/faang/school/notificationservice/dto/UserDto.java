@@ -9,6 +9,7 @@ public class UserDto {
     private String email;
     private String phone;
     private PreferredContact preference;
+    private Long telegramChatId;
 
     public enum PreferredContact {
         EMAIL, PHONE, TELEGRAM
