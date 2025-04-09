@@ -3,6 +3,8 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.ExceptionMessage;
+import faang.school.notificationservice.exception.PreferenceNotFountException;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +30,10 @@ public class AbstractEventListener<T> {
 
     protected void sendNotification(long receiverId, String message) {
         UserDto user = userServiceClient.getUser(receiverId);
-//        notificationServices.stream()
-//                .filter(service -> service.getPreferredContact() == user.getPreference())
-//                .findFirst()
-//                .orElseThrow(() -> new IllegalArgumentException("Preference not found"));
-//                .send(user, message);
-        // как будет
-        System.out.println("Message sent: " + message);
+        notificationServices.stream()
+                .filter(service -> service.getPreferredContact() == user.getPreference())
+                .findFirst()
+                .orElseThrow(() -> new PreferenceNotFountException(ExceptionMessage.PREFERENCE_NOT_FOUND, user.getId()))
+                .send(user, message);
     }
 }
