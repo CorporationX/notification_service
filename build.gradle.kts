@@ -28,6 +28,7 @@ dependencies {
     /**
      * Database
      */
+    implementation("org.liquibase:liquibase-core")
     implementation("redis.clients:jedis:4.3.2")
     runtimeOnly("org.postgresql:postgresql")
 
@@ -44,6 +45,8 @@ dependencies {
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
     implementation("com.vonage:client:7.3.0")
 
+    implementation("org.telegram:telegrambots-spring-boot-starter:6.8.0")
+
     /**
      * Test containers
      */
@@ -57,6 +60,11 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    /**
+     *  Notifications
+     */
+    implementation("com.vonage:client:[6.1.0,7.0.0)")
 }
 
 tasks.withType<Test> {
