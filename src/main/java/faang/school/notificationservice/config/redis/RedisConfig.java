@@ -19,6 +19,10 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int port;
 
+    @Value("${spring.data.redis.channel.recommendation-event}")
+    private String recommendationEventTopic;
+
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
@@ -26,20 +30,20 @@ public class RedisConfig {
     }
 
     @Bean
-    MessageListenerAdapter recommendationReceivedEventListener(RecommendationReceivedEventListener recommendationReceivedEventListener) {
+    MessageListenerAdapter recommendationReceivedEventListenerAdapter(RecommendationReceivedEventListener recommendationReceivedEventListener) {
         return new MessageListenerAdapter(recommendationReceivedEventListener);
     }
 
     @Bean
     ChannelTopic recommendationReceivedEventTopic() {
-        return new ChannelTopic("messageQueue");
+        return new ChannelTopic(recommendationEventTopic);
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedEventListener) {
+    RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationReceivedEventListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(recommendationReceivedEventListener, recommendationReceivedEventTopic());
+        container.addMessageListener(recommendationReceivedEventListenerAdapter, recommendationReceivedEventTopic());
         return container;
     }
 }

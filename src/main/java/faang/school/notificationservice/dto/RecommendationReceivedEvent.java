@@ -3,8 +3,8 @@ package faang.school.notificationservice.dto;
 import java.time.LocalDateTime;
 
 public record RecommendationReceivedEvent(
-        long requesterId,
+        long authorId,
         long receiverId,
-        String recommendationMessage,
-        LocalDateTime createdAt) {
+        String message,
+        LocalDateTime recommendationTime) {
 }
