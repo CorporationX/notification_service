@@ -6,6 +6,23 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
   mail:
     host: smtp.gmail.com
@@ -24,6 +41,11 @@ spring:
 
   messages:
     basename: messages
+
+telegram:
+  bot:
+    username: titanStream9_bot
+    token: 7903002264:AAH6aG_-40_9jMtCbtnpt7qMuYTMFsMuFmQ
 
 server:
   port: 8083
