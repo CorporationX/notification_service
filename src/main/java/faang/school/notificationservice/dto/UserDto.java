@@ -1,19 +1,21 @@
 package faang.school.notificationservice.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserDto {
-    private long id;
+
+    private Long id;
     private String username;
     private String email;
+
     @NotBlank(message = "To send SMS, a phone number is a mandatory requirement")
     private String phone;
     private String telegramChatId;

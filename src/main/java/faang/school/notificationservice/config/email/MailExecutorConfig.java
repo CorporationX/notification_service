@@ -11,11 +11,11 @@ import java.util.concurrent.Executor;
 @Configuration
 @EnableAsync
 @RequiredArgsConstructor
-public class AsyncExecutorConfig {
+public class MailExecutorConfig {
 
-    private final AsyncMailExecutorProperties props;
+    private final MailExecutorProperties props;
 
-    @Bean("mailExecutor")
+    @Bean(name = "mailExecutor")
     public Executor mailExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(props.getThreadCoreSize());
