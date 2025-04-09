@@ -10,6 +10,7 @@ import faang.school.notificationservice.exception.EventListenerException;
 import faang.school.notificationservice.exception.UserNotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -41,6 +42,10 @@ public class AbstractEventListenerTest {
 
     private final Consumer<UserDto> consumer = Mockito.mock(Consumer.class);
 
+    private static final String TEST_TEXT = "test";
+    private static final String EMPTY_TEST_TEXT = "test";
+    private static final long USER_ID = 1L;
+
     @BeforeEach
     public void init() {
         this.abstractEventListener = new AbstractEventListener<>(
@@ -51,8 +56,8 @@ public class AbstractEventListenerTest {
     }
 
     @Test
-    public void handleEventThrowExceptionTest() throws IOException {
-        byte[] bytes = "test".getBytes();
+    public void givenBrokenBytes_WhenHandleEvent_ThenThrowException() throws IOException {
+        byte[] bytes = TEST_TEXT.getBytes();
         when(objectMapper.readValue(bytes, UserDto.class))
                 .thenThrow(new IOException());
 
@@ -61,8 +66,8 @@ public class AbstractEventListenerTest {
     }
 
     @Test
-    public void handleEventTest() throws IOException {
-        byte[] bytes = "test".getBytes();
+    public void givenBytes_WhenHandleEvent_ThenEventHandled() throws IOException {
+        byte[] bytes = TEST_TEXT.getBytes();
         when(objectMapper.readValue(bytes, UserDto.class)).thenReturn(UserDto.builder().build());
 
         abstractEventListener.handleEvent(getMessage(), UserDto.class, consumer);
@@ -71,8 +76,8 @@ public class AbstractEventListenerTest {
     }
 
     @Test
-    public void getMessageTest() {
-        UserDto userDto = UserDto.builder().id(1L).preference(UserDto.PreferredContact.TELEGRAM).build();
+    public void givenUserDto_WhenGettingMessage_ThenReturnParsedMessage() {
+        UserDto userDto = UserDto.builder().id(USER_ID).preference(UserDto.PreferredContact.TELEGRAM).build();
 
         String actualMessage = abstractEventListener.getMessage(userDto, Locale.CANADA);
 
@@ -81,39 +86,42 @@ public class AbstractEventListenerTest {
     }
 
     @Test
-    public void sendMessageThrowUserNotFoundExceptionTest() {
-        when(userServiceClient.getUser(1L)).thenReturn(null);
+    public void givenNullUserDto_WhenSendNotification_ThenThrowException() {
+        when(userServiceClient.getUser(USER_ID)).thenReturn(null);
         assertThrows(UserNotFoundException.class,
-                () -> abstractEventListener.sendNotification(1L, ""));
+                () -> abstractEventListener.sendNotification(USER_ID, EMPTY_TEST_TEXT));
     }
 
     @Test
-    public void sendMessageThrowEventListenerExceptionTest() {
-        when(userServiceClient.getUser(1L)).thenReturn(UserDto.builder().id(1L).build());
+    @DisplayName("Выбрасывается исключение если юзера нет PreferredContact")
+    public void givenUserDto_WhenSendNotification_ThenThrowException() {
+        when(userServiceClient.getUser(USER_ID)).thenReturn(UserDto.builder().id(USER_ID).build());
         assertThrows(EventListenerException.class,
-                () -> abstractEventListener.sendNotification(1L, ""));
+                () -> abstractEventListener.sendNotification(USER_ID, EMPTY_TEST_TEXT));
     }
 
     @Test
-    public void sendMessageWithPreferredEmailTest() {
-        UserDto userDto = UserDto.builder().id(1L).preference(UserDto.PreferredContact.EMAIL).build();
-        when(userServiceClient.getUser(1L)).thenReturn(userDto);
+    @DisplayName("Успешная отправка нотификации если у пользователя PreferredContact == Email")
+    public void givenUserWithEmail_WhenSendNotification_ThenMessageSend() {
+        UserDto userDto = UserDto.builder().id(USER_ID).preference(UserDto.PreferredContact.EMAIL).build();
+        when(userServiceClient.getUser(USER_ID)).thenReturn(userDto);
 
-        abstractEventListener.sendNotification(1L, "test");
+        abstractEventListener.sendNotification(USER_ID, TEST_TEXT);
 
-        verify(userServiceClient, times(1)).getUser(1L);
-        verify(testEmailNotificationService, times(1)).send(userDto, "test");
+        verify(userServiceClient, times(1)).getUser(USER_ID);
+        verify(testEmailNotificationService, times(1)).send(userDto, TEST_TEXT);
     }
 
     @Test
-    public void sendMessageWithPreferredTelegramTest() {
-        UserDto userDto = UserDto.builder().id(1L).preference(UserDto.PreferredContact.TELEGRAM).build();
-        when(userServiceClient.getUser(1L)).thenReturn(userDto);
+    @DisplayName("Успешная отправка нотификации если у пользователя PreferredContact == Telegram")
+    public void givenUserWithTelegram_WhenSendNotification_ThenMessageSend() {
+        UserDto userDto = UserDto.builder().id(USER_ID).preference(UserDto.PreferredContact.TELEGRAM).build();
+        when(userServiceClient.getUser(USER_ID)).thenReturn(userDto);
 
-        abstractEventListener.sendNotification(1L, "test");
+        abstractEventListener.sendNotification(USER_ID, TEST_TEXT);
 
-        verify(userServiceClient, times(1)).getUser(1L);
-        verify(testTelegramNotificationService, times(1)).send(userDto, "test");
+        verify(userServiceClient, times(1)).getUser(USER_ID);
+        verify(testTelegramNotificationService, times(1)).send(userDto, TEST_TEXT);
     }
 
     private Message getMessage() throws IOException {
