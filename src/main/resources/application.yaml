@@ -44,3 +44,7 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+telegram:
+  bot-username: MyRamilNotifierBot
+  bot-token: 8081925035:AAEWp8cxBNRVcnzlvg7nJxJax4NTsQFSlDU
