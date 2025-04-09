@@ -18,8 +18,6 @@ import java.util.Locale;
 @Component
 public class RecommendationReceivedEventListener extends AbstractEventListener<RecommendationReceivedEvent> implements MessageListener {
 
-
-
     public RecommendationReceivedEventListener(ObjectMapper objectMapper,
                                                UserServiceClient userServiceClient,
                                                List<NotificationService> notificationServices,
