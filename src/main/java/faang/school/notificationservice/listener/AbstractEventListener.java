@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.ExceptionMessage;
+import faang.school.notificationservice.exception.MessageBuilderNotFoundException;
 import faang.school.notificationservice.exception.PreferenceNotFountException;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -24,7 +25,8 @@ public class AbstractEventListener<T> {
         return messageBuilders.stream()
                 .filter(messageBuilder -> messageBuilder.getInstance() == event.getClass())
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Message not found"))
+                .orElseThrow(() -> new MessageBuilderNotFoundException(
+                        ExceptionMessage.MESSAGE_BUILDER_NOT_FOUND, event.getClass().getSimpleName()))
                 .buildMessage(event, locale);
     }
 
