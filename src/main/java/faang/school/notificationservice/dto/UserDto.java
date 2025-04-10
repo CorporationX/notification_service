@@ -16,6 +16,7 @@ public class UserDto {
     private String phone;
     private long telegramId;
     private PreferredContact preference;
+    private boolean active;
 
     public enum PreferredContact {
         EMAIL, PHONE, TELEGRAM
