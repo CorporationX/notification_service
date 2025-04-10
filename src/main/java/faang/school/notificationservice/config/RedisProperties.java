@@ -1,10 +1,11 @@
-package faang.school.notificationservice.config.context;
+package faang.school.notificationservice.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Настройки Redis из конфигурации
+ * Класс свойств конфигурации для подключения к Redis.
+ * Содержит настройки хоста, порта, таймаутов и параметров слушателей.
  */
 @ConfigurationProperties(prefix = "spring.data.redis")
 @Data
