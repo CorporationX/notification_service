@@ -6,6 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        recommendation-event: recommendation_event_channel
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
