@@ -29,7 +29,17 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        //обработка входящих сообщений
+        if (update.hasMessage()) {
+            SendMessage message = new SendMessage();
+            message.setChatId(update.getMessage().getChatId().toString());
+            message.setText("I got your message, but I can't reply properly.");
+
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                log.error("Message no send. Error: {}",e.getMessage());
+            }
+        }
     }
 
     @Override

@@ -4,6 +4,7 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.telegram.TelegramBot;
 import faang.school.notificationservice.service.telegram.TelegramService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,14 +37,16 @@ public class TelegramServiceTest {
     }
 
     @Test
-    void givenUserDto_whenSendMessage_thenSuccess() throws TelegramApiException {
+    @DisplayName("Проверка успешного отправления сообщения")
+    public void givenUserDto_whenSendMessage_thenSuccess() throws TelegramApiException {
         telegramService.send(user, MESSAGE);
 
         verify(telegramBot).sendMessage(CHAT_ID, MESSAGE);
     }
 
     @Test
-    void givenUserDto_whenSendMessage_thenNotSendMessage() {
+    @DisplayName("Проверка типа уведомлений пользователя")
+    public void givenUserDto_whenSendMessage_thenNotSendMessage() {
         user.setPreference(UserDto.PreferredContact.EMAIL);
 
         telegramService.send(user, MESSAGE);

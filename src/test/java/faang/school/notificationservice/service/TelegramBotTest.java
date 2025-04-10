@@ -42,7 +42,7 @@ public class TelegramBotTest {
     }
 
     @Test
-    @DisplayName("Should send message successfully")
+    @DisplayName("Проверка успешного отправления сообщения")
     public void givenMessage_whenSendMessage_thenSuccess() throws TelegramApiException {
         doReturn(message).when(telegramBot).execute(any(SendMessage.class));
 
