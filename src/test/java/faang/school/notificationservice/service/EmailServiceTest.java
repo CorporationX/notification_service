@@ -15,7 +15,7 @@ class EmailServiceTest {
     void positiveSendEmail() {
         UserDto userDto = UserDto.builder()
                 .id(1L)
-                .email("i.hafizova1999@gmail.com")
+                .email("example@gmail.com")
                 .build();
         String message = "Повторное сообщение";
         emailService.send(userDto, message);
