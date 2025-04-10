@@ -6,6 +6,24 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        recommendation-event: recommendation_event_channel
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
   mail:
     host: smtp.gmail.com
@@ -25,6 +43,11 @@ spring:
   messages:
     basename: messages
 
+telegram:
+  bot:
+    username: titanStream9_bot
+    token: 7903002264:AAH6aG_-40_9jMtCbtnpt7qMuYTMFsMuFmQ
+
 server:
   port: 8083
 
@@ -32,11 +55,11 @@ logging:
   level:
     root: info
 
-#Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
-vonage: #https://dashboard.nexmo.com/getting-started/sms
+vonage:
   api:
-    key: whatever
-    secret: whatever
+    key: "e388b9b8"
+    secret: "tEhPGnNH7nL25qjm"
+    sender: "CorporationX"
 
 project-service:
     host: localhost
@@ -44,3 +67,4 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+

@@ -28,6 +28,7 @@ dependencies {
     /**
      * Database
      */
+    implementation("org.liquibase:liquibase-core")
     implementation("redis.clients:jedis:4.3.2")
     runtimeOnly("org.postgresql:postgresql")
 
@@ -35,6 +36,7 @@ dependencies {
      * Utils & Logging
      */
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("org.slf4j:slf4j-api:2.0.5")
     implementation("ch.qos.logback:logback-classic:1.4.6")
     implementation("org.projectlombok:lombok:1.18.26")
@@ -42,6 +44,8 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
     implementation("com.vonage:client:7.3.0")
+
+    implementation("org.telegram:telegrambots-spring-boot-starter:6.8.0")
 
     /**
      * Test containers
@@ -56,6 +60,11 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    /**
+     *  Notifications
+     */
+    implementation("com.vonage:client:[6.1.0,7.0.0)")
 }
 
 tasks.withType<Test> {
