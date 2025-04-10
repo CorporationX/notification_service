@@ -5,8 +5,9 @@ import lombok.Data;
 import java.util.Locale;
 
 /**
- * DTO для пользователя.
- * Содержит идентификатор, имя пользователя, email, телефон и предпочтительный способ связи.
+ * DTO для представления информации о пользователе.
+ * Содержит поля для идентификатора, имени пользователя, электронной почты,
+ * номера телефона, предпочтительного способа связи и локали.
  */
 @Data
 public class UserDto {
@@ -15,7 +16,7 @@ public class UserDto {
     private String email;
     private String phone;
     private PreferredContact preference;
-    private String language;
+    private Locale locale;
 
     public enum PreferredContact {
         EMAIL, PHONE, TELEGRAM

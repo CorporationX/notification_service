@@ -70,15 +70,18 @@ public class FollowerEventListener implements MessageListener {
     }
 
     /**
-     * Отправляет уведомление пользователю в соответствии с его предпочтениями.
-     * Формирует сообщение на основе события и отправляет его через сервис уведомлений,
-     * соответствующий предпочтениям пользователя.
+     * Отправляет уведомление пользователю о событии подписки/отписки.
+     * Выбирает сервис уведомлений в зависимости от предпочтений пользователя
+     * и отправляет ему сообщение.
      *
-     * @param user  информация о пользователе
+     * @param user  пользователь, которому отправляется уведомление
      * @param event событие подписки/отписки
      */
     private void sendNotification(UserDto user, FollowerEvent event) {
-        Locale locale = Locale.forLanguageTag(user.getLanguage() != null ? user.getLanguage() : "en");
+        Locale locale = user.getLocale();
+        if (locale == null) {
+            locale = Locale.ENGLISH;
+        }
 
         String message = messageBuilder.buildMessage(event, locale);
         notificationServices.stream()
