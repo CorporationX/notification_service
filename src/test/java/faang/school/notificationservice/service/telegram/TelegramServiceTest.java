@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service.telegram;
 
+import faang.school.notificationservice.config.context.TelegramProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.NotificationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,12 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -25,6 +26,13 @@ class TelegramServiceTest {
     @Mock
     private MyTelegramBot mockBot;
 
+    @Mock
+    private TelegramProperties telegramProperties;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        telegramService.bot = mockBot;
+    }
 
     @Test
     void shouldSendMessageSuccessfully() throws Exception {

@@ -1,12 +1,13 @@
 package faang.school.notificationservice.service.telegram;
 
+import com.google.common.annotations.VisibleForTesting;
+import faang.school.notificationservice.config.context.TelegramProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.NotificationException;
 import faang.school.notificationservice.service.NotificationService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,21 +15,21 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class TelegramService implements NotificationService {
-    @Value("${telegram.bot-username}")
-    private String botUsername;
 
-    @Value("${telegram.bot-token}")
-    private String botToken;
-
-    private MyTelegramBot bot;
+    private final TelegramProperties telegramProperties;
+    @VisibleForTesting
+    MyTelegramBot bot;
 
     @PostConstruct
     public void init() throws TelegramApiException {
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-        bot = new MyTelegramBot(botUsername, botToken);
+        bot = new MyTelegramBot(
+                telegramProperties.getBotUsername(),
+                telegramProperties.getBotToken()
+        );
         botsApi.registerBot(bot);
     }
 
@@ -40,7 +41,7 @@ public class TelegramService implements NotificationService {
         }
 
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(String.valueOf(user.getTelegramChatId()));
+        sendMessage.setChatId(user.getTelegramChatId());
         sendMessage.setText(message);
 
         try {

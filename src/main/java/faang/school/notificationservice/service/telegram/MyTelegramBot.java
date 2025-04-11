@@ -1,7 +1,9 @@
 package faang.school.notificationservice.service.telegram;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+@Slf4j
 public class MyTelegramBot extends TelegramLongPollingBot {
 
     private final String botUsername;
@@ -19,7 +21,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
-            System.out.println("Telegram Chat ID: " + update.getMessage().getChatId());
+            log.info("Telegram Chat ID: " + update.getMessage().getChatId());
         }
     }
 }
