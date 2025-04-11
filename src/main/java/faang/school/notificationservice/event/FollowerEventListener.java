@@ -50,8 +50,8 @@ public class FollowerEventListener extends AbstractEventListener<FollowerEventDt
      * Десериализует сообщение в {@link FollowerEventDto} и передает на обработку.
      * </p>
      *
-     * @param message  входящее сообщение
-     * @param pattern  шаблон канала (не используется)
+     * @param message входящее сообщение
+     * @param pattern шаблон канала (не используется)
      */
     @Override
     public void onMessage(Message message, byte[] pattern) {

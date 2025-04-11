@@ -91,10 +91,10 @@ public class RedisConfig {
      * Создает контейнер для обработки сообщений из Redis каналов.
      *
      * @param connectionFactory фабрика подключений к Redis
-     * @param listeners список слушателей, реализующих {@link MessageListener}
+     * @param listeners         список слушателей, реализующих {@link MessageListener}
      * @return настроенный контейнер слушателей
      * @implNote Автоматически регистрирует слушатели, помеченные аннотацией {@link RedisChannel},
-     *           подписывая их на соответствующие каналы.
+     * подписывая их на соответствующие каналы.
      */
     @Bean
     public RedisMessageListenerContainer listenerContainer(
