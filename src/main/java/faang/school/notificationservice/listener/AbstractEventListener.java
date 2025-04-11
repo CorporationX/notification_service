@@ -24,7 +24,7 @@ public abstract class AbstractEventListener<T> {
     protected final UserServiceClient userServiceClient;
     protected final Map<Class<?>, MessageBuilder<?>> messageBuilderMap;
     protected final List<NotificationService> notificationServices;
-    
+
     protected String getMessage(@NonNull T event, Locale locale) {
         MessageBuilder<T> builder = (MessageBuilder<T>) messageBuilderMap.get(event.getClass());
         if (builder == null) {
