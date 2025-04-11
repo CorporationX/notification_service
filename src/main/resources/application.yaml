@@ -17,6 +17,7 @@ spring:
           thread-name-prefix: redis-listener-
       channel:
         follower: follower_channel
+        unfollower: unfollower_channel
         achievement: achievement_channel
         like: like_channel
         not-like: not_like_channel

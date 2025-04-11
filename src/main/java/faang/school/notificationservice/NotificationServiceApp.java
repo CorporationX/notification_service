@@ -1,6 +1,9 @@
 package faang.school.notificationservice;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.properties.TelegramBotProperties;
 import faang.school.notificationservice.config.email.MailExecutorProperties;
 import faang.school.notificationservice.config.email.MailProperties;
@@ -28,7 +31,9 @@ public class NotificationServiceApp {
 
     @Bean
     public ObjectMapper objectMapper() {
-
-        return new ObjectMapper();
+        return new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 }
