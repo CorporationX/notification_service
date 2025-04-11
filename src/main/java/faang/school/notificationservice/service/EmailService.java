@@ -9,8 +9,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 /**
- * Сервис для отправки уведомлений по электронной почте.
- * Реализует интерфейс NotificationService.
+ * Сервис отправки email-уведомлений.
+ * <p>
+ * Реализует отправку простых текстовых уведомлений через SMTP.
+ * Обрабатывает ошибки отправки и логирует результаты.
  */
 @Slf4j
 @Service
@@ -20,10 +22,11 @@ public class EmailService implements NotificationService {
     private final JavaMailSender mailSender;
 
     /**
-     * Отправляет уведомление пользователю по электронной почте.
+     * Отправляет email-уведомление пользователю.
      *
-     * @param user пользователь, которому отправляется уведомление
+     * @param user получатель уведомления
      * @param text текст уведомления
+     * @throws NotificationException если отправка не удалась
      */
     @Override
     public void send(UserDto user, String text) {
@@ -42,6 +45,11 @@ public class EmailService implements NotificationService {
         }
     }
 
+    /**
+     * Возвращает предпочтительный способ связи.
+     *
+     * @return EMAIL - для данного сервиса
+     */
     @Override
     public UserDto.PreferredContact getPreferredContact() {
         return UserDto.PreferredContact.EMAIL;

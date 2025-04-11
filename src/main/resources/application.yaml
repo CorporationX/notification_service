@@ -5,21 +5,20 @@ spring:
       port: 6379       # Порт Redis сервера
       connect-timeout: 5000  # Таймаут подключения в миллисекундах
       read-timeout: 3000     # Таймаут чтения в миллисекундах
-      listener:
-        task-threads: 4       # Количество потоков для выполнения задач
-        subscription-threads: 2 # Количество потоков для подписки
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${GMAIL_USER}   # Берем из переменных окружения
-    password: ${GMAIL_APP_PASSWORD}
+    username: ${EMAIL_USERNAME} # Логин приложения Gmail
+    password: ${EMAIL_PASSWORD} # Пароль приложения Gmail
+    protocol: smtp
     properties:
       mail:
         smtp:
           auth: true
-          starttls.enable: true
-          ssl:
-            trust: smtp.gmail.com
+          starttls:
+            enable: true
+            required: true
+          ssl.trust: smtp.gmail.com
 
   messages:
     basename: messages
@@ -38,8 +37,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080

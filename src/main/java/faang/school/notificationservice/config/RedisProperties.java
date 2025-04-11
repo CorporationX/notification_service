@@ -5,21 +5,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Класс свойств конфигурации для подключения к Redis.
- * Содержит настройки хоста, порта, таймаутов и параметров слушателей.
+ * <p>
+ * Связывает свойства из конфигурационного файла (application.yml)
+ * с Java-объектом для удобного использования в коде. Все свойства должны иметь префикс
+ * {@code spring.data.redis} в конфигурационных файлах.
+ * </p>
  */
-@ConfigurationProperties(prefix = "spring.data.redis")
 @Data
+@ConfigurationProperties(prefix = "spring.data.redis")
 public class RedisProperties {
     private String host;
     private int port;
-    private int connectTimeout = 5000;
-    private int readTimeout = 3000;
-
-    private Listener listener = new Listener();
-
-    @Data
-    public static class Listener {
-        private int taskThreads = 4;
-        private int subscriptionThreads = 2;
-    }
+    private int connectTimeout;
+    private int readTimeout;
 }

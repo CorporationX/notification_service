@@ -6,8 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Аннотация для указания канала Redis, на который будет подписан слушатель.
- * Используется для автоматической регистрации слушателей в конфигурации Redis.
+ * Аннотация для указания Redis-топика, на который будет подписан listener (слушатель).
+ * Применяется к классам, реализующим {@link org.springframework.data.redis.connection.MessageListener},
+ * чтобы указать канал (топик), на который они должны реагировать.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

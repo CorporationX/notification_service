@@ -1,11 +1,11 @@
 package faang.school.notificationservice.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
@@ -20,13 +20,16 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
- * Конфигурационный класс для настройки подключения к Redis и работы с механизмом pub/sub.
- * Создает и настраивает бины для подключения к Redis, сериализации сообщений,
- * а также подписки на каналы с помощью слушателей сообщений.
+ * Конфигурационный класс для настройки подключения к Redis и работы с сообщениями.
+ * <p>
+ * Содержит настройки для:
+ * <ul>
+ *   <li>Подключения к Redis серверу</li>
+ *   <li>Сериализации/десериализации данных</li>
+ *   <li>Обработки сообщений из Redis каналов</li>
+ * </ul>
  */
 @Slf4j
 @Configuration
@@ -35,20 +38,28 @@ import java.util.concurrent.Executors;
 public class RedisConfig {
 
     private final RedisProperties redisProperties;
+    private final ObjectMapper objectMapper;
 
     /**
-     * Создает фабрику подключений к Redis на основе конфигурационных свойств.
+     * Создает фабрику подключений к Redis.
      *
-     * @return фабрика подключений JedisConnectionFactory
+     * @return настроенная фабрика подключений
+     * @implNote Использует настройки из {@link RedisProperties}:
+     * <ul>
+     *   <li>Хост и порт Redis сервера</li>
+     *   <li>Таймауты подключения и чтения</li>
+     * </ul>
      */
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(
                 redisProperties.getHost(), redisProperties.getPort());
+
         JedisClientConfiguration clientConfig = JedisClientConfiguration.builder()
                 .connectTimeout(Duration.ofMillis(redisProperties.getConnectTimeout()))
                 .readTimeout(Duration.ofMillis(redisProperties.getReadTimeout()))
                 .build();
+
         return new JedisConnectionFactory(config, clientConfig);
     }
 
@@ -56,37 +67,42 @@ public class RedisConfig {
      * Создает и настраивает RedisTemplate для работы с Redis.
      *
      * @param factory фабрика подключений к Redis
-     * @return настроенный экземпляр RedisTemplate
+     * @return настроенный RedisTemplate
+     * @implNote Использует:
+     * <ul>
+     *   <li>StringRedisSerializer для ключей</li>
+     *   <li>GenericJackson2JsonRedisSerializer для значений</li>
+     * </ul>
      */
     @Bean
     public RedisTemplate<String, Object> redisTemplate(JedisConnectionFactory factory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(factory);
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+
+        GenericJackson2JsonRedisSerializer serializer =
+                new GenericJackson2JsonRedisSerializer(objectMapper);
+        template.setValueSerializer(serializer);
+
         return template;
     }
 
     /**
-     * Создает и настраивает контейнер для слушателей сообщений Redis.
-     * Регистрирует все слушатели, аннотированные @RedisChannel, для соответствующих каналов.
+     * Создает контейнер для обработки сообщений из Redis каналов.
      *
-     * @param connectionFactory фабрика подключений
-     * @param redisTaskExecutor исполнитель задач
-     * @param redisSubscriptionExecutor исполнитель подписок
-     * @return контейнер слушателей сообщений Redis
+     * @param connectionFactory фабрика подключений к Redis
+     * @param listeners список слушателей, реализующих {@link MessageListener}
+     * @return настроенный контейнер слушателей
+     * @implNote Автоматически регистрирует слушатели, помеченные аннотацией {@link RedisChannel},
+     *           подписывая их на соответствующие каналы.
      */
     @Bean
     public RedisMessageListenerContainer listenerContainer(
             JedisConnectionFactory connectionFactory,
-            List<MessageListener> listeners,
-            Executor redisTaskExecutor,
-            Executor redisSubscriptionExecutor) {
+            List<MessageListener> listeners) {
 
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setTaskExecutor(redisTaskExecutor);
-        container.setSubscriptionExecutor(redisSubscriptionExecutor);
 
         for (MessageListener listener : listeners) {
             RedisChannel annotation = listener.getClass().getAnnotation(RedisChannel.class);
@@ -98,28 +114,5 @@ public class RedisConfig {
         }
 
         return container;
-    }
-
-    /**
-     * Создает исполнитель задач для обработки сообщений Redis.
-     *
-     * @return пул потоков для выполнения задач
-     */
-    @Bean
-    @Primary
-    public Executor redisTaskExecutor() {
-        return Executors.newFixedThreadPool(redisProperties.getListener().getTaskThreads(),
-                new NamedThreadFactory("redis-task-"));
-    }
-
-    /**
-     * Создает исполнитель для обработки подписок Redis.
-     *
-     * @return пул потоков для обработки подписок
-     */
-    @Bean
-    public Executor redisSubscriptionExecutor() {
-        return Executors.newFixedThreadPool(redisProperties.getListener().getSubscriptionThreads(),
-                new NamedThreadFactory("redis-sub-"));
     }
 }
