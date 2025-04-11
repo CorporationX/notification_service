@@ -1,4 +1,7 @@
 spring:
+  config:
+    import: classpath:messages.yaml
+
   data:
     redis:
       port: 6379

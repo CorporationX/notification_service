@@ -1,30 +1,50 @@
 package faang.school.notificationservice.service.kafka.listener;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.PremiumNotificationDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.NotificationMethodNotSupportedException;
 import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.utils.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static faang.school.notificationservice.message.ErrorMessages.FAILED_TO_ACKNOWLEDGE_KAFKA_MESSAGE;
+import static faang.school.notificationservice.messages.ErrorMessages.FAILED_TO_ACKNOWLEDGE_KAFKA_MESSAGE;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class PremiumKafkaListener {
     public static final String RECEIVED_MESSAGE_FROM_KAFKA = "Received message from kafka: {}";
-    private final ObjectMapper objectMapper;
     private final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationServices;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final JsonUtils jsonUtils;
+
+    @Value("${messages.premium.premium-bought}")
+    private String premiumBoughtNotification;
+
+    @Value("${messages.premium.premium-expired}")
+    private String premiumExpiredNotification;
+
+    @Value("${messages.premium.premium-expire-soon}")
+    private String premiumExpireSoonNotification;
+
+    @Value("${messages.premium.premium-renew-failed}")
+    private String premiumRenewFailedNotification;
+
+    @Value("${messages.premium.premium-updated}")
+    private String premiumUpdatedNotification;
+
+    @Value("${messages.premium.premium-payment-failed}")
+    private String premiumPaymentFailedNotification;
 
     @KafkaListener(
             topics = "${spring.kafka.consumer.topics.premium.bought-topic}",
@@ -32,11 +52,11 @@ public class PremiumKafkaListener {
     )
     public void premiumBoughtListener(String message, Acknowledgment acknowledgment) {
         log.info(RECEIVED_MESSAGE_FROM_KAFKA, message);
-        PremiumNotificationDto premiumNotificationDto = getPremiumNotificationDto(message);
-        String notification = "You’ve successfully subscribed to Premium for %s months. Active from %s to %s.".formatted(
+        PremiumNotificationDto premiumNotificationDto = jsonUtils.deserialize(message, PremiumNotificationDto.class);
+        String notification = premiumBoughtNotification.formatted(
                 premiumNotificationDto.getPremiumType().getMonths(),
-                premiumNotificationDto.getStartDate().toLocalDate(),
-                premiumNotificationDto.getEndDate().toLocalDate()
+                premiumNotificationDto.getStartDate().format(formatter),
+                premiumNotificationDto.getEndDate().format(formatter)
         );
         sendNotification(notification, premiumNotificationDto.getUserId());
         acknowledgeMessage(acknowledgment);
@@ -48,10 +68,10 @@ public class PremiumKafkaListener {
     )
     public void premiumExpiredListener(String message, Acknowledgment acknowledgment) {
         log.info(RECEIVED_MESSAGE_FROM_KAFKA, message);
-        PremiumNotificationDto premiumNotificationDto = getPremiumNotificationDto(message);
-        String notification = "Your Premium subscription for %s months expired on %s.".formatted(
+        PremiumNotificationDto premiumNotificationDto = jsonUtils.deserialize(message, PremiumNotificationDto.class);
+        String notification = premiumExpiredNotification.formatted(
                 premiumNotificationDto.getPremiumType().getMonths(),
-                premiumNotificationDto.getEndDate().toLocalDate()
+                premiumNotificationDto.getEndDate().format(formatter)
         );
         sendNotification(notification, premiumNotificationDto.getUserId());
         acknowledgeMessage(acknowledgment);
@@ -63,10 +83,10 @@ public class PremiumKafkaListener {
     )
     public void premiumExpireSoonListener(String message, Acknowledgment acknowledgment) {
         log.info(RECEIVED_MESSAGE_FROM_KAFKA, message);
-        PremiumNotificationDto premiumNotificationDto = getPremiumNotificationDto(message);
-        String notification = "Your Premium subscription for %s months will expire soon — on %s.".formatted(
+        PremiumNotificationDto premiumNotificationDto = jsonUtils.deserialize(message, PremiumNotificationDto.class);
+        String notification = premiumExpireSoonNotification.formatted(
                 premiumNotificationDto.getPremiumType().getMonths(),
-                premiumNotificationDto.getEndDate().toLocalDate()
+                premiumNotificationDto.getEndDate().format(formatter)
         );
         sendNotification(notification, premiumNotificationDto.getUserId());
         acknowledgeMessage(acknowledgment);
@@ -78,10 +98,10 @@ public class PremiumKafkaListener {
     )
     public void premiumAutoRenewFailedListener(String message, Acknowledgment acknowledgment) {
         log.info(RECEIVED_MESSAGE_FROM_KAFKA, message);
-        PremiumNotificationDto premiumNotificationDto = getPremiumNotificationDto(message);
-        String notification = "We couldn’t auto-renew your Premium for %s months. Subscription ended on %s.".formatted(
+        PremiumNotificationDto premiumNotificationDto = jsonUtils.deserialize(message, PremiumNotificationDto.class);
+        String notification = premiumRenewFailedNotification.formatted(
                 premiumNotificationDto.getPremiumType().getMonths(),
-                premiumNotificationDto.getEndDate().toLocalDate()
+                premiumNotificationDto.getEndDate().format(formatter)
         );
         sendNotification(notification, premiumNotificationDto.getUserId());
         acknowledgeMessage(acknowledgment);
@@ -93,11 +113,11 @@ public class PremiumKafkaListener {
     )
     public void premiumUpdatedListener(String message, Acknowledgment acknowledgment) {
         log.info(RECEIVED_MESSAGE_FROM_KAFKA, message);
-        PremiumNotificationDto premiumNotificationDto = getPremiumNotificationDto(message);
-        String notification = "Your Premium subscription for %s months has been updated. New period: %s to %s.".formatted(
+        PremiumNotificationDto premiumNotificationDto = jsonUtils.deserialize(message, PremiumNotificationDto.class);
+        String notification = premiumUpdatedNotification.formatted(
                 premiumNotificationDto.getPremiumType().getMonths(),
-                premiumNotificationDto.getStartDate().toLocalDate(),
-                premiumNotificationDto.getEndDate().toLocalDate()
+                premiumNotificationDto.getStartDate().format(formatter),
+                premiumNotificationDto.getEndDate().format(formatter)
         );
         sendNotification(notification, premiumNotificationDto.getUserId());
         acknowledgeMessage(acknowledgment);
@@ -109,8 +129,8 @@ public class PremiumKafkaListener {
     )
     public void premiumPaymentFailedListener(String message, Acknowledgment acknowledgment) {
         log.info(RECEIVED_MESSAGE_FROM_KAFKA, message);
-        PremiumNotificationDto premiumNotificationDto = getPremiumNotificationDto(message);
-        String notification = "We couldn’t process your payment for Premium for %s months. Please try again.".formatted(
+        PremiumNotificationDto premiumNotificationDto = jsonUtils.deserialize(message, PremiumNotificationDto.class);
+        String notification = premiumPaymentFailedNotification.formatted(
                 premiumNotificationDto.getPremiumType().getMonths()
         );
         sendNotification(notification, premiumNotificationDto.getUserId());
@@ -134,16 +154,5 @@ public class PremiumKafkaListener {
             log.error(FAILED_TO_ACKNOWLEDGE_KAFKA_MESSAGE, e);
             throw new RuntimeException(e);
         }
-    }
-
-    private PremiumNotificationDto getPremiumNotificationDto(String json) {
-        PremiumNotificationDto premiumNotificationDto;
-        try {
-            premiumNotificationDto = objectMapper.readValue(json, PremiumNotificationDto.class);
-        } catch (JsonProcessingException e) {
-            log.error("Error while deserializing PremiumNotificationDto", e);
-            throw new RuntimeException(e);
-        }
-        return premiumNotificationDto;
     }
 }

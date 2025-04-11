@@ -1,0 +1,8 @@
+messages:
+  premium:
+    premium-bought: "You’ve successfully subscribed to Premium for %s months. Active from %s to %s."
+    premium-expired: "Your Premium subscription for %s months expired on %s."
+    premium-expire-soon: "Your Premium subscription for %s months will expire soon — on %s."
+    premium-renew-failed: "We couldn’t auto-renew your Premium for %s months. Subscription ended on %s."
+    premium-updated: "Your Premium subscription for %s months has been updated. New period: %s to %s."
+    premium-payment-failed: "We couldn’t process your payment for Premium for %s months. Please try again."
