@@ -18,7 +18,9 @@ public abstract class AbstractSubscriptionMessageBuilder implements MessageBuild
 
     protected abstract String getMessageKey();
 
-    protected abstract Object[] getArguments(SubscriptionEventDto eventDto);
+    protected Object[] getArguments(SubscriptionEventDto eventDto) {
+        return new Object[]{eventDto.getFollowerId()};
+    }
 
     @Override
     public String buildMessage(SubscriptionEventDto eventDto, Locale locale) {

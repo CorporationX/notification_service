@@ -12,12 +12,7 @@ public class FollowerMessageBuilder extends AbstractSubscriptionMessageBuilder {
     }
 
     @Override
-    protected String getMessageKey() {
+    public String getMessageKey() {
         return "follow.message";
-    }
-
-    @Override
-    protected Object[] getArguments(SubscriptionEventDto eventDto) {
-        return new Object[]{eventDto.getFollowerId()};
     }
 }

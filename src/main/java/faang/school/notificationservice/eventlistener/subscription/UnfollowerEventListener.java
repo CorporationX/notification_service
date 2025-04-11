@@ -30,6 +30,6 @@ public class UnfollowerEventListener extends AbstractSubscriptionListener {
 
     @Override
     protected long getUserId(SubscriptionEventDto eventDto) {
-        return eventDto.getFolloweeId();
+        return eventDto.getFollowerId();
     }
 }

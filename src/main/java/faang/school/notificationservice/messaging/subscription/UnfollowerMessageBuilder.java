@@ -12,12 +12,7 @@ public class UnfollowerMessageBuilder extends AbstractSubscriptionMessageBuilder
     }
 
     @Override
-    protected String getMessageKey() {
+    public String getMessageKey() {
         return "unfollow.message";
-    }
-
-    @Override
-    protected Object[] getArguments(SubscriptionEventDto eventDto) {
-        return new Object[]{eventDto.getFolloweeId()};
     }
 }
