@@ -18,6 +18,10 @@ public class MailNotificationService implements NotificationService {
 
     @Override
     public void send(UserDto user, String message) {
+        if (user == null) {
+            log.warn("Received null user, email not sent");
+            return;
+        }
         if (user.getPreference() != UserDto.PreferredContact.EMAIL) {
             log.debug("User {} prefers {}, email not sent", user.getId(), user.getPreference());
             return;
