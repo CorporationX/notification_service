@@ -20,6 +20,7 @@ public class TelegramService extends TelegramLongPollingBot implements Notificat
     @Override
     public void send(UserDto user, String message) {
         SendMessage msg = new SendMessage();
+        msg.setChatId(user.getTelegramId()); // У нас в базе нету telegramId- вам нужно передать id в Json при запросе
         msg.setText(message);
         try{
             execute(msg);
@@ -36,10 +37,16 @@ public class TelegramService extends TelegramLongPollingBot implements Notificat
 
     @Override
     public void onUpdateReceived(Update update) {
+
     }
 
     @Override
     public String getBotUsername() {
         return telegramProperties.getUsername();
+    }
+    @Override
+    @Deprecated
+    public String getBotToken(){
+        return telegramProperties.getToken();
     }
 }
