@@ -13,6 +13,6 @@ public class EventStartEventListener implements MessageListener {
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-
+        message.getBody(); //тут надо описать что будет делать по факту
     }
 }
