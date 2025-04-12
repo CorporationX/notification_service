@@ -19,19 +19,14 @@ public class EventStartEventListener implements MessageListener {
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        // Десериализация события из Redis
         EventStartEvent event = (EventStartEvent) SerializationUtils.deserialize(message.getBody());
 
-        // Извлекаем данные из события
         String eventId = event.getEventId();
         List<UserDto> participants = event.getParticipants();
 
-        // Создаем сообщение для отправки
         String messageToSend = "Событие " + eventId + " начинается прямо сейчас!";
 
-        // Для каждого участника создаем UserDto и отправляем уведомление
         for (UserDto participant : participants) {
-            // Отправляем уведомление пользователю
             notificationService.send(participant, messageToSend);
         }
     }
