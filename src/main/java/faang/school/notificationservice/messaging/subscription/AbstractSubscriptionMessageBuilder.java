@@ -5,7 +5,6 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import org.springframework.context.MessageSource;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Locale;
 
 public abstract class AbstractSubscriptionMessageBuilder implements MessageBuilder<SubscriptionEventDto> {
@@ -18,17 +17,11 @@ public abstract class AbstractSubscriptionMessageBuilder implements MessageBuild
 
     protected abstract String getMessageKey();
 
-    protected Object[] getArguments(SubscriptionEventDto eventDto) {
-        return new Object[]{eventDto.getFollowerId()};
-    }
-
     @Override
     public String buildMessage(SubscriptionEventDto eventDto, Locale locale) {
         String eventTimeFormatted = eventDto.getEventTime()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", locale));
-        Object[] args = getArguments(eventDto);
-        args = Arrays.copyOf(args, args.length + 1);
-        args[args.length - 1] = eventTimeFormatted;
+        Object[] args = new Object[]{eventDto.getFollowerId(), eventTimeFormatted};
         return messageSource.getMessage(getMessageKey(), args, locale);
     }
 
