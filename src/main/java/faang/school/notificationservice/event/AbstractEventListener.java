@@ -53,11 +53,12 @@ public class AbstractEventListener<T> {
 
     /**
      * Считывает тело событие и отправляет в обработку
-     * @param message Сообщение из Redis
-     * @param clazz Class объекта
+     *
+     * @param message  Сообщение из Redis
+     * @param clazz    Class объекта
      * @param consumer Обработчик события
      */
-    protected void handleEvent(@NotNull Message message,@NotNull Class<T> clazz, @NotNull Consumer<T> consumer) {
+    protected void handleEvent(@NotNull Message message, @NotNull Class<T> clazz, @NotNull Consumer<T> consumer) {
         try {
             T event = objectMapper.readValue(message.getBody(), clazz);
             log.debug("Event received: {}", event);
@@ -69,36 +70,45 @@ public class AbstractEventListener<T> {
 
     /**
      * Получение отформатированного текста
-     * @param event Объект для обработки текста
+     *
+     * @param event  Объект для обработки текста
      * @param locale Локаль пользователя
      * @return Отформатированное сообщение
      */
     protected String getMessage(@NotNull T event, Locale locale) {
+        Locale localeToUse = locale != null ? locale : Locale.getDefault();
         return messageBuilders.stream()
                 .filter(builder -> builder.getInstance().equals(event.getClass()))
                 .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event,
-                        locale == null ? Locale.getDefault() : locale))
-                .orElseThrow(() -> new EventListenerException("No suitable builder found for " + event.getClass()));
+                .map(messageBuilder -> messageBuilder.buildMessage(event, localeToUse))
+                .orElseThrow(() -> {
+                    String errorMsg = String.format("No suitable builder found for %s", event.getClass());
+                    return new EventListenerException(errorMsg);
+                });
     }
 
     /**
      * Отправляет сообщение
-     * @param userId Id получателя
+     *
+     * @param userId  Id получателя
      * @param message Текст сообщения
      */
     protected void sendNotification(@NotNull Long userId, @NotBlank String message) {
         UserDto userDto = userServiceClient.getUser(userId);
         if (userDto == null) {
-            throw new UserNotFoundException("User with id " + userId + " not found");
+            String errorMsg = String.format("User with id %s not found", userId);
+            throw new UserNotFoundException(errorMsg);
         }
 
         notificationServices.stream()
                 .filter(notificationService ->
                         notificationService.getPreferredContact().equals(userDto.getPreference()))
                 .findFirst()
-                .orElseThrow(() -> new EventListenerException("Notification service for user preferred contact "
-                        + userDto.getPreference() + " not found"))
+                .orElseThrow(() -> {
+                    String errorMsg = String.format("Notification service for user preferred contact %s not found",
+                            userDto.getPreference());
+                    return new EventListenerException(errorMsg);
+                })
                 .send(userDto, message);
     }
 }
