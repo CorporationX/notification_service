@@ -1,7 +1,7 @@
 package faang.school.notificationservice.service.sms;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.exception.NotificationFailedException;
+import faang.school.notificationservice.exception.PhoneNotificationFailedException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -47,7 +47,7 @@ class SmsServiceTest {
         when(restTemplate.getForObject(anyString(), eq(String.class)))
                 .thenReturn("{\"error\": \"Invalid password\"}");
 
-        assertThrows(NotificationFailedException.class,
+        assertThrows(PhoneNotificationFailedException.class,
                 () -> smsService.send(user, "Test message")
         );
     }
@@ -60,7 +60,7 @@ class SmsServiceTest {
         when(restTemplate.getForObject(anyString(), eq(String.class)))
                 .thenReturn(null);
 
-        assertThrows(NotificationFailedException.class,
+        assertThrows(PhoneNotificationFailedException.class,
                 () -> smsService.send(user, "Test message")
         );
     }

@@ -1,7 +1,7 @@
 package faang.school.notificationservice.service.sms;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.exception.NotificationFailedException;
+import faang.school.notificationservice.exception.PhoneNotificationFailedException;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +26,14 @@ public class SmsService implements NotificationService {
     @Value("${smsc.password}")
     private String password;
 
+    @Value("${smsc.url}")
+    private String smsBaseUrl;
+
     @Override
     public void send(UserDto user, String message) {
         log.info("Start sending message method");
 
-        String url = UriComponentsBuilder.fromHttpUrl("https://smsc.ru/sys/send.php")
+        String url = UriComponentsBuilder.fromHttpUrl(smsBaseUrl)
                 .queryParam("login", login)
                 .queryParam("psw", password)
                 .queryParam("phones", toNumber)
@@ -46,7 +49,7 @@ public class SmsService implements NotificationService {
 
         if (response == null || !response.contains("\"id\"")) {
             log.error("SMSC error encountered with response: " + response);
-            throw new NotificationFailedException("SMSC error: " + response);
+            throw new PhoneNotificationFailedException("SMSC error: " + response);
         }
 
         log.info("SMS sent successfully with response: " + response);
@@ -54,6 +57,6 @@ public class SmsService implements NotificationService {
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.SMS;
+        return UserDto.PreferredContact.PHONE;
     }
 }

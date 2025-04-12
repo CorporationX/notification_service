@@ -42,6 +42,7 @@ smsc:
   login: kapushkaantosh
   password: n6W2v9Z4s2$6w2V0
   toNumber: "79920412216"
+  url: "https://smsc.ru/sys/send.php"
 
 project-service:
     host: localhost
