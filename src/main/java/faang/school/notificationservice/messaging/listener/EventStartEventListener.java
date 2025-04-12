@@ -19,6 +19,7 @@ public class EventStartEventListener implements MessageListener {
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
+
         EventStartEvent event = (EventStartEvent) SerializationUtils.deserialize(message.getBody());
 
         String eventId = event.getEventId();
