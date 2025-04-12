@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config.context;
 
-import faang.school.notificationservice.messaging.EventStartEventListener;
+import faang.school.notificationservice.messaging.listener.EventStartEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,8 +30,8 @@ public class RedisConfig {
     }
 
     @Bean
-    public MessageListenerAdapter messageListener() {
-        return new MessageListenerAdapter(new EventStartEventListener());
+    public MessageListenerAdapter messageListener(EventStartEventListener eventStartEventListener) {
+        return new MessageListenerAdapter(eventStartEventListener);
     }
 
     @Bean
