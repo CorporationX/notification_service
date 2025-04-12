@@ -1,17 +1,19 @@
 package faang.school.notificationservice.messaging.event;
 
+import faang.school.notificationservice.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
-
-import java.io.Serializable;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class EventStartEvent implements Serializable {
+public class EventStartEvent {
 
-    private String eventId;
-    private List<String> participantIds;
+    private String eventId;  // ID события
+    private List<UserDto> participants;  // Список участников с полными данными (UserDto)
 
+    // Если метод getParticipants() не был добавлен, то можно добавить вручную:
+    public List<UserDto> getParticipants() {
+        return participants;
+    }
 }
