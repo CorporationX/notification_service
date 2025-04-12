@@ -107,3 +107,53 @@ RESTful приложения калькулятор с единственным 
 * Dockerfile, который подключается к сети запущенной postgres в docker-compose
 * Redis connectivity
 * ...
+
+# Telegram Notification Service
+
+## Текущая реализация
+Сервис отправляет сообщения пользователям через Telegram Bot API, но имеет **критическое ограничение**:
+- Бот может писать только тем пользователям, которые **уже начали с ним диалог** (отправили `/start`).
+
+## Проблема
+Метод `send()` использует `user.getId()` как `chatId`, что:
+1. Не будет работать, если `user.getId()` ≠ Telegram `chat_id`.
+2. Требует предварительной активации чата пользователем.
+
+## Предлагаемое решение
+### 1. Механизм подписки
+Реализовать два компонента:
+1. **Эндпоинт для генерации подписочной ссылки**
+   ```
+   GET /telegram/subscribe/{userId} → Возвращает ссылку вида `https://t.me/YourBot?start=TOKEN`
+   ```
+2. **Обработчик команды /start в боте**  
+   Связывает `TOKEN` → `user_id` → `chat_id` и сохраняет в БД.
+
+### 2. Обновлённый workflow
+1. Пользователь в приложении нажимает "Подписаться":
+   ```mermaid
+   sequenceDiagram
+       User->>Backend: GET /telegram/subscribe/123
+       Backend->>User: https://t.me/YourBot?start=ABC123
+       User->>Telegram: Отправляет /start ABC123
+       Telegram->>Bot: Передаёт chat_id и токен
+       Bot->>Backend: Сохраняет chat_id для user_id=123
+   ```
+2. После активации бот может отправлять уведомления.
+
+## Как доработать?
+1. Добавить таблицу `user_telegram_data`:
+   ```sql
+   CREATE TABLE user_telegram_data (
+       user_id BIGINT PRIMARY KEY,
+       telegram_chat_id BIGINT,
+       is_active BOOLEAN
+   );
+   ```
+2. Реализовать:
+  - `TelegramSubscriptionController` для генерации ссылок
+  - `TelegramBotUpdatesListener` для обработки `/start`
+
+## Важно!
+Текущий код класса `TelegramService` — это **заготовка**, работающая только для пользователей, уже написавших боту. 
+Для полной функциональности требуется реализовать механизм подписки.
