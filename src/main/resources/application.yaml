@@ -6,6 +6,14 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+    kafka:
+      bootstrap-servers: localhost:9092
+      consumer:
+        group-id: notification-group
+        auto-offset-reset: earliest
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
 
   mail:
     host: smtp.gmail.com
@@ -39,8 +47,15 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
+
+telegrambots:
+  bots:
+    - username: ${TELEGRAM_BOT_USERNAME}
+      token: ${TELEGRAM_BOT_TOKEN}
+      path: ""
+
