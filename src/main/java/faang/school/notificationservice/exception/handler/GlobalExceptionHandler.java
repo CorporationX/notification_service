@@ -58,3 +58,4 @@ public class GlobalExceptionHandler {
                 .message(e.getMessage())
                 .build();
     }
+}
