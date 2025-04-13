@@ -8,14 +8,13 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 @Slf4j
-public abstract class AbstractLikeEventListener extends AbstractEventListener<LikeEvent> implements MessageListener {
+public abstract class AbstractLikeEventListener extends AbstractEventListener<LikeEvent> {
 
     public AbstractLikeEventListener(ObjectMapper objectMapper,
                                      UserServiceClient userServiceClient,
