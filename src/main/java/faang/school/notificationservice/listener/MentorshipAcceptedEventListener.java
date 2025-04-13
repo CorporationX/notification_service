@@ -2,7 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.RecommendationReceivedEvent;
+import faang.school.notificationservice.dto.MentorshipAcceptedRequestEvent;
 import faang.school.notificationservice.exception.EventReadException;
 import faang.school.notificationservice.exception.ExceptionMessage;
 import faang.school.notificationservice.messaging.MessageBuilder;
@@ -16,14 +16,14 @@ import java.util.List;
 import java.util.Locale;
 
 @Component
-public class RecommendationReceivedEventListener
-        extends AbstractEventListener<RecommendationReceivedEvent>
+public class MentorshipAcceptedEventListener
+        extends AbstractEventListener<MentorshipAcceptedRequestEvent>
         implements MessageListener {
 
-    public RecommendationReceivedEventListener(ObjectMapper objectMapper,
-                                               UserServiceClient userServiceClient,
-                                               List<NotificationService> notificationServices,
-                                               List<MessageBuilder<RecommendationReceivedEvent>> messageBuilders
+    public MentorshipAcceptedEventListener(ObjectMapper objectMapper,
+                                           UserServiceClient userServiceClient,
+                                           List<NotificationService> notificationServices,
+                                           List<MessageBuilder<MentorshipAcceptedRequestEvent>> messageBuilders
     ) {
         super(objectMapper, userServiceClient, notificationServices, messageBuilders);
     }
@@ -31,11 +31,12 @@ public class RecommendationReceivedEventListener
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            RecommendationReceivedEvent event = objectMapper.readValue(message.getBody(),
-                    RecommendationReceivedEvent.class);
-            sendNotification(event.receiverId(), getMessage(event, Locale.UK));
+            MentorshipAcceptedRequestEvent event =
+                    objectMapper.readValue(message.getBody(), MentorshipAcceptedRequestEvent.class);
+            sendNotification(event.requesterId(), getMessage(event, Locale.UK));
         } catch (IOException e) {
             throw new EventReadException(ExceptionMessage.EVENT_READ_EXCEPTION, e);
         }
+
     }
 }

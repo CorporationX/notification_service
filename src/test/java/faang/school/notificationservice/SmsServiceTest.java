@@ -18,7 +18,7 @@ class SmsServiceIntegrationTest {
     @Test
     void testRealSmsSending() {
         UserDto testUser = UserDto.builder()
-                .phone("тут был мой номер телефона")
+                .phone("здесь был номер")
                 .build();
 
         smsService.send(testUser, "Hello this is test");

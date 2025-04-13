@@ -7,6 +7,7 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         recommendation-event: recommendation_event_channel
+        mentorship-accepted-event: mentorship-accepted-channel
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
