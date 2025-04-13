@@ -1,6 +1,8 @@
 package faang.school.notificationservice.dto;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.Setter;
 
 @Data
 public class UserDto {
