@@ -45,12 +45,12 @@ public class RedisConfig {
 
     @Bean
     ChannelTopic recommendationReceivedEventTopic() {
-        return new ChannelTopic(channelsProperties.recommendationReceived());
+        return new ChannelTopic(channelsProperties.recommendationReceivedChannel());
     }
 
     @Bean
     ChannelTopic followerEventTopic() {
-        return new ChannelTopic(channelsProperties.follower());
+        return new ChannelTopic(channelsProperties.followerChannel());
     }
 
     @Bean

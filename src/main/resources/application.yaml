@@ -4,9 +4,9 @@ spring:
       port: 6379
       host: localhost
       channel:
-        follower: follower_channel
-        achievement: achievement_channel
-        recommendationReceived: recommendation_event_channel
+        followerChannel: follower_channel
+        achievementChannel: achievement_channel
+        recommendationReceivedChannel: recommendation_event_channel
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
