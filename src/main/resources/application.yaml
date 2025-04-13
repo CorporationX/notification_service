@@ -7,6 +7,19 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
 
+  kafka:
+    consumer:
+      acks: all
+      retries: 3
+      enable-idempotence: false
+      auto.offset.reset: latest
+
+    topics:
+      like:
+        notification:
+          post-like-topic: post-like-event-topic
+          post-like-group-id: post-like-group
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -39,8 +52,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
