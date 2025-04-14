@@ -76,11 +76,14 @@ public class AbstractEventListener<T> {
      * @return Отформатированное сообщение
      */
     protected String getMessage(@NotNull T event, Locale locale) {
-        Locale localeToUse = locale != null ? locale : Locale.getDefault();
+        if(locale == null) {
+            locale = Locale.getDefault();
+        }
+        Locale finalLocale = locale;
         return messageBuilders.stream()
                 .filter(builder -> builder.getInstance().equals(event.getClass()))
                 .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event, localeToUse))
+                .map(messageBuilder -> messageBuilder.buildMessage(event, finalLocale))
                 .orElseThrow(() -> {
                     String errorMsg = String.format("No suitable builder found for %s", event.getClass());
                     return new EventListenerException(errorMsg);
