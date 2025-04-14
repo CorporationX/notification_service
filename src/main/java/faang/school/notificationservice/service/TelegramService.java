@@ -38,6 +38,7 @@ public class TelegramService extends TelegramLongPollingBot implements Notificat
     @Override
     public void onUpdateReceived(Update update) {
         log.info("Ващ Id в Телеграмм: {}",update.getMessage().getChat().getId());
+        // полученный id передаете в Json в Postman
     }
 
     @Override
