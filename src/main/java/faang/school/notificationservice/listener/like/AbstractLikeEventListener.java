@@ -12,6 +12,7 @@ import org.springframework.data.redis.connection.Message;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Slf4j
 public abstract class AbstractLikeEventListener extends AbstractEventListener<LikeEvent> {
@@ -19,8 +20,9 @@ public abstract class AbstractLikeEventListener extends AbstractEventListener<Li
     public AbstractLikeEventListener(ObjectMapper objectMapper,
                                      UserServiceClient userServiceClient,
                                      List<NotificationService> notificationServices,
-                                     List<MessageBuilder<LikeEvent>> messageBuilders) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+                                     MessageBuilder<LikeEvent> messageBuilder) {
+        super(objectMapper, userServiceClient, notificationServices,
+                Map.of(LikeEvent.class, messageBuilder));
     }
 
     @Override

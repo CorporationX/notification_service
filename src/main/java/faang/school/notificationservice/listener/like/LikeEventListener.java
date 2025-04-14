@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class LikeEventListener extends AbstractLikeEventListener{
+public class LikeEventListener extends AbstractLikeEventListener {
 
     public LikeEventListener(ObjectMapper objectMapper,
                              UserServiceClient userServiceClient,
                              List<NotificationService> notificationServices,
-                             List<MessageBuilder<LikeEvent>> messageBuilders) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+                             MessageBuilder<LikeEvent> likeMessageBuilder) {
+        super(objectMapper, userServiceClient, notificationServices, likeMessageBuilder);
     }
 }

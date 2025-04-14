@@ -8,6 +8,7 @@ import faang.school.notificationservice.service.NotificationService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class DeleteLikeEventListener extends AbstractLikeEventListener {
@@ -15,7 +16,7 @@ public class DeleteLikeEventListener extends AbstractLikeEventListener {
     public DeleteLikeEventListener(ObjectMapper objectMapper,
                                    UserServiceClient userServiceClient,
                                    List<NotificationService> notificationServices,
-                                   List<MessageBuilder<LikeEvent>> messageBuilders) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+                                   MessageBuilder<LikeEvent> deleteLikeMessageBuilder) {
+        super(objectMapper, userServiceClient, notificationServices, deleteLikeMessageBuilder);
     }
 }
