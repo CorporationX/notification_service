@@ -62,8 +62,6 @@ public class AbstractEventListenerTest {
 
         testEventListener = new TestEventListener(List.of(messageBuilder),
                 List.of(emailNotificationService));
-        testEventListener.objectMapper = objectMapper;
-        testEventListener.userServiceClient = userServiceClient;
     }
 
     @Test
