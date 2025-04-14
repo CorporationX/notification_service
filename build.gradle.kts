@@ -56,6 +56,11 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    /**
+     * Mail sender
+     */
+    implementation("org.springframework.boot:spring-boot-starter-mail:3.4.4")
 }
 
 tasks.withType<Test> {
