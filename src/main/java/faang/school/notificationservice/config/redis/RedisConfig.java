@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.recommendation-event}")
     private String recommendationEventTopic;
 
+    @Value("${spring.data.redis.channel.mentorship-accepted-event}")
+    private String mentorshipAcceptedTopic;
+
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -35,8 +39,18 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListenerAdapter mentorshipAcceptedEventListenerAdapter(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
+        return new MessageListenerAdapter(mentorshipAcceptedEventListener);
+    }
+
+    @Bean
     ChannelTopic recommendationReceivedEventTopic() {
         return new ChannelTopic(recommendationEventTopic);
+    }
+
+    @Bean
+    ChannelTopic mentorshipAcceptedTopic() {
+        return new ChannelTopic(mentorshipAcceptedTopic);
     }
 
     @Bean
@@ -44,6 +58,7 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(recommendationReceivedEventListenerAdapter, recommendationReceivedEventTopic());
+        container.addMessageListener(recommendationReceivedEventListenerAdapter, mentorshipAcceptedTopic());
         return container;
     }
 }
