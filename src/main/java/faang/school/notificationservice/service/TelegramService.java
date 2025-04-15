@@ -1,7 +1,6 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.exception.TelegramMessageException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
@@ -34,7 +33,7 @@ public class TelegramService implements NotificationService {
 
     @Override
     @Retryable(value = {TelegramApiException.class}, maxAttempts = 4, backoff = @Backoff(delay = 2000))
-    public void send(UserDto user, String message) {
+    public void send(UserDto user, String message) throws TelegramApiException {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(user.getId()) //*Тут вместо id telegram id пользователя. Так по задаче.
                 .text(message)
@@ -44,7 +43,7 @@ public class TelegramService implements NotificationService {
             telegramClient.execute(sendMessage);
         } catch (TelegramApiException e) {
             log.error("Error when sending a message to the user {}: {}", user.getId(), e.getMessage(), e);
-            throw new TelegramMessageException("Error when sending a message to the user", user.getId(), e);
+            throw e;
         }
     }
 
