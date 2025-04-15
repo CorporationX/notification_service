@@ -45,7 +45,7 @@ public class FollowerEventMessageBuilder implements MessageBuilder<FollowerEvent
      */
     @Override
     public String buildMessage(FollowerEventDto event, Locale locale) {
-        UserDto follower = userServiceClient.getUserBasicInfo(event.getFollowerId());
+        UserDto follower = userServiceClient.getUser(event.getFollowerId());
         String followerName = follower != null ? follower.getUsername() : "EN";
 
         return messageSource.getMessage(

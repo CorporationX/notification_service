@@ -91,7 +91,7 @@ public class AbstractEventListener<T> {
      * @param message Текст сообщения
      */
     protected void sendNotification(@NotNull Long userId, @NotBlank String message) {
-        UserDto userDto = userServiceClient.getUserBasicInfo(userId);
+        UserDto userDto = userServiceClient.getUser(userId);
         if (userDto == null) {
             throw new UserNotFoundException("User with id " + userId + " not found");
         }
