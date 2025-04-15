@@ -8,4 +8,10 @@ public class ErrorMessages {
 
     //Kafka consumer
     public static final String FAILED_TO_ACKNOWLEDGE_KAFKA_MESSAGE = "Failed to acknowledge Kafka message";
+
+    public static final String NOTIFICATION_METHOD_IS_NOT_SUPPORTED = "Notification method '%s' is not supported";
+
+    //ObjectMapper
+    public static final String ERROR_DESERIALIZING = "Error deserializing ";
+    public static final String SERIALIZATION_ERROR = "Serialization error";
 }

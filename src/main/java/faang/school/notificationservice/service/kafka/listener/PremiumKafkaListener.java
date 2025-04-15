@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static faang.school.notificationservice.messages.ErrorMessages.FAILED_TO_ACKNOWLEDGE_KAFKA_MESSAGE;
+import static faang.school.notificationservice.messages.ErrorMessages.NOTIFICATION_METHOD_IS_NOT_SUPPORTED;
 
 @Component
 @Slf4j
@@ -142,8 +143,8 @@ public class PremiumKafkaListener {
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact().equals(userDto.getPreference()))
                 .findFirst()
-                .orElseThrow(() -> new NotificationMethodNotSupportedException(("Notification method '%s'" +
-                        " is not supported").formatted(userDto.getPreference())))
+                .orElseThrow(() -> new NotificationMethodNotSupportedException(
+                        NOTIFICATION_METHOD_IS_NOT_SUPPORTED.formatted(userDto.getPreference())))
                 .send(userDto, message);
     }
 
