@@ -7,6 +7,7 @@ spring:
         followerChannel: follower_channel
         achievementChannel: achievement_channel
         recommendationReceivedChannel: recommendation_event_channel
+        mentorship-accepted-event: mentorship-accepted-channel
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
@@ -28,8 +29,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: example@gmail.com #https://www.baeldung.com/spring-email
+    password: password #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
         smtp:
