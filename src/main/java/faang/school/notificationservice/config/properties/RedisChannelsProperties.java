@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record RedisChannelsProperties(
         String followerChannel,
         String achievementChannel,
-        String recommendationReceivedChannel
+        String recommendationReceivedChannel,
+        String mentorshipAcceptedEventChannel
 ) {
 }
