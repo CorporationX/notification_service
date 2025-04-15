@@ -44,3 +44,12 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+telegram:
+  username: "YOUR_TELEGRAM_BOT_USERNAME"
+  token: "YOUR_TELEGRAM_BOT_TOKEN" # МОЖНО СОЗДАТЬ/ВЗЯТЬ В Botfather (вбейте в поиск в телеграмме)
+  timeout: 5000
+
+retry:
+  attempts: 3
+  delay: 2000
