@@ -16,6 +16,10 @@ import java.util.function.Consumer;
 @Slf4j
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
+    public static final String FAILED_PARSE_OBJECT = "Failed to parse object";
+    public static final String MESSAGE_BUILDER_NOT_FOUND = "No message builder found for given event type: ";
+    public static final String NOTIFICATION_SERVICE_NOT_FOUND = "No notification service found for the user's " +
+            "preferred communication method.";
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationServices;
@@ -25,9 +29,9 @@ public abstract class AbstractEventListener<T> {
         try {
             T event = objectMapper.readValue(message, type);
             consumer.accept(event);
-            log.info("Successfully parsed event");
         } catch (JsonProcessingException e) {
             log.error("Failed to parse message: {}. Error: {}", message, e.getMessage());
+            throw new RuntimeException(FAILED_PARSE_OBJECT, e);
         }
     }
 
@@ -36,15 +40,14 @@ public abstract class AbstractEventListener<T> {
                 .filter(messageBuilder -> messageBuilder.getInstance() == event.getClass())
                 .findFirst()
                 .map(messageBuilder -> messageBuilder.buildMessage(event, userLocale))
-                .orElseThrow(() -> new IllegalArgumentException("No message builder found for given event type: " + event.getClass().getName()));
+                .orElseThrow(() -> new IllegalArgumentException(MESSAGE_BUILDER_NOT_FOUND + event.getClass().getName()));
     }
 
-    protected void sendNotification(Long id, String message) {
-        UserDto user = userServiceClient.getUser(id);
+    protected void sendNotification(UserDto user, String message) {
         notificationServices.stream()
                 .filter(service -> service.getPreferredContact() == user.getPreference())
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No notification service found for the user's preferred communication method."))
+                .orElseThrow(() -> new IllegalArgumentException(NOTIFICATION_SERVICE_NOT_FOUND))
                 .send(user, message);
     }
 }

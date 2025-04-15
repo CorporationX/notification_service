@@ -29,9 +29,11 @@ public class PostLikeEventListener extends AbstractEventListener {
     public void listen(String message) {
         handleEvent(message, PostLikeEvent.class, event -> {
             PostLikeEvent likeEvent = (PostLikeEvent) event;
-            UserDto author = userServiceClient.getUser(likeEvent.getPostId());
+            UserDto author = userServiceClient.getUser(likeEvent.getPostAuthorId());
             String text = getMessage(likeEvent, Locale.UK);
-            sendNotification(author.getId(), text);
+            sendNotification(author, text);
+            log.info("Successfully parsed event postId: {}, postAuthorId: {}, likeAuthorId: {}",
+                    likeEvent.getPostId(), likeEvent.getPostAuthorId(), likeEvent.getLikeAuthorId());
         });
     }
 }

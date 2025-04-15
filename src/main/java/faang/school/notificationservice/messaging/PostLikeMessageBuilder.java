@@ -13,7 +13,7 @@ public class PostLikeMessageBuilder implements MessageBuilder<PostLikeEvent> {
     private final MessageSource messageSource;
 
     @Override
-    public Class<?> getInstance() {
+    public Class<PostLikeEvent> getInstance() {
         return PostLikeEvent.class;
     }
 
