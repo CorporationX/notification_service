@@ -45,11 +45,9 @@ user-service:
     host: localhost
     port: 8080
 
-#я не понял как шифровать удаленно там к примеру через GitHub action так как я не админ для доступа к secret значением
-#а локально не увидел смысла типа смысл хранить его лакально когда все работают над проектом?
 telegram:
-  username: "personal_notify_faang_bot."
-  token: "8104684020:AAEeQF9P2A83JwApiyISajUdajfM-HlB360"
+  username: "YOUR_TELEGRAM_BOT_USERNAME"
+  token: "YOUR_TELEGRAM_BOT_TOKEN" # МОЖНО СОЗДАТЬ/ВЗЯТЬ В Botfather (вбейте в поиск в телеграмме)
   timeout: 5000
 
 retry:
