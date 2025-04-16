@@ -1,12 +1,11 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
@@ -23,13 +22,10 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class TelegramService implements NotificationService {
 
     private final TelegramClient telegramClient;
-
-    public TelegramService(@Value("${telegram.bot.token}") String token) {
-        this.telegramClient = new OkHttpTelegramClient(token);
-    }
 
     @Override
     @Retryable(value = {TelegramApiException.class}, maxAttempts = 4, backoff = @Backoff(delay = 2000))
