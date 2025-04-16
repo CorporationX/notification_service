@@ -7,8 +7,11 @@ import faang.school.notificationservice.exception.ExceptionMessage;
 import faang.school.notificationservice.exception.MessageBuilderNotFoundException;
 import faang.school.notificationservice.exception.PreferenceNotFountException;
 import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.model.NotificationType;
+import faang.school.notificationservice.repository.NotificationEventLogRepository;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.support.Acknowledgment;
 
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +23,7 @@ public class AbstractEventListener<T> {
     protected final UserServiceClient userServiceClient;
     protected final List<NotificationService> notificationServices;
     protected final List<MessageBuilder<T>> messageBuilders;
+    protected final NotificationEventLogRepository notificationEventLogRepository;
 
     protected String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
@@ -38,4 +42,15 @@ public class AbstractEventListener<T> {
                 .orElseThrow(() -> new PreferenceNotFountException(ExceptionMessage.PREFERENCE_NOT_FOUND, user.getId()))
                 .send(user, message);
     }
+
+    protected boolean checkNotificationExisting(long id, NotificationType notificationType, Acknowledgment ack) {
+        if (notificationEventLogRepository.checkExistingEvent(id, NotificationType.COMMENT)) {
+            ack.acknowledge();
+            return true;
+        } else {
+            notificationEventLogRepository.saveNotificationEvent(id, notificationType);
+            return false;
+        }
+    }
+
 }

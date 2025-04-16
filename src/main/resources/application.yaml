@@ -8,6 +8,11 @@ spring:
         achievementChannel: achievement_channel
         recommendationReceivedChannel: recommendation_event_channel
         mentorshipAcceptedEventChannel: mentorship-accepted-channel
+    kafka:
+      bootstrap-servers: localhost:9092
+      group-id: notification-group
+      topic:
+        comment: comment_topic
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
