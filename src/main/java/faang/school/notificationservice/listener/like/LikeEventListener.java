@@ -8,6 +8,7 @@ import faang.school.notificationservice.service.NotificationService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class LikeEventListener extends AbstractLikeEventListener {
@@ -16,6 +17,7 @@ public class LikeEventListener extends AbstractLikeEventListener {
                              UserServiceClient userServiceClient,
                              List<NotificationService> notificationServices,
                              MessageBuilder<LikeEvent> likeMessageBuilder) {
-        super(objectMapper, userServiceClient, notificationServices, likeMessageBuilder);
+        super(objectMapper, userServiceClient, notificationServices,
+                Map.of(LikeEvent.class, likeMessageBuilder));
     }
 }

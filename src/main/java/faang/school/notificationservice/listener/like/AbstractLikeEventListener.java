@@ -20,9 +20,8 @@ public abstract class AbstractLikeEventListener extends AbstractEventListener<Li
     public AbstractLikeEventListener(ObjectMapper objectMapper,
                                      UserServiceClient userServiceClient,
                                      List<NotificationService> notificationServices,
-                                     MessageBuilder<LikeEvent> messageBuilder) {
-        super(objectMapper, userServiceClient, notificationServices,
-                Map.of(LikeEvent.class, messageBuilder));
+                                     Map<Class<?>, MessageBuilder<?>> messageBuilderMap) {
+        super(objectMapper, userServiceClient, notificationServices, messageBuilderMap);
     }
 
     @Override
