@@ -64,6 +64,11 @@ dependencies {
      * Telegram
      */
     implementation("org.telegram:telegrambots:6.9.7.1")
+
+    /**
+     * Mail sender
+     */
+    implementation("org.springframework.boot:spring-boot-starter-mail:3.4.4")
 }
 
 tasks.withType<Test> {
