@@ -1,5 +1,6 @@
 package faang.school.notificationservice.event_listener;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
@@ -27,7 +28,7 @@ public class AbstractEventListener {
     private final List<MessageBuilder<?>> messageBuilders;
 
     @PostConstruct
-    private void postConstruct() {
+    public void postConstruct() {
         messageBuilders.stream()
                 .collect(Collectors.groupingBy(MessageBuilder::getInstance, Collectors.counting()))
                 .entrySet()
@@ -39,7 +40,7 @@ public class AbstractEventListener {
                 });
     }
 
-    public String getMessage(Class<?> eventType, Locale locale, Object... args) {
+    public String getMessage(Class<?> eventType, Locale locale, Object... args) throws JsonProcessingException {
         var messageBuilder = messageBuilders.stream()
                 .filter(builder -> builder.getInstance() == eventType)
                 .findFirst()
@@ -74,7 +75,8 @@ public class AbstractEventListener {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> String processMessage(MessageBuilder<T> builder, Class<?> eventType, Locale locale, Object... args) {
+    private <T> String processMessage(MessageBuilder<T> builder, Class<?> eventType, Locale locale, Object... args)
+            throws JsonProcessingException {
         T event;
         if (args.length > 0 && args[0] instanceof String stringArgument && stringArgument.trim().startsWith("{")) {
             try {
