@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.properties.EmailProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailService implements NotificationService {
     private final JavaMailSender javaMailSender;
+    private final EmailProperties emailProperties;
 
     @Override
     public void send(UserDto user, String message) {
@@ -27,7 +29,7 @@ public class EmailService implements NotificationService {
             mailMessage.setTo(email);
             mailMessage.setSubject("Notice from CorporationX");
             mailMessage.setText(message);
-            mailMessage.setFrom("sofiyamutovkina@gmail.com");
+            mailMessage.setFrom(emailProperties.getFrom());
 
             javaMailSender.send(mailMessage);
             log.info("Email successfully sent : {}", email);
