@@ -25,7 +25,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation ("org.telegram:telegrambots-springboot-longpolling-starter:8.3.0")
-    implementation("org.springframework.retry:spring-retry:2.0.5")
+    implementation("org.springframework.retry:spring-retry:2.0.11")
     implementation("org.springframework:spring-aspects")
 
     /**
