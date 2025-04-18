@@ -76,12 +76,18 @@ public class AbstractEventListener<T> {
      * @return Отформатированное сообщение
      */
     protected String getMessage(@NotNull T event, Locale locale) {
+        if(locale == null) {
+            locale = Locale.getDefault();
+        }
+        Locale finalLocale = locale;
         return messageBuilders.stream()
                 .filter(builder -> builder.getInstance().equals(event.getClass()))
                 .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event,
-                        locale == null ? Locale.getDefault() : locale))
-                .orElseThrow(() -> new EventListenerException("No suitable builder found for " + event.getClass()));
+                .map(messageBuilder -> messageBuilder.buildMessage(event, finalLocale))
+                .orElseThrow(() -> {
+                    String errorMsg = String.format("No suitable builder found for %s", event.getClass());
+                    return new EventListenerException(errorMsg);
+                });
     }
 
     /**
@@ -93,15 +99,19 @@ public class AbstractEventListener<T> {
     protected void sendNotification(@NotNull Long userId, @NotBlank String message) {
         UserDto userDto = userServiceClient.getUser(userId);
         if (userDto == null) {
-            throw new UserNotFoundException("User with id " + userId + " not found");
+            String errorMsg = String.format("User with id %s not found", userId);
+            throw new UserNotFoundException(errorMsg);
         }
 
         notificationServices.stream()
                 .filter(notificationService ->
                         notificationService.getPreferredContact().equals(userDto.getPreference()))
                 .findFirst()
-                .orElseThrow(() -> new EventListenerException("Notification service for user preferred contact "
-                        + userDto.getPreference() + " not found"))
+                .orElseThrow(() -> {
+                    String errorMsg = String.format("Notification service for user preferred contact %s not found",
+                            userDto.getPreference());
+                    return new EventListenerException(errorMsg);
+                })
                 .send(userDto, message);
     }
 }
