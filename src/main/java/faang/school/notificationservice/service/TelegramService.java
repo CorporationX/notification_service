@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.config.app.TelegramProperties;
+import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.properties.TelegramProperties;
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,14 +20,16 @@ public class TelegramService extends TelegramLongPollingBot implements Notificat
 
     @Override
     public void send(UserDto user, String message) {
+        log.info("Попытка отправки сообщения пользователю telegramId={}, userId={}, message={}",
+                user.getTelegramId(), user.getId(), message);
         SendMessage msg = new SendMessage();
-        msg.setChatId(user.getTelegramId()); // У нас в базе нету telegramId- вам нужно передать id в Json при запросе
+        msg.setChatId(user.getTelegramId());
         msg.setText(message);
-        try{
+        try {
             execute(msg);
-            log.info("Сообщение успешно отправленно!");
-        }catch (TelegramApiException e){
-            log.error("Ошибка при отправке сообщение пользователю (Id = {}) {}",user.getId(), e.getMessage());
+            log.info("Сообщение успешно отправлено в Telegram");
+        } catch (TelegramApiException e) {
+            log.error("Ошибка при отправке сообщения: {}", e.getMessage());
         }
     }
 
@@ -38,7 +41,6 @@ public class TelegramService extends TelegramLongPollingBot implements Notificat
     @Override
     public void onUpdateReceived(Update update) {
         log.info("Ващ Id в Телеграмм: {}",update.getMessage().getChat().getId());
-        // полученный id передаете в Json в Postman
     }
 
     @Override

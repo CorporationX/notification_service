@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.config.app.TelegramProperties;
+import faang.school.notificationservice.properties.TelegramProperties;
 import faang.school.notificationservice.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

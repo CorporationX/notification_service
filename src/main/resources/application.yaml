@@ -3,9 +3,10 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
+      topics:
+        follower: follower_topic
+        achievement: achievement_topic
+        mentorshipAccepted: mentorship_accepted_topic
 
   mail:
     host: smtp.gmail.com
@@ -46,8 +47,8 @@ user-service:
     port: 8080
 
 telegram:
-  username: "YOUR_TELEGRAM_BOT_USERNAME"
-  token: "YOUR_TELEGRAM_BOT_TOKEN" # МОЖНО СОЗДАТЬ/ВЗЯТЬ В Botfather (вбейте в поиск в телеграмме)
+  username: "personal_notify_faang_bot"
+  token: "8104684020:AAEeQF9P2A83JwApiyISajUdajfM-HlB360" # МОЖНО СОЗДАТЬ/ВЗЯТЬ В Botfather (вбейте в поиск в телеграмме)
   timeout: 5000
 
 retry:
