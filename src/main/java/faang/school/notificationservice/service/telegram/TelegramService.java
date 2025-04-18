@@ -28,7 +28,6 @@ public class TelegramService implements NotificationService {
      *
      * @param user    получатель уведомления
      * @param message текст уведомления
-     * @throws TelegramApiException если не удалось отправить сообщение после всех попыток
      */
     @Retryable(retryFor = TelegramApiException.class,
             maxAttemptsExpression = "${spring.retry.max-attempts}",
@@ -36,18 +35,12 @@ public class TelegramService implements NotificationService {
     )
     @Override
     public void send(UserDto user, String message) {
-        log.info("Sending user {} to {}", user, message);
-        if (user.getPreference() != getPreferredContact()) {
-            log.debug("user preferences is not telegram");
-            return;
-        }
-
+        log.info("Sending {} to user {}", message, user);
         try {
             telegramBot.sendMessage(user.getTelegramChatId(), message);
         } catch (TelegramApiException e) {
             log.error("Error while sending notification", e);
         }
-        log.info("Sending user {} to {}", user, message);
     }
 
     @Override

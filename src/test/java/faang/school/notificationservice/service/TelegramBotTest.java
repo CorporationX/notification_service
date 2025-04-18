@@ -32,8 +32,8 @@ public class TelegramBotTest {
 
     private final long CHAT_ID = 12345L;
     private final String MESSAGE_TEXT = "Test message";
-    Message message;
-    SendMessage sendMessage;
+    private Message message;
+    private SendMessage sendMessage;
 
     @BeforeEach
     void setUp() {
