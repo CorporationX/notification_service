@@ -1,6 +1,7 @@
 package faang.school.notificationservice.emailService;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.InvalidEmailException;
 import faang.school.notificationservice.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import java.lang.reflect.Field;
 
+import static faang.school.notificationservice.service.EmailService.INVALID_EMAIL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -53,8 +56,11 @@ public class EmailServiceTest {
     @Test
     public void testShouldNotSendEmailIfUserEmailIsNull() {
         UserDto userDto = new UserDto();
-        emailService.send(userDto, "Test message");
 
+        InvalidEmailException exception = assertThrows(InvalidEmailException.class,
+                () -> emailService.send(userDto, "Test message"));
+
+        assertEquals(INVALID_EMAIL, exception.getMessage());
         verify(javaMailSender, never()).send(any(SimpleMailMessage.class));
     }
 }

@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.InvalidEmailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class EmailService implements NotificationService {
+    public static final String INVALID_EMAIL = "Cannot send email: user email is missing.";
+
     private final JavaMailSender javaMailSender;
 
     @Value("${mail.from}")
@@ -23,7 +26,7 @@ public class EmailService implements NotificationService {
         String email = user.getEmail();
         if (email == null || email.isBlank()) {
             log.warn("Trying to send an email to a user without an email: {}", user);
-            return;
+            throw new InvalidEmailException(INVALID_EMAIL);
         }
 
         try {
