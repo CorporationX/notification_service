@@ -44,7 +44,7 @@ public class AbstractEventListener<T> {
     }
 
     protected boolean checkNotificationExisting(long id, NotificationType notificationType, Acknowledgment ack) {
-        if (notificationEventLogRepository.checkExistingEvent(id, NotificationType.COMMENT)) {
+        if (notificationEventLogRepository.checkExistingEvent(id, notificationType)) {
             ack.acknowledge();
             return true;
         } else {
