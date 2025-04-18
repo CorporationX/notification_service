@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config;
+package faang.school.notificationservice.config.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

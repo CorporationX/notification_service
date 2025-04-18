@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config;
+package faang.school.notificationservice.config.redis;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

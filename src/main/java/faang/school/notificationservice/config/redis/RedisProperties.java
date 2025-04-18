@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config;
+package faang.school.notificationservice.config.redis;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

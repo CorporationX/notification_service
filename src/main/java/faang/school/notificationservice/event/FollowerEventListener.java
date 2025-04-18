@@ -2,16 +2,19 @@ package faang.school.notificationservice.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.config.RedisChannel;
+import faang.school.notificationservice.config.redis.RedisChannel;
 import faang.school.notificationservice.dto.FollowerEventDto;
+import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Компонент для обработки событий о новых подписчиках из Redis.
@@ -67,7 +70,8 @@ public class FollowerEventListener extends AbstractEventListener<FollowerEventDt
      * @param event событие о новой подписке
      */
     private void processEvent(FollowerEventDto event) {
-        String message = getMessage(event, null);
+        Locale userLocale = getUserLocale(event.getFolloweeId());
+        String message = getMessage(event, userLocale);
         sendNotification(event.getFolloweeId(), message);
     }
 }

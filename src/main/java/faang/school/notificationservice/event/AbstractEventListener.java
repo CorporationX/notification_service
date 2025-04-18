@@ -19,28 +19,13 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 /**
- * Абстрактный слушатель обработки всех входящих событий
+ * Базовый класс для слушателей событий, обрабатывающих сообщения из Redis.
  * <p>
- * Слушатель передает на обработку события сервисам
+ * Предоставляет методы для получения локали пользователя, предпочтительного способа связи,
+ * обработки событий и отправки уведомлений.
  * </p>
  *
- * <p>
- * Основные функции:
- * <ul>
- *      <li>{@link #handleEvent(Message, Class, Consumer)} Считывает тело события и отправляет в обработку.</li>
- *      <li>{@link #getMessage(Object, Locale)} Преобразует тест в зависимости от класса объекта и локали.</li>
- *      <li>{@link #sendNotification(Long, String)}  Отправляет нотификацию указанному юзеру.</li>
- * </ul>
- * </p>
- *
- * @author takewqa
- * @see Message
- * @see Locale
- * @see Consumer
- * @see ObjectMapper
- * @see UserServiceClient
- * @see MessageBuilder
- * @see NotificationService
+ * @param <T> Тип события
  */
 @RequiredArgsConstructor
 @Slf4j
@@ -50,6 +35,43 @@ public class AbstractEventListener<T> {
     private final UserServiceClient userServiceClient;
     private final List<MessageBuilder<T>> messageBuilders;
     private final List<NotificationService> notificationServices;
+
+    /**
+     * Получает локаль для пользователя
+     * @param userId ID пользователя
+     * @return Locale из профиля пользователя или ENGLISH по умолчанию
+     */
+    protected Locale getUserLocale(Long userId) {
+        try {
+            UserDto user = userServiceClient.getUser(userId);
+            return user != null && user.getLocale() != null
+                    ? user.getLocale()
+                    : Locale.ENGLISH;
+        } catch (Exception e) {
+            log.warn("Failed to get locale for user {}, using default. Error: {}",
+                    userId, e.getMessage());
+            return Locale.ENGLISH;
+        }
+    }
+
+    /**
+     * Получает предпочтительный способ связи с пользователем
+     * @param userId ID пользователя
+     * @return PreferredContact из профиля пользователя или EMAIL по умолчанию
+     */
+    protected UserDto.PreferredContact getPreferredContact(Long userId) {
+        try {
+            UserDto user = userServiceClient.getUser(userId);
+            return user != null && user.getPreference() != null
+                    ? user.getPreference()
+                    : UserDto.PreferredContact.EMAIL;
+        } catch (Exception e) {
+            log.warn("Failed to get contact preference for user {}, using default. Error: {}",
+                    userId, e.getMessage());
+            return UserDto.PreferredContact.EMAIL;
+        }
+    }
+
 
     /**
      * Считывает тело событие и отправляет в обработку
@@ -64,7 +86,8 @@ public class AbstractEventListener<T> {
             log.debug("Event received: {}", event);
             consumer.accept(event);
         } catch (IOException e) {
-            throw new EventListenerException(e);
+            log.error("Error processing event: {}", message, e);
+            throw new EventListenerException("Error processing event");
         }
     }
 
@@ -76,15 +99,14 @@ public class AbstractEventListener<T> {
      * @return Отформатированное сообщение
      */
     protected String getMessage(@NotNull T event, Locale locale) {
-        if(locale == null) {
-            locale = Locale.getDefault();
-        }
-        Locale finalLocale = locale;
+        Locale targetLocale = locale != null ? locale : Locale.ENGLISH;
+
         return messageBuilders.stream()
                 .filter(builder -> builder.getInstance().equals(event.getClass()))
                 .findFirst()
-                .map(messageBuilder -> messageBuilder.buildMessage(event, finalLocale))
+                .map(messageBuilder -> messageBuilder.buildMessage(event, targetLocale))
                 .orElseThrow(() -> {
+                    log.error("No suitable builder found for {}", event.getClass());
                     String errorMsg = String.format("No suitable builder found for %s", event.getClass());
                     return new EventListenerException(errorMsg);
                 });
@@ -99,6 +121,7 @@ public class AbstractEventListener<T> {
     protected void sendNotification(@NotNull Long userId, @NotBlank String message) {
         UserDto userDto = userServiceClient.getUser(userId);
         if (userDto == null) {
+            log.error("User with id {} not found", userId);
             String errorMsg = String.format("User with id %s not found", userId);
             throw new UserNotFoundException(errorMsg);
         }
@@ -108,6 +131,7 @@ public class AbstractEventListener<T> {
                         notificationService.getPreferredContact().equals(userDto.getPreference()))
                 .findFirst()
                 .orElseThrow(() -> {
+                    log.error("Notification service for user preferred contact {} not found", userDto.getPreference());
                     String errorMsg = String.format("Notification service for user preferred contact %s not found",
                             userDto.getPreference());
                     return new EventListenerException(errorMsg);
