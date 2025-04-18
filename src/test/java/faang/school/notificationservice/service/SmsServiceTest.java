@@ -62,6 +62,29 @@ public class SmsServiceTest {
     }
 
     @Test
+    @DisplayName("send - response is null")
+    public void testSendWithoutResponse() {
+        when(vonageClient.getSmsClient()).thenReturn(smsClient);
+        when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(null);
+
+        Exception exception = assertThrows(IllegalStateException.class, () -> smsService.send(userDto, MESSAGE));
+
+        assertEquals("SMS response is null", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("send - no SMS submission response messages")
+    public void testSendWithoutResponseMessages() {
+        when(vonageClient.getSmsClient()).thenReturn(smsClient);
+        when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(response);
+        when(response.getMessages()).thenReturn(List.of());
+
+        Exception exception = assertThrows(IllegalStateException.class, () -> smsService.send(userDto, MESSAGE));
+
+        assertEquals("No messages in SMS response", exception.getMessage());
+    }
+
+    @Test
     @DisplayName("send - MessageStatus not equal OK")
     public void testSendWithMessageStatusNotOk() {
         setUpVonageClientMocks();

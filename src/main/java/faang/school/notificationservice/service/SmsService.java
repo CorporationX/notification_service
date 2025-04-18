@@ -8,8 +8,11 @@ import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.SmsSendingException;
+import jakarta.validation.constraints.NotBlank;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,9 @@ public class SmsService implements NotificationService {
 
     private final VonageClient vonageClient;
 
+    @Value("${vonage.message.sender")
+    private String senderName;
+
     @Override
     @Retryable(
             value = {VonageClientException.class, VonageResponseParseException.class},
@@ -28,11 +34,14 @@ public class SmsService implements NotificationService {
             backoff = @Backoff(
                     delayExpression = "#{${vonage.retry.delay}}",
                     multiplierExpression = "#{${vonage.retry.multiplier}}"))
-    public void send(UserDto user, String message) {
-        TextMessage textMessage = new TextMessage("CorporationX", user.getPhone(),
+    public void send(@NonNull UserDto user, @NotBlank String message) {
+        String userPhone = user.getPhone();
+        TextMessage textMessage = new TextMessage(senderName, userPhone,
                 message);
 
+        log.info("Starting SMS sending for {}...", userPhone);
         SmsSubmissionResponse response = vonageClient.getSmsClient().submitMessage(textMessage);
+        validateResponse(response);
 
         MessageStatus messageStatus = response.getMessages().get(0).getStatus();
 
@@ -42,7 +51,7 @@ public class SmsService implements NotificationService {
                     Phone: {}
                     Message: {}
                     """,
-                    user.getPhone(),
+                    userPhone,
                     message);
         } else {
             String errorText = response.getMessages().get(0).getErrorText();
@@ -52,7 +61,7 @@ public class SmsService implements NotificationService {
                     Message status: {}
                     Error text: {}
                     """,
-                    user.getPhone(),
+                    userPhone,
                     messageStatus,
                     errorText);
             throw new SmsSendingException(errorText);
@@ -62,5 +71,17 @@ public class SmsService implements NotificationService {
     @Override
     public UserDto.PreferredContact getPreferredContact() {
         return UserDto.PreferredContact.PHONE;
+    }
+
+    private void validateResponse(SmsSubmissionResponse response) {
+        if (response == null) {
+            log.error("SMS submission response is null");
+            throw new IllegalStateException("SMS response is null");
+        }
+
+        if(response.getMessages() == null || response.getMessages().isEmpty()) {
+            log.error("No SMS submission response messages");
+            throw new IllegalStateException("No messages in SMS response");
+        }
     }
 }

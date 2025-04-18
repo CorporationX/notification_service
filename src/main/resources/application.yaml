@@ -41,6 +41,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     max-attempts: 3
     delay: 1000
     multiplier: 2
+  message:
+    sender: CorporationX
 
 project-service:
     host: localhost
