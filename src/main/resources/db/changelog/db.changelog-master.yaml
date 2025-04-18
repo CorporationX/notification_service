@@ -1,5 +1,8 @@
 databaseChangeLog:
   - include:
+        file: db/changelog/changeset/V000__create_country.sql
+
+  - include:
       file: db/changelog/changeset/V001__users_update_telegram_info.sql
 
   - include:

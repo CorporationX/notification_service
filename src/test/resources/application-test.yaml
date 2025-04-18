@@ -1,0 +1,76 @@
+spring:
+  data:
+    redis:
+      port: 6379
+      host: localhost
+      channel:
+        followerChannel: follower_channel
+        achievementChannel: achievement_channel
+        recommendationReceivedChannel: recommendation_event_channel
+        mentorshipAcceptedEventChannel: mentorship-accepted-channel
+    kafka:
+      bootstrap-servers: localhost:9093
+      group-id: notification-group
+      topic:
+        comment: comment_topic_test
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: example@gmail.com #https://www.baeldung.com/spring-email
+    password: password #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+  messages:
+    basename: messages
+
+telegram:
+  bot:
+    username: titanStream9_bot
+    token: 7903002264:AAH6aG_-40_9jMtCbtnpt7qMuYTMFsMuFmQ
+
+server:
+  port: 8083
+
+logging:
+  level:
+    root: info
+
+vonage:
+  api:
+    key: "e388b9b8"
+    secret: "tEhPGnNH7nL25qjm"
+    sender: "CorporationX"
+
+project-service:
+  host: localhost
+  port: 8082
+user-service:
+  host: localhost
+  port: 8080
+
