@@ -12,6 +12,7 @@ spring:
     port: 587
     username: sofiyamutovkina@gmail.com #https://www.baeldung.com/spring-email
     password: harn dstg ewyf qpcs #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    from: sofiyamutovkina@gmail.com
     properties:
       mail:
         smtp:
@@ -39,8 +40,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080

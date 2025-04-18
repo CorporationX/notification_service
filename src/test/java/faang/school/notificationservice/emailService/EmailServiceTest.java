@@ -1,7 +1,6 @@
 package faang.school.notificationservice.emailService;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.properties.EmailProperties;
 import faang.school.notificationservice.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,9 +12,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import java.lang.reflect.Field;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -25,15 +25,14 @@ public class EmailServiceTest {
     @Mock
     private JavaMailSender javaMailSender;
 
-    @Mock
-    private EmailProperties emailProperties;
-
     @InjectMocks
     private EmailService emailService;
 
     @BeforeEach
-    void setUp() {
-        lenient().when(emailProperties.getFrom()).thenReturn("sofiyamutovkina@gmail.com");
+    void setUp() throws Exception {
+        Field field = EmailService.class.getDeclaredField("from");
+        field.setAccessible(true);
+        field.set(emailService, "sofiyamutovkina@gmail.com");
     }
 
     @Test
