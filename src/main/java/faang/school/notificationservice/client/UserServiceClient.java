@@ -10,4 +10,7 @@ public interface UserServiceClient {
 
     @GetMapping("/users/{id}")
     UserDto getUser(@PathVariable long id);
+
+    @GetMapping("/contactPreference/{userId}")
+    UserDto.PreferredContact getPreferredContact(@PathVariable long userId);
 }

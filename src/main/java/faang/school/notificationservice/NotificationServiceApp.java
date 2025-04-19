@@ -1,6 +1,8 @@
 package faang.school.notificationservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 @EnableFeignClients("faang.school.notificationservice.client")
 public class NotificationServiceApp {
     public static void main(String[] args) {
-        Dotenv dotenv = Dotenv.load(); // загружает .env
+        Dotenv dotenv = Dotenv.load();
         dotenv.entries().forEach(entry ->
                 System.setProperty(entry.getKey(), entry.getValue()));
         new SpringApplicationBuilder(NotificationServiceApp.class)
@@ -23,6 +25,9 @@ public class NotificationServiceApp {
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        return objectMapper;
     }
 }

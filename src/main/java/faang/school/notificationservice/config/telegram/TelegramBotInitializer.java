@@ -11,7 +11,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @Component
 @RequiredArgsConstructor
-public class BotInitializer {
+public class TelegramBotInitializer {
     private final TelegramService telegramService;
 
     @EventListener({ContextRefreshedEvent.class})
