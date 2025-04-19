@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MentorshipAcceptedEvent {
+public class MentorshipAcceptedEventDto {
     private long requestId;
     private long requesterId;
     private long receiverId;

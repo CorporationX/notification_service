@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config;
 
-import faang.school.notificationservice.dto.MentorshipAcceptedEvent;
+import faang.school.notificationservice.dto.MentorshipAcceptedEventDto;
 import faang.school.notificationservice.listener.MentorshipAcceptedListener;
 import faang.school.notificationservice.properties.RedisProperties;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class RedisConfig {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(MentorshipAcceptedEvent.class));
+        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(MentorshipAcceptedEventDto.class));
         return template;
     }
 
@@ -59,10 +59,11 @@ public class RedisConfig {
         return new MessageListenerAdapter(mentorshipAcceptedListener);
     }
 
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter mentorshipAcceptEventListener){
+    @Bean
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter mentorshipAcceptEventListener){
         RedisMessageListenerContainer redisContainer = new RedisMessageListenerContainer();
         redisContainer.setConnectionFactory(jedisConnectionFactory());
-        redisContainer.addMessageListener(mentorshipAcceptEventListener,eventTopics());
+        redisContainer.addMessageListener(mentorshipAcceptEventListener, eventTopics());
         return redisContainer;
     }
 }

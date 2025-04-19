@@ -20,11 +20,18 @@ public class TelegramService extends TelegramLongPollingBot implements Notificat
 
     @Override
     public void send(UserDto user, String message) {
+        if (user.getTelegramId() == null) {
+            log.warn("Пользователь id={} не имеет telegramId, отправка невозможна", user.getId());
+            return;
+        }
+
         log.info("Попытка отправки сообщения пользователю telegramId={}, userId={}, message={}",
                 user.getTelegramId(), user.getId(), message);
+
         SendMessage msg = new SendMessage();
-        msg.setChatId(user.getTelegramId());
+        msg.setChatId(user.getTelegramId().toString()); // ← важное преобразование!
         msg.setText(message);
+
         try {
             execute(msg);
             log.info("Сообщение успешно отправлено в Telegram");

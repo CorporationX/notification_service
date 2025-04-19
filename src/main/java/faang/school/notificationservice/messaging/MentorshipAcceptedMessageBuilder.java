@@ -1,23 +1,25 @@
 package faang.school.notificationservice.messaging;
 
-import faang.school.notificationservice.dto.MentorshipAcceptedEvent;
+import faang.school.notificationservice.dto.MentorshipAcceptedEventDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 
 @Component
-public class MentorshipAcceptedMessageBuilder implements MessageBuilder<MentorshipAcceptedEvent>{
+@RequiredArgsConstructor
+public class MentorshipAcceptedMessageBuilder implements MessageBuilder<MentorshipAcceptedEventDto>{
 
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     @Override
     public Class<?> getInstance() {
-        return MentorshipAcceptedMessageBuilder.class;
+        return MentorshipAcceptedEventDto.class;
     }
 
     @Override
-    public String buildMessage(MentorshipAcceptedEvent event, Locale locale) {
+    public String buildMessage(MentorshipAcceptedEventDto event, Locale locale) {
         return messageSource.getMessage("mentorship.accepted", new Object[]{},locale);
     }
 }

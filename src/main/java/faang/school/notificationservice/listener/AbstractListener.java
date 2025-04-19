@@ -2,7 +2,6 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.MentorshipAcceptedEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -33,10 +32,14 @@ public abstract class AbstractListener<T> {
 
     protected void sendNotification(Long id, String message){
         UserDto user = userServiceClient.getUser(id);
+        UserDto.PreferredContact userPref = user.getPreference() != null
+                ? user.getPreference()
+                : UserDto.PreferredContact.TELEGRAM;
+
         notificationServices.stream()
-                .filter(service -> service.getPreferredContact().equals(user.getPreference()))
+                .filter(service -> service.getPreferredContact().equals(userPref))
                 .findFirst()
-                .orElseThrow(()-> new IllegalArgumentException("Ошибка: не нашлось метода отправки который выбрал user"))
+                .orElseThrow(() -> new IllegalArgumentException("Ошибка: не нашлось метода отправки который выбрал user"))
                 .send(user, message);
     }
 

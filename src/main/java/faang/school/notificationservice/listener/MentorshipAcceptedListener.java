@@ -2,7 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.MentorshipAcceptedEvent;
+import faang.school.notificationservice.dto.MentorshipAcceptedEventDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -16,11 +16,11 @@ import java.util.Locale;
 
 @Slf4j
 @Component
-public class MentorshipAcceptedListener extends AbstractListener<MentorshipAcceptedEvent> implements MessageListener {
+public class MentorshipAcceptedListener extends AbstractListener<MentorshipAcceptedEventDto> implements MessageListener {
 
     public MentorshipAcceptedListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
                                       List<NotificationService> notificationServices,
-                                      List<MessageBuilder<MentorshipAcceptedEvent>> messageBuilders) {
+                                      List<MessageBuilder<MentorshipAcceptedEventDto>> messageBuilders) {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
@@ -28,8 +28,8 @@ public class MentorshipAcceptedListener extends AbstractListener<MentorshipAccep
     public void onMessage(Message message, byte[] pattern) {
         log.info("Получено событие mentorship_accepted_topic: {}", new String(message.getBody()));
 
-        handleEvent(message, MentorshipAcceptedEvent.class, event -> {
-            log.info("Обрабатываем MentorshipAcceptedEvent: {}", event);
+        handleEvent(message, MentorshipAcceptedEventDto.class, event -> {
+            log.info("Обрабатываем MentorshipAcceptedEventDto: {}", event);
             UserDto requester = userServiceClient.getUser(event.getRequesterId());
             log.info("Получен UserDto: {}", requester);
             String text = getMessage(event, Locale.UK);
