@@ -15,9 +15,6 @@ class EmailServiceTest {
     @Test
     @Disabled("Для ручного запуска с реальным Gmail")
     void positiveSendEmail() {
-        if (System.getenv("CI") != null) {
-            return;
-        }
         UserDto userDto = UserDto.builder()
                 .id(1L)
                 .email("example@gmail.com")
