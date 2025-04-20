@@ -44,6 +44,22 @@ spring:
   messages:
     basename: messages
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: notification-group
+      auto-offset-reset: earliest
+    producer:
+      acks: "1"
+    topics:
+      hashtag-notification:
+        name: "hashtag-notification"
+        partitions: 3
+        replicas: 1
+
+  profiles:
+    active: local
+
 telegram:
   bot:
     username: titanStream9_bot
@@ -54,7 +70,7 @@ server:
 
 logging:
   level:
-    root: info
+    root: debug
 
 vonage:
   api:
