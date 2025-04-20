@@ -7,6 +7,6 @@ import org.springframework.data.redis.connection.Message;
 public class MappingException extends RuntimeException {
 
     public MappingException(String eventTypeName, Message message, Exception e) {
-        super(MessageError.UNABLE_TO_PARSE_EVENT.getMessage(eventTypeName, message), e);
+        super(String.format("Unable to parse event: %s with message: %s.", eventTypeName, message), e);
     }
 }

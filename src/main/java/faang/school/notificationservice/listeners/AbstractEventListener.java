@@ -1,10 +1,9 @@
 package faang.school.notificationservice.listeners;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.FetchUserException;
 import faang.school.notificationservice.exception.MappingException;
 import faang.school.notificationservice.exception.MessageBuilderNotFoundException;
 import faang.school.notificationservice.exception.ServiceNotFoundException;
@@ -15,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -32,12 +30,8 @@ public abstract class AbstractEventListener<T> implements MessageListener, Redis
         try {
             T event = objectMapper.readValue(message.getBody(), eventType);
             processingEvent.accept(event);
-        } catch (JsonParseException e) {
-            getCatchMappingExceptionData("Invalid JSON syntax", eventType, message, e);
-        } catch (JsonMappingException e) {
-            getCatchMappingExceptionData("JSON mapping failed", eventType, message, e);
-        } catch (IOException e) {
-            getCatchMappingExceptionData("Unexpected error during parsing", eventType, message, e);
+        } catch (Exception e) {
+            throw new MappingException(eventType.getName(), message, e);
         }
     }
 
@@ -46,35 +40,28 @@ public abstract class AbstractEventListener<T> implements MessageListener, Redis
                 .filter(messageBuilder -> messageBuilder.getInstance() == event.getClass())
                 .findFirst()
                 .map(messageBuilder -> messageBuilder.buildMessage(event, userLocale))
-                .orElseThrow(() -> {
-                    String exceptionMessage = String.format(
-                            "No message builder found for the given event type: %s", event.getClass().getName());
-                    MessageBuilderNotFoundException e = new MessageBuilderNotFoundException(exceptionMessage);
-                    log.error(exceptionMessage, e);
-                    return e;
-                });
+                .orElseThrow(() ->
+                        new MessageBuilderNotFoundException(String.format(
+                                "No message builder found for the given event type: %s", event.getClass().getName())));
     }
 
     protected void sendNotification(long receiverId, String message) {
-        UserDto user = userServiceClient.getUser(receiverId);
+        UserDto user;
+        try {
+            user = userServiceClient.getUser(receiverId);
+        } catch (Exception e) {
+            throw new FetchUserException(
+                    String.format("Failed to fetch user with id: %d from user service: %s", receiverId, e.getMessage()),
+                    e);
+        }
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(user.getPreference()))
                 .findFirst()
-                .orElseThrow(() -> {
-                    String exceptionMessage = String.format(
-                            "No notification service found for the user`s id: %d preferred method: %s",
-                            receiverId, user.getPreference());
-                    ServiceNotFoundException e = new ServiceNotFoundException(exceptionMessage);
-                    log.error(exceptionMessage, e);
-                    return e;
-                })
+                .orElseThrow(() ->
+                        new ServiceNotFoundException(String.format(
+                                "No notification service found for the user`s id: %d preferred method: %s",
+                                receiverId, user.getPreference())))
                 .send(user, message);
         log.info("Notification service sent notification \"{}\" to user with id {}.", message, receiverId);
-    }
-
-    private void getCatchMappingExceptionData(String cause, Class<T> eventType, Message message, Exception e) {
-        log.error(String.format(cause + " Unable to parse event: %s with message: %s.",
-                eventType.getName(), message), e);
-        throw new MappingException(eventType.getName(), message, e);
     }
 }

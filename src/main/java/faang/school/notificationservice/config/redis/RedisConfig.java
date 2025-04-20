@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.exception.RedisContainerIsEmptyException;
 import faang.school.notificationservice.listeners.RedisContainerMessageListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +39,9 @@ public class RedisConfig {
 
     @Bean
     RedisMessageListenerContainer redisContainer(List<RedisContainerMessageListener> messageListeners) {
+        if (messageListeners.isEmpty()) {
+            throw new RedisContainerIsEmptyException("No RedisContainerMessageListener beans found");
+        }
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         messageListeners.forEach(listener ->

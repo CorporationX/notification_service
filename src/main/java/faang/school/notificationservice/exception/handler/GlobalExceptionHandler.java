@@ -2,8 +2,10 @@ package faang.school.notificationservice.exception.handler;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import faang.school.notificationservice.exception.FetchUserException;
 import faang.school.notificationservice.exception.MappingException;
 import faang.school.notificationservice.exception.MessageBuilderNotFoundException;
+import faang.school.notificationservice.exception.RedisContainerIsEmptyException;
 import faang.school.notificationservice.exception.ServiceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -47,6 +49,20 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     ErrorResponse handleServiceNotFoundException(ServiceNotFoundException e) {
         log.error("ServiceNotFoundException: {}", e.getMessage());
+        return buildResponse(e);
+    }
+
+    @ExceptionHandler(FetchUserException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    ErrorResponse handleFetchUserException(FetchUserException e) {
+        log.error("FetchUserException: {}", e.getMessage());
+        return buildResponse(e);
+    }
+
+    @ExceptionHandler(RedisContainerIsEmptyException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    ErrorResponse handleRedisContainerIsEmptyException(RedisContainerIsEmptyException e) {
+        log.error("RedisContainerIsEmptyException: {}", e.getMessage());
         return buildResponse(e);
     }
 
