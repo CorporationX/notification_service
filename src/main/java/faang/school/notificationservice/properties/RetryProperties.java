@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.app;
+package faang.school.notificationservice.properties;
 
 import jakarta.validation.constraints.Min;
 import lombok.Data;
