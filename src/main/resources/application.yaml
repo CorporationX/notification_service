@@ -50,3 +50,7 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+telegram:
+  bot:
+    token: 7931553413:AAGI4YQDFsHoej3eOVfGsV664PpIgAJ87F4
