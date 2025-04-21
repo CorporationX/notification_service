@@ -1,119 +1,102 @@
 package faang.school.notificationservice.service;
 
-import com.vonage.client.VonageClient;
-import com.vonage.client.VonageClientException;
-import com.vonage.client.sms.MessageStatus;
-import com.vonage.client.sms.SmsClient;
-import com.vonage.client.sms.SmsSubmissionResponse;
-import com.vonage.client.sms.SmsSubmissionResponseMessage;
-import com.vonage.client.sms.messages.TextMessage;
+import faang.school.notificationservice.dto.SmsResponse;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.SmsIntegrationException;
-import org.junit.jupiter.api.BeforeEach;
+import faang.school.notificationservice.service.provider.SmsProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SmsServiceTest {
 
-    @Mock
-    private SmsClient smsClient;
+    private static final String VALID_PHONE = "+1234567890";
+    private static final String MESSAGE = "Test message";
 
     @Mock
-    private SmsSubmissionResponse response;
-
-    @Mock
-    private SmsSubmissionResponseMessage responseMessage;
-
-    @Mock
-    private VonageClient vonageClient;
+    private SmsProvider smsProvider;
 
     @InjectMocks
     private SmsService smsService;
 
-    private UserDto validUser;
-    private final String validMessage = "Test message";
-
-    @BeforeEach
-    void setUp() {
-        validUser = UserDto.builder()
-                .phone("+1234567890")
-                .preference(UserDto.PreferredContact.PHONE)
-                .build();
-    }
-
     @Test
-    void sendShouldSuccessWhenValidInput() {
-        when(vonageClient.getSmsClient()).thenReturn(smsClient);
-        when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(response);
-        when(response.getMessages()).thenReturn(List.of(responseMessage));
-        when(responseMessage.getStatus()).thenReturn(MessageStatus.OK);
+    void send_ValidRequest_Success() {
+        UserDto user = createValidUser();
+        when(smsProvider.sendSms(anyString(), anyString(), anyString()))
+                .thenReturn(createSuccessResponse());
 
-        assertDoesNotThrow(() -> smsService.send(validUser, validMessage));
+        assertDoesNotThrow(() -> smsService.send(user, MESSAGE));
 
-        verify(smsClient).submitMessage(any(TextMessage.class));
-    }
-
-    @Test
-    void sendShouldThrowWhenVonageClientError() {
-        when(vonageClient.getSmsClient()).thenReturn(smsClient);
-        when(smsClient.submitMessage(any(TextMessage.class)))
-                .thenThrow(new VonageClientException("API failure"));
-
-        SmsIntegrationException exception = assertThrows(
-                SmsIntegrationException.class,
-                () -> smsService.send(validUser, validMessage)
+        verify(smsProvider).sendSms(
+                eq(SmsService.NAME_FROM),
+                eq(VALID_PHONE),
+                eq(MESSAGE)
         );
-
-        assertThat(exception.getMessage()).contains("API failure");
     }
 
     @Test
-    void sendShouldThrowWhenEmptyResponseMessages() {
-        when(vonageClient.getSmsClient()).thenReturn(smsClient);
-        when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(response);
-        when(response.getMessages()).thenReturn(Collections.emptyList());
+    void send_ProviderError_ThrowsException() {
+        UserDto user = createValidUser();
+        when(smsProvider.sendSms(anyString(), anyString(), anyString()))
+                .thenReturn(createErrorResponse());
 
-        SmsIntegrationException exception = assertThrows(
-                SmsIntegrationException.class,
-                () -> smsService.send(validUser, validMessage)
-        );
-
-        assertThat(exception.getMessage()).contains("Empty response");
+        assertThrows(SmsIntegrationException.class,
+                () -> smsService.send(user, MESSAGE));
     }
 
     @Test
-    void sendShouldThrowWhenNonOkStatus() {
-        when(vonageClient.getSmsClient()).thenReturn(smsClient);
-        when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(response);
-        when(response.getMessages()).thenReturn(List.of(responseMessage));
-        when(responseMessage.getStatus()).thenReturn(MessageStatus.INTERNAL_ERROR);
-        when(responseMessage.getErrorText()).thenReturn("Invalid number");
+    void sendGroup_AllSuccess_NoExceptionsThrown() {
+        List<UserDto> users = List.of(createValidUser(), createValidUser());
+        when(smsProvider.sendSms(anyString(), anyString(), anyString()))
+                .thenReturn(createSuccessResponse());
 
-        SmsIntegrationException exception = assertThrows(
-                SmsIntegrationException.class,
-                () -> smsService.send(validUser, validMessage)
+        assertDoesNotThrow(() -> smsService.sendGroup(users, MESSAGE));
+
+        verify(smsProvider, times(2)).sendSms(
+                anyString(),
+                anyString(),
+                anyString()
         );
-
-        assertThat(exception.getMessage()).contains("Invalid number");
     }
 
     @Test
     void getPreferredContactShouldReturnPhone() {
         assertThat(smsService.getPreferredContact())
                 .isEqualTo(UserDto.PreferredContact.PHONE);
+    }
+
+    private UserDto createValidUser() {
+        return UserDto.builder()
+                .phone(VALID_PHONE)
+                .preference(UserDto.PreferredContact.PHONE)
+                .build();
+    }
+
+    private SmsResponse createSuccessResponse() {
+        SmsResponse smsResponse = new SmsResponse();
+        smsResponse.setSuccess(true);
+        smsResponse.setProviderId("123");
+        return smsResponse;
+    }
+
+    private SmsResponse createErrorResponse() {
+        SmsResponse smsResponse = new SmsResponse();
+        smsResponse.setSuccess(false);
+        smsResponse.setErrorMessage("Invalid number");
+        return smsResponse;
     }
 }

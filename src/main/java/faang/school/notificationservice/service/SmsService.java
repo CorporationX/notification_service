@@ -1,13 +1,9 @@
 package faang.school.notificationservice.service;
 
-import com.vonage.client.VonageClient;
-import com.vonage.client.VonageClientException;
-import com.vonage.client.sms.MessageStatus;
-import com.vonage.client.sms.SmsSubmissionResponse;
-import com.vonage.client.sms.SmsSubmissionResponseMessage;
-import com.vonage.client.sms.messages.TextMessage;
+import faang.school.notificationservice.dto.SmsResponse;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.SmsIntegrationException;
+import faang.school.notificationservice.service.provider.SmsProvider;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -15,44 +11,42 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @Validated
 @RequiredArgsConstructor
 public class SmsService implements NotificationService {
 
-    private final VonageClient vonageClient;
+    public static final String NAME_FROM = "Test SMS from Anton B.";
+    private final SmsProvider smsProvider;
 
     @Override
     public void send(@Valid UserDto user, @NotBlank String message) {
-
-        SmsSubmissionResponse response = sendSms(user, message);
+        SmsResponse response = smsProvider.sendSms(NAME_FROM, user.getPhone(), message);
         validateResponse(response);
     }
 
-    private SmsSubmissionResponse sendSms(UserDto user, String message) {
-        TextMessage textMessage = new TextMessage("Test SMS from Anton B.", user.getPhone(), message);
-
-        try {
-            return vonageClient.getSmsClient().submitMessage(textMessage);
-        } catch (VonageClientException e) {
-            log.error("Error sending SMS via Vonage: {}", e.getMessage());
-            throw new SmsIntegrationException("Error sending SMS: " + e.getMessage(), e);
-        }
+    @Override
+    public void sendGroup(@Valid List<UserDto> users, @NotBlank String message) {
+        users.forEach(user -> {
+            try {
+                send(user, message);
+            } catch (SmsIntegrationException e) {
+                log.error("Failed to send SMS to {}: {}", user.getPhone(), e.getMessage());
+            }
+        });
     }
 
-    private void validateResponse(SmsSubmissionResponse response) {
-        if (response.getMessages().isEmpty()) {
-            log.error("Invalid response from SMS service");
-            throw new SmsIntegrationException("Empty response from Vonage");
+    private void validateResponse(SmsResponse smsResponse) {
+        if (!smsResponse.isSuccess()) {
+            String errorDetails = smsResponse.getErrorMessage() != null ?
+                    smsResponse.getErrorMessage() : "No error details provided";
+            log.error("SMS delivery failed. Reason: {}", errorDetails);
+            throw new SmsIntegrationException("Failed to send SMS: " + errorDetails);
         }
-
-        SmsSubmissionResponseMessage messageResponse = response.getMessages().get(0);
-        if (messageResponse.getStatus() != MessageStatus.OK) {
-            log.error("SMS delivery failed: {}", messageResponse.getErrorText());
-            throw new SmsIntegrationException("Vonage error: " + messageResponse.getErrorText());
-        }
-        log.info("Message sent successfully");
+        log.info("SMS sent successfully. Provider ID: {}", smsResponse.getProviderId());
     }
 
     @Override

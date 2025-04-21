@@ -38,6 +38,9 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: ea3cbdef
     secret: t6qqwTma9etW5JwR
 
+sms:
+  provider: vonage
+
 project-service:
     host: localhost
     port: 8082
