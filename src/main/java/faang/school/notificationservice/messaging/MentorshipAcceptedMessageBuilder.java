@@ -10,7 +10,7 @@ import java.util.Locale;
 @Component
 @RequiredArgsConstructor
 public class MentorshipAcceptedMessageBuilder implements MessageBuilder<MentorshipAcceptedEventDto>{
-
+    private static final String MESSAGE_SOURCE = "mentorship.accepted";
     private final MessageSource messageSource;
 
     @Override
@@ -20,6 +20,6 @@ public class MentorshipAcceptedMessageBuilder implements MessageBuilder<Mentorsh
 
     @Override
     public String buildMessage(MentorshipAcceptedEventDto event, Locale locale) {
-        return messageSource.getMessage("mentorship.accepted", new Object[]{},locale);
+        return messageSource.getMessage(MESSAGE_SOURCE, new Object[]{},locale);
     }
 }

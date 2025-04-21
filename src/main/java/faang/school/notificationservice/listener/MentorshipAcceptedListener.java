@@ -37,5 +37,4 @@ public class MentorshipAcceptedListener extends AbstractListener<MentorshipAccep
             sendNotification(requester.getId(), text);
         });
     }
-
 }
