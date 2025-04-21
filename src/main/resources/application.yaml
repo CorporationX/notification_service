@@ -9,7 +9,6 @@ spring:
 
   kafka:
     consumer:
-      acks: all
       retries: 3
       enable-idempotence: false
       auto.offset.reset: latest
