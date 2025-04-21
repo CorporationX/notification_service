@@ -11,17 +11,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AbstractEventListenerTest {
@@ -33,9 +32,11 @@ public class AbstractEventListenerTest {
 
     static class TestEventListener extends AbstractEventListener<TestEvent> {
 
-        public TestEventListener(List<MessageBuilder<TestEvent>> messageBuilders,
+        public TestEventListener(ObjectMapper objectMapper,
+                                 UserServiceClient userServiceClient,
+                                 Map<Class<?>, MessageBuilder<?>> messageBuilderMap,
                                  List<NotificationService> notificationServices) {
-            super(messageBuilders, notificationServices);
+            super(objectMapper, userServiceClient, messageBuilderMap, notificationServices);
         }
     }
 
@@ -60,32 +61,40 @@ public class AbstractEventListenerTest {
         userDto = new UserDto();
         userDto.setPreference(UserDto.PreferredContact.EMAIL);
 
-        testEventListener = new TestEventListener(List.of(messageBuilder),
-                List.of(emailNotificationService));
+        Map<Class<?>, MessageBuilder<?>> messageBuilderMap = new HashMap<>();
+        messageBuilderMap.put(TestEvent.class, messageBuilder);
+
+        testEventListener = new TestEventListener(
+                objectMapper,
+                userServiceClient,
+                messageBuilderMap,
+                List.of(emailNotificationService)
+        );
     }
 
     @Test
     public void testGetMessageSuccess() {
-        when(messageBuilder.getInstance()).thenReturn(TestEvent.class);
         when(messageBuilder.buildMessage(testEvent, testEvent.locale)).thenReturn(testEvent.content);
 
         String result = testEventListener.getMessage(testEvent, testEvent.locale);
         assertEquals(testEvent.content, result);
-        verify(messageBuilder, times(1)).getInstance();
         verify(messageBuilder, times(1)).buildMessage(testEvent, testEvent.locale);
     }
 
     @Test
     public void testGetMessageFailure() {
-        String error = "No MessageBuilder found for: " + TestEvent.class.getName();
-        when(messageBuilder.getInstance()).thenThrow(new IllegalArgumentException(error));
+        TestEventListener listenerWithoutBuilder = new TestEventListener(
+                objectMapper,
+                userServiceClient,
+                new HashMap<>(),
+                List.of(emailNotificationService)
+        );
 
+        String error = "No MessageBuilder found for: " + TestEvent.class.getName();
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> testEventListener.getMessage(testEvent, testEvent.locale));
+                () -> listenerWithoutBuilder.getMessage(testEvent, testEvent.locale));
 
         assertEquals(error, exception.getMessage());
-        verify(messageBuilder, times(1)).getInstance();
-        verify(messageBuilder, never()).buildMessage(testEvent, testEvent.locale);
     }
 
     @Test
