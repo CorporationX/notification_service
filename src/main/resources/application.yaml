@@ -8,6 +8,12 @@ spring:
         achievement: achievement_channel
         post_like: post_like_events
 
+  retry:
+    max-attempts: 3
+    backoff:
+      delay: 1000
+      multiplier: 1
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -38,6 +44,12 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+
+#Конфинг для телеграм бота
+telegram:
+  bot:
+    name: "faangNotify_bot"
+    token: "7692150067:AAHQFgOuwVPm15GRqIQZOe4vgsDnMr6GtEI"
 
 project-service:
     host: localhost
