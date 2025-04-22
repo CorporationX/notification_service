@@ -9,10 +9,10 @@ spring:
         recommendationReceivedChannel: recommendation_event_channel
         mentorshipAcceptedEventChannel: mentorship-accepted-channel
     kafka:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: localhost:9093
       group-id: notification-group
       topic:
-        comment: comment_topic
+        comment: comment_topic_test
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
@@ -68,9 +68,9 @@ vonage:
     sender: "CorporationX"
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
 

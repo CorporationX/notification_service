@@ -6,6 +6,7 @@ import faang.school.notificationservice.dto.MentorshipAcceptedRequestEvent;
 import faang.school.notificationservice.exception.EventReadException;
 import faang.school.notificationservice.exception.ExceptionMessage;
 import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.repository.NotificationEventLogRepository;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -23,9 +24,10 @@ public class MentorshipAcceptedEventListener
     public MentorshipAcceptedEventListener(ObjectMapper objectMapper,
                                            UserServiceClient userServiceClient,
                                            List<NotificationService> notificationServices,
-                                           List<MessageBuilder<MentorshipAcceptedRequestEvent>> messageBuilders
+                                           List<MessageBuilder<MentorshipAcceptedRequestEvent>> messageBuilders,
+                                           NotificationEventLogRepository repository
     ) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+        super(objectMapper, userServiceClient, notificationServices, messageBuilders, repository);
     }
 
     @Override
