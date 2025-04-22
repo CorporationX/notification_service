@@ -4,6 +4,7 @@ import faang.school.notificationservice.config.properties.RedisChannelsPropertie
 import faang.school.notificationservice.listener.FollowerEventListener;
 import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
 import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
+import faang.school.notificationservice.listener.SkillAcquiredEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -50,6 +51,11 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListenerAdapter skillAcquiredEventListenerAdapter(SkillAcquiredEventListener skillAcquiredEventListener) {
+        return new MessageListenerAdapter(skillAcquiredEventListener);
+    }
+
+    @Bean
     ChannelTopic recommendationReceivedEventTopic() {
         return new ChannelTopic(channelsProperties.recommendationReceivedChannel());
     }
@@ -65,15 +71,22 @@ public class RedisConfig {
     }
 
     @Bean
+    ChannelTopic skillAcquiredEventTopic() {
+        return new ChannelTopic(channelsProperties.skillAcquiredChannel());
+    }
+
+    @Bean
     RedisMessageListenerContainer redisContainer(
             MessageListenerAdapter recommendationReceivedEventListenerAdapter,
-            MessageListenerAdapter followerEventListenerAdapter
+            MessageListenerAdapter followerEventListenerAdapter,
+            MessageListenerAdapter skillAcquiredEventListenerAdapter
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(recommendationReceivedEventListenerAdapter, recommendationReceivedEventTopic());
         container.addMessageListener(followerEventListenerAdapter, followerEventTopic());
         container.addMessageListener(recommendationReceivedEventListenerAdapter, mentorshipAcceptedTopic());
+        container.addMessageListener(skillAcquiredEventListenerAdapter, skillAcquiredEventTopic());
         return container;
     }
 }
