@@ -6,6 +6,7 @@ import faang.school.notificationservice.dto.FollowerEvent;
 import faang.school.notificationservice.exception.EventReadException;
 import faang.school.notificationservice.exception.ExceptionMessage;
 import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.repository.NotificationEventLogRepository;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -21,9 +22,10 @@ public class FollowerEventListener extends AbstractEventListener<FollowerEvent> 
     public FollowerEventListener(ObjectMapper objectMapper,
                                  UserServiceClient userServiceClient,
                                  List<NotificationService> notificationServices,
-                                 List<MessageBuilder<FollowerEvent>> messageBuilders
+                                 List<MessageBuilder<FollowerEvent>> messageBuilders,
+                                 NotificationEventLogRepository repository
     ) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+        super(objectMapper, userServiceClient, notificationServices, messageBuilders, repository);
     }
 
     @Override
