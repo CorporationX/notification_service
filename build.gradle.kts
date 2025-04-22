@@ -49,6 +49,7 @@ dependencies {
     implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
+    implementation("com.github.javafaker:javafaker:1.0.2")
 
     /**
      * Tests
