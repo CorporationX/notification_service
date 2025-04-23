@@ -5,6 +5,13 @@ spring:
       port: 6379       # Порт Redis сервера
       connect-timeout: 5000  # Таймаут подключения в миллисекундах
       read-timeout: 3000     # Таймаут чтения в миллисекундах
+
+  retry:
+    max-attempts: 3
+    backoff:
+      delay: 1000
+      multiplier: 1
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -36,9 +43,15 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
+#Конфинг для телеграм бота
+telegram:
+  bot:
+    name: "faangNotify_bot"
+    token: "7692150067:AAHQFgOuwVPm15GRqIQZOe4vgsDnMr6GtEI"
+
 project-service:
   host: localhost
   port: 8082
 user-service:
-  host: localhost
-  port: 8080
+    host: localhost
+    port: 8080

@@ -18,6 +18,7 @@ public class UserDto {
     private String username;
     private String email;
     private String phone;
+    private Long telegramChatId;
 
     @Builder.Default
     private PreferredContact preference = PreferredContact.EMAIL;
