@@ -36,42 +36,40 @@ public class AbstractEventListener<T> {
     private final List<MessageBuilder<T>> messageBuilders;
     private final List<NotificationService> notificationServices;
 
+    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    private static final UserDto.PreferredContact DEFAULT_PREFERRED_CONTACT = UserDto.PreferredContact.EMAIL;
+
     /**
      * Получает локаль для пользователя
+     *
      * @param userId ID пользователя
      * @return Locale из профиля пользователя или ENGLISH по умолчанию
      */
     protected Locale getUserLocale(Long userId) {
-        try {
-            UserDto user = userServiceClient.getUser(userId);
-            return user != null && user.getLocale() != null
-                    ? user.getLocale()
-                    : Locale.ENGLISH;
-        } catch (Exception e) {
-            log.warn("Failed to get locale for user {}, using default. Error: {}",
-                    userId, e.getMessage());
-            return Locale.ENGLISH;
+        UserDto user = userServiceClient.getUser(userId);
+
+        if (user == null && user.getLocale() == null) {
+            return DEFAULT_LOCALE;
         }
+
+        return user.getLocale();
     }
 
     /**
      * Получает предпочтительный способ связи с пользователем
+     *
      * @param userId ID пользователя
      * @return PreferredContact из профиля пользователя или EMAIL по умолчанию
      */
     protected UserDto.PreferredContact getPreferredContact(Long userId) {
-        try {
-            UserDto user = userServiceClient.getUser(userId);
-            return user != null && user.getPreference() != null
-                    ? user.getPreference()
-                    : UserDto.PreferredContact.EMAIL;
-        } catch (Exception e) {
-            log.warn("Failed to get contact preference for user {}, using default. Error: {}",
-                    userId, e.getMessage());
-            return UserDto.PreferredContact.EMAIL;
-        }
-    }
+        UserDto user = userServiceClient.getUser(userId);
 
+        if (user == null && user.getPreference() == null) {
+            return DEFAULT_PREFERRED_CONTACT;
+        }
+
+        return user.getPreference();
+    }
 
     /**
      * Считывает тело событие и отправляет в обработку

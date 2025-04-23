@@ -2,6 +2,7 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.NotificationException;
+import faang.school.notificationservice.service.email.EmailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

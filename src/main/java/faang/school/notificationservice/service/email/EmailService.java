@@ -1,7 +1,8 @@
-package faang.school.notificationservice.service;
+package faang.school.notificationservice.service.email;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.NotificationException;
+import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -30,6 +31,11 @@ public class EmailService implements NotificationService {
      */
     @Override
     public void send(UserDto user, String text) {
+        if (user.getPreference() != UserDto.PreferredContact.EMAIL) {
+            log.debug("User {} has non-Email preference ({}), skipping", user.getId(), user.getPreference());
+            return;
+        }
+
         SimpleMailMessage emailMessage = new SimpleMailMessage();
 
         emailMessage.setTo(user.getEmail());

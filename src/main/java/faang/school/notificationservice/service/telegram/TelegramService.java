@@ -35,6 +35,11 @@ public class TelegramService implements NotificationService {
     )
     @Override
     public void send(UserDto user, String message) {
+        if (user.getPreference() != UserDto.PreferredContact.TELEGRAM) {
+            log.debug("User {} has non-Telegram preference ({}), skipping", user.getId(), user.getPreference());
+            return;
+        }
+
         log.info("Sending {} to user {}", message, user);
         try {
             telegramBot.sendMessage(user.getTelegramChatId(), message);

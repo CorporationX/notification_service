@@ -14,7 +14,7 @@ import java.util.Locale;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    private long id;
+    private Long id;
     private String username;
     private String email;
     private String phone;
