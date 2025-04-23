@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.context;
+package faang.school.notificationservice.properties;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 @Validated
 @ConfigurationProperties(prefix = "telegram")
-public class TelegramProperties {
+public class TelegramBotProperties {
 
     @NotBlank
     private String botUsername;

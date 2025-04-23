@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service.telegram;
 
-import faang.school.notificationservice.config.context.TelegramProperties;
+import faang.school.notificationservice.properties.TelegramBotProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.NotificationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +27,7 @@ class TelegramServiceTest {
     private MyTelegramBot mockBot;
 
     @Mock
-    private TelegramProperties telegramProperties;
+    private TelegramBotProperties telegramBotProperties;
 
     @BeforeEach
     void setUp() throws Exception {

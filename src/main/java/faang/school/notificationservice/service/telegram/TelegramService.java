@@ -1,7 +1,7 @@
 package faang.school.notificationservice.service.telegram;
 
 import com.google.common.annotations.VisibleForTesting;
-import faang.school.notificationservice.config.context.TelegramProperties;
+import faang.school.notificationservice.properties.TelegramBotProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.NotificationException;
 import faang.school.notificationservice.service.NotificationService;
@@ -19,7 +19,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @RequiredArgsConstructor
 public class TelegramService implements NotificationService {
 
-    private final TelegramProperties telegramProperties;
+    private final TelegramBotProperties telegramBotProperties;
     @VisibleForTesting
     MyTelegramBot bot;
 
@@ -27,8 +27,8 @@ public class TelegramService implements NotificationService {
     public void init() throws TelegramApiException {
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         bot = new MyTelegramBot(
-                telegramProperties.getBotUsername(),
-                telegramProperties.getBotToken()
+                telegramBotProperties.getBotUsername(),
+                telegramBotProperties.getBotToken()
         );
         botsApi.registerBot(bot);
     }

@@ -1,7 +1,7 @@
 package faang.school.notificationservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.config.context.TelegramProperties;
+import faang.school.notificationservice.properties.TelegramBotProperties;
 import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableFeignClients("faang.school.notificationservice.client")
-@EnableConfigurationProperties(TelegramProperties.class)
+@EnableConfigurationProperties(TelegramBotProperties.class)
 public class NotificationServiceApp {
     public static void main(String[] args) {
         new SpringApplicationBuilder(NotificationServiceApp.class)
