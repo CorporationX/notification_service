@@ -1,4 +1,7 @@
 spring:
+  config:
+    import: classpath:messages.yaml
+
   data:
     redis:
       port: 6379
@@ -6,6 +9,33 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+
+  kafka:
+    consumer:
+      enable-auto-commit: false
+      isolation-level: "read-committed"
+      auto.offset.reset: "latest"
+
+      topics:
+        premium:
+          bought-topic: "premium-bought-topic"
+          expired-topic: "premium-expired-topic"
+          expire-soon-topic: "premium-expire-soon-topic"
+          auto-renew-failed-topic: "premium-auto-renew-failed-topic"
+          updated-topic: "premium-updated-topic"
+          payment-failed-topic: "premium-payment-failed-topic"
+
+      groups:
+        premium:
+          premium-bought-group: "premium-bought-group"
+          expired-group: "premium-expired-group"
+          expire-soon-group: "premium-expire-soon-group"
+          auto-renew-failed-group: "premium-auto-renew-failed-group"
+          updated-group: "premium-updated-group"
+          payment-failed-group: "premium-payment-failed-group"
+
+    listener:
+      ack-mode: "manual"
 
   mail:
     host: smtp.gmail.com
