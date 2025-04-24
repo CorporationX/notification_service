@@ -1,10 +1,19 @@
 package faang.school.notificationservice.messaging;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+
 import java.util.Locale;
 
-public interface MessageBuilder<T> {
+@RequiredArgsConstructor
+public abstract class MessageBuilder<T> {
+    private final MessageSource messageSource;
 
-    Class<?> getInstance();
+    public abstract Class<?> getInstance();
 
-    String buildMessage(T event, Locale locale);
+    public abstract String buildMessage(T event, Locale locale);
+
+    protected String buildMessage(String code, Locale locale, String... args) {
+        return messageSource.getMessage(code, args, locale);
+    }
 }
