@@ -49,8 +49,7 @@ class SmsServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new UserDto();
-        user.setPhone("+79991234567");
+        user = UserDto.builder().phone("+79991234567").build();
         message = "Test message";
 
         ReflectionTestUtils.setField(smsService, "smsTitle", "TestTitle");

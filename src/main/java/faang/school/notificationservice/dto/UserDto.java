@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Setter;
 
 @Data
+@Builder
 public class UserDto {
     private long id;
     private String username;
