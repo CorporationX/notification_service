@@ -35,7 +35,7 @@ public class EmailServiceTest {
     void setUp() throws Exception {
         Field field = EmailService.class.getDeclaredField("from");
         field.setAccessible(true);
-        field.set(emailService, "sofiyamutovkina@gmail.com");
+        field.set(emailService, "corporationxmedusa@gmail.com");
     }
 
     @Test
