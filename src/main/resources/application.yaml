@@ -3,9 +3,10 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
-        follower: follower_channel
-        achievement: achievement_channel
+      topics:
+        follower: follower_topic
+        achievement: achievement_topic
+        mentorshipAccepted: mentorship_accepted_topic
 
   kafka:
     consumer:
