@@ -7,6 +7,14 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
 
+  kafka:
+    consumer:
+      bootstrapServers: localhost:9092,localhost:9093,localhost:9094
+      groupId: not-service
+      trustedPackages: ""
+      topics:
+        writerAchieved: writer_achieved_topic
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -43,6 +51,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
 project-service:
     host: localhost
     port: 8082
+
 user-service:
     host: localhost
     port: 8080
