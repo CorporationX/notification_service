@@ -95,9 +95,13 @@ public class AbstractEventListenerTest {
     @Test
     @DisplayName("Выбрасывается исключение если юзера нет PreferredContact")
     public void givenUserDto_WhenSendNotification_ThenThrowException() {
-        when(userServiceClient.getUser(USER_ID)).thenReturn(UserDto.builder().id(USER_ID).build());
-        assertThrows(EventListenerException.class,
-                () -> abstractEventListener.sendNotification(USER_ID, EMPTY_TEST_TEXT));
+        UserDto userDto = UserDto.builder().id(USER_ID).build();
+        when(userServiceClient.getUser(USER_ID)).thenReturn(userDto);
+
+        abstractEventListener.sendNotification(USER_ID, TEST_TEXT);
+
+        verify(userServiceClient, times(1)).getUser(USER_ID);
+        verify(testEmailNotificationService, times(1)).send(userDto, TEST_TEXT);
     }
 
     @Test
