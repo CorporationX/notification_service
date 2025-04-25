@@ -41,7 +41,7 @@ public class LikeMessageBuilder implements MessageBuilder<LikePostEvent> {
         UserDto postAuthor = userServiceClient.getUser(event.getPostAuthorId());
         UserDto liker = userServiceClient.getUser(event.getLikerId());
 
-        return messageSource.getMessage("postLike.new",
+        return messageSource.getMessage("postLike.new.2",
                 new Object[]{
                         postAuthor.getUsername(),
                         liker.getUsername()},

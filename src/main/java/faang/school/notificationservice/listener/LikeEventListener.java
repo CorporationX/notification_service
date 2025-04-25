@@ -1,14 +1,16 @@
 package faang.school.notificationservice.listener;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.LikePostEvent;
-import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.messaging.LikeMessageBuilder;
-import faang.school.notificationservice.service.NotificationServiceSelector;
-import lombok.RequiredArgsConstructor;
+import faang.school.notificationservice.event.AbstractEventListener;
+import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -16,11 +18,15 @@ import java.util.Locale;
  */
 @Component
 @Slf4j
-@RequiredArgsConstructor
-public class LikeEventListener {
-    private final UserServiceClient userServiceClient;
-    private final LikeMessageBuilder likeMessageBuilder;
-    private final NotificationServiceSelector notificationServiceSelector;
+public class LikeEventListener extends AbstractEventListener<LikePostEvent> {
+
+    @Autowired
+    public LikeEventListener(ObjectMapper objectMapper,
+                             UserServiceClient userServiceClient,
+                             List<MessageBuilder<LikePostEvent>> messageBuilders,
+                             List<NotificationService> notificationServices) {
+        super(objectMapper, userServiceClient, messageBuilders, notificationServices);
+    }
 
     /**
      * Обрабатывает событие лайка поста, отправляя уведомление автору поста.
@@ -29,10 +35,8 @@ public class LikeEventListener {
      */
     public void handleMessage(LikePostEvent event) {
         long postAuthorId = event.getPostAuthorId();
-        UserDto postAuthor = userServiceClient.getUser(postAuthorId);
-
-        String message = likeMessageBuilder.buildMessage(event, Locale.ENGLISH);
-        notificationServiceSelector.notifyUser(postAuthor, message);
+        String message = getMessage(event, Locale.ENGLISH);
+        sendNotification(postAuthorId, message);
         log.info("Successfully processed like event. Post: {}, Author: {}",
                 event.getPostId(), postAuthorId);
     }
