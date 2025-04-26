@@ -1,4 +1,7 @@
 spring:
+  config:
+    import: classpath:messages.yaml
+
   data:
     redis:
       host: localhost
@@ -11,11 +14,39 @@ spring:
     topics:
       notification: "notification-topic"
 
+  kafka:
+    consumer:
+      enable-auto-commit: false
+      isolation-level: "read-committed"
+      auto.offset.reset: "latest"
+
+      topics:
+        premium:
+          bought-topic: "premium-bought-topic"
+          expired-topic: "premium-expired-topic"
+          expire-soon-topic: "premium-expire-soon-topic"
+          auto-renew-failed-topic: "premium-auto-renew-failed-topic"
+          updated-topic: "premium-updated-topic"
+          payment-failed-topic: "premium-payment-failed-topic"
+
+      groups:
+        premium:
+          premium-bought-group: "premium-bought-group"
+          expired-group: "premium-expired-group"
+          expire-soon-group: "premium-expire-soon-group"
+          auto-renew-failed-group: "premium-auto-renew-failed-group"
+          updated-group: "premium-updated-group"
+          payment-failed-group: "premium-payment-failed-group"
+
+    listener:
+      ack-mode: "manual"
+
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com # https://www.baeldung.com/spring-email
-    password: whatever # сгенерировать через https://support.google.com/accounts/answer/185833
+    username: corporationxmedusa@gmail.com #https://www.baeldung.com/spring-email
+    password: tovp tpsq wsau wxaa #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    from: corporationxmedusa@gmail.com
     properties:
       mail:
         smtp:
@@ -47,6 +78,12 @@ vonage: # https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
+smsc:
+  login: kapushkaantosh
+  password: n6W2v9Z4s2$6w2V0
+  toNumber: "79920412216"
+  url: "https://smsc.ru/sys/send.php"
+
 project-service:
   host: localhost
   port: 8082
@@ -64,4 +101,3 @@ telegrambots:
     - username: ${TELEGRAM_BOT_USERNAME}
       token: ${TELEGRAM_BOT_TOKEN}
       path: ""
-
