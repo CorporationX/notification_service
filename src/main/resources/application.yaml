@@ -1,8 +1,10 @@
 spring:
   data:
     redis:
-      port: 6379
-      host: localhost
+      host: localhost  # Хост Redis сервера
+      port: 6379       # Порт Redis сервера
+      connect-timeout: 5000  # Таймаут подключения в миллисекундах
+      read-timeout: 3000     # Таймаут чтения в миллисекундах
       channel:
         follower: follower_channel
         achievement: achievement_channel
@@ -17,17 +19,17 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: ${EMAIL_USERNAME} # Логин приложения Gmail
+    password: ${EMAIL_PASSWORD} # Пароль приложения Gmail
+    protocol: smtp
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
+            required: true
+          ssl.trust: smtp.gmail.com
 
   messages:
     basename: messages
@@ -52,8 +54,8 @@ telegram:
     token: "7692150067:AAHQFgOuwVPm15GRqIQZOe4vgsDnMr6GtEI"
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
     host: localhost
     port: 8080
