@@ -3,6 +3,7 @@ package faang.school.notificationservice.messaging;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.FollowerEvent;
 import faang.school.notificationservice.dto.UserDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,6 +35,26 @@ class FollowerEventBuilderTest {
     @InjectMocks
     private FollowerEventBuilder builder;
 
+    private FollowerEvent event;
+    private UserDto follower;
+
+    @BeforeEach
+    void setUp() {
+        event = FollowerEvent.builder()
+                .followerId(10L)
+                .followeeId(2L)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        follower = UserDto.builder()
+                .id(10L)
+                .username("User")
+                .email("user@example.org")
+                .phone("+123456789")
+                .preference(UserDto.PreferredContact.PHONE)
+                .build();
+    }
+
     @Test
     void shouldReturnTrueForFollowerEvent() {
         assertTrue(builder.supportsEventType().isAssignableFrom(FollowerEvent.class));
@@ -46,20 +67,6 @@ class FollowerEventBuilderTest {
 
     @Test
     void shouldBuildMessageSuccessfully() {
-        FollowerEvent event = FollowerEvent.builder()
-                .followerId(10L)
-                .followeeId(2L)
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        UserDto follower = UserDto.builder()
-                .id(10L)
-                .username("User")
-                .email("user@example.org")
-                .phone("+123456789")
-                .preference(UserDto.PreferredContact.PHONE)
-                .build();
-
         when(userServiceClient.getUser(10L)).thenReturn(follower);
         when(messageSource.getMessage(
                 eq("follower.new"),
@@ -74,20 +81,6 @@ class FollowerEventBuilderTest {
 
     @Test
     void shouldUseDefaultLocaleWhenLocaleIsNull() {
-        FollowerEvent event = FollowerEvent.builder()
-                .followerId(10L)
-                .followeeId(2L)
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        UserDto follower = UserDto.builder()
-                .id(10L)
-                .username("User")
-                .email("user@example.org")
-                .phone("+123456789")
-                .preference(UserDto.PreferredContact.PHONE)
-                .build();
-
         when(userServiceClient.getUser(10L)).thenReturn(follower);
         when(messageSource.getMessage(
                 eq("follower.new"),
@@ -101,20 +94,6 @@ class FollowerEventBuilderTest {
 
     @Test
     void shouldThrowExceptionWhenMessageNotFound() {
-        FollowerEvent event = FollowerEvent.builder()
-                .followerId(10L)
-                .followeeId(2L)
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        UserDto follower = UserDto.builder()
-                .id(10L)
-                .username("User")
-                .email("user@example.org")
-                .phone("+123456789")
-                .preference(UserDto.PreferredContact.PHONE)
-                .build();
-
         when(userServiceClient.getUser(10L)).thenReturn(follower);
         when(messageSource.getMessage(eq("follower.new"), aryEq(new Object[]{"User"}), eq(Locale.ENGLISH)))
                 .thenThrow(new NoSuchMessageException("follower.new", Locale.ENGLISH));
