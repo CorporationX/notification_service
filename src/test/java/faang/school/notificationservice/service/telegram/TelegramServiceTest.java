@@ -1,12 +1,9 @@
 package faang.school.notificationservice.service.telegram;
 
-import faang.school.notificationservice.config.telegram.TelegramBotConfig;
 import faang.school.notificationservice.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -21,18 +18,13 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class TelegramServiceTest {
-
-    @Mock
-    private TelegramBotConfig telegramBotConfig;
-
-    @InjectMocks
     private TelegramService telegramService;
 
     private UserDto userDto;
 
     @BeforeEach
     void setUp() {
-        telegramService = Mockito.spy(telegramService);
+        telegramService = Mockito.spy(new TelegramService());
 
         userDto = new UserDto();
         userDto.setId(123456L);
