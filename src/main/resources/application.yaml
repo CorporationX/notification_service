@@ -5,6 +5,10 @@ spring:
       port: 6379       # Порт Redis сервера
       connect-timeout: 5000  # Таймаут подключения в миллисекундах
       read-timeout: 3000     # Таймаут чтения в миллисекундах
+      channel:
+        follower: follower_channel
+        achievement: achievement_channel
+        post_like: post_like_events
 
   retry:
     max-attempts: 3

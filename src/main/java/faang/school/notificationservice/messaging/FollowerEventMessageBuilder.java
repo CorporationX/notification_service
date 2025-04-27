@@ -1,9 +1,8 @@
-package faang.school.notificationservice.event;
+package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.FollowerEventDto;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.messaging.MessageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
