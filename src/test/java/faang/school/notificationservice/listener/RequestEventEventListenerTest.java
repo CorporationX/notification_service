@@ -62,7 +62,6 @@ public class RequestEventEventListenerTest {
 
     @BeforeEach
     public void setUp() {
-        // Подготовка данных для тестов
         userDto = UserDto.builder().username("testUser").preference(UserDto.PreferredContact.EMAIL).build();
 
         event = RequestEventEvent.builder()
