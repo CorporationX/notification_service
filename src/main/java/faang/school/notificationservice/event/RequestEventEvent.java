@@ -2,12 +2,14 @@ package faang.school.notificationservice.event;
 
 import faang.school.notificationservice.enums.RequestStatus;
 import faang.school.notificationservice.enums.RequestType;
+import lombok.Builder;
 import lombok.NonNull;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+@Builder
 public record RequestEventEvent(
         @NonNull
         UUID id,
