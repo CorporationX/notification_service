@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class RequestEventEventMessageBuilderTest {
+public class RequestEventEventMessageBuilderTest {
 
     @Mock
     private MessageSource messageSource;
@@ -46,7 +46,7 @@ class RequestEventEventMessageBuilderTest {
     private final LocalDateTime timestamp = LocalDateTime.now();
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         userDto = UserDto.builder().username("testUser").build();
 
         eventTodo = getTestRequestEventEvent(RequestStatus.TODO);
@@ -58,7 +58,7 @@ class RequestEventEventMessageBuilderTest {
     }
 
     @Test
-    void testBuildMessage_shouldReturnCreatedMessage_whenStatusIsTodo_() {
+    public void testBuildMessage_shouldReturnCreatedMessage_whenStatusIsTodo_() {
         // Arrange
         var expectedMessage = "Created message";
         var expectedArgs = new Object[]{userDto.getUsername(), eventTodo.id(), eventTodo.timestamp()};
@@ -74,7 +74,7 @@ class RequestEventEventMessageBuilderTest {
     }
 
     @Test
-    void testBuildMessage_shouldReturnReadyMessage_whenStatusIsReady_() {
+    public void testBuildMessage_shouldReturnReadyMessage_whenStatusIsReady_() {
         // Arrange
         var expectedMessage = "Ready message";
         var expectedArgs = new Object[]{userDto.getUsername(), eventReady.id(), eventReady.timestamp()};
@@ -90,7 +90,7 @@ class RequestEventEventMessageBuilderTest {
     }
 
     @Test
-    void testBuildMessage_shouldReturnDoneMessage_whenStatusIsDone() {
+    public void testBuildMessage_shouldReturnDoneMessage_whenStatusIsDone() {
         // Arrange
         var expectedMessage = "Done message";
         var expectedArgs = new Object[]{userDto.getUsername(), eventDone.id(), eventDone.timestamp()};
@@ -106,7 +106,7 @@ class RequestEventEventMessageBuilderTest {
     }
 
     @Test
-    void testBuildMessage_shouldReturnCancelledMessage_whenStatusIsCancelled() {
+    public void testBuildMessage_shouldReturnCancelledMessage_whenStatusIsCancelled() {
         // Arrange
         var expectedMessage = "Cancelled message";
         var expectedArgs = new Object[]{userDto.getUsername(), eventCancelled.id(), eventCancelled.timestamp()};
@@ -122,7 +122,7 @@ class RequestEventEventMessageBuilderTest {
     }
 
     @Test
-    void testBuildMessage_throwUserNotFoundException_whenUserServiceThrowsException() {
+    public void testBuildMessage_throwUserNotFoundException_whenUserServiceThrowsException() {
         // Arrange
         when(userServiceClient.getUser(anyLong())).thenThrow(new RuntimeException("Service unavailable"));
 
