@@ -24,7 +24,7 @@ public class AchievementEventListener extends AbstractListener<AchievementEventD
     }
 
     @KafkaListener(topics = "writer_achieved_topic", groupId = "not-service")
-    public void handel(AchievementEventDto event) {
+    public void handle(AchievementEventDto event) {
         log.info("Start handle achievement event {}", event);
         sendNotification(event.getUserId(), getMessage(event, Locale.ENGLISH));
     }
