@@ -8,12 +8,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class HashtagNotificationTopicProperties {
 
-    @Value("${spring.kafka.topics.hashtag-notification.name}")
+    @Value("${spring.data.kafka.topic.hashtag-notification.name}")
     private String name;
 
-    @Value("${spring.kafka.topics.hashtag-notification.partitions}")
+    @Value("${spring.data.kafka.topic.hashtag-notification.partitions}")
     private int partitions;
 
-    @Value("${spring.kafka.topics.hashtag-notification.replicas}")
+    @Value("${spring.data.kafka.topic.hashtag-notification.replicas}")
     private int replicas;
 }

@@ -8,15 +8,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class KafkaProperties {
 
-    @Value("${spring.kafka.bootstrap-servers}")
+    @Value("${spring.data.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value("${spring.kafka.consumer.group-id}")
+    @Value("${spring.data.kafka.consumer.group-id}")
     private String groupId;
 
-    @Value("${spring.kafka.consumer.auto-offset-reset}")
+    @Value("${spring.data.kafka.consumer.auto-offset-reset}")
     private String autoOffsetReset;
 
-    @Value("${spring.kafka.producer.acks}")
+    @Value("${spring.data.kafka.producer.acks}")
     private String acks;
 }

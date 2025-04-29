@@ -14,6 +14,16 @@ spring:
       group-id: notification-group
       topic:
         comment: comment_topic
+        hashtag-notification:
+          name: "hashtag-notification"
+          partitions: 3
+          replicas: 1
+      consumer:
+        group-id: notification-group
+        auto-offset-reset: earliest
+      producer:
+        acks: all
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
@@ -49,19 +59,6 @@ spring:
 
   messages:
     basename: messages
-
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: notification-group
-      auto-offset-reset: earliest
-    producer:
-      acks: "1"
-    topics:
-      hashtag-notification:
-        name: "hashtag-notification"
-        partitions: 3
-        replicas: 1
 
   profiles:
     active: local
