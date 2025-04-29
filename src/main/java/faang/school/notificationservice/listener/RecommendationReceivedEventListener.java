@@ -6,6 +6,7 @@ import faang.school.notificationservice.dto.RecommendationReceivedEvent;
 import faang.school.notificationservice.exception.EventReadException;
 import faang.school.notificationservice.exception.ExceptionMessage;
 import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.repository.NotificationEventLogRepository;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -23,9 +24,10 @@ public class RecommendationReceivedEventListener
     public RecommendationReceivedEventListener(ObjectMapper objectMapper,
                                                UserServiceClient userServiceClient,
                                                List<NotificationService> notificationServices,
-                                               List<MessageBuilder<RecommendationReceivedEvent>> messageBuilders
+                                               List<MessageBuilder<RecommendationReceivedEvent>> messageBuilders,
+                                               NotificationEventLogRepository repository
     ) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+        super(objectMapper, userServiceClient, notificationServices, messageBuilders, repository);
     }
 
     @Override
