@@ -37,7 +37,7 @@
         <logger name="io.netty.buffer" level="WARN"/>
         <logger name="io.netty.channel" level="WARN"/>
         <logger name="org.hibernate.type.descriptor.sql" level="OFF"/>
-        <logger name="org.apache" level="warn"/>
+        <logger name="org.apache" level="WARN" />
     </springProfile>
 
     <springProfile name="!local">
