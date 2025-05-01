@@ -25,6 +25,12 @@ spring:
           updated-topic: "premium-updated-topic"
           payment-failed-topic: "premium-payment-failed-topic"
 
+        request:
+          block-account-topic: "block-account-notification-topic"
+          close-account-topic: "close-account-notification-topic"
+          create-account-topic: "create-account-notification-topic"
+          transfer-funds-topic: "transfer-funds-notification-topic"
+
       groups:
         premium:
           premium-bought-group: "premium-bought-group"
@@ -33,6 +39,8 @@ spring:
           auto-renew-failed-group: "premium-auto-renew-failed-group"
           updated-group: "premium-updated-group"
           payment-failed-group: "premium-payment-failed-group"
+
+        request-notification-group: "request-notification-group"
 
     listener:
       ack-mode: "manual"
