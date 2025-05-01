@@ -37,7 +37,7 @@ public abstract class AbstractEventListener<T> implements MessageListener, Redis
 
     protected String getMessage(T event, Locale userLocale) {
         return messageBuilders.stream()
-                .filter(messageBuilder -> messageBuilder.getInstance() == event.getClass())
+                .filter(messageBuilder -> messageBuilder.supportsEventType() == event.getClass())
                 .findFirst()
                 .map(messageBuilder -> messageBuilder.buildMessage(event, userLocale))
                 .orElseThrow(() ->

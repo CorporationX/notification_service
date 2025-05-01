@@ -108,11 +108,11 @@ class AbstractEventListenerTest {
         String message = "Message";
         long invitedId = 1L;
         EventForTest event = new EventForTest(invitedId, eventName);
-        when(messageBuilder.getInstance()).thenReturn(EventForTest.class);
+        when(messageBuilder.supportsEventType()).thenAnswer(invocation -> EventForTest.class);
         when(messageBuilder.buildMessage(event, locale)).thenReturn(message);
 
         String resultMessage = eventListener.getMessage(event, locale);
-        verify(messageBuilder, times(1)).getInstance();
+        verify(messageBuilder, times(1)).supportsEventType();
         verify(messageBuilder, times(1)).buildMessage(event, locale);
         assertEquals(message, resultMessage);
     }
@@ -124,7 +124,7 @@ class AbstractEventListenerTest {
         long invitedId = 1L;
         EventForTest event = new EventForTest(invitedId, eventName);
 
-        when(messageBuilder.getInstance()).thenReturn(null);
+        when(messageBuilder.supportsEventType()).thenReturn(null);
 
         assertThrows(MessageBuilderNotFoundException.class, () ->
                 eventListener.getMessage(event, locale));
