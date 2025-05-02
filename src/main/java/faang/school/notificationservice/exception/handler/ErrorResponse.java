@@ -19,7 +19,7 @@ public class ErrorResponse {
     private LocalDateTime timestamp;
 
     private String url;
-    private int status;
+    private Integer status;
     private String message;
     private List<Violation> violations;
 
