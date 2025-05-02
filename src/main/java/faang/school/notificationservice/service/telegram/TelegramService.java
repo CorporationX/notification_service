@@ -14,6 +14,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -50,6 +52,11 @@ public class TelegramService implements NotificationService {
             log.error("Failed to send Telegram message", e);
             throw new NotificationException("Failed to send Telegram message");
         }
+    }
+
+    @Override
+    public void sendGroup(List<UserDto> users, String message) {
+
     }
 
     @Override

@@ -20,6 +20,7 @@ spring:
         achievement: achievement_channel
         like: like_channel
         not-like: not_like_channel
+        transfer: transfer_channel
 
   mail:
     host: smtp.gmail.com
@@ -78,4 +79,3 @@ executor:
     thread-core-size: 8
     max-pool-size: 16
     queue-capacity: 50
-

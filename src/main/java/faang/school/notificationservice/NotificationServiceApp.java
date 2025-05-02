@@ -1,6 +1,7 @@
 package faang.school.notificationservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.config.redis.request.RedisRequestProperties;
 import faang.school.notificationservice.properties.TelegramBotProperties;
 import faang.school.notificationservice.config.email.MailExecutorProperties;
 import faang.school.notificationservice.config.email.MailProperties;
@@ -18,8 +19,13 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableFeignClients("faang.school.notificationservice.client")
 @EnableAsync
 @EnableRetry
-@EnableConfigurationProperties({MailProperties.class, MailExecutorProperties.class, TelegramBotProperties.class})
+@EnableConfigurationProperties({
+        MailProperties.class,
+        MailExecutorProperties.class,
+        TelegramBotProperties.class,
+        RedisRequestProperties.class})
 public class NotificationServiceApp {
+
     public static void main(String[] args) {
         new SpringApplicationBuilder(NotificationServiceApp.class)
                 .bannerMode(Banner.Mode.OFF)
