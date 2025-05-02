@@ -16,8 +16,7 @@ public class LikeEventListener extends AbstractLikeEventListener {
     public LikeEventListener(ObjectMapper objectMapper,
                              UserServiceClient userServiceClient,
                              List<NotificationService> notificationServices,
-                             MessageBuilder<LikeEvent> likeMessageBuilder) {
-        super(objectMapper, userServiceClient, notificationServices,
-                Map.of(LikeEvent.class, likeMessageBuilder));
+                             Map<Class<?>, MessageBuilder<?>> messageBuilderMap) {
+        super(objectMapper, userServiceClient, notificationServices, messageBuilderMap);
     }
 }

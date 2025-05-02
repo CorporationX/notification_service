@@ -3,6 +3,18 @@ spring:
     redis:
       port: 6379
       host: localhost
+      jedis:
+        pool:
+          max-idle: 5
+          max-active: 10
+          min-idle: 1
+          max-wait: 1000
+      listener:
+        thread-pool:
+          core-size: 4
+          max-size: 8
+          queue-capacity: 100
+          thread-name-prefix: redis-listener-
       channel:
         follower: follower_channel
         achievement: achievement_channel

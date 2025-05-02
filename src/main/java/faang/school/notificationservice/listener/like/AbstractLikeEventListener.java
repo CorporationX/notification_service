@@ -29,7 +29,6 @@ public abstract class AbstractLikeEventListener extends AbstractEventListener<Li
         try {
             LikeEvent likeEvent = objectMapper.readValue(message.getBody(), LikeEvent.class);
             String text = getMessage(likeEvent, Locale.getDefault());
-
             sendNotification(likeEvent.getAuthorPostId(), text);
         } catch (IOException e) {
             log.error("Failed to deserialize LikeEvent from Redis message: {}", new String(message.getBody()), e);
