@@ -1,6 +1,5 @@
 package faang.school.notificationservice.config.redis.request;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.listener.TransferEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

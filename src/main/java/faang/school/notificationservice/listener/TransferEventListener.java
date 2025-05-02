@@ -5,6 +5,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.event.TransferEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -28,16 +29,16 @@ public class TransferEventListener extends AbstractEventListener<TransferEvent> 
     }
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
-        handleEvent(message, TransferEvent.class, event -> {
+    public void onMessage(@NonNull Message message, byte[] pattern) {
+        handleEvent(message, event -> {
             String eventMessage = getMessage(event, Locale.ENGLISH);
             sendNotification(event.getSenderId(), eventMessage);
         });
     }
 
-    protected void handleEvent(Message redisMessage, Class<TransferEvent> clazz, Consumer<TransferEvent> consumer) {
+    protected void handleEvent(Message redisMessage, Consumer<TransferEvent> consumer) {
         try {
-            TransferEvent event = objectMapper.readValue(redisMessage.getBody(), clazz);
+            TransferEvent event = objectMapper.readValue(redisMessage.getBody(), TransferEvent.class);
             log.info("Received TransferEvent: {}", event);
             consumer.accept(event);
         } catch (IOException e) {
