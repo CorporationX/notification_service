@@ -53,3 +53,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Ignore SMTP-properties file with personal settings
+.env
