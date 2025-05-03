@@ -36,11 +36,6 @@ public class RedisEventListenerConfig {
     }
 
     @Bean
-    MessageListenerAdapter notLikeListener(DeleteLikeEventListener notLikeEventListener) {
-        return new MessageListenerAdapter(notLikeEventListener, "onMessage");
-    }
-
-    @Bean
     public TaskExecutor redisListenerTaskExecutor(RedisThreadPoolProperties props) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(props.getCoreSize());

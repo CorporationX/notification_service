@@ -6,12 +6,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "redis.listener.thread-pool")
+@ConfigurationProperties(prefix = "spring.data.redis.listener.thread-pool")
 @Getter @Setter
 public class RedisThreadPoolProperties {
 
-    private int coreSize;
-    private int maxSize;
-    private int queueCapacity;
+    private Integer coreSize;
+    private Integer maxSize;
+    private Integer queueCapacity;
     private String threadNamePrefix;
 }
