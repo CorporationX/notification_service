@@ -7,7 +7,7 @@ import java.util.Locale;
 public class MessageBuilderForTest implements MessageBuilder<EventForTest> {
 
     @Override
-    public Class<EventForTest> getInstance() {
+    public Class<?> supportsEventType() {
         return EventForTest.class;
     }
 
