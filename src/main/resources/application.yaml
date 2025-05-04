@@ -10,25 +10,18 @@ spring:
     bootstrap-servers: localhost:9092
     consumer:
       group-id: notification-group
-      auto-offset-reset: earliest
-    topics:
-      notification: "notification-topic"
-
-  kafka:
-    consumer:
       enable-auto-commit: false
       isolation-level: "read-committed"
       auto.offset.reset: "latest"
-
-      topics:
-        premium:
-          bought-topic: "premium-bought-topic"
-          expired-topic: "premium-expired-topic"
-          expire-soon-topic: "premium-expire-soon-topic"
-          auto-renew-failed-topic: "premium-auto-renew-failed-topic"
-          updated-topic: "premium-updated-topic"
-          payment-failed-topic: "premium-payment-failed-topic"
-
+    topics:
+      notification: "notification-topic"
+      premium:
+        bought-topic: "premium-bought-topic"
+        expired-topic: "premium-expired-topic"
+        expire-soon-topic: "premium-expire-soon-topic"
+        auto-renew-failed-topic: "premium-auto-renew-failed-topic"
+        updated-topic: "premium-updated-topic"
+        payment-failed-topic: "premium-payment-failed-topic"
       groups:
         premium:
           premium-bought-group: "premium-bought-group"
@@ -100,4 +93,3 @@ telegrambots:
   bots:
     - username: ${TELEGRAM_BOT_USERNAME}
       token: ${TELEGRAM_BOT_TOKEN}
-      path: ""
