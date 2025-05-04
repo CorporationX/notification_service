@@ -9,6 +9,7 @@ import feign.FeignException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.connection.MessageListener;
 
 import java.util.List;
 import java.util.Locale;
@@ -16,15 +17,15 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
-public abstract class AbstractEventListener<T> {
+public abstract class AbstractEventListener<T> implements MessageListener {
 
     public static final String FAILED_TO_FETCH_USER_WITH_ID = "Failed to fetch user with id {}: {}";
     public static final String NO_MESSAGE_BUILDER_FOUND = "No MessageBuilder found for: ";
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userServiceClient;
-    protected final Map<Class<?>, MessageBuilder<?>> messageBuilderMap;
     protected final List<NotificationService> notificationServices;
-    
+    protected final Map<Class<?>, MessageBuilder<?>> messageBuilderMap;
+
     protected String getMessage(@NonNull T event, Locale locale) {
         MessageBuilder<T> builder = (MessageBuilder<T>) messageBuilderMap.get(event.getClass());
         if (builder == null) {
