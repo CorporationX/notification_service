@@ -11,7 +11,9 @@ spring:
         achievement: achievement_channel
 
   kafka:
+    bootstrap-servers: localhost:9092
     consumer:
+      group-id: notification-group
       enable-auto-commit: false
       isolation-level: "read-committed"
       auto.offset.reset: "latest"
@@ -59,6 +61,11 @@ spring:
   messages:
     basename: messages
 
+redis:
+  channel:
+    follower: follower_channel
+    achievement: achievement_channel
+
 server:
   port: 8083
 
@@ -81,6 +88,16 @@ smsc:
 project-service:
   host: localhost
   port: 8082
+
 user-service:
   host: localhost
   port: 8080
+
+post-service:
+  host: localhost
+  port: 8081
+
+telegrambots:
+  bots:
+    - username: ${TELEGRAM_BOT_USERNAME}
+      token: ${TELEGRAM_BOT_TOKEN}
