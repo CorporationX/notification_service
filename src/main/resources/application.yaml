@@ -9,19 +9,18 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
-      group-id: notification-group
       enable-auto-commit: false
       isolation-level: "read-committed"
       auto.offset.reset: "latest"
-    topics:
-      notification: "notification-topic"
-      premium:
-        bought-topic: "premium-bought-topic"
-        expired-topic: "premium-expired-topic"
-        expire-soon-topic: "premium-expire-soon-topic"
-        auto-renew-failed-topic: "premium-auto-renew-failed-topic"
-        updated-topic: "premium-updated-topic"
-        payment-failed-topic: "premium-payment-failed-topic"
+      topics:
+        notification-topic: "notification-topic"
+        premium:
+          bought-topic: "premium-bought-topic"
+          expired-topic: "premium-expired-topic"
+          expire-soon-topic: "premium-expire-soon-topic"
+          auto-renew-failed-topic: "premium-auto-renew-failed-topic"
+          updated-topic: "premium-updated-topic"
+          payment-failed-topic: "premium-payment-failed-topic"
       groups:
         premium:
           premium-bought-group: "premium-bought-group"
@@ -30,6 +29,7 @@ spring:
           auto-renew-failed-group: "premium-auto-renew-failed-group"
           updated-group: "premium-updated-group"
           payment-failed-group: "premium-payment-failed-group"
+        notification-group: "notification-group"
 
     listener:
       ack-mode: "manual"

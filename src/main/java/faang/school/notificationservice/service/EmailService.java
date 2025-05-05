@@ -18,7 +18,7 @@ public class EmailService implements NotificationService {
 
     private final JavaMailSender javaMailSender;
 
-    @Value("${mail.from}")
+    @Value("${spring.mail.from}")
     private String from;
 
     @Override
