@@ -110,7 +110,7 @@ public class AbstractEvenListenerTest {
 
     @Test
     public void testSendNotification_success() {
-        UserDto userDto = new UserDto(1L, "name", "test@mail.test", "phone", TELEGRAM);
+        UserDto userDto = new UserDto(1L, "name", "test@mail.test", "phone", TELEGRAM, Locale.ENGLISH);
         when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(TELEGRAM);
 
@@ -121,7 +121,7 @@ public class AbstractEvenListenerTest {
 
     @Test
     public void testSendNotification_invalidPreferredContact() {
-        UserDto userDto = new UserDto(2L, "name", "test@mail.test", "phone", PHONE);
+        UserDto userDto = new UserDto(2L, "name", "test@mail.test", "phone", PHONE, Locale.ENGLISH);
         when(userServiceClient.getUser(anyLong())).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(TELEGRAM);
 

@@ -26,6 +26,8 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     implementation("org.springframework.kafka:spring-kafka")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.telegram:telegrambots-spring-boot-starter:6.9.0")
 
     /**
      * Database
@@ -45,6 +47,9 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
     implementation("com.vonage:client:7.3.0")
+    implementation("org.apache.kafka:kafka-clients")
+    implementation("org.telegram:telegrambots:6.9.0")
+    implementation("io.github.cdimascio:dotenv-java:3.0.0")
 
     /**
      * Test containers
@@ -52,6 +57,7 @@ dependencies {
     implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.springframework.kafka:spring-kafka-test:3.0.6")
 
     /**
      * Tests
