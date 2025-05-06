@@ -1,22 +1,20 @@
 package faang.school.notificationservice.config.properties;
 
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@Getter
-@Configuration
-public class KafkaProperties {
+@ConfigurationProperties(prefix = "spring.data.kafka")
+public record KafkaProperties(
+        String bootstrapServers,
+        Consumer consumer,
+        Producer producer
+) {
+    public record Consumer(
+            String groupId,
+            String autoOffsetReset
+    ) {}
 
-    @Value("${spring.data.kafka.bootstrap-servers}")
-    private String bootstrapServers;
+    public record Producer(
+            String acks
+    ) {}
 
-    @Value("${spring.data.kafka.consumer.group-id}")
-    private String groupId;
-
-    @Value("${spring.data.kafka.consumer.auto-offset-reset}")
-    private String autoOffsetReset;
-
-    @Value("${spring.data.kafka.producer.acks}")
-    private String acks;
 }

@@ -15,9 +15,9 @@ public class KafkaTopicsConfig {
 
     @Bean
     public NewTopic hashtagNotificationTopic() {
-        return createTopic(hashtagNotificationTopic.getName(),
-                hashtagNotificationTopic.getPartitions(),
-                hashtagNotificationTopic.getReplicas());
+        return createTopic(hashtagNotificationTopic.name(),
+                hashtagNotificationTopic.partitions(),
+                hashtagNotificationTopic.replicas());
     }
 
     private NewTopic createTopic(String name, int partitions, int replicas) {

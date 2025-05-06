@@ -28,8 +28,8 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> config = new HashMap<>();
-        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getBootstrapServers());
-        config.put(ProducerConfig.ACKS_CONFIG, kafkaProperties.getAcks());
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.bootstrapServers());
+        config.put(ProducerConfig.ACKS_CONFIG, kafkaProperties.producer().acks());
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         return new DefaultKafkaProducerFactory<>(config);
@@ -43,9 +43,9 @@ public class KafkaConfig {
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getBootstrapServers());
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaProperties.getGroupId());
-        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, kafkaProperties.getAutoOffsetReset());
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.bootstrapServers());
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaProperties.consumer().groupId());
+        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, kafkaProperties.consumer().autoOffsetReset());
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         return new DefaultKafkaConsumerFactory<>(config);
