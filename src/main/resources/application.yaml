@@ -4,8 +4,8 @@ spring:
 
   data:
     redis:
-      port: 6379
       host: localhost
+      port: 6379
       channel:
         follower: follower_channel
         achievement: achievement_channel
@@ -13,23 +13,20 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
-      group-id: notification-group
       enable-auto-commit: false
       isolation-level: "read-committed"
       auto.offset.reset: "latest"
-
-      topics:
-        premium:
-          bought-topic: "premium-bought-topic"
-          expired-topic: "premium-expired-topic"
-          expire-soon-topic: "premium-expire-soon-topic"
-          auto-renew-failed-topic: "premium-auto-renew-failed-topic"
-          updated-topic: "premium-updated-topic"
-          payment-failed-topic: "premium-payment-failed-topic"
+    topics:
+      notification: "notification-topic"
+      premium:
+        bought-topic: "premium-bought-topic"
+        expired-topic: "premium-expired-topic"
+        expire-soon-topic: "premium-expire-soon-topic"
+        auto-renew-failed-topic: "premium-auto-renew-failed-topic"
+        updated-topic: "premium-updated-topic"
+        payment-failed-topic: "premium-payment-failed-topic"
         notification:
           post-like-topic: post-like-event-topic
-          post-like-group-id: post-like-group
-
       groups:
         premium:
           premium-bought-group: "premium-bought-group"
@@ -38,6 +35,10 @@ spring:
           auto-renew-failed-group: "premium-auto-renew-failed-group"
           updated-group: "premium-updated-group"
           payment-failed-group: "premium-payment-failed-group"
+        notification-group: "notification-group"
+        notification:
+          post-like-group-id: post-like-group
+
 
     listener:
       ack-mode: "manual"
@@ -74,7 +75,7 @@ logging:
     root: info
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
-vonage: #https://dashboard.nexmo.com/getting-started/sms
+vonage: # https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
