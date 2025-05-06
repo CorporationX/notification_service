@@ -16,17 +16,17 @@ spring:
       enable-auto-commit: false
       isolation-level: "read-committed"
       auto.offset.reset: "latest"
-    topics:
-      notification: "notification-topic"
-      premium:
-        bought-topic: "premium-bought-topic"
-        expired-topic: "premium-expired-topic"
-        expire-soon-topic: "premium-expire-soon-topic"
-        auto-renew-failed-topic: "premium-auto-renew-failed-topic"
-        updated-topic: "premium-updated-topic"
-        payment-failed-topic: "premium-payment-failed-topic"
+      topics:
+        premium:
+          bought-topic: "premium-bought-topic"
+          expired-topic: "premium-expired-topic"
+          expire-soon-topic: "premium-expire-soon-topic"
+          auto-renew-failed-topic: "premium-auto-renew-failed-topic"
+          updated-topic: "premium-updated-topic"
+          payment-failed-topic: "premium-payment-failed-topic"
         notification:
-          post-like-topic: post-like-event-topic
+          notification-topic: "notification-topic"
+          post-like-topic: "post-like-event-topic"
       groups:
         premium:
           premium-bought-group: "premium-bought-group"
@@ -35,9 +35,9 @@ spring:
           auto-renew-failed-group: "premium-auto-renew-failed-group"
           updated-group: "premium-updated-group"
           payment-failed-group: "premium-payment-failed-group"
-        notification-group: "notification-group"
         notification:
-          post-like-group-id: post-like-group
+          notification-group: "notification-group"
+          post-like-group-id: "post-like-group"
 
 
     listener:

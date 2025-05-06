@@ -24,8 +24,8 @@ public class PostLikeEventListener extends AbstractEventListener {
         super(objectMapper, userServiceClient, notificationServices, messageBuilders);
     }
 
-    @KafkaListener(topics = "${spring.kafka.topics.like.notification.post-like-topic}",
-            groupId = "${spring.kafka.groups.notification.post-like-group-id}")
+    @KafkaListener(topics = "${spring.kafka.consumer.topics.notification.post-like-topic}",
+            groupId = "${spring.kafka.consumer.groups.notification.post-like-group-id}")
     public void listen(String message) {
         handleEvent(message, PostLikeEvent.class, event -> {
             PostLikeEvent likeEvent = (PostLikeEvent) event;
