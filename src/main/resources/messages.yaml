@@ -6,3 +6,9 @@ messages:
     premium-renew-failed: "We couldn’t auto-renew your Premium for %s months. Subscription ended on %s."
     premium-updated: "Your Premium subscription for %s months has been updated. New period: %s to %s."
     premium-payment-failed: "We couldn’t process your payment for Premium for %s months. Please try again."
+
+  request:
+    block-account: "Hello user, %d, your request to block account has been processed. Status: %s."
+    close-account: "Hello user, %d, your request to close account has been processed. Status: %s."
+    create-account: "Hello user, %d, your create-account request has been processed. Status: %s."
+    transfer-funds: "Hello user, %d, your transfer-funds request has been processed. Status: %s."

@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.sms;
+package faang.school.notificationservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
