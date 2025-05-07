@@ -4,18 +4,18 @@ spring:
 
   data:
     redis:
-      port: 6379
       host: localhost
+      port: 6379
       channel:
         follower: follower_channel
         achievement: achievement_channel
 
   kafka:
+    bootstrap-servers: localhost:9092
     consumer:
       enable-auto-commit: false
       isolation-level: "read-committed"
       auto.offset.reset: "latest"
-
       topics:
         premium:
           bought-topic: "premium-bought-topic"
@@ -31,6 +31,10 @@ spring:
           create-account-topic: "create-account-notification-topic"
           transfer-funds-topic: "transfer-funds-notification-topic"
 
+        notification:
+          notification-topic: "notification-topic"
+          post-like-topic: "post-like-event-topic"
+
       groups:
         premium:
           premium-bought-group: "premium-bought-group"
@@ -39,6 +43,10 @@ spring:
           auto-renew-failed-group: "premium-auto-renew-failed-group"
           updated-group: "premium-updated-group"
           payment-failed-group: "premium-payment-failed-group"
+        notification:
+          notification-group: "notification-group"
+          post-like-group-id: "post-like-group"
+
 
         request-notification-group: "request-notification-group"
 
@@ -64,6 +72,11 @@ spring:
   messages:
     basename: messages
 
+redis:
+  channel:
+    follower: follower_channel
+    achievement: achievement_channel
+
 server:
   port: 8083
 
@@ -72,7 +85,7 @@ logging:
     root: info
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
-vonage: #https://dashboard.nexmo.com/getting-started/sms
+vonage: # https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
@@ -86,6 +99,16 @@ smsc:
 project-service:
   host: localhost
   port: 8082
+
 user-service:
   host: localhost
   port: 8080
+
+post-service:
+  host: localhost
+  port: 8081
+
+telegrambots:
+  bots:
+    - username: ${TELEGRAM_BOT_USERNAME}
+      token: ${TELEGRAM_BOT_TOKEN}
