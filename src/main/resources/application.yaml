@@ -6,6 +6,10 @@ spring:
     redis:
       host: localhost
       port: 6379
+      channel:
+        follower: follower_channel
+        achievement: achievement_channel
+
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -13,7 +17,6 @@ spring:
       isolation-level: "read-committed"
       auto.offset.reset: "latest"
       topics:
-        notification-topic: "notification-topic"
         premium:
           bought-topic: "premium-bought-topic"
           expired-topic: "premium-expired-topic"
@@ -21,6 +24,9 @@ spring:
           auto-renew-failed-topic: "premium-auto-renew-failed-topic"
           updated-topic: "premium-updated-topic"
           payment-failed-topic: "premium-payment-failed-topic"
+        notification:
+          notification-topic: "notification-topic"
+          post-like-topic: "post-like-event-topic"
       groups:
         premium:
           premium-bought-group: "premium-bought-group"
@@ -29,7 +35,10 @@ spring:
           auto-renew-failed-group: "premium-auto-renew-failed-group"
           updated-group: "premium-updated-group"
           payment-failed-group: "premium-payment-failed-group"
-        notification-group: "notification-group"
+        notification:
+          notification-group: "notification-group"
+          post-like-group-id: "post-like-group"
+
 
     listener:
       ack-mode: "manual"

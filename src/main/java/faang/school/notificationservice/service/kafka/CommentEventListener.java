@@ -30,8 +30,8 @@ public class CommentEventListener extends AbstractEventListener<CommentEvent> {
     }
 
 
-    @KafkaListener(topics = "${spring.kafka.consumer.topics.notification-topic}",
-            groupId = "${spring.kafka.consumer.groups.notification-group}")
+    @KafkaListener(topics = "${spring.kafka.consumer.topics.notification.notification-topic}",
+            groupId = "${spring.kafka.consumer.groups.notification.notification-group}")
     public void listen(ConsumerRecord<String, String> record) {
         handleEvent(record, CommentEvent.class, event -> {
             PostResponseDto post = postServiceClient.getPostById(event.getPostId());
