@@ -107,3 +107,79 @@ RESTful приложения калькулятор с единственным 
 * Dockerfile, который подключается к сети запущенной postgres в docker-compose
 * Redis connectivity
 * ...
+
+## 🤖 Подключение Telegram-бота к `notification-service`
+
+### 📆 Шаг 1: Установи зависимости
+
+Убедись, что у тебя в `build.gradle` (в Kotlin DSL или Groovy) добавлены:
+
+```kotlin
+implementation("org.telegram:telegrambots-spring-boot-starter:6.5.0") // или актуальная версия
+```
+---
+
+### 🔐 Шаг 2: Настрой переменные окружения
+
+Создай файл `.env` в корне проекта или настрой переменные в IDE/CI:
+
+```
+TELEGRAM_BOT_USERNAME=your_bot_username
+TELEGRAM_BOT_TOKEN=your_bot_token
+```
+
+Пример:
+
+```env
+TELEGRAM_BOT_USERNAME=my_awesome_bot
+TELEGRAM_BOT_TOKEN=123456789:AAG-sample-token
+```
+
+---
+
+### 🧐 Шаг 3: Проверь `application.yml`
+
+```yaml
+telegrambots:
+  bots:
+    - username: ${TELEGRAM_BOT_USERNAME}
+      token: ${TELEGRAM_BOT_TOKEN}
+      path: ""
+```
+
+> Если используешь long polling, `path` можно оставить пустым или удалить его.
+
+---
+
+### 🛠️ Шаг 4: Реализация TelegramService
+
+Класс `TelegramService` расширяет `TelegramLongPollingBot` и реализует отправку уведомлений:
+
+```java
+@Override
+public void send(UserDto user, String message) {
+    sendMessage(String.valueOf(user.getId()), message);
+}
+```
+
+> Если нужно, можно расширить `onUpdateReceived` для обработки входящих сообщений.
+
+---
+
+### 🚀 Шаг 5: Запуск приложения
+
+В `NotificationServiceApp.java` используется `dotenv` для загрузки `.env`:
+
+```java
+Dotenv dotenv = Dotenv.load();
+dotenv.entries().forEach(entry ->
+        System.setProperty(entry.getKey(), entry.getValue()));
+```
+
+Запусти NotificationServiceApp и бот будет готов к работе.
+
+---
+
+### ✅ Готово!
+
+Теперь Telegram-бот может отправлять уведомления пользователям, у которых `PreferredContact = TELEGRAM`.
