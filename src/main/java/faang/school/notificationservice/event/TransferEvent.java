@@ -2,11 +2,11 @@ package faang.school.notificationservice.event;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Validated

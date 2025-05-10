@@ -8,7 +8,5 @@ public interface NotificationService {
 
     void send(UserDto user, String message);
 
-    void sendGroup(List<UserDto> users, String message);
-
     UserDto.PreferredContact getPreferredContact();
 }

@@ -55,11 +55,6 @@ public class TelegramService implements NotificationService {
     }
 
     @Override
-    public void sendGroup(List<UserDto> users, String message) {
-
-    }
-
-    @Override
     public UserDto.PreferredContact getPreferredContact() {
         return UserDto.PreferredContact.TELEGRAM;
     }
