@@ -30,14 +30,13 @@ spring:
     from: vcpspto@gmail.com
     replyTo: vcpspto@gmail.com
     properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+        connection-timeout: 5000
+        timeout: 5000
+        write-timeout: 5000
     retry:
       max-attempts: 3
       backoff: 1000

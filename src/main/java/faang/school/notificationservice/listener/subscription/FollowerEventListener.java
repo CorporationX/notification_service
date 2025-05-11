@@ -24,12 +24,12 @@ public class FollowerEventListener extends AbstractSubscriptionListener {
     }
 
     @Override
-    protected String buildMessage(SubscriptionEventDto eventDto, Locale locale) {
+    public String buildMessage(SubscriptionEventDto eventDto, Locale locale) {
         return messageBuilder.buildMessage(eventDto, locale);
     }
 
     @Override
-    protected long getUserId(SubscriptionEventDto eventDto) {
+    public long getUserId(SubscriptionEventDto eventDto) {
         return eventDto.getFolloweeId();
     }
 }

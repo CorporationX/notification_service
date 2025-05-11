@@ -29,33 +29,36 @@ public class MailProperties {
     @NotBlank
     private String replyTo;
 
-    private Properties properties = new Properties();
+    @NotNull
+    private Properties properties;
 
     @Data
     public static class Properties {
 
-        private Mail smtp = new Mail();
+        @NotNull
+        private Smtp smtp;
 
         @Data
-        public static class Mail {
+        public static class Smtp {
 
             private boolean auth;
 
-            private Starttls starttls = new Starttls();
+            @NotNull
+            private Starttls starttls;
 
             @NotNull
-            private Integer connectiontimeout;
+            private Integer connectionTimeout;
 
             @NotNull
             private Integer timeout;
 
             @NotNull
-            private Integer writetimeout;
+            private Integer writeTimeout;
 
             @Data
             public static class Starttls {
 
-                private boolean enable = true;
+                private boolean enable;
             }
         }
     }
