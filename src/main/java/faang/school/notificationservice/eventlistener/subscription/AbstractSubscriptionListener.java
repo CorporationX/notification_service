@@ -35,7 +35,7 @@ public abstract class AbstractSubscriptionListener implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
         String messageBody = new String(message.getBody());
         if (messageBody.isEmpty()) {
-            log.warn("Received empty message. Skipping processing.");
+            log.warn("Received empty message. Skipping processing");
             return;
         }
 
