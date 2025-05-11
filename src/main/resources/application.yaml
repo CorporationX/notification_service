@@ -24,6 +24,7 @@ spring:
 
   messages:
     basename: messages
+    encoding: UTF-8
 
 server:
   port: 8083
