@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.subscription.SubscriptionEventDto;
+import faang.school.notificationservice.listener.subscription.FollowerEventListener;
 import faang.school.notificationservice.messaging.subscription.FollowerMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;

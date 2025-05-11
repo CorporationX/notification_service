@@ -1,5 +1,6 @@
-package faang.school.notificationservice.eventlistener.subscription;
+package faang.school.notificationservice.listener.subscription;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
@@ -43,6 +44,10 @@ public abstract class AbstractSubscriptionListener implements MessageListener {
             SubscriptionEventDto eventDto = objectMapper.readValue(messageBody, SubscriptionEventDto.class);
             long userId = getUserId(eventDto);
             UserDto user = userServiceClient.getUser(userId);
+            if (user == null) {
+                log.warn("User with id {} not found. Skipping notification", userId);
+                return;
+            }
             if (user.getPreference() == null) {
                 log.warn("User {} has no preferred contact method set. Using EMAIL as default", userId);
                 user.setPreference(UserDto.PreferredContact.EMAIL);
@@ -57,8 +62,12 @@ public abstract class AbstractSubscriptionListener implements MessageListener {
                             () -> log.warn("No matching notification service for preferred contact: {}", user.getPreference())
                     );
 
-        } catch (Exception e) {
-            log.error("Error processing subscription event", e);
+        } catch (JsonProcessingException e) {
+            log.error("Failed to parse message body into SubscriptionEventDto: {}", messageBody, e);
+        } catch (NullPointerException e) {
+            log.error("Null pointer encountered while processing message: {}", messageBody, e);
+        } catch (RuntimeException e) {
+            log.error("Unexpected error occurred while processing subscription event", e);
         }
     }
 }

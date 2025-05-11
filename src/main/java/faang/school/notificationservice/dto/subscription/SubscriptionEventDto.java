@@ -18,5 +18,6 @@ public class SubscriptionEventDto {
     private Long followeeId;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime eventTime;
+    @Builder.Default
+    private LocalDateTime eventTime = LocalDateTime.now();
 }

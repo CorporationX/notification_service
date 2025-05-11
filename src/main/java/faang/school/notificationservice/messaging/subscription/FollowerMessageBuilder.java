@@ -6,12 +6,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class FollowerMessageBuilder extends AbstractSubscriptionMessageBuilder {
 
+    private static final String FOLLOW_CODE = "follow.message";
+
     public FollowerMessageBuilder(MessageSource messageSource) {
         super(messageSource);
     }
 
     @Override
     public String getMessageKey() {
-        return "follow.message";
+        return FOLLOW_CODE;
     }
 }

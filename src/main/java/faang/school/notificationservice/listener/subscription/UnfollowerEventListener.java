@@ -1,9 +1,9 @@
-package faang.school.notificationservice.eventlistener.subscription;
+package faang.school.notificationservice.listener.subscription;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.subscription.SubscriptionEventDto;
-import faang.school.notificationservice.messaging.subscription.FollowerMessageBuilder;
+import faang.school.notificationservice.messaging.subscription.UnfollowerMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.stereotype.Component;
 
@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.Locale;
 
 @Component
-public class FollowerEventListener extends AbstractSubscriptionListener {
+public class UnfollowerEventListener extends AbstractSubscriptionListener {
 
-    private final FollowerMessageBuilder messageBuilder;
+    private final UnfollowerMessageBuilder messageBuilder;
 
-    public FollowerEventListener(ObjectMapper objectMapper,
-                                 UserServiceClient userServiceClient,
-                                 List<NotificationService> notificationServices,
-                                 FollowerMessageBuilder messageBuilder) {
+    public UnfollowerEventListener(ObjectMapper objectMapper,
+                                   UserServiceClient userServiceClient,
+                                   List<NotificationService> notificationServices,
+                                   UnfollowerMessageBuilder messageBuilder) {
         super(objectMapper, userServiceClient, notificationServices);
         this.messageBuilder = messageBuilder;
     }
@@ -30,6 +30,6 @@ public class FollowerEventListener extends AbstractSubscriptionListener {
 
     @Override
     protected long getUserId(SubscriptionEventDto eventDto) {
-        return eventDto.getFolloweeId();
+        return eventDto.getFollowerId();
     }
 }
