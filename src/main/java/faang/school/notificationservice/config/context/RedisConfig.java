@@ -38,10 +38,10 @@ public class RedisConfig {
 
     @Bean
     public FollowEventListener followEventListener(
-            UserServiceClient userServiceClient,
             List<NotificationService> notifications,
+            UserServiceClient userServiceClient,
             MessageBuilder<FollowEventDto> messageBuilder) {
-        return new FollowEventListener(userServiceClient, notifications, messageBuilder);
+        return new FollowEventListener(notifications, userServiceClient, messageBuilder);
     }
 
     @Bean
