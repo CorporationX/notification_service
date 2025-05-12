@@ -1,5 +1,6 @@
 package faang.school.notificationservice.exception.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import faang.school.notificationservice.exception.EmailSendingException;
 import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.exception.NotificationException;
@@ -73,36 +74,21 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
-        log.warn("⚠️ IllegalArgumentException: {}", e.getMessage(), e);
-        return ErrorResponse.builder()
-                .message(e.getMessage())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .url(request.getRequestURI())
-                .build();
-    }
-
     @ExceptionHandler(NotificationException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleNotificationException(NotificationException e, HttpServletRequest request) {
-        log.error("📬 NotificationException: {}", e.getMessage(), e);
-        return ErrorResponse.builder()
-                .message(e.getMessage())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .url(request.getRequestURI())
-                .build();
+    public ErrorResponse handleNotificationException(NotificationException e) {
+        return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(JsonProcessingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleJsonProcessingException(JsonProcessingException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleUnhandled(Exception e, HttpServletRequest request) {
-        log.error("🔥 Unexpected error: {}", e.getMessage(), e);
-        return ErrorResponse.builder()
-                .message("Internal server error")
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .url(request.getRequestURI())
-                .build();
+    public ErrorResponse handleNullPointerException(NullPointerException e) {
+        return new ErrorResponse(e.getMessage());
     }
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.connection.Message;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AbstractEventListenerTest {
@@ -36,7 +39,11 @@ public class AbstractEventListenerTest {
                                  UserServiceClient userServiceClient,
                                  Map<Class<?>, MessageBuilder<?>> messageBuilderMap,
                                  List<NotificationService> notificationServices) {
-            super(objectMapper, userServiceClient, messageBuilderMap, notificationServices);
+            super(objectMapper, userServiceClient, notificationServices, messageBuilderMap);
+        }
+
+        @Override
+        public void onMessage(Message message, byte[] pattern) {
         }
     }
 
