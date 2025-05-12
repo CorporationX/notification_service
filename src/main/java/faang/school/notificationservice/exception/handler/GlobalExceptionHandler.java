@@ -2,9 +2,13 @@ package faang.school.notificationservice.exception.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import faang.school.notificationservice.exception.EmailSendingException;
+import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.exception.NotificationException;
 import faang.school.notificationservice.exception.SmsIntegrationException;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.IOException;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -54,6 +59,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SmsIntegrationException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ErrorResponse handleSmsIntegrationException(SmsIntegrationException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(DataValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerDataValidationException(DataValidationException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handlerEntityNotFoundException(EntityNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
