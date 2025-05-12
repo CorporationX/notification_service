@@ -36,9 +36,9 @@ public class MailConfig {
         Properties properties = mailSender.getJavaMailProperties();
         properties.put("mail.smtp.auth", mailProperties.getProperties().getSmtp().isAuth());
         properties.put("mail.smtp.starttls.enable", mailProperties.getProperties().getSmtp().getStarttls().isEnable());
-        properties.put("mail.smtp.connectiontimeout", mailProperties.getProperties().getSmtp().getConnectiontimeout());
+        properties.put("mail.smtp.connectiontimeout", mailProperties.getProperties().getSmtp().getConnectionTimeout());
         properties.put("mail.smtp.timeout", mailProperties.getProperties().getSmtp().getTimeout());
-        properties.put("mail.smtp.writetimeout", mailProperties.getProperties().getSmtp().getWritetimeout());
+        properties.put("mail.smtp.writetimeout", mailProperties.getProperties().getSmtp().getWriteTimeout());
         return properties;
     }
 }

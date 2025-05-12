@@ -28,7 +28,6 @@ public class SmsService implements NotificationService {
         validateResponse(response);
     }
 
-    @Override
     public void sendGroup(@Valid List<UserDto> users, @NotBlank String message) {
         users.forEach(user -> {
             try {

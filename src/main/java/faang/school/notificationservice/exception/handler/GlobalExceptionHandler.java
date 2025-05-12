@@ -1,6 +1,8 @@
 package faang.school.notificationservice.exception.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import faang.school.notificationservice.exception.EmailSendingException;
+import faang.school.notificationservice.exception.NotificationException;
 import faang.school.notificationservice.exception.SmsIntegrationException;
 import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
@@ -52,6 +54,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SmsIntegrationException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ErrorResponse handleSmsIntegrationException(SmsIntegrationException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(NotificationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleNotificationException(NotificationException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(JsonProcessingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleJsonProcessingException(JsonProcessingException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleNullPointerException(NullPointerException e) {
         return new ErrorResponse(e.getMessage());
     }
 }

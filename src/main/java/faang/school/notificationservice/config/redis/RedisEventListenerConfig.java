@@ -1,6 +1,8 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.like.LikeEventListener;
+import faang.school.notificationservice.listener.like.UnlikeEventListener;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,9 +32,14 @@ public class RedisEventListenerConfig {
         return new ChannelTopic(notLikeChannel);
     }
 
-    @Bean
+    @Bean(name = "likeListener")
     MessageListenerAdapter likeListener(LikeEventListener likeEventListener) {
         return new MessageListenerAdapter(likeEventListener, "onMessage");
+    }
+
+    @Bean(name = "unlikeListener")
+    MessageListenerAdapter unlikeListener(UnlikeEventListener unlikeEventListener) {
+        return new MessageListenerAdapter(unlikeEventListener, "onMessage");
     }
 
     @Bean
@@ -49,14 +56,14 @@ public class RedisEventListenerConfig {
     @Bean
     RedisMessageListenerContainer redisContainer(
             JedisConnectionFactory jedisConnectionFactory,
-            MessageListenerAdapter likeListener,
-            MessageListenerAdapter notLikeListener,
+            @Qualifier("likeListener") MessageListenerAdapter likeListener,
+            @Qualifier("unlikeListener") MessageListenerAdapter unlikeListener,
             TaskExecutor redisListenerTaskExecutor) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory);
         container.setTaskExecutor(redisListenerTaskExecutor);
         container.addMessageListener(likeListener, likeChannel());
-        container.addMessageListener(notLikeListener, notLikeChannel());
+        container.addMessageListener(unlikeListener, notLikeChannel());
         return container;
     }
 }
