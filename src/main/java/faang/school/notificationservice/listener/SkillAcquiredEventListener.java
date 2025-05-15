@@ -22,7 +22,7 @@ public class SkillAcquiredEventListener extends AbstractEventListener<SkillAcqui
                                       List<NotificationService> notificationServices,
                                       List<MessageBuilder<SkillAcquiredEvent>> messageBuilders
     ) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+        super(objectMapper, userServiceClient, notificationServices, messageBuilders, null);
     }
 
     @Override

@@ -1,92 +1,96 @@
 package faang.school.notificationservice.config.redis;
 
-import faang.school.notificationservice.config.properties.RedisChannelsProperties;
-import faang.school.notificationservice.listener.FollowerEventListener;
-import faang.school.notificationservice.listener.MentorshipAcceptedEventListener;
-import faang.school.notificationservice.listener.RecommendationReceivedEventListener;
-import faang.school.notificationservice.listener.SkillAcquiredEventListener;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import faang.school.notificationservice.event.GoalCompletedEventListener;
+import faang.school.notificationservice.messagelistner.FollowerEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableConfigurationProperties(RedisChannelsProperties.class)
 @RequiredArgsConstructor
 public class RedisConfig {
 
-    private final RedisChannelsProperties channelsProperties;
+    @Value("${spring.data.redis.channel.goal-completing-channel}")
+    private String goalCompletedTopic;
 
     @Value("${spring.data.redis.host}")
-    private String host;
+    private String redisHost;
 
     @Value("${spring.data.redis.port}")
-    private int port;
+    private int redisPort;
+
+    @Value("${spring.data.redis.password:}") // optional password
+    private String redisPassword;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
+        config.setHostName(redisHost);
+        config.setPort(redisPort);
+        if (!redisPassword.isEmpty()) {
+            config.setPassword(redisPassword);
+        }
         return new JedisConnectionFactory(config);
     }
 
     @Bean
-    MessageListenerAdapter recommendationReceivedEventListenerAdapter(RecommendationReceivedEventListener recommendationReceivedEventListener) {
-        return new MessageListenerAdapter(recommendationReceivedEventListener);
+    RedisTemplate<String, Object> redisTemplate(JedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+        return template;
     }
 
     @Bean
-    MessageListenerAdapter followerEventListenerAdapter(FollowerEventListener followerEventListener) {
-        return new MessageListenerAdapter(followerEventListener);
+    MessageListenerAdapter messageListener() {
+        return new MessageListenerAdapter(new FollowerEventListener());
     }
 
     @Bean
-    MessageListenerAdapter mentorshipAcceptedEventListenerAdapter(MentorshipAcceptedEventListener mentorshipAcceptedEventListener) {
-        return new MessageListenerAdapter(mentorshipAcceptedEventListener);
+    ChannelTopic topic() {
+        return new ChannelTopic("follower_topic");
     }
 
     @Bean
-    MessageListenerAdapter skillAcquiredEventListenerAdapter(SkillAcquiredEventListener skillAcquiredEventListener) {
-        return new MessageListenerAdapter(skillAcquiredEventListener);
+    public ChannelTopic goalCompletedTopic() {
+        return new ChannelTopic(goalCompletedTopic);
     }
 
     @Bean
-    ChannelTopic recommendationReceivedEventTopic() {
-        return new ChannelTopic(channelsProperties.recommendationReceivedChannel());
-    }
-
-    @Bean
-    ChannelTopic mentorshipAcceptedTopic() {
-        return new ChannelTopic(channelsProperties.mentorshipAcceptedEventChannel());
-    }
-
-    @Bean
-    ChannelTopic followerEventTopic() {
-        return new ChannelTopic(channelsProperties.followerChannel());
-    }
-
-    @Bean
-    ChannelTopic skillAcquiredEventTopic() {
-        return new ChannelTopic(channelsProperties.skillAcquiredChannel());
+    public MessageListenerAdapter goalCompletedListenerAdapter(GoalCompletedEventListener listener) {
+        return new MessageListenerAdapter(listener);
     }
 
     @Bean
     RedisMessageListenerContainer redisContainer(
-            MessageListenerAdapter recommendationReceivedEventListenerAdapter,
-            MessageListenerAdapter followerEventListenerAdapter,
-            MessageListenerAdapter skillAcquiredEventListenerAdapter
+            JedisConnectionFactory jedisConnectionFactory,
+            MessageListenerAdapter messageListener,
+            ChannelTopic topic,
+            MessageListenerAdapter goalCompletedListenerAdapter,
+            ChannelTopic goalCompletedTopic
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(recommendationReceivedEventListenerAdapter, recommendationReceivedEventTopic());
-        container.addMessageListener(followerEventListenerAdapter, followerEventTopic());
-        container.addMessageListener(recommendationReceivedEventListenerAdapter, mentorshipAcceptedTopic());
-        container.addMessageListener(skillAcquiredEventListenerAdapter, skillAcquiredEventTopic());
+        container.setConnectionFactory(jedisConnectionFactory);
+
+        container.addMessageListener(messageListener, topic);
+
+        container.addMessageListener(goalCompletedListenerAdapter, goalCompletedTopic);
+
         return container;
     }
 }
+

@@ -6,6 +6,7 @@ spring:
       channel:
         followerChannel: follower_channel
         achievementChannel: achievement_channel
+        goal-completing-channel: goal-completing-channel
         recommendationReceivedChannel: recommendation_event_channel
         mentorshipAcceptedEventChannel: mentorship-accepted-channel
         skillAcquiredChannel: skill_acquired_channel

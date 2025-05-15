@@ -8,7 +8,7 @@ public enum ExceptionMessage {
     PREFERENCE_NOT_FOUND("User with id %d doesn't have a preferred method of communication"),
     EVENT_READ_EXCEPTION("Error reading event from message"),
     MESSAGE_BUILDER_NOT_FOUND("MessageBuilder for %s class not found"),
-    ;
+    USER_NOT_FOUND("User with ID %d not found");
 
     private final String message;
 
