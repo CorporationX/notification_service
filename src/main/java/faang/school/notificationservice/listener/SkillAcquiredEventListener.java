@@ -6,6 +6,7 @@ import faang.school.notificationservice.dto.SkillAcquiredEvent;
 import faang.school.notificationservice.exception.EventReadException;
 import faang.school.notificationservice.exception.ExceptionMessage;
 import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.repository.NotificationEventLogRepository;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -20,7 +21,8 @@ public class SkillAcquiredEventListener extends AbstractEventListener<SkillAcqui
     public SkillAcquiredEventListener(ObjectMapper objectMapper,
                                       UserServiceClient userServiceClient,
                                       List<NotificationService> notificationServices,
-                                      List<MessageBuilder<SkillAcquiredEvent>> messageBuilders
+                                      List<MessageBuilder<SkillAcquiredEvent>> messageBuilders,
+                                      NotificationEventLogRepository repository
     ) {
         super(objectMapper, userServiceClient, notificationServices, messageBuilders, null);
     }

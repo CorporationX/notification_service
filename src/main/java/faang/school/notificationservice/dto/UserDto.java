@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Builder
 @Data
@@ -17,6 +19,7 @@ public class UserDto {
     private long telegramId;
     private PreferredContact preference;
     private boolean active;
+    private List<Long> skills;
 
     public enum PreferredContact {
         EMAIL, PHONE, TELEGRAM
