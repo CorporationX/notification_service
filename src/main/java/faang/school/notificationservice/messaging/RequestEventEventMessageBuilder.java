@@ -3,19 +3,21 @@ package faang.school.notificationservice.messaging;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.RequestEventEvent;
+import faang.school.notificationservice.exception.BuildMessageFailedException;
 import faang.school.notificationservice.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Locale;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class RequestEventEventMessageBuilder implements MessageBuilder<RequestEventEvent> {
-    private final MessageSource messageSource;
+
+    private final List<RequestEventEventStatusMessageBuilder> messageBuilders;
     private final UserServiceClient userServiceClient;
 
     @Override
@@ -27,32 +29,16 @@ public class RequestEventEventMessageBuilder implements MessageBuilder<RequestEv
     public String buildMessage(RequestEventEvent event, Locale locale) {
         var userDto = getUserById(event.userId());
 
-        switch (event.requestStatus()) {
-            case READY -> {
-                return messageSource.getMessage("request.ready",
-                        new Object[]{userDto.getUsername(), event.id(), event.timestamp()},
-                        Locale.getDefault());
-            }
-            case TODO -> {
-                return messageSource.getMessage("request.created",
-                        new Object[]{userDto.getUsername(), event.id(), event.timestamp()},
-                        Locale.getDefault());
-            }
-            case DONE -> {
-                return messageSource.getMessage("request.done",
-                        new Object[]{userDto.getUsername(), event.id(), event.timestamp()},
-                        Locale.getDefault());
-            }
-            case CANCELLED -> {
-                return messageSource.getMessage("request.cancelled",
-                        new Object[]{userDto.getUsername(), event.id(), event.timestamp()},
-                        Locale.getDefault());
+        for (var messageBuilder : messageBuilders) {
+            if (messageBuilder.isApplicable(event)) {
+                return messageBuilder.buildMessage(event, userDto, locale);
             }
         }
 
         log.error("Invalid request event message type: {}", event.requestStatus());
 
-        return "";
+        throw new BuildMessageFailedException("Invalid request event message type: %s".formatted(
+                event.requestStatus()));
     }
 
     private UserDto getUserById(long userId) {
