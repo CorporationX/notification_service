@@ -16,14 +16,16 @@ public class FollowEventMessageBuilder extends AbstractMessageBuilder<FollowEven
     }
 
     @Override
+    public Class<?> getInstance() {
+        return FollowEventDto.class;
+    }
+
+    @Override
     protected String buildMessageWithLocale(FollowEventDto event, Locale locale) {
         UserDto user = userServiceClient.getUser(event.followerId());
         return getMessageSource().getMessage("follow.notification", new Object[]{user.getUsername()}, locale);
     }
 
-    @Override
-    public Class<?> getInstance() {
-        return FollowEventDto.class;
-    }
+
 
 }

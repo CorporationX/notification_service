@@ -39,9 +39,9 @@ public class RedisConfig {
     @Bean
     public FollowEventListener followEventListener(
             List<NotificationService> notifications,
-            UserServiceClient userServiceClient,
-            MessageBuilder<FollowEventDto> messageBuilder) {
-        return new FollowEventListener(notifications, userServiceClient, messageBuilder);
+            MessageBuilder<FollowEventDto> messageBuilder,
+            UserServiceClient userServiceClient) {
+        return new FollowEventListener(notifications, messageBuilder, userServiceClient);
     }
 
     @Bean
@@ -67,7 +67,6 @@ public class RedisConfig {
         container.setConnectionFactory(jedisConnectionFactory);
         container.addMessageListener(followListenerAdapter, followEventTopic);
         container.addMessageListener(achievementListenerAdapter,achievementEventTopic);
-
         return container;
     }
 

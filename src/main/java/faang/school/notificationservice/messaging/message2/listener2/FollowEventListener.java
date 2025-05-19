@@ -11,20 +11,18 @@ import java.util.List;
 
 public class FollowEventListener extends AbstractNotificationListener<FollowEventDto> {
     private final UserServiceClient userServiceClient;
-    private final MessageBuilder<FollowEventDto> messageBuilder;
 
     public FollowEventListener(
             List<NotificationService> notifications,
-            UserServiceClient userServiceClient,
-            MessageBuilder<FollowEventDto> messageBuilder
+            List<MessageBuilder<?>> messageBuilders,
+            UserServiceClient userServiceClient
     ) {
-        super(notifications);
+        super(notifications, messageBuilders);
         this.userServiceClient = userServiceClient;
-        this.messageBuilder = messageBuilder;
     }
 
     void onMessage(FollowEventDto event) {
         UserDto user = userServiceClient.getUser(event.followeeId());
-        handle(user, event,messageBuilder,null);
+        handle(user, event, null);
     }
 }
