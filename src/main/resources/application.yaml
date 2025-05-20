@@ -8,6 +8,14 @@ spring:
         achievement: achievement_topic
         mentorshipAccepted: mentorship_accepted_topic
 
+  kafka:
+    consumer:
+      bootstrapServers: localhost:9092,localhost:9093,localhost:9094
+      groupId: not-service
+      trustedPackages: ""
+      topics:
+        commentCreatedNotification: notification.comment.created
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -44,6 +52,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
 project-service:
     host: localhost
     port: 8082
+
 user-service:
     host: localhost
     port: 8080

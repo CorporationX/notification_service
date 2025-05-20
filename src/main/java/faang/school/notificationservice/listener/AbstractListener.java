@@ -27,7 +27,7 @@ public abstract class AbstractListener<T> {
                 .findFirst()
                 .orElseThrow(() ->
                         new IllegalArgumentException("No message found for the given event type " + event.getClass().getName()))
-                .buildMessage(event, Locale.UK);
+                .buildMessage(event, locale);
     }
 
     protected void sendNotification(Long id, String message){
