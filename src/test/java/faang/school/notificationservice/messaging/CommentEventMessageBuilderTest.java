@@ -1,9 +1,10 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.dto.event.CommentEventDto;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 
@@ -15,14 +16,19 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CommentEventMessageBuilderTest {
 
+    @Mock
     private MessageSource messageSource;
+
+    @InjectMocks
     private CommentEventMessageBuilder builder;
 
-    @BeforeEach
-    void setUp() {
-        messageSource = mock(MessageSource.class);
-        builder = new CommentEventMessageBuilder(messageSource);
-    }
+    private final CommentEventDto event = CommentEventDto.builder()
+            .commentId(100L)
+            .commenterId(200L)
+            .postId(300L)
+            .postAuthorId(400L)
+            .text("Cool post!")
+            .build();
 
     @Test
     void getInstance_ShouldReturnCommentEventDtoClass() {
@@ -31,14 +37,6 @@ class CommentEventMessageBuilderTest {
 
     @Test
     void buildMessage_ShouldBuildCorrectMessage() {
-        CommentEventDto event = CommentEventDto.builder()
-                .commentId(100L)
-                .commenterId(200L)
-                .postId(300L)
-                .postAuthorId(400L)
-                .text("Cool post!")
-                .build();
-
         Locale locale = Locale.ENGLISH;
 
         String expectedMessage = "User with ID 200 left a comment: \"Cool post!\" on your post ID 300";
