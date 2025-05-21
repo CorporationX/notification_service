@@ -8,7 +8,7 @@ import java.util.Locale;
 
 @Component
 public class CommentEventMessageBuilder extends MessageBuilder<CommentEventDto> {
-    private static final String MESSAGE = "comment.received";
+    private static final String MESSAGE = "notification.comment";
 
     public CommentEventMessageBuilder(MessageSource messageSource) {
         super(messageSource);
