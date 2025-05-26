@@ -13,4 +13,6 @@ public class UserDto {
     public enum PreferredContact {
         EMAIL, PHONE, TELEGRAM
     }
+
+
 }

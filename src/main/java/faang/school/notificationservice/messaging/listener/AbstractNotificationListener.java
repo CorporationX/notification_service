@@ -1,7 +1,7 @@
-package faang.school.notificationservice.messaging.message2.listener2;
+package faang.school.notificationservice.messaging.listener;
 
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.messaging.messagebuilder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public abstract class AbstractNotificationListener<T> {
     private final List<NotificationService> notifications;
-    private final List<MessageBuilder<?>> messageBuilders;
+    private final List<? extends MessageBuilder<? extends T>> messageBuilders;
 
     protected void handle(UserDto user, T event, Locale locale) {
         if (user.getPreference() == null) {

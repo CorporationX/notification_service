@@ -1,6 +1,5 @@
-package faang.school.notificationservice.messaging.message2.builder2;
+package faang.school.notificationservice.messaging.messagebuilder;
 
-import faang.school.notificationservice.messaging.MessageBuilder;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +13,8 @@ public abstract class AbstractMessageBuilder<T> implements MessageBuilder<T> {
     private final Locale defaultLocale;
     private final MessageSource messageSource;
 
-    public AbstractMessageBuilder(@Value("${app.default-locale}") Locale defaultLocale, MessageSource messageSource) {
-        this.defaultLocale = defaultLocale;
+    public AbstractMessageBuilder(String defaultLocaleString, MessageSource messageSource) {
+        this.defaultLocale =  Locale.forLanguageTag(defaultLocaleString);
         this.messageSource = messageSource;
     }
 

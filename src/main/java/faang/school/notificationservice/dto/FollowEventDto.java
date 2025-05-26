@@ -1,7 +1,14 @@
 package faang.school.notificationservice.dto;
 
-public record FollowEventDto(
-        long followerId,
-        long followeeId
-) {
+import java.util.Objects;
+
+public record FollowEventDto(long followerId, long followeeId) {
+
+    @Override
+    public String toString() {
+        return "FollowEventDto[" +
+                "followerId=" + followerId + ", " +
+                "followeeId=" + followeeId + ']';
+    }
+
 }
