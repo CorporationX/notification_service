@@ -22,17 +22,9 @@ public class FollowEventListener extends AbstractNotificationListener<FollowEven
         this.userServiceClient = userServiceClient;
     }
 
-    public void onMessage1(FollowEventDto event) {
-        log.info("+++++++++++ Method onMessage1 was invoked");
-        var user = userServiceClient.getUser(event.followeeId());
-        System.out.println("------------------"+user.getClass());
-
+    public void onMessage(FollowEventDto event) {
+        log.info("Method onMessage was invoked");
+        UserDto user = userServiceClient.getUser(event.followeeId());
         handle(user, event, null);
     }
-
-    public void onMessage(Object message) {
-        log.info("+++++++++++ Raw message received: {}", message);
-
-    }
-
 }

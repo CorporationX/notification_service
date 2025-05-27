@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class TelegramNotificationService implements NotificationService{
     @Override
     public void send(UserDto user, String message) {
-        System.out.printf("\nTelegram` notification sent to user %s. Message: %n",user.getUsername(), message);
+        System.out.printf("\nTelegram notification sent to user %s. Message: %s",user.getUsername(), message);
     }
 
     @Override

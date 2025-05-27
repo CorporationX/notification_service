@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.FollowEventDto;
-import faang.school.notificationservice.messaging.listener.AchievementEventListener;
-
 import faang.school.notificationservice.messaging.listener.FollowEventListener;
 import faang.school.notificationservice.messaging.messagebuilder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -17,7 +15,6 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 
 import java.util.List;
@@ -33,8 +30,6 @@ public class RedisConfig {
     @Value("${spring.data.redis.channel.follower}")
     private String followEventsTopic;
 
-   /* @Value("${spring.data.redis.channel.achievement}")
-    private String achievementEventsTopic;*/
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -50,36 +45,27 @@ public class RedisConfig {
         return new FollowEventListener(notifications, messageBuilders, userServiceClient);
     }
 
-    /*@Bean
-    public MessageListenerAdapter followListenerAdapter(FollowEventListener followEventListener) {
-        MessageListenerAdapter adapter = new MessageListenerAdapter(followEventListener, "onMessage");
-        adapter.setSerializer(new GenericJackson2JsonRedisSerializer());
-        return adapter;
-    }*/
-
+    // С этим бином не работал прием событий из редиса
     /*@Bean
     public MessageListenerAdapter followListenerAdapter(FollowEventListener followEventListener) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(mapper);
-
-        MessageListenerAdapter adapter = new MessageListenerAdapter(followEventListener, "onMessage1");
+        MessageListenerAdapter adapter = new MessageListenerAdapter(followEventListener, "onMessage");
         adapter.setSerializer(serializer);
         return adapter;
     }*/
+
     @Bean
     public MessageListenerAdapter followListenerAdapter(
-            FollowEventListener followEventListener, ObjectMapper objectMapper) {
-
+            FollowEventListener followEventListener,
+            ObjectMapper objectMapper
+    ) {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        //GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
         Jackson2JsonRedisSerializer<FollowEventDto> serializer =
                 new Jackson2JsonRedisSerializer<>(FollowEventDto.class);
-        serializer.setObjectMapper(objectMapper);
-
-
-        MessageListenerAdapter adapter = new MessageListenerAdapter(followEventListener, "onMessage1");
+        serializer.setObjectMapper(objectMapper); // Пришлось применить deprecated метод
+        MessageListenerAdapter adapter = new MessageListenerAdapter(followEventListener, "onMessage");
         adapter.setSerializer(serializer);
         return adapter;
     }
@@ -94,33 +80,11 @@ public class RedisConfig {
             JedisConnectionFactory jedisConnectionFactory,
             MessageListenerAdapter followListenerAdapter,
             ChannelTopic followEventTopic
-            //MessageListenerAdapter achievementListenerAdapter,
-            //ChannelTopic achievementEventTopic
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory);
         container.addMessageListener(followListenerAdapter, followEventTopic);
-        //container.addMessageListener(achievementListenerAdapter,achievementEventTopic);
         System.out.println("RedisMessageListenerContainer started for topic: " + followEventTopic.getTopic());
         return container;
     }
-
-   /* @Bean
-    public AchievementEventListener achievementEventListener(
-            UserServiceClient userServiceClient,
-            List<NotificationService> notifications) {
-        return new AchievementEventListener(userServiceClient,notifications );
-    }
-
-    @Bean
-    public MessageListenerAdapter achievementListenerAdapter(AchievementEventListener achievementEventListener) {
-        MessageListenerAdapter adapter = new MessageListenerAdapter(achievementEventListener, "onMessage2");
-        adapter.setSerializer(new GenericJackson2JsonRedisSerializer());
-        return adapter;
-    }
-
-    @Bean
-    public ChannelTopic achievementEventTopic() {
-        return new ChannelTopic(achievementEventsTopic);
-    }*/
 }
