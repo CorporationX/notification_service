@@ -6,7 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum EventType {
-    MENTORSHIP_ACCEPTED("mentorshipAccepted");
+    MENTORSHIP_ACCEPTED("mentorshipAccepted"),
+    LIKED_POST("likedPost");
 
     private final String key;
 }

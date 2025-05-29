@@ -15,6 +15,7 @@ spring:
       trustedPackages: ""
       topics:
         commentCreatedNotification: notification.comment.created
+        likedPost: notification.post.liked
 
   mail:
     host: smtp.gmail.com
