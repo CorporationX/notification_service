@@ -17,7 +17,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
@@ -28,16 +27,17 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KafkaConf {
     private final KafkaProperties kafkaProperties;
+    private final JacksonDeserializer jacksonDeserializer;
 
     @Bean
     public ConsumerFactory<String, Object> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
+
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getBootstrapServers());
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JacksonDeserializer.class);
-        config.put(JsonDeserializer.TRUSTED_PACKAGES, kafkaProperties.getTrustedPackages());
         config.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaProperties.getGroupId());
-        return new DefaultKafkaConsumerFactory<>(config);
+
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), jacksonDeserializer);
     }
 
     @Bean

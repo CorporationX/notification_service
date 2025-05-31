@@ -23,7 +23,7 @@ public class CommentEventListener extends AbstractListener<CommentEventDto> {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
-    @KafkaListener(topics = "${spring.kafka.consumer.topics.commentCreatedNotification}",
+    @KafkaListener(topics = "${spring.kafka.consumer.topics.COMMENT_CREATED}",
             groupId = "${spring.kafka.consumer.groupId}")
     public void handle(CommentEventDto event) {
         log.info("Comment event received: {}", event);

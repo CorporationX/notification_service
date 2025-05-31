@@ -23,7 +23,7 @@ public class LikeEventListener extends AbstractListener<LikeEvent> {
         super(objectMapper, userServiceClient, messageBuilders, notificationServices);
     }
 
-    @KafkaListener(topics = "${spring.kafka.consumer.topics.likedPost}", groupId = "${spring.kafka.consumer.groupId}")
+    @KafkaListener(topics = "${spring.kafka.consumer.topics.LIKED_POST}", groupId = "${spring.kafka.consumer.groupId}")
     public void handle(LikeEvent event) {
         log.info("Like event received: {}", event);
         sendNotification(event.getAuthorId(), getMessage(event, Locale.ENGLISH));
