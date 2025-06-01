@@ -1,15 +1,15 @@
 package faang.school.notificationservice.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.dto.event.CommentEventDto;
 import faang.school.notificationservice.dto.event.LikeEvent;
 import faang.school.notificationservice.properties.EventType;
 import faang.school.notificationservice.properties.KafkaProperties;
+import jakarta.annotation.PostConstruct;
 import org.apache.kafka.common.serialization.Deserializer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,41 +18,35 @@ public class JacksonDeserializer implements Deserializer<Object> {
 
     private final KafkaProperties kafkaProperties;
     private final ObjectMapper objectMapper;
-
     private final Map<String, Class<?>> topicToDtoClass = new HashMap<>();
 
-    public JacksonDeserializer(KafkaProperties kafkaProperties) {
+    @Autowired
+    public JacksonDeserializer(KafkaProperties kafkaProperties, ObjectMapper objectMapper) {
         this.kafkaProperties = kafkaProperties;
-
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.registerModule(new JavaTimeModule());
-
-        this.objectMapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        this.objectMapper = objectMapper;
     }
 
     @PostConstruct
     private void init() {
-        String likedTopic = kafkaProperties.getTopic(EventType.LIKED_POST);
-        topicToDtoClass.put(likedTopic, LikeEvent.class);
-
-        String commentTopic = kafkaProperties.getTopic(EventType.COMMENT_CREATED);
-        topicToDtoClass.put(commentTopic, CommentEventDto.class);
+        topicToDtoClass.put(
+                kafkaProperties.getTopic(EventType.LIKED_POST),
+                LikeEvent.class);
+        topicToDtoClass.put(
+                kafkaProperties.getTopic(EventType.COMMENT_CREATED),
+                CommentEventDto.class);
     }
 
     @Override
     public Object deserialize(String topic, byte[] data) {
+        if (data == null || data.length == 0) {
+            return null;
+        }
+        Class<?> dtoClass = topicToDtoClass.get(topic);
+        if (dtoClass == null) {
+            throw new IllegalStateException("No DTO mapping for Kafka topic: " + topic);
+        }
         try {
-            if (data == null) {
-                return null;
-            }
-
-            Class<?> dtoClass = topicToDtoClass.get(topic);
-            if (dtoClass != null) {
-                return objectMapper.readValue(data, dtoClass);
-            }
-
-            return objectMapper.readValue(data, CommentEventDto.class);
-
+            return objectMapper.readValue(data, dtoClass);
         } catch (Exception e) {
             throw new RuntimeException("Error deserializing message from topic [" + topic + "]", e);
         }

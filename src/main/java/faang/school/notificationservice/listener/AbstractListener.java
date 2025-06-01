@@ -5,7 +5,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
@@ -13,13 +13,25 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-@RequiredArgsConstructor
 public abstract class AbstractListener<T> {
 
-    protected final ObjectMapper objectMapper;
-    protected final UserServiceClient userServiceClient;
-    protected final List<MessageBuilder<T>> messageBuilders;
-    protected final List<NotificationService> notificationServices;
+    @Autowired
+    protected ObjectMapper objectMapper; // глобальный, настроенный в JacksonConfig
+
+    @Autowired
+    protected UserServiceClient userServiceClient;
+
+    @Autowired
+    protected List<MessageBuilder<T>> messageBuilders;
+
+    @Autowired
+    protected List<NotificationService> notificationServices;
+
+    private final Class<T> eventType;
+
+    protected AbstractListener(Class<T> eventType) {
+        this.eventType = eventType;
+    }
 
     protected String getMessage(T event, Locale locale){
         return messageBuilders.stream()
@@ -43,7 +55,7 @@ public abstract class AbstractListener<T> {
                 .send(user, message);
     }
 
-    protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer){
+    protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
         try {
             T event = objectMapper.readValue(message.getBody(), type);
             consumer.accept(event);
