@@ -6,16 +6,18 @@ spring:
       topics:
         follower: follower_topic
         achievement: achievement_topic
-        mentorshipAccepted: mentorship_accepted_topic
+        MENTORSHIP_ACCEPTED: mentorship_accepted_topic
+        PUBLISHED_POST: published_post_topic
+        LIKED_POST: liked_post_topic
 
   kafka:
     consumer:
       bootstrapServers: localhost:9092,localhost:9093,localhost:9094
-      groupId: not-service
+      groupId: notification-group
       trustedPackages: ""
       topics:
-        commentCreatedNotification: notification.comment.created
-        likedPost: notification.post.liked
+        LIKED_POST: notification.post.liked
+        COMMENT_CREATED: notification.comment.created
 
   mail:
     host: smtp.gmail.com
