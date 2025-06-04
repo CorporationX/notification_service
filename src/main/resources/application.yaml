@@ -52,9 +52,14 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
-project-service:
-    host: localhost
-    port: 8082
-user-service:
-    host: localhost
-    port: 8080
+services:
+  user-service:
+    name: user-service
+  project-service:
+    name: project-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,loggers,env,refresh
