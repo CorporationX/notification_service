@@ -7,6 +7,20 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
 
+  config:
+    import: 'optional:consul:'
+  application:
+    name: notification-service
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery: notification-service-i1
+      config:
+        enabled: true
+        watch:
+          enabled: true
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -38,9 +52,14 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
-project-service:
-    host: localhost
-    port: 8082
-user-service:
-    host: localhost
-    port: 8080
+services:
+  user-service:
+    name: user-service
+  project-service:
+    name: project-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,loggers,env,refresh
