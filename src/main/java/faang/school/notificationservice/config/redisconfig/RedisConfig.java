@@ -1,8 +1,8 @@
 package faang.school.notificationservice.config.redisconfig;
 
+import faang.school.notificationservice.config.RedisProperties;
 import faang.school.notificationservice.messaging.FollowerEventListener;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -16,21 +16,13 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
-    @Value("${spring.data.redis.host}")
-    private String redisHost;
 
-    @Value("${spring.data.redis.port}")
-    private int redisPort;
-
-    @Value("${spring.data.redis.channel.follower}")
-    private String follower_channel;
-
-    @Value("${spring.data.redis.channel.achievement}")
-    private String achievement_channel;
+    private final RedisProperties redisProperties;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(
+                redisProperties.getHost(), redisProperties.getPort());
         return new JedisConnectionFactory(config);
     }
 
@@ -48,13 +40,13 @@ public class RedisConfig {
     }
 
     @Bean
-    ChannelTopic topicFollower() {
-        return new ChannelTopic(follower_channel);
+    public ChannelTopic topicFollower() {
+        return new ChannelTopic(redisProperties.getChannel().getFollower());
     }
 
     @Bean
-    ChannelTopic topicAchievement() {
-        return new ChannelTopic(achievement_channel);
+    public ChannelTopic topicAchievement() {
+        return new ChannelTopic(redisProperties.getChannel().getAchievement());
     }
 
     @Bean
