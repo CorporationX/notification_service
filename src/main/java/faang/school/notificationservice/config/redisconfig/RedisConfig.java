@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 
 @Configuration
 @RequiredArgsConstructor
@@ -20,22 +20,32 @@ public class RedisConfig {
     private final RedisProperties redisProperties;
 
     @Bean
-    public JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(
-                redisProperties.getHost(), redisProperties.getPort());
-        return new JedisConnectionFactory(config);
+    public RedisStandaloneConfiguration redisStandaloneConfiguration() {
+        return new RedisStandaloneConfiguration(redisProperties.getHost(), redisProperties.getPort());
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public JedisConnectionFactory jedisConnectionFactory(RedisStandaloneConfiguration redisStandaloneConfiguration) {
+        return new JedisConnectionFactory(redisStandaloneConfiguration);
+    }
+
+    @Bean
+    public Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer() {
+        return new Jackson2JsonRedisSerializer<>(Object.class);
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(
+            JedisConnectionFactory jedisConnectionFactory,
+            Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(jedisConnectionFactory());
-        template.setValueSerializer(new StringRedisSerializer());
+        template.setConnectionFactory(jedisConnectionFactory);
+        template.setValueSerializer(jackson2JsonRedisSerializer);
         return template;
     }
 
     @Bean
-    MessageListenerAdapter followerListener(FollowerEventListener followerEventListener) {
+    public MessageListenerAdapter followerListener(FollowerEventListener followerEventListener) {
         return new MessageListenerAdapter(followerEventListener);
     }
 
@@ -45,15 +55,13 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic topicAchievement() {
-        return new ChannelTopic(redisProperties.getChannel().getAchievement());
-    }
-
-    @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener) {
+    public RedisMessageListenerContainer redisContainer(
+            JedisConnectionFactory jedisConnectionFactory,
+            MessageListenerAdapter followerListener,
+            ChannelTopic topicFollower) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(followerListener, topicFollower());
+        container.setConnectionFactory(jedisConnectionFactory);
+        container.addMessageListener(followerListener, topicFollower);
         return container;
     }
 }
