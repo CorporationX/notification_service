@@ -1,9 +1,14 @@
 package faang.school.notificationservice.config.context;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserContext {
+    @Setter
+    @Getter
+    private Long telegramId;
 
     private final ThreadLocal<Long> userIdHolder = new ThreadLocal<>();
 
