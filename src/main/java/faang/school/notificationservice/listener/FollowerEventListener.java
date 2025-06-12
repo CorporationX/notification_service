@@ -1,4 +1,4 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.listener;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
