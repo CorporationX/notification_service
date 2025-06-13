@@ -9,6 +9,7 @@ public class UserDto {
     private String email;
     private String phone;
     private PreferredContact preference;
+    // TODO: locale support for internationalization
 
     public enum PreferredContact {
         EMAIL, PHONE, TELEGRAM

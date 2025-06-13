@@ -63,3 +63,14 @@ management:
     web:
       exposure:
         include: health,info,metrics,loggers,env,refresh
+
+kafka:
+  trace:
+    id:
+      header: traceId
+
+feign:
+  retry:
+    maxAttempts: 3
+    delay: 1000
+    multiplier: 2
