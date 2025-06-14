@@ -8,12 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "vonage")
 public class SmsProperties {
-    private Api api;
-
-    @Data
-    public static class Api {
-        private String key;
-        private String secret;
-        private String fromService;
-    }
+    private String key;
+    private String secret;
+    private String fromService;
 }
