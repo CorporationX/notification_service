@@ -1,4 +1,4 @@
-package faang.school.notificationservice;
+package faang.school.notificationservice.smsservicetests;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
