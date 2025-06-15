@@ -21,6 +21,9 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+  
+  telegram:
+    token: ${TOKEN_TELEGRAM_BOT}
 
   messages:
     basename: messages
@@ -39,8 +42,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
+    host: localhost:8082
     port: 8082
 user-service:
-    host: localhost
+    host: localhost:8080
     port: 8080

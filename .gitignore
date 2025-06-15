@@ -53,3 +53,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### IDX ###
+.idx/
+src/main/resources/application-dev.yaml
+docker-compose.yaml
