@@ -44,3 +44,9 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+application:
+  telegram:
+    bot:
+      name: ${telegram.bot.name}
+      token: ${telegram.bot.token}
