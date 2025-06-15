@@ -2,8 +2,9 @@ package faang.school.notificationservice.service.telegram;
 
 import org.springframework.stereotype.Service;
 
+import faang.school.notificationservice.dto.ContactDto;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.messaging.telegram.BotKd001;
+import faang.school.notificationservice.messaging.telegram.NotificationTelegramBot;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +13,17 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class TelegramService implements NotificationService {
-    private final BotKd001 botKd001;
+    private final NotificationTelegramBot botKd001;
 
     @Override
     public void send(UserDto user, String message) {
-        botKd001.send(user, message);
+        ContactDto contact = user.getContacts().stream()
+            .filter(cont -> cont.getType().equals("TELEGRAM"))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException(String.format(
+                "The user %d is not registered with the telegram bot.", user.getId())
+            ));
+        botKd001.send(contact.getContact(), message);
     }
 
     @Override

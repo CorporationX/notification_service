@@ -9,18 +9,18 @@ import jakarta.annotation.PostConstruct;
 
 @Component
 public class TelegramBotInitializer {
-    private final BotKd001 botKd001;
+    private final NotificationTelegramBot notificationTelegramBot;
 
     @Autowired
-    public TelegramBotInitializer(BotKd001 bot) {
-        this.botKd001 = bot;
+    public TelegramBotInitializer(NotificationTelegramBot notificationTelegramBot) {
+        this.notificationTelegramBot = notificationTelegramBot;
     }
 
     @PostConstruct
     public void init() {
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-            botsApi.registerBot(botKd001);
+            botsApi.registerBot(notificationTelegramBot);
         } catch (Exception e) {
             e.printStackTrace();
         }
