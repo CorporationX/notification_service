@@ -1,5 +1,5 @@
 plugins {
-    java
+    id("java")
     id("org.springframework.boot") version "3.0.6"
     id("io.spring.dependency-management") version "1.1.0"
     id("jacoco")
@@ -26,6 +26,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail:3.0.6")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    /**
+     * Telegram
+     */
+    implementation("org.telegram:telegrambots-spring-boot-starter:6.9.0")
 
     /**
      * Database
