@@ -1,5 +1,6 @@
 package faang.school.notificationservice.messaging.telegram;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,8 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class BotKd001 extends TelegramLongPollingBot {
-    public BotKd001() {
-        super("");
+    private final String token;
+    
+    public BotKd001(@Value("${spring.telegram.token}") String token) {
+        super(token);
+        this.token = token;
     }
 
     @Override
