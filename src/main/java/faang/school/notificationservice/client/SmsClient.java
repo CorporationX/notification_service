@@ -12,6 +12,6 @@ public interface SmsClient {
     @GetMapping(value = "messages/v2/send")
     String sendingSms(
             @RequestParam("phone") String phone,
-            @RequestParam("msg") String msg
+            @RequestParam("text") String msg
     );
 }
