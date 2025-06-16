@@ -10,9 +10,9 @@ spring:
     kafka:
       consumer:
         host: localhost
-        port: 9092
+        port: 29092
         # TODO: пока что не известно
-        group-id: my-consumer-group
+        group-id: notification-service
         auto-offset-reset: earliest
 
   mail:
