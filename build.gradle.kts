@@ -121,7 +121,6 @@ val jacocoClassExclude = listOf(
 tasks.jacocoTestCoverageVerification {
     violationRules {
         rule {
-            element = "CLASS"
             isEnabled = true
             excludes = jacocoClassExclude
             limit {
