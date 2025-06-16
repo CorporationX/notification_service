@@ -122,6 +122,7 @@ tasks.jacocoTestCoverageVerification {
     violationRules {
         rule {
             isEnabled = true
+            element = "CLASS"
             excludes = jacocoClassExclude
             limit {
                 counter = "LINE"
