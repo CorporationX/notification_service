@@ -9,7 +9,6 @@ import faang.school.notificationservice.config.SmsProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.SmsServiceException;
 import faang.school.notificationservice.service.NotificationService;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,24 +18,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SmsService implements NotificationService {
 
-    private final SmsProperties smsProperties;
-    private VonageClient client;
     private static final String SMS_ERROR_MESSAGE = "Message failed with error: %s.";
-    private static final String NO_CREDENTIALS = "Vonage API credentials are not configured.";
     private static final String NO_MESSAGES = "Vonage response contains no messages.";
-    private static final String INVALID_PHOE_NUMBER = "Invalid phone number: %s";
+    private static final String INVALID_PHONE_NUMBER = "Invalid phone number: %s";
 
-    @PostConstruct
-    private void init() {
-        if (smsProperties.getKey() == null || smsProperties.getSecret() == null) {
-            log.error(NO_CREDENTIALS);
-            throw new SmsServiceException(NO_CREDENTIALS);
-        }
-        client = VonageClient.builder()
-                .apiKey(smsProperties.getKey())
-                .apiSecret(smsProperties.getSecret())
-                .build();
-    }
+    private final SmsProperties smsProperties;
+    private final VonageClient client;
 
     @Override
     public void send(UserDto user, String message) {
@@ -73,8 +60,8 @@ public class SmsService implements NotificationService {
 
     private void validatePhoneNumber(String phone) {
         if (phone == null || !phone.matches("^\\+?7\\d{10}$")) {
-            log.error(INVALID_PHOE_NUMBER.formatted(phone));
-            throw new SmsServiceException(INVALID_PHOE_NUMBER.formatted(phone));
+            log.error(INVALID_PHONE_NUMBER.formatted(phone));
+            throw new SmsServiceException(INVALID_PHONE_NUMBER.formatted(phone));
         }
     }
 
