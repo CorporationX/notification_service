@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service.telegram;
 
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +8,7 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+@Getter
 @Configuration
 @ConfigurationProperties(prefix = "telegram.bot")
 public class TelegramBotConfig {
@@ -23,24 +25,12 @@ public class TelegramBotConfig {
         return botsApi;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public String getToken() {
-        return token;
-    }
-
     public void setToken(String token) {
         this.token = token;
-    }
-
-    public boolean isEnable() {
-        return enable;
     }
 
     public void setEnable(boolean enable) {

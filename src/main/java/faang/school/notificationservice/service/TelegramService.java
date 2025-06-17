@@ -26,6 +26,9 @@ public class TelegramService implements NotificationService {
         }
 
         try {
+            // Поскольку в UserDto нет telegramChatId, используем id пользователя как chatId
+            // В реальном приложении нужно либо добавить это поле в UserDto,
+            // либо получить chatId из другого источника (например, базы данных)
             long telegramChatId = user.getId();
             notificationBot.sendMessage(telegramChatId, message);
         } catch (TelegramApiException e) {
