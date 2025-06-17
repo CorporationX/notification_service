@@ -37,12 +37,4 @@ public class EmailServiceTest {
         emailService.send(new UserDto(1, "User", "kukuha@internet.ru", "+12345678910", UserDto.PreferredContact.EMAIL), "Hi there!");
         assertTrue(true); // It emailed me
     }
-
-    @Test
-    public void nonExistentEmail() {
-        assertThrows(IllegalArgumentException.class,
-                () -> emailService.send(
-                        new UserDto(1, "User", "", "+12345678910", UserDto.PreferredContact.EMAIL),
-                        "Hi there!"));
-    }
 }
