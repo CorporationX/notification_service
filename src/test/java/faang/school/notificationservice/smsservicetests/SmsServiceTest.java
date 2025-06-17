@@ -42,7 +42,7 @@ public class SmsServiceTest {
         smsProperties.setSecret("test-secret");
         smsProperties.setFromService("Vonage APIs");
 
-        smsService = new SmsService(smsProperties);
+        smsService = new SmsService(smsProperties, vonageClient);
 
         // Устанавливаем приватное поле client через reflection
         Field clientField = SmsService.class.getDeclaredField("client");
