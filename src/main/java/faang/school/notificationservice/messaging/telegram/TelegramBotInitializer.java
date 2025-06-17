@@ -6,7 +6,9 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class TelegramBotInitializer {
     private final NotificationTelegramBot notificationTelegramBot;
@@ -22,7 +24,8 @@ public class TelegramBotInitializer {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(notificationTelegramBot);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error initializing Telegram bot: {}", e.getMessage(), e);
+            throw new RuntimeException("Error initializing Telegram bot", e);
         }
     }
 }

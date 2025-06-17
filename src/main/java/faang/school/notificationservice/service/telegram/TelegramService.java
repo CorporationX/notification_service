@@ -13,17 +13,19 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class TelegramService implements NotificationService {
-    private final NotificationTelegramBot botKd001;
+    private final NotificationTelegramBot telegramBot;
 
     @Override
     public void send(UserDto user, String message) {
         ContactDto contact = user.getContacts().stream()
-            .filter(cont -> cont.getType().equals("TELEGRAM"))
+            .filter(cont -> cont.getType().equals(UserDto.PreferredContact.TELEGRAM))
             .findFirst()
-            .orElseThrow(() -> new RuntimeException(String.format(
-                "The user %d is not registered with the telegram bot.", user.getId())
-            ));
-        botKd001.send(contact.getContact(), message);
+            .orElseThrow(() -> {
+                log.error("The user {} is not registered with the telegram bot.", user.getId());
+                return new RuntimeException(
+                    String.format( "The user %d is not registered with the telegram bot.", user.getId()));
+            });
+        telegramBot.send(contact.getContact(), message);
     }
 
     @Override

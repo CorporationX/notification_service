@@ -13,13 +13,14 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class NotificationTelegramBot extends TelegramLongPollingBot {
     private final String token;
-    
-    @Value("${spring.telegram.bot-name}")
-    private String botName;
-    
-    public NotificationTelegramBot(@Value("${spring.telegram.token}") String token) {
+    private final String botName;
+
+    public NotificationTelegramBot(
+            @Value("${spring.telegram.token}") String token, 
+            @Value("${spring.telegram.bot-name}") String botName) {
         super(token);
         this.token = token;
+        this.botName = botName;
     }
 
     @Override
@@ -29,6 +30,7 @@ public class NotificationTelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        log.info("Message to user {} was sent.", update.getMessage().getText());
     }
 
     public void send(String usersChat, String message) {
@@ -37,7 +39,7 @@ public class NotificationTelegramBot extends TelegramLongPollingBot {
             execute(msg);
             log.info("Message to user {} was sent.", usersChat);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            log.error("Error sending message to {}.", usersChat);
         }
     }
 }
