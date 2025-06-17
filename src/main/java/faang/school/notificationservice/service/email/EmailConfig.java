@@ -10,21 +10,22 @@ import java.util.Properties;
 public class EmailConfig {
 
     @Value("spring.mail.host")
-    private String host;
+     String host;
     @Value("spring.mail.port")
-    private int port;
+     int port;
     @Value("spring.mail.username")
-    private String emailAddress;
+     String emailAddress;
     @Value("spring.mail.password")
-    private String password;
+     String password;
     @Value("spring.mail.transport.protocol")
-    private boolean protocol;
+     boolean protocol;
     @Value("spring.mail.properties.mail.smtp.auth")
-    private boolean auth;
+     boolean auth;
     @Value("spring.mail.properties.mail.smtp.starttls.enable")
-    private boolean starttls;
+     boolean starttls;
     @Value("spring.mail.debug")
-    private boolean debug;
+     boolean debug;
+
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
