@@ -1,5 +1,6 @@
 package faang.school.notificationservice.listener.comment;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.PostServiceClient;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.kafka.KafkaCommentTopicConfigurationProperties;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-public class CommentKafkaListener extends AbstractKafkaListener<CommentNewModel> {
+public class CommentKafkaListener extends AbstractKafkaListener<CommentEventDto, CommentNewModel> {
     private final PostServiceClient postServiceClient;
     private final UserServiceClient userServiceClient;
     private final KafkaCommentTopicConfigurationProperties props;
@@ -32,15 +33,21 @@ public class CommentKafkaListener extends AbstractKafkaListener<CommentNewModel>
                                 List<MessageBuilder<CommentNewModel>> messageBuilders,
                                 UserServiceClient userServiceClient,
                                 PostServiceClient postServiceClient,
-                                KafkaCommentTopicConfigurationProperties props) {
-        super(notificationServices, messageBuilders);
+                                KafkaCommentTopicConfigurationProperties props,
+                                ObjectMapper objectMapper) {
+        super(notificationServices, messageBuilders, objectMapper,
+                CommentEventDto.class, CommentNewModel.class);
         this.userServiceClient = userServiceClient;
         this.postServiceClient = postServiceClient;
         this.props = props;
     }
 
-    @KafkaListener(topics = "${spring.data.kafka.topic.comment.name}")
-    public void listenCommentTopic(CommentEventDto commentEventDto) {
+    @KafkaListener(
+            topics = "${spring.data.kafka.topic.comment.name}",
+            containerFactory = "kafkaListenerContainerFactory"
+    )
+    public void listenCommentTopic(String message) {
+        CommentEventDto commentEventDto = getEvent(message);
         log.info("Received a message from {}: {}", props.getName(), commentEventDto);
         List<Long> userIds = List.of(commentEventDto.getAuthorPostId(), commentEventDto.getAuthorId());
         List<UserClientResponseDto> users = userServiceClient.getUsersByIds(userIds);

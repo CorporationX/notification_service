@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "post-service",
-        url = "${services.project-service.host}:${services.project-service.port}",
+        url = "${services.post-service.host}:${services.post-service.port}",
         path = "/api/v1",
         configuration = FeignClientConfig.class)
 public interface PostServiceClient {
@@ -21,13 +21,13 @@ public interface PostServiceClient {
             maxAttempts = 5,
             backoff = @Backoff(delay = 1000, multiplier = 2)
     )
-    @GetMapping("comments/{commentId}")
+    @GetMapping("/comments/{commentId}")
     CommentClientResponseDto getCommentById(@PathVariable long commentId);
     @Retryable(
             retryFor = { FeignException.class, RetryableException.class },
             maxAttempts = 5,
             backoff = @Backoff(delay = 1000, multiplier = 2)
     )
-    @GetMapping("posts/{postId}")
+    @GetMapping("/posts/{postId}")
     PostClientResponseDto getPostById(@PathVariable long postId);
 }

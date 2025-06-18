@@ -23,7 +23,7 @@ public interface UserServiceClient {
             maxAttempts = 5,
             backoff = @Backoff(delay = 1000, multiplier = 2)
     )
-    @GetMapping("users/{userId}/notification")
+    @GetMapping("/users/{userId}/notification")
     UserClientResponseDto getUserById(@PathVariable long userId);
 
     @Retryable(
@@ -31,6 +31,6 @@ public interface UserServiceClient {
             maxAttempts = 5,
             backoff = @Backoff(delay = 1000, multiplier = 2)
     )
-    @GetMapping()
+    @GetMapping("/users")
     List<UserClientResponseDto> getUsersByIds(@RequestParam List<Long> userIds);
 }
