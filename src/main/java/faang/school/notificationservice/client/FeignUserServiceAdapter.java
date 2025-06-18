@@ -10,8 +10,6 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 import java.net.SocketTimeoutException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -27,10 +25,10 @@ public class FeignUserServiceAdapter {
                     multiplierExpression = "${feign.retry.multiplier}"
             ))
     public Optional<UserDto> fetchUserDtosViaFeign(Long userId,
-                                      String entityNameForLog,
-                                      Long entityIdForLog) {
+                                                   String entityNameForLog,
+                                                   Long entityIdForLog) {
         if (userId == null) {
-            log.info("Skipping user fetch via FeignClient for entity '{}', " +
+            log.info("Skipping user fetch via FeignClient for event '{}', " +
                             "ID {} as no user IDs were provided to fetch.",
                     entityNameForLog, entityIdForLog);
             return Optional.empty();
@@ -39,34 +37,34 @@ public class FeignUserServiceAdapter {
     }
 
     @Recover
-    private UserDto recoverFetchUserDtos(FeignException e,
-                                               List<Long> idsToFetch,
-                                               String entityNameForLog,
-                                               Long entityIdForLog) {
-        log.error("All retry attempts failed for FeignClient call (FeignException) for entity '{}', ID {}. " +
-                        "Requested User IDs: {}. Status: {}, Response: '{}'. Error: {}",
+    private Optional<UserDto> recoverFetchUserDtos(FeignException e,
+                                                   Long userId,
+                                                   String entityNameForLog,
+                                                   Long entityIdForLog) {
+        log.error("All retry attempts failed for FeignClient call (FeignException) for event '{}', ID {}. " +
+                        "Requested User ID: {}. Status: {}, Response: '{}'. Error: {}",
                 entityNameForLog,
                 entityIdForLog,
-                idsToFetch,
+                userId,
                 e.status(),
                 e.contentUTF8(),
                 e.getMessage(),
                 e);
-        return Collections.emptyList();
+        return Optional.empty();
     }
 
     @Recover
-    private List<UserDto> recoverFetchUserDtos(SocketTimeoutException e,
-                                               List<Long> idsToFetch,
-                                               String entityNameForLog,
-                                               Long entityIdForLog) {
-        log.error("All retry attempts failed for FeignClient call (SocketTimeoutException) for entity '{}', ID {}. " +
-                        "Requested User IDs: {}. Error: {}",
+    private Optional<UserDto> recoverFetchUserDtos(SocketTimeoutException e,
+                                                   Long userId,
+                                                   String entityNameForLog,
+                                                   Long entityIdForLog) {
+        log.error("All retry attempts failed for FeignClient call (SocketTimeoutException) for event '{}', ID {}. " +
+                        "Requested User ID: {}. Error: {}",
                 entityNameForLog,
                 entityIdForLog,
-                idsToFetch,
+                userId,
                 e.getMessage(),
                 e);
-        return Collections.emptyList();
+        return Optional.empty();
     }
 }

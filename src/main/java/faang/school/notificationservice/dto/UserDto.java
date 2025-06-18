@@ -2,6 +2,8 @@ package faang.school.notificationservice.dto;
 
 import lombok.Data;
 
+import java.util.Locale;
+
 @Data
 public class UserDto {
     private long id;
@@ -9,7 +11,7 @@ public class UserDto {
     private String email;
     private String phone;
     private PreferredContact preference;
-    // TODO: locale support for internationalization
+    private Locale locale;
 
     public enum PreferredContact {
         EMAIL, PHONE, TELEGRAM

@@ -1,5 +1,6 @@
 package faang.school.notificationservice.event;
 
+import faang.school.notificationservice.dto.UserDto;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.util.Locale;
@@ -10,5 +11,5 @@ public interface EventListener<T extends Event> {
 
     String getMessage(T event, Locale locale);
 
-    void sendNotification(Long userId, String message);
+    void sendNotification(UserDto user, String message);
 }

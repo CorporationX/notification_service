@@ -4,9 +4,9 @@ import faang.school.notificationservice.event.Event;
 
 import java.util.Locale;
 
-public interface MessageBuilder<T> {
+public interface MessageBuilder<T extends Event> {
 
-    Class<? extends Event> supportsEventType();
+    Class<T> supportsEventType();
 
     String buildMessage(T event, Locale locale);
 }

@@ -2,7 +2,7 @@ package faang.school.notificationservice.event;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.client.FeignUserServiceAdapter;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.FailedToDeserializeException;
 import faang.school.notificationservice.exception.FetchViaFeignException;
@@ -14,11 +14,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.header.Header;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -26,20 +22,16 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Component
 @RequiredArgsConstructor
 @Slf4j
 public abstract class AbstractEventListener<T extends Event> implements EventListener<T> {
     private final ObjectMapper objectMapper;
-    private final UserServiceClient userServiceClient;
-    private final List<MessageBuilder<T>> messageBuilders;
+    private final List<MessageBuilder<? extends Event>> messageBuilders;
     private final List<NotificationService> notificationServices;
+    private final FeignUserServiceAdapter feignUserServiceAdapter;
 
-    private Map<Class<? extends Event>, MessageBuilder<T>> messageBuilderMap;
+    private Map<Class<? extends Event>, MessageBuilder<? extends Event>> messageBuilderMap;
     private Map<UserDto.PreferredContact, NotificationService> notificationServiceMap;
-
-    @Value("${kafka.trace.id.header}")
-    private String traceIdHeader;
 
     @PostConstruct
     public void init() {
@@ -58,19 +50,14 @@ public abstract class AbstractEventListener<T extends Event> implements EventLis
             log.error("Failed to deserialize message: {}", message.value(), e);
             throw new FailedToDeserializeException(message.value());
         }
-        Header traceIdHeader = message.headers().lastHeader(this.traceIdHeader);
-        if (traceIdHeader != null && traceIdHeader.value() != null) {
-            event.setTraceId(new String(traceIdHeader.value(), StandardCharsets.UTF_8));
-        } else {
-            log.warn("No '{}' header found in message from topic={}, partition={}",
-                    traceIdHeader, message.topic(), message.partition());
-        }
+        log.info("AbstractEventListener: new event {}", event.toString());
         consumer.accept(event);
     }
 
     @Override
     public String getMessage(T event, Locale locale) {
-        MessageBuilder<T> messageBuilder = messageBuilderMap.get(event.getClass());
+        log.info("Trying to get message for event {}", event.getClass().getName());
+        MessageBuilder<T> messageBuilder = getBuilder(event.getClass());
         if (messageBuilder == null) {
             log.error("No message builder found for event type: {}", event.getEventType());
             throw new MessageBuilderNotFoundException(event.getEventType());
@@ -79,14 +66,8 @@ public abstract class AbstractEventListener<T extends Event> implements EventLis
     }
 
     @Override
-    public void sendNotification(Long userId, String message) {
-        UserDto user;
-        try {
-            user = userServiceClient.getUser(userId);
-        } catch (Exception e) {
-            log.error("Error fetching user with ID {}: {}", userId, e.getMessage(), e);
-            throw new FetchViaFeignException(userId);
-        }
+    public void sendNotification(UserDto user, String message) {
+        log.info("Trying to send message '{}' to user {}", message, user.getUsername());
         UserDto.PreferredContact preferredContact = user.getPreference();
         NotificationService notificationService = notificationServiceMap.get(preferredContact);
         if (notificationService == null) {
@@ -94,5 +75,15 @@ public abstract class AbstractEventListener<T extends Event> implements EventLis
             throw new NotificationServiceNotFoundException(preferredContact);
         }
         notificationService.send(user, message);
+    }
+
+    protected UserDto getUser(Long userId, String eventNameForLog, Long eventIdForLog) {
+        return feignUserServiceAdapter.fetchUserDtosViaFeign(userId, eventNameForLog, eventIdForLog)
+                .orElseThrow(() -> new FetchViaFeignException(userId));
+    }
+
+    @SuppressWarnings("unchecked")
+    private MessageBuilder<T> getBuilder(Class<? extends Event> eventType) {
+        return (MessageBuilder<T>) messageBuilderMap.get(eventType);
     }
 }
