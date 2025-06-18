@@ -21,7 +21,7 @@ import java.util.Set;
 
 @Slf4j
 public abstract class AbstractEventListener<T> implements MessageListener {
-    protected final HashMap<UserDto.PreferredContact, NotificationService> preferredContactNotificationServices =
+    protected final HashMap<UserDto.PreferredContact, NotificationService> preferredContactNotificationServicesMap =
             new HashMap<>();
     protected final HashMap<EventType, MessageBuilder<T>> eventTypeToMessageBuilderMap = new HashMap<>();
     protected final UserServiceClient userServiceClient;
@@ -38,7 +38,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
         this.notificationEventRepository = notificationEventRepository;
 
         notificationServices.forEach(notificationService ->
-                preferredContactNotificationServices.putIfAbsent(
+                preferredContactNotificationServicesMap.putIfAbsent(
                         notificationService.getPreferredContact(),
                         notificationService)
         );
@@ -80,7 +80,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
 
     private void sendNotification(long userId, String message) {
         UserDto userDto = userServiceClient.getUser(userId);
-        NotificationService notificationService = preferredContactNotificationServices.get(userDto.getPreference());
+        NotificationService notificationService = preferredContactNotificationServicesMap.get(userDto.getPreference());
         notificationService.send(userDto, message);
     }
 }
