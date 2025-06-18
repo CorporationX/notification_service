@@ -3,6 +3,7 @@ spring:
     redis:
       port: 6379
       host: localhost
+      topic: "follower_topic"
       channel:
         follower: follower_channel
         achievement: achievement_channel
