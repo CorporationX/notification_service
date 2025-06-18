@@ -1,4 +1,4 @@
-package faang.school.notificationservice.dto;
+package faang.school.notificationservice.dto.client.user_service;
 
 import lombok.Data;
 

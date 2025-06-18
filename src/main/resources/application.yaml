@@ -8,12 +8,15 @@ spring:
         achievement: achievement_channel
 
     kafka:
+      host: localhost
+      port: 29092
       consumer:
-        host: localhost
-        port: 29092
-        # TODO: пока что не известно
         group-id: notification-service
         auto-offset-reset: earliest
+      topic:
+        comment:
+          name: comment_topic
+          partitions: 1
 
   mail:
     host: smtp.gmail.com
@@ -32,6 +35,8 @@ spring:
 
   messages:
     basename: messages
+    comment:
+      new: comment.new
 
 server:
   port: 8083
@@ -53,3 +58,6 @@ services:
   user-service:
     host: localhost
     port: 8080
+  post-service:
+    host: localhost
+    port: 8081

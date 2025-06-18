@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "spring.data.kafka.consumer")
+@ConfigurationProperties(prefix = "spring.data.kafka")
 @Component
-public class KafkaConsumerConfigurationProperties {
-    private String groupId;
-    private String autoOffsetReset;
+public class KafkaConfigurationProperties {
+    private String host;
+    private int port;
 }

@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.dto.UserClientResponseDto;
+import faang.school.notificationservice.dto.client.user_service.UserClientResponseDto;
 
 public interface NotificationService {
 

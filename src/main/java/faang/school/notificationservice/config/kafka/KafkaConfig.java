@@ -12,7 +12,7 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 public class KafkaConfig {
-    private final KafkaConsumerConfigurationProperties props;
+    private final KafkaConfigurationProperties props;
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = new HashMap<>();
