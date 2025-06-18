@@ -11,8 +11,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: triton.stream10@gmail.com
+    password: zysdrlipfhfkqsol
     properties:
       mail:
         smtp:
@@ -22,6 +22,9 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+
+  telegram:
+    token: ${TOKEN_TELEGRAM_BOT}
 
   messages:
     basename: messages
@@ -35,13 +38,13 @@ logging:
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
-  api:
-    key: whatever
-    secret: whatever
+  key: ea3cbdef
+  secret: qjGfUbiitoZyWPNYS24G4EQK
+  fromservice: fromCorporationXSmsService
 
 project-service:
-  host: localhost
-  port: 8082
+    host: localhost:8082
+    port: 8082
 user-service:
-  host: localhost
-  port: 8080
+    host: localhost:8080
+    port: 8080

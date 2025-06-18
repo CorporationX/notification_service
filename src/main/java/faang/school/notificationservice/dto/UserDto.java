@@ -1,5 +1,7 @@
 package faang.school.notificationservice.dto;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -9,8 +11,9 @@ public class UserDto {
     private String email;
     private String phone;
     private PreferredContact preference;
+    private List<ContactDto> contacts;
 
     public enum PreferredContact {
-        EMAIL, PHONE, TELEGRAM
+        EMAIL, PHONE, TELEGRAM, SMS
     }
 }
