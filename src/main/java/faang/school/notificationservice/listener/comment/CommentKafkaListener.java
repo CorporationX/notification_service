@@ -17,7 +17,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -67,7 +66,7 @@ public class CommentKafkaListener extends AbstractKafkaListener<CommentEventDto,
         log.debug("Got comment: {}", comment);
 
         CommentNewModel commentNewModel = getCommentNewModel(comment, authorComment, post);
-        String text = getMessage(commentNewModel, Locale.UK);
+        String text = getMessage(commentNewModel, authorPost.getLocale());
 
         sendNotification(authorPost, text);
     }
