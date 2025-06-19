@@ -7,10 +7,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class FollowerEventListener implements MessageListener {
-
+public class CommentEventListener implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
-//TODO реализовать
+        //TODO реализовать
     }
 }

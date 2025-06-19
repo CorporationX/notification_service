@@ -19,4 +19,3 @@ public class RedisProperties {
         private String achievement;
     }
 }
-
