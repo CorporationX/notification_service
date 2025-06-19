@@ -24,7 +24,8 @@ spring:
           writetimeout: 5000
 
   telegram:
-    token: ${TOKEN_TELEGRAM_BOT}
+    token: 7766436045:AAFaTLvamJGWRqqhM5oQsNWynxCbXNP-9PY
+    bot-name: kd_001_bot
 
   messages:
     basename: messages
