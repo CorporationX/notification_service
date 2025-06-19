@@ -1,10 +1,7 @@
 package faang.school.notificationservice.event;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.FeignUserServiceAdapter;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.exception.FailedToDeserializeException;
 import faang.school.notificationservice.exception.FetchViaFeignException;
 import faang.school.notificationservice.exception.MessageBuilderNotFoundException;
 import faang.school.notificationservice.exception.NotificationServiceNotFoundException;
@@ -13,7 +10,6 @@ import faang.school.notificationservice.service.NotificationService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.util.List;
 import java.util.Locale;
@@ -25,7 +21,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public abstract class AbstractEventListener<T extends Event> implements EventListener<T> {
-    private final ObjectMapper objectMapper;
     private final List<MessageBuilder<? extends Event>> messageBuilders;
     private final List<NotificationService> notificationServices;
     private final FeignUserServiceAdapter feignUserServiceAdapter;
@@ -42,15 +37,8 @@ public abstract class AbstractEventListener<T extends Event> implements EventLis
     }
 
     @Override
-    public void handleEvent(ConsumerRecord<String, String> message, Class<T> type, Consumer<T> consumer) {
-        T event;
-        try {
-            event = objectMapper.readValue(message.value(), type);
-        } catch (JsonProcessingException e) {
-            log.error("Failed to deserialize message: {}", message.value(), e);
-            throw new FailedToDeserializeException(message.value());
-        }
-        log.info("AbstractEventListener: new event {}", event.toString());
+    public void handleEvent(T event, Consumer<T> consumer) {
+        log.info("AbstractEventListener: Received event: {}", event.toString());
         consumer.accept(event);
     }
 

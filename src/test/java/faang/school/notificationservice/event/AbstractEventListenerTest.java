@@ -1,7 +1,5 @@
 package faang.school.notificationservice.event;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.FeignUserServiceAdapter;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.FetchViaFeignException;
@@ -9,7 +7,6 @@ import faang.school.notificationservice.exception.MessageBuilderNotFoundExceptio
 import faang.school.notificationservice.exception.NotificationServiceNotFoundException;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,16 +20,11 @@ import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AbstractEventListenerTest {
-
-    @Mock
-    private ObjectMapper objectMapper;
     @Mock
     private FeignUserServiceAdapter feignUserServiceAdapter;
     @Mock
@@ -45,11 +37,10 @@ class AbstractEventListenerTest {
     private AbstractEventListener<TestEvent> eventListener;
 
     private static class TestEventListener extends AbstractEventListener<TestEvent> {
-        public TestEventListener(ObjectMapper objectMapper,
-                                 List<MessageBuilder<? extends Event>> messageBuilders,
+        public TestEventListener(List<MessageBuilder<? extends Event>> messageBuilders,
                                  List<NotificationService> notificationServices,
                                  FeignUserServiceAdapter feignUserServiceAdapter) {
-            super(objectMapper, messageBuilders, notificationServices, feignUserServiceAdapter);
+            super(messageBuilders, notificationServices, feignUserServiceAdapter);
         }
     }
 
@@ -69,42 +60,21 @@ class AbstractEventListenerTest {
 
     @BeforeEach
     void setUp() {
-        eventListener = new TestEventListener(objectMapper, List.of(messageBuilder),
-                List.of(notificationService), feignUserServiceAdapter);
-
+        eventListener = new TestEventListener(
+                List.of(messageBuilder),
+                List.of(notificationService),
+                feignUserServiceAdapter
+        );
         when(messageBuilder.supportsEventType()).thenAnswer(inv -> TestEvent.class);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
-
         eventListener.init();
     }
 
     @Test
-    void testHandleEvent_Success() throws JsonProcessingException {
-        String jsonMessage = "{\"key\":\"value\"}";
-        ConsumerRecord<String, String> record =
-                new ConsumerRecord<>("topic", 0, 0, "key", jsonMessage);
+    void testHandleEvent_Success() {
         TestEvent testEvent = new TestEvent();
-
-        when(objectMapper.readValue(jsonMessage, TestEvent.class)).thenReturn(testEvent);
-
-        eventListener.handleEvent(record, TestEvent.class, consumer);
-
-        verify(objectMapper).readValue(jsonMessage, TestEvent.class);
+        eventListener.handleEvent(testEvent, consumer);
         verify(consumer).accept(testEvent);
-    }
-
-    @Test
-    void testHandleEvent_DeserializationFailure() throws JsonProcessingException {
-        String invalidJson = "invalid-json";
-        ConsumerRecord<String, String> record =
-                new ConsumerRecord<>("topic", 0, 0, "key", invalidJson);
-
-        when(objectMapper.readValue(invalidJson, TestEvent.class)).thenThrow(JsonProcessingException.class);
-
-        assertThrows(RuntimeException.class, () -> eventListener.handleEvent(record, TestEvent.class, consumer));
-
-        verify(objectMapper).readValue(invalidJson, TestEvent.class);
-        verify(consumer, never()).accept(any());
     }
 
     @Test
@@ -125,10 +95,8 @@ class AbstractEventListenerTest {
     void testGetMessage_BuilderNotFound() {
         AnotherTestEvent anotherTestEvent = new AnotherTestEvent();
         Locale locale = Locale.getDefault();
-
         assertThrows(MessageBuilderNotFoundException.class, () -> eventListener.getMessage(anotherTestEvent, locale));
     }
-
 
     @Test
     void testSendNotification_Success() {
