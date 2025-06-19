@@ -54,16 +54,16 @@ public class CommentKafkaListener extends AbstractKafkaListener<CommentEventDto,
                 .collect(Collectors.toMap(UserClientResponseDto::getId, Function.identity()));
 
         UserClientResponseDto authorPost = userMap.get(commentEventDto.getAuthorPostId());
-        log.debug("Got post author: {}", authorPost);
+        log.info("Got post author: {}", authorPost);
 
         UserClientResponseDto authorComment = userMap.get(commentEventDto.getAuthorId());
-        log.debug("Got comment author: {}", authorComment);
+        log.info("Got comment author: {}", authorComment);
 
         PostClientResponseDto post = postServiceClient.getPostById(commentEventDto.getPostId());
-        log.debug("Got post: {}", post);
+        log.info("Got post: {}", post);
 
         CommentClientResponseDto comment = postServiceClient.getCommentById(commentEventDto.getId());
-        log.debug("Got comment: {}", comment);
+        log.info("Got comment: {}", comment);
 
         CommentNewModel commentNewModel = getCommentNewModel(comment, authorComment, post);
         String text = getMessage(commentNewModel, authorPost.getLocale());

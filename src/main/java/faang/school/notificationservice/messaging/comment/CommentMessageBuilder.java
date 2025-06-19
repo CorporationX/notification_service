@@ -34,7 +34,7 @@ public class CommentMessageBuilder implements MessageBuilder<CommentNewModel> {
 
         String message = messageSource.getMessage(code, args, locale);
 
-        log.debug("Message {} was written for the user {}", message, event.getUsernameAuthorComment());
+        log.info("Message {} was written for the user {}", message, event.getUsernameAuthorComment());
 
         return message;
     }
