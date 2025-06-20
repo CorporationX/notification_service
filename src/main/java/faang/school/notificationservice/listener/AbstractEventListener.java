@@ -26,9 +26,9 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     protected final ObjectMapper objectMapper;
     protected final RedisProperties redisProperties;
 
-    protected String getMessage(Class<?> classType, Locale locale, T event) {
+    protected String getMessage(Locale locale, T event) {
         MessageBuilder<T> messageBuilder = messageBuilders.stream()
-                .filter(ms -> ms.getInstance() == classType)
+                .filter(ms -> ms.getInstance() == event.getClass())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No required message builder found"));
 
