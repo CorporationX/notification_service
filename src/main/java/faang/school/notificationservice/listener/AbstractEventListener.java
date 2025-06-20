@@ -38,7 +38,7 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     protected void sendNotification(long userId, String message) {
         UserDto user = userServiceClient.getUser(userId);
         NotificationService notificationService = notificationServices.stream()
-                .filter(ns -> ns.getPreferredContact().equals(user.getPreference()))
+                .filter(ns -> ns.getPreferredContact() == user.getPreference())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No required preference found."));
         notificationService.send(user, message);
