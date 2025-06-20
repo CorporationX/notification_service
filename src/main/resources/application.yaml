@@ -44,3 +44,14 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+kafka:
+  consumer:
+    server: localhost:9092
+    producer.id : server.broadcast
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  template:
+    topic: "view-topic"
+
+
