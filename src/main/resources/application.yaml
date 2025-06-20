@@ -4,6 +4,7 @@ spring:
       port: 6379
       host: localhost
       channel:
+        like: like_channel
         follower: follower_channel
         achievement: achievement_channel
 
@@ -21,9 +22,10 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-  
+
   telegram:
-    token: ${TOKEN_TELEGRAM_BOT}
+    token: 7766436045:AAFaTLvamJGWRqqhM5oQsNWynxCbXNP-9PY
+    bot-name: kd_001_bot
 
   messages:
     basename: messages
