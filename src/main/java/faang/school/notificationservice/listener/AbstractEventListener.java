@@ -26,20 +26,22 @@ public abstract class AbstractEventListener<T> implements MessageListener {
     protected final ObjectMapper objectMapper;
     protected final RedisProperties redisProperties;
 
-    public String getMessage(Class<?> classType, Locale locale, T event) {
+    protected String getMessage(Class<?> classType, Locale locale, T event) {
         MessageBuilder<T> messageBuilder = messageBuilders.stream()
-                .filter(ms ->
-                        ms.getInstance().equals(classType)).findFirst().orElseThrow();
+                .filter(ms -> ms.getInstance() == classType)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No required message builder found"));
+
         return messageBuilder.buildMessage(event, locale);
     }
 
-    public void sendNotification(long userId, String message) {
-        UserDto userDto = userServiceClient.getUser(userId);
+    protected void sendNotification(long userId, String message) {
+        UserDto user = userServiceClient.getUser(userId);
         NotificationService notificationService = notificationServices.stream()
-                .filter(ns ->
-                        ns.getPreferredContact().equals(userDto.getPreference()))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("No required prefference found."));
-        notificationService.send(userDto, message);
+                .filter(ns -> ns.getPreferredContact().equals(user.getPreference()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No required preference found."));
+        notificationService.send(user, message);
     }
 
     protected abstract List<String> getTopicNameKeys();
