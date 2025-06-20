@@ -1,4 +1,4 @@
-package faang.school.notificationservice.service.email;
+package faang.school.notificationservice.config.notification;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,21 +10,21 @@ import java.util.Properties;
 public class EmailConfig {
 
     @Value("spring.mail.host")
-     String host;
+    String host;
     @Value("spring.mail.port")
-     int port;
+    int port;
     @Value("spring.mail.username")
-     String emailAddress;
+    String emailAddress;
     @Value("spring.mail.password")
-     String password;
+    String password;
     @Value("spring.mail.transport.protocol")
-     boolean protocol;
+    boolean protocol;
     @Value("spring.mail.properties.mail.smtp.auth")
-     boolean auth;
+    boolean auth;
     @Value("spring.mail.properties.mail.smtp.starttls.enable")
-     boolean starttls;
+    boolean starttls;
     @Value("spring.mail.debug")
-     boolean debug;
+    boolean debug;
 
     @Bean
     public JavaMailSender getJavaMailSender() {

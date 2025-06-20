@@ -2,14 +2,13 @@ package faang.school.notificationservice;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.EmailService;
-import faang.school.notificationservice.service.email.EmailConfig;
+import faang.school.notificationservice.config.notification.EmailConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
