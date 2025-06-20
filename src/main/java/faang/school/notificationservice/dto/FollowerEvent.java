@@ -4,6 +4,6 @@ import java.time.LocalDateTime;
 
 public record FollowerEvent(
         long followerId,
-        long followeeId,
+        long followeeId,//тот на кого подписываются
         LocalDateTime localDateTime) {
 }
