@@ -1,8 +1,10 @@
 package faang.school.notificationservice.config.context;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class UserContext {
 
     private final ThreadLocal<Long> userIdHolder = new ThreadLocal<>();

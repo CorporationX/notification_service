@@ -1,4 +1,4 @@
-package faang.school.notificationservice.client;
+package faang.school.notificationservice.config.client.feign;
 
 import faang.school.notificationservice.config.context.UserContext;
 import feign.RequestInterceptor;
