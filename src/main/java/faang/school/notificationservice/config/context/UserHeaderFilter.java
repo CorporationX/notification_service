@@ -15,6 +15,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class UserHeaderFilter implements Filter {
 
+    public static final String X_USER_ID_MISSING = "Missing required header 'x-user-id'. " +
+            "Please include 'x-user-id' header with a valid user ID in your request.";
     private final UserContext userContext;
 
     @Override
@@ -25,7 +27,7 @@ public class UserHeaderFilter implements Filter {
         if (userId != null) {
             userContext.setUserId(Long.parseLong(userId));
         } else {
-            throw new IllegalArgumentException("Missing required header 'x-user-id'. Please include 'x-user-id' header with a valid user ID in your request.");
+            throw new IllegalArgumentException(X_USER_ID_MISSING);
         }
         try {
             chain.doFilter(request, response);
