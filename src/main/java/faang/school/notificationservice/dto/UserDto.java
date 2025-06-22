@@ -1,10 +1,14 @@
 package faang.school.notificationservice.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.Locale;
 
 @Data
+@Builder
+@AllArgsConstructor
 public class UserDto {
     private long id;
     private String username;

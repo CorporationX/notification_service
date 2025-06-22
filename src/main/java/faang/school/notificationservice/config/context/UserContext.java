@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.context;
 
+
 import org.springframework.stereotype.Component;
 
 @Component
