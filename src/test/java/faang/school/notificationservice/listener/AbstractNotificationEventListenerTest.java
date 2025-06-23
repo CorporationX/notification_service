@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
-class AbstractEventListenerTest {
+class AbstractNotificationEventListenerTest {
 
     @Mock
     private ObjectMapper objectMapper;

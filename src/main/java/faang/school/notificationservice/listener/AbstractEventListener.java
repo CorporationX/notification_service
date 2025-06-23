@@ -6,7 +6,6 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,14 +20,13 @@ public abstract class AbstractEventListener<T> {
     private final List<NotificationService> notificationList;
     private final List<MessageBuilder<T>> messageBuilders;
 
-    protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
+    protected void handleEvent(String message, Class<T> type, Consumer<T> consumer) {
         try {
-            T event = objectMapper.readValue(message.getBody(), type);
+            T event = objectMapper.readValue(message, type);
             consumer.accept(event);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     protected String getMessage(T event, Locale locale) {
@@ -50,5 +48,4 @@ public abstract class AbstractEventListener<T> {
                 .send(userDto, message);
 
     }
-
 }
