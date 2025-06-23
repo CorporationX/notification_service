@@ -1,0 +1,7 @@
+vonage: #https://dashboard.nexmo.com/getting-started/sms
+  api:
+    key: ea3cbdef
+    secret: qjGfUbiitoZyWPNYS24G4EQK
+
+test:
+  phone-number: "+70000000000"  # Замените на нужный номер телефона
