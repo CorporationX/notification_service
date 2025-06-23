@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Locale;
 
 @Data
-public class UserClientResponseDto {
+public class UserDto {
     private long id;
     private String username;
     private String email;

@@ -1,4 +1,4 @@
-package faang.school.notificationservice.event.comment;
+package faang.school.notificationservice.model.kafka.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

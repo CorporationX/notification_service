@@ -1,6 +1,6 @@
 package faang.school.notificationservice.messaging.comment;
 
-import faang.school.notificationservice.model.comment.CommentNewModel;
+import faang.school.notificationservice.model.kafka.comment.CommentMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +30,7 @@ class CommentMessageBuilderTest {
 
     @Test
     void testBuildMessage_returnsExpectedMessage() {
-        CommentNewModel model = new CommentNewModel();
+        CommentMessage model = new CommentMessage();
         model.setPostTitle("Spring Testing");
         model.setUsernameAuthorComment("john_doe");
         model.setCommentContent("Great post!");
