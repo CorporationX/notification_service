@@ -16,8 +16,8 @@ import java.util.List;
 public class RedisConfiguration {
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory,
-                                                        List<AbstractEventListener> eventListeners) {
+    public <T> RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory,
+                                                        List<AbstractEventListener<T>> eventListeners) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         eventListeners.forEach(listener -> container.addMessageListener(listener, listener.getChannelTopics()));
