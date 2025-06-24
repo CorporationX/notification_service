@@ -8,6 +8,15 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
 
+  kafka:
+    bootstrap-servers: localhost:9094
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      group-id: profile-view-notification-group
+    topics:
+      profile-view: profile-view-events
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -44,8 +53,8 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   fromservice: fromCorporationXSmsService
 
 project-service:
-    host: localhost:8082
-    port: 8082
+  host: localhost:8082
+  port: 8082
 user-service:
-    host: localhost:8080
-    port: 8080
+  host: localhost:8080
+  port: 8080
