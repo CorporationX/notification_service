@@ -37,7 +37,7 @@ class AbstractEventListenerTest {
     private AbstractEventListener<TestEvent> eventListener;
 
     private static class TestEventListener extends AbstractEventListener<TestEvent> {
-        public TestEventListener(List<MessageBuilder<? extends Event>> messageBuilders,
+        public TestEventListener(MessageBuilder<TestEvent> messageBuilders,
                                  List<NotificationService> notificationServices,
                                  FeignUserServiceAdapter feignUserServiceAdapter) {
             super(messageBuilders, notificationServices, feignUserServiceAdapter);
@@ -61,11 +61,10 @@ class AbstractEventListenerTest {
     @BeforeEach
     void setUp() {
         eventListener = new TestEventListener(
-                List.of(messageBuilder),
+                messageBuilder,
                 List.of(notificationService),
                 feignUserServiceAdapter
         );
-        when(messageBuilder.supportsEventType()).thenAnswer(inv -> TestEvent.class);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
         eventListener.init();
     }
@@ -93,6 +92,11 @@ class AbstractEventListenerTest {
 
     @Test
     void testGetMessage_BuilderNotFound() {
+        eventListener = new TestEventListener(
+                null,
+                List.of(notificationService),
+                feignUserServiceAdapter
+        );
         AnotherTestEvent anotherTestEvent = new AnotherTestEvent();
         Locale locale = Locale.getDefault();
         assertThrows(MessageBuilderNotFoundException.class, () -> eventListener.getMessage(anotherTestEvent, locale));

@@ -29,6 +29,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-consul-config")
     implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery")
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.freemarker:freemarker:2.3.34")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     /**

@@ -21,17 +21,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public abstract class AbstractEventListener<T extends Event> implements EventListener<T> {
-    private final List<MessageBuilder<? extends Event>> messageBuilders;
+    private final MessageBuilder<T> messageBuilder;
     private final List<NotificationService> notificationServices;
     private final FeignUserServiceAdapter feignUserServiceAdapter;
 
-    private Map<Class<? extends Event>, MessageBuilder<? extends Event>> messageBuilderMap;
     private Map<UserDto.PreferredContact, NotificationService> notificationServiceMap;
 
     @PostConstruct
     public void init() {
-        messageBuilderMap = messageBuilders.stream()
-                .collect(Collectors.toMap(MessageBuilder::supportsEventType, Function.identity()));
         notificationServiceMap = notificationServices.stream()
                 .collect(Collectors.toMap(NotificationService::getPreferredContact, Function.identity()));
     }
@@ -45,7 +42,6 @@ public abstract class AbstractEventListener<T extends Event> implements EventLis
     @Override
     public String getMessage(T event, Locale locale) {
         log.info("Trying to get message for event {}", event.getClass().getName());
-        MessageBuilder<T> messageBuilder = getBuilder(event.getClass());
         if (messageBuilder == null) {
             log.error("No message builder found for event type: {}", event.getEventType());
             throw new MessageBuilderNotFoundException(event.getEventType());
@@ -68,10 +64,5 @@ public abstract class AbstractEventListener<T extends Event> implements EventLis
     protected UserDto getUser(Long userId, String eventNameForLog, Long eventIdForLog) {
         return feignUserServiceAdapter.fetchUserDtosViaFeign(userId, eventNameForLog, eventIdForLog)
                 .orElseThrow(() -> new FetchViaFeignException(userId));
-    }
-
-    @SuppressWarnings("unchecked")
-    private MessageBuilder<T> getBuilder(Class<? extends Event> eventType) {
-        return (MessageBuilder<T>) messageBuilderMap.get(eventType);
     }
 }

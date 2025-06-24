@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 @Slf4j
 public class RecommendationRequestEventListener extends AbstractEventListener<RecommendationRequestEvent> {
-    public RecommendationRequestEventListener(List<MessageBuilder<? extends Event>> messageBuilders,
+    public RecommendationRequestEventListener(MessageBuilder<RecommendationRequestEvent> messageBuilders,
                                               List<NotificationService> notificationServices,
                                               FeignUserServiceAdapter feignUserServiceAdapter) {
         super(messageBuilders, notificationServices, feignUserServiceAdapter);

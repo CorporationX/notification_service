@@ -36,6 +36,7 @@ spring:
           timeout: 5000
           writetimeout: 5000
     default-subject: "Hydra notification"
+    template-name: notification-template.ftl
 
   messages:
     basename: messages
@@ -53,6 +54,11 @@ spring:
       recommendation-request:
         name: recommendation-request-topic
         concurrency: 4
+
+  freemarker:
+    template-loader-path: classpath:/templates/
+    suffix: .ftl
+    charset: UTF-8
 
 server:
   port: 8083
