@@ -1,7 +1,6 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -26,8 +25,6 @@ class AbstractNotificationEventListenerTest {
     @Mock
     private ObjectMapper objectMapper;
     @Mock
-    private UserServiceClient userServiceClient;
-    @Mock
     private List<NotificationService> notificationList;
     @Mock
     private List<MessageBuilder<TestEvent>> messageBuilders;
@@ -38,7 +35,7 @@ class AbstractNotificationEventListenerTest {
 
     @BeforeEach
     void setUp() {
-        testEventListener = new TestEventListener(objectMapper, userServiceClient, notificationList, messageBuilders);
+        testEventListener = new TestEventListener(objectMapper, notificationList, messageBuilders);
     }
 
     @Test
@@ -77,10 +74,10 @@ class AbstractNotificationEventListenerTest {
     }
 
     private static class TestEventListener extends AbstractEventListener<TestEvent> {
-        public TestEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
+        public TestEventListener(ObjectMapper objectMapper,
                                List<NotificationService> notificationList,
                                List<MessageBuilder<TestEvent>> messageBuilders) {
-            super(objectMapper, userServiceClient, notificationList, messageBuilders);
+            super(objectMapper, notificationList, messageBuilders);
         }
     }
 
