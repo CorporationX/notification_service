@@ -1,5 +1,7 @@
 package faang.school.notificationservice.listener;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.kafka.SubscriptionEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
@@ -15,10 +17,13 @@ import java.util.List;
 public class SubscriptionEventListener extends AbstractEventListener<SubscriptionEvent> {
 
     public SubscriptionEventListener(
-            List<NotificationService> list,
-            MessageBuilder<SubscriptionEvent> messageBuilders
+            ObjectMapper objectMapper,
+            UserServiceClient userServiceClient,
+            List<NotificationService> notificationServices,
+            MessageBuilder<SubscriptionEvent> messageBuilder,
+            List<MessageBuilder<SubscriptionEvent>> messageBuilders
     ) {
-        super(list, messageBuilders);
+        super(objectMapper, userServiceClient, notificationServices, messageBuilder, messageBuilders);
     }
 
     @KafkaListener(

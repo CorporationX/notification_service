@@ -50,13 +50,7 @@ public abstract class AbstractEventListener<T extends NotificationEvent> {
 
     protected void sendNotification(Long userId, String message) {
         UserDto userDto = userServiceClient.getUser(userId);
-        notificationServices.stream()
-                .filter(notificationService -> userDto.getPreference() == notificationService.getPreferredContact())
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "No notification service was found for user preferred notification type"))
-                .send(userDto, message);
-
+        sendMessage(userDto, message);
     }
 
     protected String getMessage(T event) {
@@ -77,13 +71,11 @@ public abstract class AbstractEventListener<T extends NotificationEvent> {
 
     protected void sendMessage(UserDto userDto, String message) {
         notificationServices.stream()
-                .filter(notificationService ->
-                        notificationService.getPreferredContact() == userDto.getPreference())
+                .filter(notificationService -> notificationService.getPreferredContact() == userDto.getPreference())
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Notification service for %s not found"
-                        .formatted(userDto.getPreference())))
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No notification service was found for user preferred notification type"))
                 .send(userDto, message);
-
     }
 
     @SafeVarargs

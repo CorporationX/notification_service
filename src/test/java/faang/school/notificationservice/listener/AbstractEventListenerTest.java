@@ -2,8 +2,11 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.event.NotificationEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+
+import faang.school.notificationservice.service.notification.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +40,7 @@ class AbstractEventListenerTest {
 
     @BeforeEach
     void setUp() {
-        testEventListener = new TestEventListener(objectMapper, userServiceClient, notificationList, messageBuilders);
+        testEventListener = new TestEventListener(objectMapper, userServiceClient, notificationList, messageBuilder, messageBuilders);
     }
 
     @Test
@@ -78,12 +81,21 @@ class AbstractEventListenerTest {
     private static class TestEventListener extends AbstractEventListener<TestEvent> {
         public TestEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
                                List<NotificationService> notificationList,
+                               MessageBuilder<TestEvent> messageBuilder,
                                List<MessageBuilder<TestEvent>> messageBuilders) {
-            super(objectMapper, userServiceClient, notificationList, messageBuilders);
+            super(objectMapper, userServiceClient, notificationList, messageBuilder, messageBuilders);
+        }
+
+        @Override
+        protected boolean isEventValid(TestEvent event) {
+            return true;
         }
     }
 
-    protected static class TestEvent {
+    protected static class TestEvent implements NotificationEvent {
+        @Override
+        public UserDto getOwner() {
+            return new UserDto();
+        }
     }
-
 }

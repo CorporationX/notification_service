@@ -8,7 +8,6 @@ spring:
         achievement: achievement_channel
     kafka:
       bootstrap-server: "localhost:9092"
-      trusted-packages: faang.school.notificationservice.event.kafka
       topic:
         subscription: subscription-events
       consumer-group:
