@@ -2,6 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,11 +69,11 @@ class AbstractNotificationEventListenerTest {
 
     @Test
     void testSendNotificationThrowsException() {
-        long userId = 1L;
+        UserDto userDto = new UserDto();
         String message = "Test notification";
         doReturn(Stream.of()).when(notificationList).stream();
 
-        assertThrows(IllegalArgumentException.class, () -> testEventListener.sendNotification(userId, message));
+        assertThrows(IllegalArgumentException.class, () -> testEventListener.sendNotification(userDto, message));
     }
 
     private static class TestEventListener extends AbstractEventListener<TestEvent> {

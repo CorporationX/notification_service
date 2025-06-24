@@ -28,11 +28,9 @@ public class GoalCompletionEventListener extends AbstractEventListener<GoalCompl
     private final SmsService smsService;
 
     @KafkaListener(topics = "${spring.kafka.topics.goal-completed-topic.name}",
-            groupId = "${spring.kafka.consumer.group-id}")
-    public void listenGoalCompletion(String event) {
-        handleEvent(event, GoalCompletionNotificationEvent.class, goalEvent -> {
-            String message = getMessage(goalEvent, Locale.getDefault());
-            smsService.sendSms(message);
-        });
+            groupId = "${spring.kafka.consumer.group-id}", containerFactory = "kafkaListenerContainerFactory")
+    public void listenGoalCompletion(GoalCompletionNotificationEvent event) {
+        String message = getMessage(event, Locale.getDefault());
+        smsService.sendSms(message);
     }
 }

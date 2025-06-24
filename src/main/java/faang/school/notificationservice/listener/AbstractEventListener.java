@@ -38,14 +38,12 @@ public abstract class AbstractEventListener<T> {
                         + event.getClass().getName()));
     }
 
-    protected void sendNotification(Long userId, String message) {
-        UserDto userDto = userServiceClient.getUser(userId);
+    protected void sendNotification(UserDto userDto, String message) {
         notificationList.stream()
                 .filter(notificationService -> userDto.getPreference() == notificationService.getPreferredContact())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
                         "No notification service was found for user preferred notification type"))
                 .send(userDto, message);
-
     }
 }
