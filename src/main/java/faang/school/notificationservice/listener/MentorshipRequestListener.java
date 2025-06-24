@@ -9,11 +9,9 @@ import faang.school.notificationservice.service.NotificationService;
 import lombok.SneakyThrows;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 public class MentorshipRequestListener extends AbstractEventListener<MentorshipRequestEvent> implements MessageListener {
 
     public MentorshipRequestListener(ObjectMapper objectMapper,
