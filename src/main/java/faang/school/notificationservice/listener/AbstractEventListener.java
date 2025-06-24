@@ -16,7 +16,6 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
     protected final ObjectMapper objectMapper;
-    protected final UserServiceClient userServiceClient;
     private final List<NotificationService> notificationList;
     private final List<MessageBuilder<T>> messageBuilders;
 

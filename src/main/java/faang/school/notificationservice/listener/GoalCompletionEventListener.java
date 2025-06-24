@@ -18,10 +18,10 @@ import java.util.Locale;
 @Component
 public class GoalCompletionEventListener extends AbstractEventListener<GoalCompletionNotificationEvent> {
 
-    public GoalCompletionEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
-                                       List<NotificationService> notificationList,
-                                       List<MessageBuilder<GoalCompletionNotificationEvent>> messageBuilders, SmsService smsService) {
-        super(objectMapper, userServiceClient, notificationList, messageBuilders);
+    public GoalCompletionEventListener(ObjectMapper objectMapper, List<NotificationService> notificationList,
+                                       List<MessageBuilder<GoalCompletionNotificationEvent>> messageBuilders,
+                                       SmsService smsService) {
+        super(objectMapper, notificationList, messageBuilders);
         this.smsService = smsService;
     }
 
