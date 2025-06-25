@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Locale;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,6 +15,7 @@ public class UserDto {
     private String email;
     private String phone;
     private PreferredContact preference;
+    private Locale locale;
 
     public enum PreferredContact {
         EMAIL, PHONE, TELEGRAM
