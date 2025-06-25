@@ -1,8 +1,13 @@
 package faang.school.notificationservice.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-@Data
+
+@Setter
+@Getter
+@RequiredArgsConstructor
 public class UserDto {
     private long id;
     private String username;
@@ -12,5 +17,9 @@ public class UserDto {
 
     public enum PreferredContact {
         EMAIL, PHONE, TELEGRAM
+    }
+
+    public PreferredContact getPreference() {
+        return preference == null ? PreferredContact.EMAIL : preference;
     }
 }

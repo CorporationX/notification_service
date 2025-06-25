@@ -1,4 +1,12 @@
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: user-service-group
+    topics:
+      goal-completed-topic:
+        name: goal-completed
+
   data:
     redis:
       port: 6379
@@ -6,6 +14,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+
 
   mail:
     host: smtp.gmail.com

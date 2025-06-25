@@ -1,7 +1,7 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,12 +20,10 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
-class AbstractEventListenerTest {
+class AbstractNotificationEventListenerTest {
 
     @Mock
     private ObjectMapper objectMapper;
-    @Mock
-    private UserServiceClient userServiceClient;
     @Mock
     private List<NotificationService> notificationList;
     @Mock
@@ -37,7 +35,7 @@ class AbstractEventListenerTest {
 
     @BeforeEach
     void setUp() {
-        testEventListener = new TestEventListener(objectMapper, userServiceClient, notificationList, messageBuilders);
+        testEventListener = new TestEventListener(objectMapper, notificationList, messageBuilders);
     }
 
     @Test
@@ -68,18 +66,18 @@ class AbstractEventListenerTest {
 
     @Test
     void testSendNotificationThrowsException() {
-        long userId = 1L;
+        UserDto userDto = new UserDto();
         String message = "Test notification";
         doReturn(Stream.of()).when(notificationList).stream();
 
-        assertThrows(IllegalArgumentException.class, () -> testEventListener.sendNotification(userId, message));
+        assertThrows(IllegalArgumentException.class, () -> testEventListener.sendNotification(userDto, message));
     }
 
     private static class TestEventListener extends AbstractEventListener<TestEvent> {
-        public TestEventListener(ObjectMapper objectMapper, UserServiceClient userServiceClient,
+        public TestEventListener(ObjectMapper objectMapper,
                                List<NotificationService> notificationList,
                                List<MessageBuilder<TestEvent>> messageBuilders) {
-            super(objectMapper, userServiceClient, notificationList, messageBuilders);
+            super(objectMapper, notificationList, messageBuilders);
         }
     }
 
