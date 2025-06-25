@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.model.dto.event.GoalCompletionNotificationEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import faang.school.notificationservice.service.SmsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;

@@ -1,5 +1,6 @@
 package faang.school.notificationservice.model.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class UserDto {
     private long id;
     private String username;
