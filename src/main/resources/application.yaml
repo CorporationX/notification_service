@@ -11,8 +11,11 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: corporationx.bot@gmail.com #https://www.baeldung.com/spring-email
+    password: rzmcyykwdhhfppoa #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    debug: true
+    transport:
+      protocol: true
     properties:
       mail:
         smtp:
@@ -63,3 +66,10 @@ sms:
   url: "http://api.prostor-sms.ru/"
   username: "t89994676160"
   password: "504421"
+  
+telegram:
+  chat: -1002709076416L
+  bot:
+    username: CorporationX_kraken_bot
+    token: 7854027302:AAEaW444lQwgkW6UkC9cB5kgHvIf_0ShToc
+    enable: true

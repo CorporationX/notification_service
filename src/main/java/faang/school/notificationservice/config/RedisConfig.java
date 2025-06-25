@@ -1,6 +1,8 @@
 package faang.school.notificationservice.config;
 
+
 import faang.school.notificationservice.messaging.FollowerEventListener;
+import faang.school.notificationservice.listener.MentorshipRequestListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -39,24 +41,36 @@ public class RedisConfig {
         template.setConnectionFactory(jedisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
 
+
         return template;
     }
 
     @Bean
-    public MessageListenerAdapter followerListener(FollowerEventListener followerEventListener) {
-        return new MessageListenerAdapter(followerEventListener);
-    }
-
-    @Bean
-    public ChannelTopic topic() {
-        return new ChannelTopic(followerTopic);
-    }
-
-    @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter messageListenerAdapter) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter messageListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(messageListenerAdapter, topic());
+        container.addMessageListener(mentorshipRequestListenerConfig, mentorshipRequestTopic());
         return container;
+    }
+    
+    @Bean
+    public MessageListenerAdapter followerListener(FollowerEventListener followerEventListener) {
+        return new MessageListenerAdapter(followerEventListener);
+    }
+    
+    @Bean
+    public MessageListenerAdapter mentorshipRequestListenerConfig(MentorshipRequestListener mentorshipRequestListener) {
+        return new MessageListenerAdapter(mentorshipRequestListener);
+    }
+    
+    @Bean 
+    public ChannelTopic mentorshipRequestTopic() {
+        return new ChannelTopic("mentorshipRequest_topic");
+    }
+      
+    @Bean
+    public ChannelTopic topic() {
+        return new ChannelTopic(followerTopic);
     }
 }
