@@ -61,3 +61,5 @@ user-service:
 
 sms:
   url: "http://api.prostor-sms.ru/"
+  username: "t89994676160"
+  password: "504421"
