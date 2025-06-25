@@ -1,7 +1,7 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.dto.event.GoalCompletionNotificationEvent;
+import faang.school.notificationservice.model.dto.event.GoalCompletionNotificationEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.SmsService;
@@ -18,18 +18,14 @@ import java.util.Locale;
 public class GoalCompletionEventListener extends AbstractEventListener<GoalCompletionNotificationEvent> {
 
     public GoalCompletionEventListener(ObjectMapper objectMapper, List<NotificationService> notificationList,
-                                       List<MessageBuilder<GoalCompletionNotificationEvent>> messageBuilders,
-                                       SmsService smsService) {
+                                       List<MessageBuilder<GoalCompletionNotificationEvent>> messageBuilders) {
         super(objectMapper, notificationList, messageBuilders);
-        this.smsService = smsService;
     }
-
-    private final SmsService smsService;
 
     @KafkaListener(topics = "${spring.kafka.topics.goal-completed-topic.name}",
             groupId = "${spring.kafka.consumer.group-id}", containerFactory = "kafkaListenerContainerFactory")
     public void listenGoalCompletion(GoalCompletionNotificationEvent event) {
         String message = getMessage(event, Locale.getDefault());
-        smsService.sendSms(message);
+        sendNotification(event.getUserDto(), message);
     }
 }

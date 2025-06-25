@@ -1,6 +1,6 @@
-package faang.school.notificationservice.dto.event;
+package faang.school.notificationservice.model.dto.event;
 
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.model.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

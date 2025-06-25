@@ -2,8 +2,8 @@ package faang.school.notificationservice.listener;
 
 import faang.school.notificationservice.config.IntegrationTestContextInitializer;
 import faang.school.notificationservice.config.TestKafkaConfig;
-import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.dto.event.GoalCompletionNotificationEvent;
+import faang.school.notificationservice.model.dto.UserDto;
+import faang.school.notificationservice.model.dto.event.GoalCompletionNotificationEvent;
 import faang.school.notificationservice.service.SmsService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.shaded.org.awaitility.Awaitility;
 
 import java.time.Duration;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.times;
@@ -38,12 +39,13 @@ public class GoalCompletionEventListenerIT {
     @Autowired
     private KafkaTemplate<String, GoalCompletionNotificationEvent> kafkaTestTemplate;
 
-    @MockBean
-    private SmsService smsService;
+    @Autowired
+    private GoalCompletionEventListener listener;
+
 
     @Test
     public void testListenGoalCompletion() {
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<GoalCompletionNotificationEvent> captor = ArgumentCaptor.forClass(GoalCompletionNotificationEvent.class);
         GoalCompletionNotificationEvent event = new GoalCompletionNotificationEvent(new UserDto(), "test");
         kafkaTestTemplate.send(goalTopic, event);
 
@@ -51,8 +53,9 @@ public class GoalCompletionEventListenerIT {
                 .atMost(5, TimeUnit.SECONDS)
                 .pollInterval(Duration.ofMillis(100))
                 .untilAsserted(() -> {
-                    verify(smsService, times(1)).sendSms(captor.capture());
-                    String receivedMsg = captor.getValue();
+
+                    verify(listener, times(1)).getMessage(captor.capture(), Locale.getDefault());
+                    String receivedMsg = captor.getValue().getGoalTitle();
 
                     assertEquals("\"Congrats! You have achieved test goal!\"", receivedMsg);
                 });

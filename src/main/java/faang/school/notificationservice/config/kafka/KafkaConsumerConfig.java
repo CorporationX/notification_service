@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config.kafka;
 
-import faang.school.notificationservice.dto.event.GoalCompletionNotificationEvent;
+import faang.school.notificationservice.model.dto.event.GoalCompletionNotificationEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.kafka.annotation.EnableKafka;
