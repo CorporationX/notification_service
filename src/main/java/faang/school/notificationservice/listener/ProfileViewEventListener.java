@@ -27,7 +27,6 @@ public class ProfileViewEventListener extends AbstractEventListener<ProfileViewE
             containerFactory = "profileViewKafkaListenerContainerFactory"
     )
     public void listen(ProfileViewEventDto event) {
-        log.info("====================asdasdasd====================");
         String localizedMessage = getMessage(event, Locale.JAPAN);
         sendNotification(event.getProfileOwnerId(), localizedMessage);
     }

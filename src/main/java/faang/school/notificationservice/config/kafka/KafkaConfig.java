@@ -18,20 +18,23 @@ public class KafkaConfig {
     private final KafkaProperties kafkaProperties;
     private final ObjectMapper objectMapper;
 
-    @Bean
-    public ConsumerFactory<String, ProfileViewEventDto> profileViewConsumerFactory() {
+    public <T> ConsumerFactory<String, T> consumerFactory(Class<T> clazz) {
         return new DefaultKafkaConsumerFactory<>(
-                kafkaProperties.getConsumerProperties(ProfileViewEventDto.class),
+                kafkaProperties.getConsumerProperties(clazz),
                 new StringDeserializer(),
-                new JsonDeserializer<>(ProfileViewEventDto.class, objectMapper, false)
+                new JsonDeserializer<>(clazz, objectMapper, false)
         );
+    }
+
+    public <T> ConcurrentKafkaListenerContainerFactory<String, T> listenerFactory(Class<T> clazz) {
+        ConcurrentKafkaListenerContainerFactory<String, T> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory(clazz));
+        return factory;
     }
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, ProfileViewEventDto> profileViewKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, ProfileViewEventDto> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(profileViewConsumerFactory());
-        return factory;
+        return listenerFactory(ProfileViewEventDto.class);
     }
+
 }

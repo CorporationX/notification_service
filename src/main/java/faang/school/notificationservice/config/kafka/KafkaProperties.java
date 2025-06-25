@@ -11,11 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
-@Component
 @ConfigurationProperties(prefix = "spring.kafka")
 public class KafkaProperties {
 
     private String bootstrapServers;
+    private String trustedPackages = "faang.school.notificationservice.dto";
     private Consumer consumer = new Consumer();
     private Topics topics = new Topics();
 
@@ -39,7 +39,7 @@ public class KafkaProperties {
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, consumer.getAutoOffsetReset());
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        properties.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        properties.put(JsonDeserializer.TRUSTED_PACKAGES, trustedPackages);
         properties.put(JsonDeserializer.VALUE_DEFAULT_TYPE, valueType.getName());
         return properties;
     }

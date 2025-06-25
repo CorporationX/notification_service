@@ -16,6 +16,7 @@ spring:
       group-id: profile-view-notification-group
     topics:
       profile-view: profile-view-events
+    trusted-packages: faang.school.notificationservice.dto
 
   mail:
     host: smtp.gmail.com
