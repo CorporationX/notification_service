@@ -24,8 +24,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: hydra.stream10.faang.school@gmail.com #https://www.baeldung.com/spring-email
+    password: ojkpqwcbnebijjlj #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
     properties:
       mail:
         smtp:
@@ -35,9 +35,30 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+    default-subject: "Hydra notification"
+    template-name: notification-template.ftl
 
   messages:
     basename: messages
+
+  kafka:
+    retry:
+      attempts: 3
+      backoff-delay: 1000 # 1 секунда
+    consumer:
+      bootstrap-servers: localhost:9092, localhost:9094
+      group-id: notification-service
+      max-poll-records: 50
+      offset-reset-config: latest
+    topics:
+      recommendation-request:
+        name: recommendation-request-topic
+        concurrency: 4
+
+  freemarker:
+    template-loader-path: classpath:/templates/
+    suffix: .ftl
+    charset: UTF-8
 
 server:
   port: 8083
@@ -63,3 +84,9 @@ management:
     web:
       exposure:
         include: health,info,metrics,loggers,env,refresh
+
+feign:
+  retry:
+    maxAttempts: 3
+    delay: 1000
+    multiplier: 2
