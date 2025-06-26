@@ -12,7 +12,7 @@ spring:
     bootstrap-servers: localhost:9094
     consumer:
       auto-offset-reset: earliest
-      enable-auto-commit: true
+      enable-auto-commit: false
       group-id: profile-view-notification-group
     topics:
       profile-view: profile-view-events

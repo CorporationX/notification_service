@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 @Configuration
@@ -26,15 +27,16 @@ public class KafkaConfig {
         );
     }
 
-    public <T> ConcurrentKafkaListenerContainerFactory<String, T> listenerFactory(Class<T> clazz) {
+    public <T> ConcurrentKafkaListenerContainerFactory<String, T> listenerFactory(Class<T> clazz, ContainerProperties.AckMode ackMode) {
         ConcurrentKafkaListenerContainerFactory<String, T> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory(clazz));
+        factory.getContainerProperties().setAckMode(ackMode);
         return factory;
     }
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, ProfileViewEventDto> profileViewKafkaListenerContainerFactory() {
-        return listenerFactory(ProfileViewEventDto.class);
+        return listenerFactory(ProfileViewEventDto.class, ContainerProperties.AckMode.MANUAL);
     }
 
 }
