@@ -10,13 +10,12 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9094
-    consumer:
-      auto-offset-reset: earliest
-      enable-auto-commit: false
-      group-id: profile-view-notification-group
+    auto-offset-reset: earliest
+    enable-auto-commit: false
+    group-id: profile-view-notification-group
+    trusted-packages: faang.school.notificationservice.dto
     topics:
       profile-view: profile-view-events
-    trusted-packages: faang.school.notificationservice.dto
 
   mail:
     host: smtp.gmail.com

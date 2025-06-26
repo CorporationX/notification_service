@@ -24,7 +24,7 @@ public class KafkaProfileViewEventListener extends AbstractEventListener<Profile
 
     @KafkaListener(
             topics = "${spring.kafka.topics.profile-view}",
-            groupId = "${spring.kafka.consumer.group-id}",
+            groupId = "${spring.kafka.group-id}",
             containerFactory = "profileViewKafkaListenerContainerFactory"
     )
     public void listen(ProfileViewEventDto event, Acknowledgment acknowledgment) {
