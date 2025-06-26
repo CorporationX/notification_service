@@ -17,13 +17,13 @@ import java.util.Locale;
 
 @Slf4j
 @Component
-public class GoalCompletedEventListener extends AbstractEventListener {
+public class GoalCompletedEventListener extends AbstractEventListener<GoalCompletedEvent> {
 
     private final List<String> topicNameKeys = List.of("goal-complete");
     private final Locale absolutelyCustomLocale = Locale.ENGLISH;
 
     public GoalCompletedEventListener(List<NotificationService> notificationServices,
-                                      List<MessageBuilder<?>> messageBuilders,
+                                      List<MessageBuilder<GoalCompletedEvent>> messageBuilders,
                                       UserServiceClient userServiceClient,
                                       ObjectMapper objectMapper,
                                       RedisProperties redisProperties) {
@@ -42,7 +42,7 @@ public class GoalCompletedEventListener extends AbstractEventListener {
                 sendNotification(userDto, personalNotification);
             });
 
-            log.debug("Notification(s) about goal {} completion were sent to user with ids: {}", event.goalTitle(), event.userIds());
+            log.debug("Notification(s) about goal {} completion were sent to users with ids: {}", event.goalTitle(), event.userIds());
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

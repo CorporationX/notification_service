@@ -11,10 +11,10 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class GoalCompletedMessageBuilder implements MessageBuilder<GoalCompletedEvent> {
 
-    private final MessageSource messageSource;
-
     private static final String GOAL_COMPLETED_CODE = "goal.completed";
     private static final String USERNAME_PLACEHOLDER = "%s";
+
+    private final MessageSource messageSource;
 
     @Override
     public Class<?> getInstance() {
