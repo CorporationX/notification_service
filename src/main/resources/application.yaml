@@ -3,6 +3,7 @@ spring:
     redis:
       port: 6379
       host: localhost
+      topic: "follower_topic"
       channel:
         follower: follower_channel
         achievement: achievement_channel
@@ -34,6 +35,19 @@ server:
 logging:
   level:
     root: info
+    feign: DEBUG
+    feign.Logger: WARN
+    feign.hystrix: WARN
+
+    org:
+      springframework:
+        cloud:
+          openfeign: DEBUG
+
+    org.apache.http: DEBUG
+    okhttp3: DEBUG
+
+    feign.template: OFF
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
@@ -42,12 +56,17 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
 
+sms:
+  url: "http://api.prostor-sms.ru/"
+  username: "t89994676160"
+  password: "504421"
+  
 telegram:
   chat: -1002709076416L
   bot:

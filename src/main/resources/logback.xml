@@ -4,6 +4,15 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
+
+    <!-- Настройки для Feign -->
+    <logger name="feign" level="DEBUG" />
+    <logger name="feign.template" level="DEBUG" />
+
+    <!-- Дополнительные логи для HTTP-клиента (если используется Apache HttpClient/OkHttp) -->
+    <logger name="org.apache.http" level="DEBUG" />
+    <logger name="okhttp3" level="DEBUG" />
+
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
     </root>

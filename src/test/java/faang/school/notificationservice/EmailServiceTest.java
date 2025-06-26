@@ -9,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Locale;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +35,7 @@ public class EmailServiceTest {
 
     @Test
     public void sendEmailTest() {
-        emailService.send(new UserDto(1, "User", "kukuha@internet.ru", "+12345678910", UserDto.PreferredContact.EMAIL), "Hi there!");
+        emailService.send(new UserDto(1, "User", "kukuha@internet.ru", "+12345678910", UserDto.PreferredContact.EMAIL, Locale.ENGLISH), "Hi there!");
         assertTrue(true); // It emailed me
     }
 }

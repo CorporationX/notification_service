@@ -1,5 +1,7 @@
 package faang.school.notificationservice.config;
 
+
+import faang.school.notificationservice.messaging.FollowerEventListener;
 import faang.school.notificationservice.listener.MentorshipRequestListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,40 +20,58 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     @Value("${spring.data.redis.host}")
-    private String host;
+    private String redisHost;
 
     @Value("${spring.data.redis.port}")
-    private int port;
+    private int redisPort;
+
+    @Value("${spring.data.redis.topic}")
+    private String followerTopic;
 
     @Bean
-    public JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(host, port);
+    public JedisConnectionFactory jedisConnectionFactory(){
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
         return new JedisConnectionFactory(redisConfig);
     }
 
     @Bean
-    public ChannelTopic mentorshipRequestTopic() {
-        return new ChannelTopic("mentorshipRequest_topic");
-    }
-
-    @Bean
-    public RedisTemplate<String, Object> restTemplate() {
+    public RedisTemplate<String, Object> redisTemplate(){
         RedisTemplate<String, Object> template = new RedisTemplate<>();
+
         template.setConnectionFactory(jedisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
+
+
         return template;
     }
 
     @Bean
-    MessageListenerAdapter mentorshipRequestListenerConfig(MentorshipRequestListener mentorshipRequestListener) {
+    public MessageListenerAdapter followerListener(FollowerEventListener followerEventListener) {
+        return new MessageListenerAdapter(followerEventListener);
+    }
+
+    @Bean
+    public MessageListenerAdapter mentorshipRequestListenerConfig(MentorshipRequestListener mentorshipRequestListener) {
         return new MessageListenerAdapter(mentorshipRequestListener);
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter mentorshipRequestListenerConfig) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener,
+                                                        MessageListenerAdapter mentorshipRequestListenerConfig) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
+        container.addMessageListener(followerListener, topic());
         container.addMessageListener(mentorshipRequestListenerConfig, mentorshipRequestTopic());
         return container;
+    }
+
+    @Bean 
+    public ChannelTopic mentorshipRequestTopic() {
+        return new ChannelTopic("mentorshipRequest_topic");
+    }
+      
+    @Bean
+    public ChannelTopic topic() {
+        return new ChannelTopic(followerTopic);
     }
 }
