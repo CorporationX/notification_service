@@ -46,11 +46,9 @@ user-service:
     port: 8080
 
 kafka:
+  bootstrap-servers: localhost:9092
   consumer:
-    server: localhost:9092
-    producer.id : server.broadcast
-    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    group-id: notification-service-group
   template:
     topic: "view-topic"
 

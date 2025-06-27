@@ -1,4 +1,4 @@
-package faang.school.notificationservice.config.redis;
+package faang.school.notificationservice.config.kafka;
 
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,6 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
-import org.springframework.retry.annotation.EnableRetry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,28 +22,27 @@ import java.util.Map;
 @RequiredArgsConstructor
 @EnableKafka
 public class KafkaConsumerConfig {
-    @Value("${kafka.server}")
-    private String kafkaServer;
-    @Value("${kafka.producer.id}")
-    private int kafkaGroupId;
+    @Value("${kafka.bootstrap-servers}")
+    private String bootstrapServers;
+
+    @Value("${kafka.consumer.group-id}")
+    private String groupId;
 
     @Bean
-    public ConsumerFactory<Long, UserDto> consumerFactory() {
+    public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class);
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<Long, UserDto> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<Long, UserDto> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-        factory.setMessageConverter(new StringJsonMessageConverter());
         return factory;
     }
-
 }
