@@ -6,6 +6,11 @@ spring:
     topics:
       goal-completed-topic:
         name: goal-completed
+      subscription:
+        new-follower-topic:
+          name: new-follower-events
+        unfollow-topic:
+          name: unfollow-events
 
   data:
     redis:
@@ -14,14 +19,6 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-    kafka:
-      bootstrap-server: "localhost:9092"
-      topic:
-        subscription: subscription-events
-      consumer-group:
-        notification: notification-group
-
-
 
   mail:
     host: smtp.gmail.com
