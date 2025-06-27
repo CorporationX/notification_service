@@ -30,10 +30,10 @@ class SmsServiceTest {
                 testPhoneNumber, UserDto.PreferredContact.PHONE);
     }
 
-    @Test
-    public void loadContext(){
-
-    }
+//    @Test
+//    public void loadContext(){
+//
+//    }
 
 //    @Test
 //    public void send() {
