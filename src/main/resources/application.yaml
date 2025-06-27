@@ -1,4 +1,12 @@
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: user-service-group
+    topics:
+      goal-completed-topic:
+        name: goal-completed
+
   data:
     redis:
       port: 6379
@@ -12,6 +20,7 @@ spring:
         subscription: subscription-events
       consumer-group:
         notification: notification-group
+
 
 
   mail:

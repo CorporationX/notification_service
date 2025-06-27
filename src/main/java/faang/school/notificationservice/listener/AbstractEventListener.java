@@ -1,7 +1,6 @@
 package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.NotificationEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
@@ -30,14 +29,13 @@ public abstract class AbstractEventListener<T extends NotificationEvent> {
 
     protected abstract boolean isEventValid(T event);
 
-    protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
+    protected void handleEvent(String message, Class<T> type, Consumer<T> consumer) {
         try {
-            T event = objectMapper.readValue(message.getBody(), type);
+            T event = objectMapper.readValue(message, type);
             consumer.accept(event);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     protected void sendNotification(T event) {
@@ -46,11 +44,6 @@ public abstract class AbstractEventListener<T extends NotificationEvent> {
         } else {
             log.error("Event validation failed. Event: {}", event);
         }
-    }
-
-    protected void sendNotification(Long userId, String message) {
-        UserDto userDto = userServiceClient.getUser(userId);
-        sendMessage(userDto, message);
     }
 
     protected String getMessage(T event) {
