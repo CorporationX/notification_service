@@ -1,6 +1,5 @@
 package faang.school.notificationservice.listener.subscription;
 
-import faang.school.notificationservice.event.kafka.NewFollowerEvent;
 import faang.school.notificationservice.event.kafka.UnfollowEvent;
 import faang.school.notificationservice.listener.AbstractEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
