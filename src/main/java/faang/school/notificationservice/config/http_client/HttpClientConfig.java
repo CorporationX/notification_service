@@ -8,7 +8,7 @@ import java.net.http.HttpClient;
 @Configuration
 public class HttpClientConfig {
 
-    @Bean(name = "httpClient")
+    @Bean(name = "smsHttpClient")
     public HttpClient client() {
         return HttpClient.newHttpClient();
     }
