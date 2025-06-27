@@ -3,6 +3,7 @@ package faang.school.notificationservice.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.config.TelegramConfig;
 import faang.school.notificationservice.dto.RegisterTelegramDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.ErrorResponse;
@@ -16,10 +17,12 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+@ConditionalOnBean(TelegramConfig.class)
 @Slf4j
 @Service
 @RequiredArgsConstructor

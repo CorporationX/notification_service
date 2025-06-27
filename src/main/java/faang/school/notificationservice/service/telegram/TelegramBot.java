@@ -7,6 +7,7 @@ import faang.school.notificationservice.service.telegram.command.CommandContaine
 import faang.school.notificationservice.service.telegram.command.TelegramCommand;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -25,6 +26,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.ArrayList;
 import java.util.List;
 
+@ConditionalOnBean(TelegramConfig.class)
 @Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {

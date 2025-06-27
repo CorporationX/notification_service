@@ -1,5 +1,7 @@
 package faang.school.notificationservice.service.telegram;
 
+import faang.school.notificationservice.config.TelegramConfig;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -7,6 +9,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+@ConditionalOnBean(TelegramConfig.class)
 @Component
 public class TelegramMessages {
 

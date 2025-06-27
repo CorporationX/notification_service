@@ -47,6 +47,8 @@ user-service:
 
 application:
   telegram:
+    # Свойство отвечает за старт telegram бота. При отсутствии параметра или =false бот не запустится.
+    isEnabled: false
     bot:
       name: ${telegram.bot.name}
       token: ${telegram.bot.token}
