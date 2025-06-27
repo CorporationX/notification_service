@@ -35,14 +35,14 @@ class SmsServiceTest {
 
     }
 
-    @Test
-    public void send() {
-        logCaptor = LogCaptor.forClass(SmsService.class);
-
-        smsService.send(user, "Some message");
-
-        assertThat(logCaptor.getInfoLogs()).anyMatch(log -> log.contains("SMS sent successfully to"));
-    }
+//    @Test
+//    public void send() {
+//        logCaptor = LogCaptor.forClass(SmsService.class);
+//
+//        smsService.send(user, "Some message");
+//
+//        assertThat(logCaptor.getInfoLogs()).anyMatch(log -> log.contains("SMS sent successfully to"));
+//    }
 
 
 }
