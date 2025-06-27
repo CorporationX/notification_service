@@ -6,10 +6,7 @@ import faang.school.notificationservice.config.properties.ExolveProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.sms.SmsDto;
 import faang.school.notificationservice.enums.PreferredContact;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.protocol.types.Field;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
