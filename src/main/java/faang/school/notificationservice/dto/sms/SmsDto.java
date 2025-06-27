@@ -1,4 +1,4 @@
-package faang.school.notificationservice.model.dto.sms;
+package faang.school.notificationservice.dto.sms;
 
 import lombok.Builder;
 

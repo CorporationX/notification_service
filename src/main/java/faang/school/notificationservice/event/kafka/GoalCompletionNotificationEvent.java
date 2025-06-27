@@ -1,6 +1,7 @@
-package faang.school.notificationservice.model.dto.event;
+package faang.school.notificationservice.event.kafka;
 
-import faang.school.notificationservice.model.dto.UserDto;
+import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.event.NotificationEvent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GoalCompletionNotificationEvent implements NotificationEvent {
-    UserDto userDto;
-    String goalTitle;
+    private UserDto owner;
+    private String goalTitle;
 }

@@ -6,6 +6,11 @@ spring:
     topics:
       goal-completed-topic:
         name: goal-completed
+      subscription:
+        new-follower-topic:
+          name: new-follower-events
+        unfollow-topic:
+          name: unfollow-events
 
   data:
     redis:
@@ -14,7 +19,6 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-
 
   mail:
     host: smtp.gmail.com

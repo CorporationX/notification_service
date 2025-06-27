@@ -1,6 +1,6 @@
 package faang.school.notificationservice.messaging;
 
-import faang.school.notificationservice.model.dto.event.GoalCompletionNotificationEvent;
+import faang.school.notificationservice.event.kafka.GoalCompletionNotificationEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -22,5 +22,4 @@ public class GoalCompletedMessageBuilder implements MessageBuilder<GoalCompletio
     public String buildMessage(GoalCompletionNotificationEvent event, Locale locale) {
         return messageSource.getMessage("goal.completed", new Object[]{event.getGoalTitle()}, locale);
     }
-
 }

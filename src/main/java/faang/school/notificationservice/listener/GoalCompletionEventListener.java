@@ -1,30 +1,39 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.model.dto.event.GoalCompletionNotificationEvent;
+
+import faang.school.notificationservice.event.kafka.GoalCompletionNotificationEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 
 
 @Slf4j
 @Component
 public class GoalCompletionEventListener extends AbstractEventListener<GoalCompletionNotificationEvent> {
 
-    public GoalCompletionEventListener(ObjectMapper objectMapper, List<NotificationService> notificationList,
-                                       List<MessageBuilder<GoalCompletionNotificationEvent>> messageBuilders) {
-        super(objectMapper, notificationList, messageBuilders);
+    public GoalCompletionEventListener(
+            List<NotificationService> notificationList,
+            MessageBuilder<GoalCompletionNotificationEvent> messageBuilder
+    ) {
+        super(notificationList, messageBuilder);
     }
 
-    @KafkaListener(topics = "${spring.kafka.topics.goal-completed-topic.name}",
-            groupId = "${spring.kafka.consumer.group-id}", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(
+            topics = "${spring.kafka.topics.goal-completed-topic.name}",
+            groupId = "${spring.kafka.consumer.group-id}",
+            containerFactory = "kafkaGoalCompletedEventListener"
+    )
     public void listenGoalCompletion(GoalCompletionNotificationEvent event) {
-        String message = getMessage(event, Locale.getDefault());
-        sendNotification(event.getUserDto(), message);
+        sendNotification(event);
+    }
+
+    @Override
+    protected boolean isEventValid(GoalCompletionNotificationEvent event) {
+        return Objects.nonNull(event) && isUserDtoValid(event.getOwner());
     }
 }

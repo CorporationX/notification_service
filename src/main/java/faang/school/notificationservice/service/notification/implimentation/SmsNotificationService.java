@@ -1,11 +1,11 @@
-package faang.school.notificationservice.service;
+package faang.school.notificationservice.service.notification.implimentation;
 
-import faang.school.notificationservice.model.dto.UserDto;
-import faang.school.notificationservice.model.dto.sms.SmsDto;
-import lombok.RequiredArgsConstructor;
+import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.sms.SmsDto;
+import faang.school.notificationservice.enums.PreferredContact;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -13,9 +13,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
-public class SmsService implements NotificationService {
+@Service
+public class SmsNotificationService extends AbstractNotificationService{
 
     @Value(value = "${exolve.sms.uri}")
     private String API_URL;
@@ -27,6 +26,11 @@ public class SmsService implements NotificationService {
     private String SERVICE_NUMBER;
 
     private final HttpClient httpClient;
+
+    public SmsNotificationService(HttpClient httpClient) {
+        super(PreferredContact.PHONE);
+        this.httpClient = httpClient;
+    }
 
     @Override
     public void send(UserDto user, String message) {
@@ -51,10 +55,5 @@ public class SmsService implements NotificationService {
         } catch (Exception e) {
             log.error("Error while sms sending");
         }
-    }
-
-    @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.PHONE;
     }
 }
