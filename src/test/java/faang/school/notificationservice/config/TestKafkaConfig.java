@@ -1,9 +1,10 @@
 package faang.school.notificationservice.config;
 
-import faang.school.notificationservice.dto.event.GoalCompletionNotificationEvent;
+import faang.school.notificationservice.event.kafka.GoalCompletionNotificationEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -17,15 +18,8 @@ import java.util.Map;
 @TestConfiguration
 public class TestKafkaConfig {
 
-    @Value(value = "${spring.kafka.bootstrap-servers}")
-    private String bootstrapAddress;
-
-    @Value("${spring.kafka.topics.goal-completed-topic.name}")
-    private String goalTopic;
-
-    @Value(value = "${spring.kafka.consumer.group-id}")
-    private String groupId;
-
+    @Autowired
+    private KafkaProperties kafkaProperties;
 
     @Bean
     public KafkaTemplate<String, GoalCompletionNotificationEvent> kafkaTestTemplate() {
@@ -34,7 +28,7 @@ public class TestKafkaConfig {
 
     private <T> ProducerFactory<String, T> jsonProducerFactory() {
         Map<String, Object> config = new HashMap<>();
-        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getBootstrapServers());
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         config.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
