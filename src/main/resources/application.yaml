@@ -51,6 +51,13 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
+exolve:
+  sms:
+    uri: https://api.exolve.ru/messaging/v1/SendSMS
+    service-number: 79584811889
+  api:
+    key: whatever
+
 project-service:
     host: localhost
     port: 8082

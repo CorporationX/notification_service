@@ -9,16 +9,15 @@ import faang.school.notificationservice.service.notification.implimentation.SmsN
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.shaded.org.awaitility.Awaitility;
 
 import java.time.Duration;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,11 +27,7 @@ import static org.mockito.Mockito.verify;
 @Import(TestKafkaConfig.class)
 @ContextConfiguration(initializers = IntegrationTestContextInitializer.class)
 @SpringBootTest
-@EnableKafka
 public class GoalCompletionEventListenerIT {
-
-    @Value("${spring.kafka.topics.goal-completed-topic.name}")
-    private String goalTopic;
 
     @Autowired
     private KafkaTemplate<String, GoalCompletionNotificationEvent> kafkaTestTemplate;
@@ -41,7 +36,7 @@ public class GoalCompletionEventListenerIT {
     private SmsNotificationService smsService;
 
     @Test
-    public void testListenGoalCompletion() {
+    public void testListenGoalCompletion() throws ExecutionException, InterruptedException {
         ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<UserDto> userCaptor = ArgumentCaptor.forClass(UserDto.class);
 
@@ -50,7 +45,7 @@ public class GoalCompletionEventListenerIT {
         owner.setPreference(PreferredContact.PHONE);
         GoalCompletionNotificationEvent event = new GoalCompletionNotificationEvent(owner, "test");
 
-        kafkaTestTemplate.send(goalTopic, event);
+        kafkaTestTemplate.send("goal-completed", event);
 
         Awaitility.await()
                 .atMost(5, TimeUnit.SECONDS)

@@ -13,8 +13,8 @@ public class IntegrationTestContextInitializer implements ApplicationContextInit
     @ServiceConnection
     public static final KafkaContainer CONTAINER =
             new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.5.0"))
-                    .withReuse(false);
-                    //.withEnv("KAFKA_AUTO_CREATE_TOPICS_ENABLE", "false");
+                    .withReuse(false)
+                    .withEnv("KAFKA_AUTO_CREATE_TOPICS_ENABLE", "false");
 
     static {
         CONTAINER.setPortBindings(List.of("9092:9093"));
