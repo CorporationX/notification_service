@@ -9,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Locale;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +35,7 @@ public class EmailServiceTest {
 
     @Test
     public void sendEmailTest() {
+
         UserDto user = UserDto.builder()
                 .id(1L)
                 .username("User")
