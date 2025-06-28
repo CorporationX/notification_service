@@ -10,11 +10,9 @@ spring:
   kafka:
     consumer:
       bootstrap-servers: localhost:9092,localhost:9094,localhost:9096
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       group-id: mentorship.request.created.v1
       properties:
-        spring.json.trusted.packages: faang.school.notificationservice.dto
+        spring.json.trusted.packages: "*"
 
   mail:
     host: smtp.gmail.com
