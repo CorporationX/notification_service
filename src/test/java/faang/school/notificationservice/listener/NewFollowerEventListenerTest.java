@@ -2,24 +2,23 @@ package faang.school.notificationservice.listener;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.kafka.NewFollowerEvent;
+import faang.school.notificationservice.listener.data.UserData;
 import faang.school.notificationservice.listener.subscription.NewFollowerEventListener;
-import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.notification.NotificationService;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
 
-import java.util.stream.Stream;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,135 +26,59 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class NewFollowerEventListenerTest {
 
-    @Value("${spring.kafka.topics.subscription.new-follower-topic.name}")
-    private String newFollowerTopic;
-
-    @Mock
-    private MessageBuilder<NewFollowerEvent> messageBuilder;
-
-    @Mock
-    private NotificationService notificationService;
-
     @InjectMocks
     @Spy
     private NewFollowerEventListener newFollowerEventListener;
 
-    @ParameterizedTest
-    @MethodSource("invalidNewFollowerEvents")
-    public void testInvalidEventDontSendNotification(NewFollowerEvent newFollowerEvent) {
+    @Test
+    public void testInvalidEventDontSendNotification() {
         ArgumentCaptor<NewFollowerEvent> eventNotificationCaptor = ArgumentCaptor.forClass(NewFollowerEvent.class);
+        NewFollowerEvent newFollowerEvent = NewFollowerEvent.builder()
+                .owner(UserData.CORRECT_USER_DTO)
+                .follower(null)
+                .build();
 
         newFollowerEventListener.handle(newFollowerEvent);
 
         verify(newFollowerEventListener, times(1)).sendNotification(eventNotificationCaptor.capture());
         verify(newFollowerEventListener, never()).sendMessage(any(UserDto.class), anyString());
+
+        assertEquals(UserData.CORRECT_USER_DTO.getId(), eventNotificationCaptor.getValue().getOwner().getId());
     }
 
-    private static Stream<Arguments> invalidNewFollowerEvents() {
-        UserDto correctUserDto = UserDto.builder()
-                .id(1L)
-                .email("email")
-                .phone("phone")
-                .username("username")
+    @Test
+    public void testValidEventSendNotification() {
+        ArgumentCaptor<NewFollowerEvent> eventNotificationCaptor = ArgumentCaptor.forClass(NewFollowerEvent.class);
+        ArgumentCaptor<UserDto> userCaptor = ArgumentCaptor.forClass(UserDto.class);
+        ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
+
+        NewFollowerEvent newFollowerEvent = NewFollowerEvent.builder()
+                .owner(UserData.CORRECT_USER_DTO)
+                .follower(UserData.CORRECT_USER_DTO)
                 .build();
 
-        UserDto noIdUserDto = UserDto.builder()
-                .email("email")
-                .phone("phone")
-                .username("username")
+        doNothing().when(newFollowerEventListener).sendMessage(any(UserDto.class), any());
+        doReturn("Mocked message").when(newFollowerEventListener).getMessage(any(NewFollowerEvent.class));
+
+        newFollowerEventListener.handle(newFollowerEvent);
+
+        verify(newFollowerEventListener, times(1)).sendNotification(eventNotificationCaptor.capture());
+        verify(newFollowerEventListener, times(1)).sendMessage(userCaptor.capture(), messageCaptor.capture());
+
+        assertEquals(userCaptor.getValue().getId(), eventNotificationCaptor.getValue().getOwner().getId());
+        assertEquals("Mocked message", messageCaptor.getValue());
+    }
+
+    @ParameterizedTest
+    @MethodSource("faang.school.notificationservice.listener.data.UserData#invalidNewFollowerEvents")
+    public void testInvalidNewFollowerEventValidation(UserDto owner, UserDto follower) {
+        NewFollowerEvent unfollowEvent = NewFollowerEvent.builder()
+                .owner(owner)
+                .follower(follower)
                 .build();
 
-        UserDto noEmailUserDto = UserDto.builder()
-                .id(1L)
-                .phone("phone")
-                .username("username")
-                .build();
+        newFollowerEventListener.handle(unfollowEvent);
 
-        UserDto noPhoneUserDto = UserDto.builder()
-                .id(1L)
-                .email("email")
-                .username("username")
-                .build();
-
-        UserDto noUsernameUserDto = UserDto.builder()
-                .id(1L)
-                .email("email")
-                .phone("phone")
-                .build();
-
-        NewFollowerEvent nullUsers = NewFollowerEvent.builder()
-                .owner(null)
-                .follower(null)
-                .build();
-
-        NewFollowerEvent ownerCorrectEvent = NewFollowerEvent.builder()
-                .owner(correctUserDto)
-                .follower(null)
-                .build();
-
-        NewFollowerEvent followerCorrectEvent = NewFollowerEvent.builder()
-                .owner(null)
-                .follower(correctUserDto)
-                .build();
-        // id
-        NewFollowerEvent noIdOwner = NewFollowerEvent.builder()
-                .owner(noIdUserDto)
-                .follower(correctUserDto)
-                .build();
-
-        NewFollowerEvent noIdFollower = NewFollowerEvent.builder()
-                .owner(correctUserDto)
-                .follower(noIdUserDto)
-                .build();
-        // email
-
-        NewFollowerEvent noEmailOwner = NewFollowerEvent.builder()
-                .owner(noEmailUserDto)
-                .follower(correctUserDto)
-                .build();
-
-        NewFollowerEvent noEmailFollower = NewFollowerEvent.builder()
-                .owner(correctUserDto)
-                .follower(noEmailUserDto)
-                .build();
-
-        // phone
-
-        NewFollowerEvent noPhoneOwner = NewFollowerEvent.builder()
-                .owner(noPhoneUserDto)
-                .follower(correctUserDto)
-                .build();
-
-        NewFollowerEvent noPhoneFollower = NewFollowerEvent.builder()
-                .owner(correctUserDto)
-                .follower(noPhoneUserDto)
-                .build();
-
-        // username
-
-        NewFollowerEvent noUsernameOwner = NewFollowerEvent.builder()
-                .owner(noUsernameUserDto)
-                .follower(correctUserDto)
-                .build();
-
-        NewFollowerEvent noUsernameFollower = NewFollowerEvent.builder()
-                .owner(correctUserDto)
-                .follower(noUsernameUserDto)
-                .build();
-
-
-        return Stream.of(
-                Arguments.of(nullUsers),
-                Arguments.of(ownerCorrectEvent),
-                Arguments.of(followerCorrectEvent),
-                Arguments.of(noIdOwner),
-                Arguments.of(noIdFollower),
-                Arguments.of(noEmailOwner),
-                Arguments.of(noEmailFollower),
-                Arguments.of(noPhoneOwner),
-                Arguments.of(noPhoneFollower),
-                Arguments.of(noUsernameOwner),
-                Arguments.of(noUsernameFollower)
-        );
+        assertFalse(newFollowerEventListener.isEventValid(unfollowEvent));
     }
 }

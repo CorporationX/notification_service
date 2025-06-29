@@ -9,7 +9,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Component
@@ -32,10 +31,9 @@ public class UnfollowEventListener extends AbstractEventListener<UnfollowEvent> 
     }
 
     @Override
-    protected boolean isEventValid(UnfollowEvent event) {
-        boolean eventIsValid = Objects.nonNull(event);
-        boolean ownerIsValid = isUserDtoValid(event.getOwner());
-        boolean followerIsValid = isUserDtoValid(event.getFollower());
-        return eventIsValid && ownerIsValid && followerIsValid;
+    public boolean isEventValid(UnfollowEvent event) {
+        return validateObjectNonNullData(event, event::getOwner, event::getFollower)
+                && isUserDtoValid(event.getOwner())
+                && isUserDtoValid(event.getFollower());
     }
 }

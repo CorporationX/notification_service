@@ -31,7 +31,7 @@ public class NewFollowerEventListener extends AbstractEventListener<NewFollowerE
     }
 
     @Override
-    protected boolean isEventValid(NewFollowerEvent event) {
+    public boolean isEventValid(NewFollowerEvent event) {
         return validateObjectNonNullData(event, event::getOwner, event::getFollower)
                 && isUserDtoValid(event.getOwner())
                 && isUserDtoValid(event.getFollower());
