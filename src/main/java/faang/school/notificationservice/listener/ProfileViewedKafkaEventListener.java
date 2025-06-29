@@ -33,7 +33,7 @@ public class ProfileViewedKafkaEventListener extends AbstractKafkaEventListener<
             log.info("Received profile view event: {}", event);
             String message = getMessage(Locale.ENGLISH, event);
             sendNotification(event.getViewedId(), message);
-        } catch (Exception ex) {
+        } catch (RuntimeException ex) {
             log.error("Failed to process profile viewed event: {}", event, ex);
         }
     }
