@@ -23,7 +23,6 @@ public class SmsNotificationService implements NotificationService {
     private final ExolveProperties exolveProperties;
 
     public SmsNotificationService(HttpClient httpClient, ObjectMapper objectMapper, ExolveProperties exolveProperties) {
-        super(PreferredContact.PHONE);
         this.httpClient = httpClient;
         this.objectMapper = objectMapper;
         this.exolveProperties = exolveProperties;
@@ -53,7 +52,6 @@ public class SmsNotificationService implements NotificationService {
                 .build();
 
         sendRequest(req);
-
     }
 
     private void sendRequest(HttpRequest request) {
