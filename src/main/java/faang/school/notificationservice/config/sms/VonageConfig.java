@@ -1,17 +1,7 @@
 package faang.school.notificationservice.config.sms;
 
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@Configuration
-@Getter
-public class VonageConfig {
-
-    @Value("${vonage.api.key}")
-    private String apiKey;
-
-    @Value("${vonage.api.secret}")
-    private String apiSecret;
+@ConfigurationProperties(prefix = "vonage.api")
+public record VonageConfig(String key, String secret) {
 }
-

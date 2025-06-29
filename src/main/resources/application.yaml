@@ -41,6 +41,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: ea3cbdef
     secret: qjGfUbiitoZyWPNYS24G4EQK
+  sender: CorporationX_kelpie_stream10
 
 project-service:
     host: localhost
