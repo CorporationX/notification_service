@@ -51,6 +51,7 @@ dependencies {
     implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
+    testImplementation("it.ozimov:embedded-redis:0.7.3")
 
     /**
      * Tests
