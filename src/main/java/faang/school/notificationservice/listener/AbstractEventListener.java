@@ -21,19 +21,11 @@ public abstract class AbstractEventListener<T extends NotificationEvent> {
     private final List<NotificationService> notificationServices;
     private final MessageBuilder<T> messageBuilder;
 
-    protected abstract boolean isEventValid(T event);
+    public abstract boolean isEventValid(T event);
 
     protected void sendNotification(T event) {
         if (isEventValid(event)) {
-            sendNotification(event, getMessage(event));
-        } else {
-            log.error("Event validation failed. Event: {}", event);
-        }
-    }
-
-    protected void sendNotification(T event, String message) {
-        if (isEventValid(event)) {
-            sendMessage(event.getOwner(), message);
+            sendMessage(event.getOwner(), getMessage(event));
         } else {
             log.error("Event validation failed. Event: {}", event);
         }
@@ -43,10 +35,6 @@ public abstract class AbstractEventListener<T extends NotificationEvent> {
         Locale locale = Objects.isNull(event.getOwner().getLocale())
                 ? LocaleContextHolder.getLocale()
                 : event.getOwner().getLocale();
-        return getMessage(event, locale);
-    }
-
-    protected String getMessage(T event, Locale locale) {
         return messageBuilder.buildMessage(event, locale);
     }
 

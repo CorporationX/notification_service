@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.util.List;
 import java.util.Locale;
@@ -37,24 +38,23 @@ public class AbstractNotificationEventListenerTest {
     @Test
     void testGetMessageSuccessful() {
         TestEvent testEvent = new TestEvent();
-        Locale locale = Locale.US;
+        Locale locale = LocaleContextHolder.getLocale();
         String expectedMessage = "Test message";
 
         when(messageBuilder.buildMessage(testEvent, locale)).thenReturn(expectedMessage);
 
-        String actualMessage = testEventListener.getMessage(testEvent, locale);
+        String actualMessage = testEventListener.getMessage(testEvent);
 
         assertEquals(expectedMessage, actualMessage);
     }
 
     @Test
     void testSendNotificationThrowsException() {
-        String message = "Test notification";
         TestEvent event = new TestEvent();
 
         doReturn(Stream.of()).when(notificationList).stream();
 
-        assertThrows(IllegalArgumentException.class, () -> testEventListener.sendNotification(event, message));
+        assertThrows(IllegalArgumentException.class, () -> testEventListener.sendNotification(event));
     }
 
     private static class TestEventListener extends AbstractEventListener<TestEvent> {
@@ -65,7 +65,7 @@ public class AbstractNotificationEventListenerTest {
         }
 
         @Override
-        protected boolean isEventValid(TestEvent event) {
+        public boolean isEventValid(TestEvent event) {
             return true;
         }
     }

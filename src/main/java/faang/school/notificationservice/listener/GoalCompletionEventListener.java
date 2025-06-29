@@ -33,7 +33,7 @@ public class GoalCompletionEventListener extends AbstractEventListener<GoalCompl
     }
 
     @Override
-    protected boolean isEventValid(GoalCompletionNotificationEvent event) {
+    public boolean isEventValid(GoalCompletionNotificationEvent event) {
         return Objects.nonNull(event) && isUserDtoValid(event.getOwner());
     }
 }

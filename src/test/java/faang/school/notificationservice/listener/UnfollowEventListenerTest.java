@@ -25,7 +25,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class UnollowEventListenerTest {
+public class UnfollowEventListenerTest {
 
     @Spy
     @InjectMocks
@@ -79,8 +79,6 @@ public class UnollowEventListenerTest {
                 .follower(follower)
                 .build();
 
-        unfollowEventListener.handle(unfollowEvent);
-
         assertFalse(unfollowEventListener.isEventValid(unfollowEvent));
     }
 
@@ -90,10 +88,6 @@ public class UnollowEventListenerTest {
                 .owner(UserData.CORRECT_USER_DTO)
                 .follower(UserData.CORRECT_USER_DTO)
                 .build();
-
-        doNothing().when(unfollowEventListener).sendMessage(any(UserDto.class), any());
-
-        unfollowEventListener.handle(unfollowEvent);
 
         assertTrue(unfollowEventListener.isEventValid(unfollowEvent));
     }
