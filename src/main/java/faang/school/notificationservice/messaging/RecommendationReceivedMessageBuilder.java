@@ -10,6 +10,8 @@ import java.util.Locale;
 @Component
 @RequiredArgsConstructor
 public class RecommendationReceivedMessageBuilder implements MessageBuilder<RecommendationReceivedEvent> {
+    private static final String[] MESSAGE_PLACEHOLDER = {"%s", "%s", "%s"};
+
     private final MessageSource source;
 
     @Override
@@ -19,6 +21,6 @@ public class RecommendationReceivedMessageBuilder implements MessageBuilder<Reco
 
     @Override
     public String buildMessage(RecommendationReceivedEvent event, Locale locale) {
-        return source.getMessage("recommendation_received.new", new Object[] {"${authorName}"}, locale);
+        return source.getMessage("recommendation_received.new", MESSAGE_PLACEHOLDER, locale);
     }
 }

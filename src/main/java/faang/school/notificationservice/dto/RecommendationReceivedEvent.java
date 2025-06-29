@@ -6,5 +6,6 @@ public record RecommendationReceivedEvent(
         Long recommendationId,
         Long authorId,
         Long receiverId,
+        String content,
         LocalDateTime createdAt) {
 }

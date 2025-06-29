@@ -36,14 +36,13 @@ public class RecommendationRequestedEventListener extends AbstractEventListener<
         try {
             RecommendationReceivedEvent eventDto = objectMapper.readValue(message.getBody(),
                     RecommendationReceivedEvent.class);
-            log.info("Read");
+            log.info("New event received {}", eventDto);
             UserDto receiver = findUserById(eventDto.receiverId());
             UserDto author = findUserById(eventDto.authorId());
-            String originalMessage = getMessage(Locale.getDefault(), eventDto);
-            String messageWithAuthorName = originalMessage.replace("${authorName}", author.getUsername());
-            log.info("Found");
-            sendNotification(receiver.getId(), messageWithAuthorName);
-            log.info("Sent");
+
+            String genericMessage = getMessage(Locale.getDefault(), eventDto);
+            String personalMessage = genericMessage.formatted(receiver.getUsername(), author.getUsername(), eventDto.content());
+            sendNotification(receiver, personalMessage);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
@@ -52,5 +51,4 @@ public class RecommendationRequestedEventListener extends AbstractEventListener<
     private UserDto findUserById(long userId) {
         return userServiceClient.getUser(userId);
     }
-
 }
