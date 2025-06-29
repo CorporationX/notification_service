@@ -30,7 +30,6 @@ public class KafkaListenerConfig {
         consumerProps.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
         consumerProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "faang.school.notificationservice.dto.ProfileViewedEventDto");
 
-
         return new DefaultKafkaConsumerFactory<>(
                 consumerProps,
                 new StringDeserializer(),
