@@ -1,6 +1,8 @@
 package faang.school.notificationservice.config;
 
 import faang.school.notificationservice.event.kafka.GoalCompletionNotificationEvent;
+import faang.school.notificationservice.event.kafka.NewFollowerEvent;
+import faang.school.notificationservice.event.kafka.UnfollowEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,16 @@ public class TestKafkaConfig {
 
     @Bean
     public KafkaTemplate<String, GoalCompletionNotificationEvent> kafkaTestTemplate() {
+        return new KafkaTemplate<>(jsonProducerFactory());
+    }
+
+    @Bean
+    public KafkaTemplate<String, NewFollowerEvent> kafkaNewFollowTestTemplate() {
+        return new KafkaTemplate<>(jsonProducerFactory());
+    }
+
+    @Bean
+    public KafkaTemplate<String, UnfollowEvent> kafkaUnfollowTestTemplate() {
         return new KafkaTemplate<>(jsonProducerFactory());
     }
 
