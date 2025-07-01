@@ -4,16 +4,14 @@ package faang.school.notificationservice.event.kafka;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.NotificationEvent;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
-@NoArgsConstructor
+@Data
+@Builder
 @AllArgsConstructor
-@Setter
-@Getter
-@ToString
+@NoArgsConstructor
 public class UnfollowEvent implements NotificationEvent {
     private UserDto owner;
     private UserDto follower;

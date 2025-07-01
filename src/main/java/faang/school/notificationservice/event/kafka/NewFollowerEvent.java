@@ -4,16 +4,15 @@ package faang.school.notificationservice.event.kafka;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.NotificationEvent;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Builder;
+import lombok.Data;
 
-@NoArgsConstructor
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
 @AllArgsConstructor
-@Setter
-@Getter
-@ToString
+@NoArgsConstructor
 public class NewFollowerEvent implements NotificationEvent {
     private UserDto owner;
     private UserDto follower;

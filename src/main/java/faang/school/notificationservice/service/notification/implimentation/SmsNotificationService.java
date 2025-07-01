@@ -6,6 +6,7 @@ import faang.school.notificationservice.config.properties.ExolveProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.sms.SmsDto;
 import faang.school.notificationservice.enums.PreferredContact;
+import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -16,17 +17,20 @@ import java.net.http.HttpResponse;
 
 @Slf4j
 @Service
-public class SmsNotificationService extends AbstractNotificationService{
-
+public class SmsNotificationService implements NotificationService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final ExolveProperties exolveProperties;
 
     public SmsNotificationService(HttpClient httpClient, ObjectMapper objectMapper, ExolveProperties exolveProperties) {
-        super(PreferredContact.PHONE);
         this.httpClient = httpClient;
         this.objectMapper = objectMapper;
         this.exolveProperties = exolveProperties;
+    }
+
+    @Override
+    public PreferredContact getPreferredContact() {
+        return PreferredContact.PHONE;
     }
 
     @Override
@@ -48,7 +52,6 @@ public class SmsNotificationService extends AbstractNotificationService{
                 .build();
 
         sendRequest(req);
-
     }
 
     private void sendRequest(HttpRequest request) {

@@ -21,15 +21,11 @@ public abstract class AbstractEventListener<T extends NotificationEvent> {
     private final List<NotificationService> notificationServices;
     private final MessageBuilder<T> messageBuilder;
 
-    protected abstract boolean isEventValid(T event);
+    public abstract boolean isEventValid(T event);
 
     protected void sendNotification(T event) {
-        sendNotification(event, getMessage(event));
-    }
-
-    protected void sendNotification(T event, String message) {
         if (isEventValid(event)) {
-            sendMessage(event.getOwner(), message);
+            sendMessage(event.getOwner(), getMessage(event));
         } else {
             log.error("Event validation failed. Event: {}", event);
         }
@@ -42,11 +38,6 @@ public abstract class AbstractEventListener<T extends NotificationEvent> {
         return messageBuilder.buildMessage(event, locale);
     }
 
-    protected String getMessage(T event, Locale locale) {
-        return messageBuilder.buildMessage(event, locale);
-    }
-
-
     protected void sendMessage(UserDto userDto, String message) {
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact() == userDto.getPreference())
@@ -58,7 +49,7 @@ public abstract class AbstractEventListener<T extends NotificationEvent> {
 
     @SafeVarargs
     protected final boolean validateObjectNonNullData(Object o, Supplier<Object>... fieldGetters) {
-        return Objects.nonNull(o) || Arrays.stream(fieldGetters).map(Supplier::get).noneMatch(Objects::isNull);
+        return Objects.nonNull(o) && Arrays.stream(fieldGetters).map(Supplier::get).noneMatch(Objects::isNull);
     }
 
     protected boolean isUserDtoValid(UserDto userDto) {
