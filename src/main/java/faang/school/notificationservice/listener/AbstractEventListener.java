@@ -1,48 +1,64 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.event.NotificationEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.connection.Message;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.i18n.LocaleContextHolder;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Consumer;
+import java.util.Objects;
+import java.util.function.Supplier;
 
+@Slf4j
 @RequiredArgsConstructor
-public abstract class AbstractEventListener<T> {
-    protected final ObjectMapper objectMapper;
-    protected final UserServiceClient userServiceClient;
-    protected final List<MessageBuilder<T>> messageBuilderList;
-    private final List<NotificationService> notificationServicesList;
+public abstract class AbstractEventListener<T extends NotificationEvent> {
 
-    protected void   handleEvent(Message message, Class<T> type, Consumer<T> consumer){
-        try {
-            T profileViewDto = objectMapper.readValue(message.getBody(), type);
-            consumer.accept(profileViewDto);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    private final List<NotificationService> notificationServices;
+    private final MessageBuilder<T> messageBuilder;
+
+    public abstract boolean isEventValid(T event);
+
+    protected void sendNotification(T event) {
+        if (isEventValid(event)) {
+            sendMessage(event.getOwner(), getMessage(event));
+        } else {
+            log.error("Event validation failed. Event: {}", event);
         }
     }
 
-    protected String getMessage(T event){
-        return messageBuilderList.stream()
-                .filter(tMessageBuilder -> tMessageBuilder.supportEventType() == event.getClass())
-                .findFirst()
-                .map(message -> message.buildMessage(event, Locale.UK))
-                .orElseThrow(()-> new IllegalArgumentException("Message not found" + event.getClass().getName()));
+    protected String getMessage(T event) {
+        Locale locale = Objects.isNull(event.getOwner().getLocale())
+                ? LocaleContextHolder.getLocale()
+                : event.getOwner().getLocale();
+        return messageBuilder.buildMessage(event, locale);
     }
 
-    protected void sendNotification(Long id, String message) {
-        UserDto userDto = userServiceClient.getUser(id);
-        notificationServicesList.stream()
-                .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreference()))
+    protected void sendMessage(UserDto userDto, String message) {
+        notificationServices.stream()
+                .filter(notificationService -> notificationService.getPreferredContact() == userDto.getPreference())
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Notification service not Found"))
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No notification service was found for user preferred notification type"))
                 .send(userDto, message);
+    }
+
+    @SafeVarargs
+    protected final boolean validateObjectNonNullData(Object o, Supplier<Object>... fieldGetters) {
+        return Objects.nonNull(o) && Arrays.stream(fieldGetters).map(Supplier::get).noneMatch(Objects::isNull);
+    }
+
+    protected boolean isUserDtoValid(UserDto userDto) {
+        return validateObjectNonNullData(
+                userDto,
+                userDto::getId,
+                userDto::getUsername,
+                userDto::getPhone,
+                userDto::getEmail
+        );
     }
 }
