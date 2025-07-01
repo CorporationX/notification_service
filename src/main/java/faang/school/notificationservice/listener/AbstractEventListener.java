@@ -20,7 +20,7 @@ public abstract class AbstractEventListener<T> {
     protected final List<MessageBuilder<T>> messageBuilderList;
     private final List<NotificationService> notificationServicesList;
 
-    protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer){
+    protected void   handleEvent(Message message, Class<T> type, Consumer<T> consumer){
         try {
             T profileViewDto = objectMapper.readValue(message.getBody(), type);
             consumer.accept(profileViewDto);

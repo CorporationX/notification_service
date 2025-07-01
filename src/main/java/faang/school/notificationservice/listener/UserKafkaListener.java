@@ -21,17 +21,17 @@ public class UserKafkaListener {
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode jsonNode = mapper.readTree(message);
-            Long viewedUserId = jsonNode.get("viewedUserId").asLong();
-            Long viewerUserId = jsonNode.get("viewerUserId").asLong();
+            String profileUser = jsonNode.get("profileUser").asText();
+            String viewerUser = jsonNode.get("viewerUser").asText();
 
-            sendNotification(viewedUserId, viewerUserId);
+            sendNotification(profileUser, viewerUser);
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
     }
 
-    private void sendNotification(Long viewedUserId, Long viewerUserId) {
-        System.out.printf("User %d viewed profile of user %d%n", viewerUserId, viewedUserId);
+    private void sendNotification(String profileUser, String viewerUser) {
+        System.out.printf("User %s viewed profile of user %s%n", viewerUser, profileUser);
     }
 }
