@@ -3,14 +3,14 @@ package faang.school.notificationservice.listener.comment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.PostServiceClient;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.config.kafka.KafkaCommentTopicConfigurationProperties;
-import faang.school.notificationservice.dto.client.post_service.CommentClientResponseDto;
-import faang.school.notificationservice.dto.client.post_service.PostClientResponseDto;
-import faang.school.notificationservice.dto.client.user_service.UserClientResponseDto;
-import faang.school.notificationservice.event.comment.CommentEventDto;
+import faang.school.notificationservice.config.kafka.KafkaCommentTopicProperties;
+import faang.school.notificationservice.dto.client.post_service.CommentDto;
+import faang.school.notificationservice.dto.client.post_service.PostDto;
+import faang.school.notificationservice.dto.client.user_service.UserDto;
+import faang.school.notificationservice.model.kafka.comment.CommentEventDto;
 import faang.school.notificationservice.listener.AbstractKafkaListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.model.comment.CommentNewModel;
+import faang.school.notificationservice.model.kafka.comment.CommentMessage;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -23,19 +23,19 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-public class CommentKafkaListener extends AbstractKafkaListener<CommentEventDto, CommentNewModel> {
+public class CommentKafkaListener extends AbstractKafkaListener<CommentEventDto, CommentMessage> {
     private final PostServiceClient postServiceClient;
     private final UserServiceClient userServiceClient;
-    private final KafkaCommentTopicConfigurationProperties props;
+    private final KafkaCommentTopicProperties props;
 
     public CommentKafkaListener(List<NotificationService> notificationServices,
-                                List<MessageBuilder<CommentNewModel>> messageBuilders,
+                                List<MessageBuilder<CommentMessage>> messageBuilders,
                                 UserServiceClient userServiceClient,
                                 PostServiceClient postServiceClient,
-                                KafkaCommentTopicConfigurationProperties props,
+                                KafkaCommentTopicProperties props,
                                 ObjectMapper objectMapper) {
         super(notificationServices, messageBuilders, objectMapper,
-                CommentEventDto.class, CommentNewModel.class);
+                CommentEventDto.class, CommentMessage.class);
         this.userServiceClient = userServiceClient;
         this.postServiceClient = postServiceClient;
         this.props = props;
@@ -49,30 +49,30 @@ public class CommentKafkaListener extends AbstractKafkaListener<CommentEventDto,
         CommentEventDto commentEventDto = getEvent(message);
         log.info("Received a message from {}: {}", props.getName(), commentEventDto);
         List<Long> userIds = List.of(commentEventDto.getAuthorPostId(), commentEventDto.getAuthorId());
-        List<UserClientResponseDto> users = userServiceClient.getUsersByIds(userIds);
-        Map<Long, UserClientResponseDto> userMap = users.stream()
-                .collect(Collectors.toMap(UserClientResponseDto::getId, Function.identity()));
+        List<UserDto> users = userServiceClient.getUsersByIds(userIds);
+        Map<Long, UserDto> userMap = users.stream()
+                .collect(Collectors.toMap(UserDto::getId, Function.identity()));
 
-        UserClientResponseDto authorPost = userMap.get(commentEventDto.getAuthorPostId());
+        UserDto authorPost = userMap.get(commentEventDto.getAuthorPostId());
         log.info("Got post author: {}", authorPost);
 
-        UserClientResponseDto authorComment = userMap.get(commentEventDto.getAuthorId());
+        UserDto authorComment = userMap.get(commentEventDto.getAuthorId());
         log.info("Got comment author: {}", authorComment);
 
-        PostClientResponseDto post = postServiceClient.getPostById(commentEventDto.getPostId());
+        PostDto post = postServiceClient.getPostById(commentEventDto.getPostId());
         log.info("Got post: {}", post);
 
-        CommentClientResponseDto comment = postServiceClient.getCommentById(commentEventDto.getId());
+        CommentDto comment = postServiceClient.getCommentById(commentEventDto.getId());
         log.info("Got comment: {}", comment);
 
-        CommentNewModel commentNewModel = getCommentNewModel(comment, authorComment, post);
-        String text = getMessage(commentNewModel, authorPost.getLocale());
+        CommentMessage commentMessage = getCommentNewModel(comment, authorComment, post);
+        String text = getMessage(commentMessage, authorPost.getLocale());
 
         sendNotification(authorPost, text);
     }
 
-    private CommentNewModel getCommentNewModel(CommentClientResponseDto comment, UserClientResponseDto authorComment, PostClientResponseDto post) {
-        return CommentNewModel.builder()
+    private CommentMessage getCommentNewModel(CommentDto comment, UserDto authorComment, PostDto post) {
+        return CommentMessage.builder()
                 .commentContent(comment.getContent())
                 .usernameAuthorComment(authorComment.getUsername())
                 .postTitle(post.getTitle())

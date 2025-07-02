@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostClientResponseDto {
+public class PostDto {
     private long id;
     private String title;
     private String content;

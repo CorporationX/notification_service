@@ -1,7 +1,8 @@
 package faang.school.notificationservice.client;
 
 import faang.school.notificationservice.config.client.feign.FeignClientConfig;
-import faang.school.notificationservice.dto.client.user_service.UserClientResponseDto;
+import faang.school.notificationservice.dto.client.user_service.UserDto;
+import faang.school.notificationservice.dto.client.user_service.EventDto;
 import feign.FeignException;
 import feign.RetryableException;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -24,7 +25,7 @@ public interface UserServiceClient {
             backoff = @Backoff(delay = 1000, multiplier = 2)
     )
     @GetMapping("/users/{userId}/notification")
-    UserClientResponseDto getUserById(@PathVariable long userId);
+    UserDto getUserById(@PathVariable long userId);
 
     @Retryable(
             retryFor = { FeignException.class, RetryableException.class },
@@ -32,5 +33,5 @@ public interface UserServiceClient {
             backoff = @Backoff(delay = 1000, multiplier = 2)
     )
     @GetMapping("/users")
-    List<UserClientResponseDto> getUsersByIds(@RequestParam List<Long> userIds);
+    List<UserDto> getUsersByIds(@RequestParam List<Long> userIds);
 }

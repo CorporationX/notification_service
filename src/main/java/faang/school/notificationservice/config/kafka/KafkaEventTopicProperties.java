@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "spring.data.kafka.topic.comment")
+@ConfigurationProperties(prefix = "spring.data.kafka.topic.event")
 @Configuration
-public class KafkaCommentTopicConfigurationProperties {
+public class KafkaEventTopicProperties {
     private String name;
     private int partitions;
 }

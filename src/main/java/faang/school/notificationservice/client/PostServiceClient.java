@@ -1,8 +1,8 @@
 package faang.school.notificationservice.client;
 
 import faang.school.notificationservice.config.client.feign.FeignClientConfig;
-import faang.school.notificationservice.dto.client.post_service.CommentClientResponseDto;
-import faang.school.notificationservice.dto.client.post_service.PostClientResponseDto;
+import faang.school.notificationservice.dto.client.post_service.CommentDto;
+import faang.school.notificationservice.dto.client.post_service.PostDto;
 import feign.FeignException;
 import feign.RetryableException;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -22,12 +22,12 @@ public interface PostServiceClient {
             backoff = @Backoff(delay = 1000, multiplier = 2)
     )
     @GetMapping("/comments/{commentId}")
-    CommentClientResponseDto getCommentById(@PathVariable long commentId);
+    CommentDto getCommentById(@PathVariable long commentId);
     @Retryable(
             retryFor = { FeignException.class, RetryableException.class },
             maxAttempts = 5,
             backoff = @Backoff(delay = 1000, multiplier = 2)
     )
     @GetMapping("/posts/{postId}")
-    PostClientResponseDto getPostById(@PathVariable long postId);
+    PostDto getPostById(@PathVariable long postId);
 }

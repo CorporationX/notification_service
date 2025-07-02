@@ -13,9 +13,14 @@ spring:
       consumer:
         group-id: notification-service
         auto-offset-reset: earliest
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       topic:
         comment:
           name: comment_topic
+          partitions: 1
+        event:
+          name: event_topic
           partitions: 1
 
   mail:
@@ -33,10 +38,14 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
-  messages:
-    basename: messages
-    comment:
-      new: comment.new
+messages:
+  basename: messages
+
+comment:
+  new: comment.new
+
+event:
+  new: event.new
 
 server:
   port: 8083

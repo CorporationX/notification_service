@@ -1,4 +1,4 @@
-package faang.school.notificationservice.model.comment;
+package faang.school.notificationservice.model.kafka.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentNewModel {
+public class CommentMessage {
     private String postTitle;
     private String commentContent;
     private String usernameAuthorComment;
