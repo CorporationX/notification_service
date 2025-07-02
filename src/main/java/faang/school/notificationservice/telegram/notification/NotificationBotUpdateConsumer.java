@@ -3,6 +3,7 @@ package faang.school.notificationservice.telegram.notification;
 import faang.school.notificationservice.telegram.ActionExecutor;
 import faang.school.notificationservice.telegram.NotificationAction;
 import faang.school.notificationservice.telegram.NotificationActionType;
+import faang.school.notificationservice.telegram.notification.messages.NotificationBotUpdateConsumerMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -45,9 +46,9 @@ public class NotificationBotUpdateConsumer implements LongPollingSingleThreadUpd
 
             sendMessage(sendMessage);
         } catch (Exception e) {
-            log.error("Failed to process action \"{}\" for chat {}", message.getText(), message.getChatId(), e);
+            log.error("Failed to process action \"{}\" for chat {}", text, message.getChatId(), e);
             sendMessage(SendMessage.builder()
-                    .text("Action not supported")
+                    .text(NotificationBotUpdateConsumerMessage.FAILED_ACTION_NOT_SUPPORTED.getMessage())
                     .chatId(chatId)
                     .build());
         }

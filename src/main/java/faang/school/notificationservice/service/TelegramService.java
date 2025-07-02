@@ -15,23 +15,22 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 @RequiredArgsConstructor
 public class TelegramService implements NotificationService {
     private final TelegramClient telegramClient;
-    protected final UserServiceClient userServiceClient;
+    private final UserServiceClient userServiceClient;
 
     @Override
     public void send(UserDto user, String message) {
-        log.info("Prepare message \"{}\" to sending to user {}", message, user.getId());
+        log.info("Prepare message [{}] to sending to user [{}]", message, user.getId());
         try {
             UserTelegramDto userTelegramDto = userServiceClient.getUserTelegram(user.getId());
-            log.info(userTelegramDto.toString());
             SendMessage builtMessage = SendMessage.builder()
                     .text(message)
                     .chatId(userTelegramDto.telegramChatId())
                     .build();
 
             telegramClient.execute(builtMessage);
-            log.info("Message \"{}\" sent to user {} successfully", message, user.getId());
+            log.info("Message [{}] sent to user [{}] successfully", message, user.getId());
         } catch (TelegramApiException e) {
-            log.error("Fatal error on sending telegram message \"{message}\" to {}", user.getId(), e);
+            log.error("Fatal error on sending telegram message [{}] to [{}]", message, user.getId(), e);
         }
     }
 

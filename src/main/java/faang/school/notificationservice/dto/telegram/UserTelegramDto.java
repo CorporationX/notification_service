@@ -1,7 +1,7 @@
 package faang.school.notificationservice.dto.telegram;
 
 public record UserTelegramDto(
-        Long id,
+        Long userId,
         Long telegramChatId,
         String telegramUserName
 ) {
