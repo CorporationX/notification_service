@@ -12,7 +12,7 @@ spring:
       bootstrap-servers: localhost:9092,localhost:9094,localhost:9096
       group-id: mentorship.request.created.v1
       properties:
-        spring.json.trusted.packages: "*"
+        spring.json.trusted.packages: "faang.school.notificationservice.event"
 
   mail:
     host: smtp.gmail.com
