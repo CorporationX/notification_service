@@ -46,6 +46,12 @@ dependencies {
     implementation("com.vonage:client:7.3.0")
 
     /**
+     * Messaging
+     */
+    implementation("org.telegram:telegrambots-springboot-longpolling-starter:9.0.0")
+    implementation("org.telegram:telegrambots-client:9.0.0")
+
+    /**
      * Test containers
      */
     implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
