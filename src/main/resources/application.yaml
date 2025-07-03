@@ -11,6 +11,8 @@ spring:
           name: new-follower-events
         unfollow-topic:
           name: unfollow-events
+      event-start-topic:
+        name: event-start
 
   data:
     redis:

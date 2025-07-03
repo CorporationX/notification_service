@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.kafka;
 
 import faang.school.notificationservice.event.NotificationEvent;
+import faang.school.notificationservice.event.kafka.EventStartNotificationEvent;
 import faang.school.notificationservice.event.kafka.GoalCompletionNotificationEvent;
 import faang.school.notificationservice.event.kafka.NewFollowerEvent;
 import faang.school.notificationservice.event.kafka.UnfollowEvent;
@@ -37,6 +38,11 @@ public class KafkaConsumerConfig {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, GoalCompletionNotificationEvent> kafkaGoalCompletedEventListener() {
         return concurrentKafkaListenerJsonFactory(GoalCompletionNotificationEvent.class);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, EventStartNotificationEvent> kafkaEventStartEventListener() {
+        return concurrentKafkaListenerJsonFactory(EventStartNotificationEvent.class);
     }
 
     private <T extends NotificationEvent> ConcurrentKafkaListenerContainerFactory<String, T> concurrentKafkaListenerJsonFactory(Class<T> tClass) {
