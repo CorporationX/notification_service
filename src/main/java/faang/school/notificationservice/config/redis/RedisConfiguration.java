@@ -1,7 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.notificationservice.listener.AbstractEventListener;
+import faang.school.notificationservice.listener.redis.AbstractEventListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
