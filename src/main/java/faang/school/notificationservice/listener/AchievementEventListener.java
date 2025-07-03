@@ -1,29 +1,35 @@
 package faang.school.notificationservice.listener;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.AchievementEvent;
-import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
+@Slf4j
 @Component
-@RequiredArgsConstructor
-public class AchievementEventListener {
-    private final NotificationService notificationService;
-    private final MessageBuilder<AchievementEvent> messageBuilder;
-    private final UserServiceClient userServiceClient;
+public class AchievementEventListener extends AbstractEventListener<AchievementEvent> {
+
+    public AchievementEventListener(ObjectMapper objectMapper,
+                                    List<MessageBuilder<AchievementEvent>> messageBuilders,
+                                    UserServiceClient userServiceClient,
+                                    List<NotificationService> notificationServices) {
+        super(objectMapper, messageBuilders, userServiceClient, notificationServices);
+    }
 
     @KafkaListener(
             topics = "${spring.kafka.topics.achievement}",
             groupId = "notification-service-group",
             containerFactory = "kafkaListenerContainerFactory"
     )
-    public void listen(AchievementEvent event) {
-        UserDto user = userServiceClient.getUser(event.getUserId());
-        String message = messageBuilder.buildMessage(event, user.getLocale());
-        notificationService.send(user, message);
+
+    public void onMessage(AchievementEvent event) {
+        handleMessage(event, event.getUserId());
+        log.info("Processing message completed: {}", event);
     }
 }

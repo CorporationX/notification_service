@@ -1,8 +1,13 @@
 package faang.school.notificationservice.config;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.event.MentorshipRequestEvent;
 import faang.school.notificationservice.messaging.FollowerEventListener;
 import faang.school.notificationservice.listener.MentorshipRequestListener;
+import faang.school.notificationservice.messaging.MessageBuilder;
+import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +19,8 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor

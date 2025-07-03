@@ -1,4 +1,0 @@
-achievement:
-  notification:
-    title: "Новое достижение!"
-    text: "Вы получили достижение {0}: {1}"
