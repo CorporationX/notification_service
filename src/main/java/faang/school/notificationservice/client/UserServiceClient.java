@@ -7,17 +7,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-@FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}", path = "/api/v1/users")
+@FeignClient(name = "user-service", url = "${user-service.url}", path = "${user-service.path}")
 public interface UserServiceClient {
 
     @GetMapping("/{id}")
     UserDto getUser(@PathVariable long id);
 
-    @PostMapping("")
+    @PostMapping()
     List<UserDto> getUsersByIds(@RequestBody List<Long> ids);
 
     @GetMapping("/{userId}/telegram")
