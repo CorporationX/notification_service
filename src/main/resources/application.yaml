@@ -11,6 +11,11 @@ spring:
     kafka:
       use-kafka: true
       bootstrap-servers: localhost:9092, localhost:9192, localhost:9292
+      group_id: event-listeners
+      auto_offset: earliest
+      concurrency: 3
+      topics:
+        goal-completed: goal_completed
 
   mail:
     host: smtp.gmail.com

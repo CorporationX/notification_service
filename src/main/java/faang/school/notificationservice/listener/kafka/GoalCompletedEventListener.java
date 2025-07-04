@@ -3,6 +3,7 @@ package faang.school.notificationservice.listener.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.config.kafka.KafkaProperties;
 import faang.school.notificationservice.dto.GoalCompletedEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
@@ -21,22 +22,22 @@ public class GoalCompletedEventListener extends AbstractMessageProcessor<GoalCom
     private final UserServiceClient userServiceClient;
     private final ObjectMapper objectMapper;
     private final Locale absolutelyCustomLocale = Locale.ENGLISH;
-
-    @Value("${spring.data.kafka.use-kafka}")
-    private boolean useKafka;
+    private final KafkaProperties properties;
 
     public GoalCompletedEventListener(List<NotificationService> notificationServices,
                                       List<MessageBuilder<GoalCompletedEvent>> messageBuilders,
+                                      KafkaProperties properties,
                                       UserServiceClient userServiceClient,
                                       ObjectMapper objectMapper) {
         super(messageBuilders, notificationServices);
         this.userServiceClient = userServiceClient;
         this.objectMapper = objectMapper;
+        this.properties = properties;
     }
 
-    @KafkaListener(topics = "goal_complete")
+    @KafkaListener(topics = "${spring.data.kafka.topics.goal-completed}")
     public void listen(String json) {
-        if (!useKafka) return;
+        if (!properties.isUseKafka()) return;
         try {
             GoalCompletedEvent event = objectMapper.readValue(json, GoalCompletedEvent.class);
             String generalizedNotification = getMessage(absolutelyCustomLocale, event);
@@ -50,7 +51,7 @@ public class GoalCompletedEventListener extends AbstractMessageProcessor<GoalCom
             log.debug("Notification(s) about goal {} completion were sent to users with ids: {}",
                     event.goalTitle(), event.userIds());
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 
