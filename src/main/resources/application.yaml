@@ -11,6 +11,10 @@ spring:
           name: new-follower-events
         unfollow-topic:
           name: unfollow-events
+      profile:
+        name: view-profile
+      recover:
+        name: transfer-events-dlt
 
   data:
     redis:
@@ -65,11 +69,5 @@ user-service:
     host: localhost
     port: 8080
 
-kafka:
-  bootstrap-servers: localhost:9092
-  consumer:
-    group-id: notification-service-group
-  template:
-    topic: "view-topic"
 
 
