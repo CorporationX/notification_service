@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.UserEmailMissingException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.mail.SimpleMailMessage;
@@ -36,7 +37,7 @@ class EmailServiceTest {
     void test_ShouldThrowIfEmailMissing() {
         UserDto user = new UserDto();
 
-        assertThrows(IllegalArgumentException.class, () -> emailService.send(user, "test"));
+        assertThrows(UserEmailMissingException.class, () -> emailService.send(user, "test"));
     }
 
     @Test
