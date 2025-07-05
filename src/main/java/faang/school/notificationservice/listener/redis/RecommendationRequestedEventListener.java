@@ -1,4 +1,4 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.listener.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
