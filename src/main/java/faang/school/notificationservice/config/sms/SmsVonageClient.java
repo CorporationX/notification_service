@@ -15,7 +15,7 @@ public class SmsVonageClient {
 
     @PostConstruct
     public void init() {
-        client = com.vonage.client.VonageClient.builder()
+        client = VonageClient.builder()
                 .apiKey(vonageConfig.key())
                 .apiSecret(vonageConfig.secret())
                 .build();
