@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+        EXCLUDE_FROM_CONFIG: "org.telegram.telegrambots.longpolling.starter.TelegramBotStarterConfiguration"
     permissions:
       contents: read
     steps:
@@ -25,6 +27,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+        EXCLUDE_FROM_CONFIG: "org.telegram.telegrambots.longpolling.starter.TelegramBotStarterConfiguration"
     permissions:
       contents: read
     steps:
@@ -41,6 +45,8 @@ jobs:
 
   dependency-submission:
     runs-on: ubuntu-latest
+    env:
+        EXCLUDE_FROM_CONFIG: "org.telegram.telegrambots.longpolling.starter.TelegramBotStarterConfiguration"
     permissions:
       contents: write
     steps:

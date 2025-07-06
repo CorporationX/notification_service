@@ -7,6 +7,15 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         goal-complete: goal_complete
+        recommendation_event: recommendation_event
+    kafka:
+      use-kafka: true
+      bootstrap-servers: localhost:9092, localhost:9192, localhost:9292
+      group_id: event-listeners
+      auto_offset: earliest
+      concurrency: 3
+      topics:
+        goal-completed: goal_completed
 
   mail:
     host: smtp.gmail.com
@@ -22,12 +31,21 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+  autoconfigure:
+      exclude: ${EXCLUDE_FROM_CONFIG:org.telegram.telegrambots.longpolling.starter.TelegramBotStarterConfiguration} #Установить переменную окружения, что бы бот заработал
 
 email:
   common-subject: "You have a new notification"
 
   messages:
     basename: messages
+
+telegram:
+    bot:
+        notification:
+            token: ${TELEGRAM_BOT_TOKEN:} #Указать токен, предоставленный BotFather, в переменной окружение
+            name: ${TELEGRAM_BOT_USERNAME:} #Указать имя бота в переменной окружение
+            enabled: true
 
 server:
   port: 8083
@@ -49,3 +67,5 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+    url: localhost:8080
+    path: /api/v1/users
