@@ -9,15 +9,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}")
 public interface UserServiceClient {
 
     @GetMapping("/users/{id}")
     UserDto getUser(@PathVariable long id);
 
+    @PostMapping("/users/list")
+    List<UserDto> getUsers(@RequestBody List<Long> usersId);
+
     @PostMapping("/contacts/telegram")
     void registerTelegramChatId(@RequestBody RegisterTelegramDto registerTelegram);
 
     @DeleteMapping("/contacts/telegram/{chatId}")
-    void unregisterTelegramChatId(@PathVariable Long chatId);
+    void unregisterTelegramChatId(@PathVariable String chatId);
 }

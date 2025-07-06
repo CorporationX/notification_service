@@ -33,6 +33,11 @@ dependencies {
     implementation("org.telegram:telegrambots-spring-boot-starter:6.9.0")
 
     /**
+     * kafka
+     */
+    implementation("org.springframework.kafka:spring-kafka")
+
+    /**
      * Database
      */
     implementation("redis.clients:jedis:4.3.2")
@@ -117,6 +122,11 @@ tasks.jacocoTestReport {
 }
 
 val jacocoClassExclude = listOf(
+    "faang.school.notificationservice.service.EmailService", // тесты Стас
+    "faang.school.notificationservice.service.SmsService", // тесты Стас
+    "faang.school.notificationservice.messaging.LikeEventMessageBuilder", // тесты Стас
+    "faang.school.notificationservice.listener.kafka.AbstractEventListener", // тесты Стас
+    "faang.school.notificationservice.listener.kafka.LikeEventListener", // тесты Стас
     "faang.school.notificationservice.config.*",
     "faang.school.notificationservice.dto.*",
     "faang.school.notificationservice.mapper.*",

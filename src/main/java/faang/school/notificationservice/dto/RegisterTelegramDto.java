@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record RegisterTelegramDto(
-        Long chatId,
-        String phone
+    String chatId,
+    String phone
 ) {
 }

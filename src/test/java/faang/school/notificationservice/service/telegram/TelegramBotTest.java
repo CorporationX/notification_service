@@ -47,7 +47,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TelegramBotTest {
 
-    public static final Long CHAT_ID = 1L;
+    public static final String CHAT_ID = "1";
+    public static final Long USER_ID = 1L;
     public static final String PHONE = "1234567890";
     public static final String HELP_DESCRIPTION = "описание helpCommand";
     public static final String REGISTER_DESCRIPTION = "описание registerCommand";
@@ -132,9 +133,9 @@ class TelegramBotTest {
         when(message.hasContact()).thenReturn(true);
         when(message.getContact()).thenReturn(contact);
         when(message.getFrom()).thenReturn(user);
-        when(user.getId()).thenReturn(CHAT_ID);
-        when(contact.getUserId()).thenReturn(CHAT_ID);
-        when(message.getChatId()).thenReturn(CHAT_ID);
+        when(user.getId()).thenReturn(USER_ID);
+        when(contact.getUserId()).thenReturn(USER_ID);
+        when(message.getChatId()).thenReturn(Long.parseLong(CHAT_ID));
         when(contact.getPhoneNumber()).thenReturn(PHONE);
         doNothing().when(telegramService).registerUser(CHAT_ID, PHONE);
 
@@ -156,8 +157,8 @@ class TelegramBotTest {
         when(message.hasContact()).thenReturn(true);
         when(message.getContact()).thenReturn(contact);
         when(message.getFrom()).thenReturn(user);
-        when(user.getId()).thenReturn(CHAT_ID);
-        when(contact.getUserId()).thenReturn(CHAT_ID + 1);
+        when(user.getId()).thenReturn(USER_ID);
+        when(contact.getUserId()).thenReturn(USER_ID + 1);
 
         telegramBot.onUpdateReceived(update);
 
@@ -274,7 +275,7 @@ class TelegramBotTest {
         ReplyKeyboardRemove removeKeyboard = (ReplyKeyboardRemove) sendMessage.getReplyMarkup();
 
         assertEquals(expectedText, sendMessage.getText());
-        assertEquals(CHAT_ID.toString(), sendMessage.getChatId());
+        assertEquals(CHAT_ID, sendMessage.getChatId());
         assertTrue(removeKeyboard.getRemoveKeyboard());
     }
 

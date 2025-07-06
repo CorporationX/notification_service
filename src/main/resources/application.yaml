@@ -25,6 +25,14 @@ spring:
   messages:
     basename: messages
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: notification-group
+      auto-offset-reset: earliest
+      topics:
+        likeTopic: like-topic
+
 server:
   port: 8083
 
