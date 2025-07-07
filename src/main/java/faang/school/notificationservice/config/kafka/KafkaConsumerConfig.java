@@ -43,7 +43,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, UnfollowEvent> kafkaUnfollowEventListener(
             DefaultErrorHandler errorHandler) {
-        return concurrentKafkaListenerJsonFactory(UnfollowEvent.class,errorHandler);
+        return concurrentKafkaListenerJsonFactory(UnfollowEvent.class, errorHandler);
     }
 
     @Bean
@@ -56,7 +56,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, ViewProfileEvent> kafkaViewProfileEventListener(
             DefaultErrorHandler errorHandler
-    ){
+    ) {
         return concurrentKafkaListenerJsonFactory(ViewProfileEvent.class, errorHandler);
     }
 
@@ -72,11 +72,12 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, EventStartNotificationEvent> kafkaEventStartEventListener() {
-        return concurrentKafkaListenerJsonFactory(EventStartNotificationEvent.class);
+    public ConcurrentKafkaListenerContainerFactory<String, EventStartNotificationEvent> kafkaEventStartEventListener(
+            DefaultErrorHandler errorHandler
+    ) {
+        return concurrentKafkaListenerJsonFactory(EventStartNotificationEvent.class, errorHandler);
     }
 
-    private <T extends NotificationEvent> ConcurrentKafkaListenerContainerFactory<String, T> concurrentKafkaListenerJsonFactory(Class<T> tClass) {
     private <T> ConcurrentKafkaListenerContainerFactory<String, T> concurrentKafkaListenerJsonFactory(
             Class<T> tClass,
             DefaultErrorHandler errorHandler
