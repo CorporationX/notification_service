@@ -122,9 +122,8 @@ tasks.jacocoTestReport {
 }
 
 val jacocoClassExclude = listOf(
-    "faang.school.notificationservice.service.EmailService", // тесты Стас
-    "faang.school.notificationservice.service.SmsService", // тесты Стас
-    "faang.school.notificationservice.messaging.LikeEventMessageBuilder", // тесты Стас
+    "faang.school.notificationservice.service.EmailService", // Пока нет реализации - это класс заглушка.
+    "faang.school.notificationservice.service.SmsService", // Пока нет реализации - это класс заглушка.
     "faang.school.notificationservice.listener.kafka.AbstractEventListener", // тесты Стас
     "faang.school.notificationservice.listener.kafka.LikeEventListener", // тесты Стас
     "faang.school.notificationservice.config.*",

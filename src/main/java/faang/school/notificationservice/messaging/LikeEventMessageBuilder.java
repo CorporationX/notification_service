@@ -10,6 +10,8 @@ import java.util.Locale;
 @Service
 @RequiredArgsConstructor
 public class LikeEventMessageBuilder implements MessageBuilder<LikeEventDto> {
+    public static final String EVENT_LIKE_POST = "event.likePost";
+    public static final String EVENT_LIKE_COMMENT = "event.likeComment";
 
     private final MessageSource messageSource;
 
@@ -23,9 +25,9 @@ public class LikeEventMessageBuilder implements MessageBuilder<LikeEventDto> {
         String messageCode = null;
         StringBuilder message = new StringBuilder();
         if (event.getPostId() != null) {
-            messageCode = "event.likePost";
+            messageCode = EVENT_LIKE_POST;
         } else if (event.getCommentId() != null) {
-            messageCode = "event.likeComment";
+            messageCode = EVENT_LIKE_COMMENT;
         }
         if (messageCode != null) {
             message.append(messageSource.getMessage(messageCode, new Object[]{event.getSenderName()}, locale));

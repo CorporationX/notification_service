@@ -16,5 +16,4 @@ public class EmailService implements NotificationService {
     public UserDto.PreferredContact getPreferredContact() {
         return UserDto.PreferredContact.EMAIL;
     }
-
 }
