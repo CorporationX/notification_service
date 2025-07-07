@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.kafka;
 
 import faang.school.notificationservice.event.NotificationEvent;
+import faang.school.notificationservice.event.kafka.EventStartNotificationEvent;
 import faang.school.notificationservice.event.kafka.GoalCompletionNotificationEvent;
 import faang.school.notificationservice.event.kafka.NewFollowerEvent;
 import faang.school.notificationservice.event.kafka.UnfollowEvent;
@@ -70,6 +71,12 @@ public class KafkaConsumerConfig {
         return new DefaultErrorHandler(recoverer, new FixedBackOff(0L, 0));
     }
 
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, EventStartNotificationEvent> kafkaEventStartEventListener() {
+        return concurrentKafkaListenerJsonFactory(EventStartNotificationEvent.class);
+    }
+
+    private <T extends NotificationEvent> ConcurrentKafkaListenerContainerFactory<String, T> concurrentKafkaListenerJsonFactory(Class<T> tClass) {
     private <T> ConcurrentKafkaListenerContainerFactory<String, T> concurrentKafkaListenerJsonFactory(
             Class<T> tClass,
             DefaultErrorHandler errorHandler

@@ -15,6 +15,8 @@ spring:
         name: view-profile
       recover:
         name: transfer-events-dlt
+      event-start-topic:
+        name: event-start
 
   data:
     redis:
@@ -68,6 +70,3 @@ project-service:
 user-service:
     host: localhost
     port: 8080
-
-
-
