@@ -46,6 +46,10 @@ dependencies {
     implementation("com.vonage:client:7.3.0")
 
     /**
+     *Kafka
+     */
+    implementation("org.springframework.kafka:spring-kafka")
+    /**
      * Test containers
      */
     implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
