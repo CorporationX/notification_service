@@ -112,7 +112,7 @@ class TelegramBotTest {
         when(update.hasMessage()).thenReturn(true);
         when(update.getMessage()).thenReturn(message);
         when(message.hasText()).thenReturn(true);
-        when(message.getText()).thenReturn("/help"); // helpCommand.getCommandName()
+        when(message.getText()).thenReturn("/help");
         when(commandContainer.getCommand(helpCommand.getCommandName())).thenReturn(helpCommand);
         doNothing().when(helpCommand).execute(update);
 

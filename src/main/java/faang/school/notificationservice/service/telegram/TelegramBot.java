@@ -106,10 +106,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.telegramService = telegramService;
     }
 
-    // public void sendMessage(Long chatId, String text) {
-    //     sendMessage(chatId.toString(), text);
-    // }
-
     public void sendMessage(String chatId, String text) {
         SendMessage message = SendMessage.builder()
             .chatId(chatId)
