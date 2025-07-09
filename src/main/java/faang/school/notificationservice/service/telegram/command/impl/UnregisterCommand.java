@@ -25,7 +25,7 @@ public class UnregisterCommand extends AbstractTelegramCommand {
 
     @Override
     public void execute(Update update) {
-        Optional<Long> chatId = getChatId(update);
+        Optional<String> chatId = getChatId(update);
         chatId.ifPresent(id -> telegramBot.unregisterChatId(id));
     }
 }

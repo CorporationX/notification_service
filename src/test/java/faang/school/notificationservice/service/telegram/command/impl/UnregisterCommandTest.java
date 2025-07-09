@@ -19,7 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class UnregisterCommandTest {
-    private static final Long CHAT_ID = 1L;
+    private static final String CHAT_ID = "1";
 
     private MessageSource messageSource;
     private final Locale locale = new Locale("ru");
@@ -50,14 +50,14 @@ class UnregisterCommandTest {
         Update update = Mockito.mock(Update.class);
         Message message = Mockito.mock(Message.class);
         when(update.getMessage()).thenReturn(message);
-        when(message.getChatId()).thenReturn(CHAT_ID);
+        when(message.getChatId()).thenReturn(Long.parseLong(CHAT_ID));
         doNothing().when(telegramBot).unregisterChatId(CHAT_ID);
 
         unregisterCommand.execute(update);
 
-        ArgumentCaptor<Long> captor = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(telegramBot).unregisterChatId(captor.capture());
-        Long id = captor.getValue();
+        String id = captor.getValue();
         assertEquals(CHAT_ID, id);
     }
 }

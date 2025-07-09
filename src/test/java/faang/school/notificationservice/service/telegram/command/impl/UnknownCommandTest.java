@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class UnknownCommandTest {
-    private static final Long CHAT_ID = 1L;
+    private static final String CHAT_ID = "1";
 
     private final UnknownCommand unknownCommand = new UnknownCommand();
 
@@ -40,16 +40,16 @@ class UnknownCommandTest {
         Update update = Mockito.mock(Update.class);
         Message message = Mockito.mock(Message.class);
         when(update.getMessage()).thenReturn(message);
-        when(message.getChatId()).thenReturn(CHAT_ID);
+        when(message.getChatId()).thenReturn(Long.parseLong(CHAT_ID));
         doNothing().when(telegramBot).sendMessage(eq(CHAT_ID), anyString());
 
         unknownCommand.execute(update);
 
-        ArgumentCaptor<Long> longCaptor = ArgumentCaptor.forClass(Long.class);
-        ArgumentCaptor<String> stringCaptor = ArgumentCaptor.forClass(String.class);
-        verify(telegramBot).sendMessage(longCaptor.capture(), stringCaptor.capture());
-        Long id = longCaptor.getValue();
-        String actualText = stringCaptor.getValue();
+        ArgumentCaptor<String> chatIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> textCaptor = ArgumentCaptor.forClass(String.class);
+        verify(telegramBot).sendMessage(chatIdCaptor.capture(), textCaptor.capture());
+        String id = chatIdCaptor.getValue();
+        String actualText = textCaptor.getValue();
         String expectedText = UnknownCommand.UNKNOWN_TEXT;
         assertEquals(CHAT_ID, id);
         assertEquals(expectedText, actualText);

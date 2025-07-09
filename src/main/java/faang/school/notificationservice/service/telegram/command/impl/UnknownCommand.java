@@ -14,7 +14,7 @@ public class UnknownCommand extends AbstractTelegramCommand {
 
     @Override
     public void execute(Update update) {
-        Optional<Long> chatId = getChatId(update);
+        Optional<String> chatId = getChatId(update);
         chatId.ifPresent(id -> telegramBot.sendMessage(id, UNKNOWN_TEXT));
     }
 

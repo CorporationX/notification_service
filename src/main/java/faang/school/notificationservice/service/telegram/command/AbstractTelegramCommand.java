@@ -24,9 +24,9 @@ public abstract class AbstractTelegramCommand implements TelegramCommand {
         this.description = description;
     }
 
-    protected Optional<Long> getChatId(Update update) {
-        Optional<Message> message = Optional.ofNullable(update.getMessage());
-        return message.map(Message::getChatId);
+    protected Optional<String> getChatId(Update update) {
+        Optional<Message> messageOptional = Optional.ofNullable(update.getMessage());
+        return messageOptional.map(message -> String.valueOf(message.getChatId()));
     }
 
     @Override

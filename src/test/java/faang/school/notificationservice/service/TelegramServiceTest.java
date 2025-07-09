@@ -29,7 +29,6 @@ import java.util.Locale;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -41,7 +40,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TelegramServiceTest {
-    public static final Long CHAT_ID = 1L;
+    public static final String CHAT_ID = "1";
     public static final String TEXT = "text";
     public static final String PHONE = "1234567890";
 
@@ -92,7 +91,7 @@ class TelegramServiceTest {
 
         telegramService.send(userDto, TEXT);
 
-        verify(telegramBot).sendMessage(anyLong(), anyString());
+        verify(telegramBot).sendMessage(anyString(), anyString());
     }
 
     @Test
@@ -101,7 +100,7 @@ class TelegramServiceTest {
 
         telegramService.send(userDto, TEXT);
 
-        verify(telegramBot, times(0)).sendMessage(anyLong(), anyString());
+        verify(telegramBot, times(0)).sendMessage(anyString(), anyString());
     }
 
     @Test
@@ -110,7 +109,7 @@ class TelegramServiceTest {
 
         telegramService.send(userDto, "");
 
-        verify(telegramBot, times(0)).sendMessage(anyLong(), anyString());
+        verify(telegramBot, times(0)).sendMessage(anyString(), anyString());
     }
 
     @Test
@@ -119,7 +118,7 @@ class TelegramServiceTest {
 
         telegramService.send(userDto, null);
 
-        verify(telegramBot, times(0)).sendMessage(anyLong(), anyString());
+        verify(telegramBot, times(0)).sendMessage(anyString(), anyString());
     }
 
     @Test
@@ -229,7 +228,7 @@ class TelegramServiceTest {
             .build();
     }
 
-    private UserDto getMockUser(Long chatId) {
+    private UserDto getMockUser(String chatId) {
         UserDto userDto = new UserDto();
         userDto.setId(1L);
         userDto.setUsername("user name");

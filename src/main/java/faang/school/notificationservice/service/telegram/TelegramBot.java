@@ -79,7 +79,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    public void sendContactRequest(Long chatId) {
+    public void sendContactRequest(String chatId) {
         ReplyKeyboardMarkup keyboardMarkup = createContactRequestKeyboard();
         SendMessage requestMsg = new SendMessage();
         requestMsg.setChatId(chatId);
@@ -88,7 +88,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         innerExecute(requestMsg, "Send contact request error");
     }
 
-    public void sendCommandList(Long chatId) {
+    public void sendCommandList(String chatId) {
         StringBuilder sb = new StringBuilder(messages.get(TelegramLabel.COMMAND_LIST));
         sb.append('\n');
         commands.getCommands().forEach((key, value) -> {
@@ -98,16 +98,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         sendMessage(chatId, sb.toString());
     }
 
-    public void unregisterChatId(Long chatId) {
+    public void unregisterChatId(String chatId) {
         telegramService.unregisterUser(chatId);
     }
 
     public void setService(TelegramService telegramService) {
         this.telegramService = telegramService;
-    }
-
-    public void sendMessage(Long chatId, String text) {
-        sendMessage(chatId.toString(), text);
     }
 
     public void sendMessage(String chatId, String text) {
@@ -119,7 +115,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     // Убираем клавиатуру после получения контакта
-    public void removeKeyboardAfterReceivingContact(Long chatId, String messageText) {
+    public void removeKeyboardAfterReceivingContact(String chatId, String messageText) {
         log.debug("remove keyboard after receiving contact. chatId: {}", chatId);
         SendMessage message = SendMessage.builder()
             .chatId(chatId)
@@ -149,7 +145,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             log.info("Request to register the user's phone in the system. chatId: {}, phone: {}",
                 update.getMessage().getChatId(), contact.getPhoneNumber()
             );
-            telegramService.registerUser(update.getMessage().getChatId(), contact.getPhoneNumber());
+            telegramService.registerUser(String.valueOf(update.getMessage().getChatId()), contact.getPhoneNumber());
         } else {
             log.error("Registration of someone else's phone is not possible. fromUserId: {}, contact.userId: {}",
                 update.getMessage().getFrom().getId(), contact.getUserId()

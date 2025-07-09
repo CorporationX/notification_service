@@ -47,8 +47,9 @@ public class TelegramService implements NotificationService {
 
     @Override
     public void send(UserDto user, String text) {
-        log.info("Send telegram message to user. userName is: {}; text: {}", user.getUsername(), text);
-        if (StringUtils.isBlank(text)) {
+        log.info("Send telegram message to user.\nuser name is: {}, chatId: {}\ntext: {}",
+            user.getUsername(), user.getChatId(), text);
+        if (StringUtils.isBlank(text) || StringUtils.isBlank(user.getChatId())) {
             return;
         }
         if (user.hasChatId()) {
@@ -61,10 +62,9 @@ public class TelegramService implements NotificationService {
         return UserDto.PreferredContact.TELEGRAM;
     }
 
-    public void registerUser(Long chatId, String phone) {
+    public void registerUser(String chatId, String phone) {
         log.info("request to register a phone in the notification system via telegram. chatId: {}; phone: {}",
-            chatId, phone
-        );
+            chatId, phone);
         StringBuilder responseTelegramText = new StringBuilder();
         try {
             RegisterTelegramDto telegramDto = new RegisterTelegramDto(chatId, phone);
@@ -80,7 +80,7 @@ public class TelegramService implements NotificationService {
         }
     }
 
-    public void unregisterUser(Long chatId) {
+    public void unregisterUser(String chatId) {
         log.info("request to cancel user registration in telegram. chatId: {}", chatId);
         StringBuilder responseTelegramText = new StringBuilder();
         try {
