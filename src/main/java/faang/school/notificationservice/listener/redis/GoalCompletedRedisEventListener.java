@@ -1,4 +1,4 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.listener.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
@@ -8,6 +8,7 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.stereotype.Component;
 
@@ -17,21 +18,24 @@ import java.util.Locale;
 
 @Slf4j
 @Component
-public class GoalCompletedEventListener extends AbstractEventListener<GoalCompletedEvent> {
+public class GoalCompletedRedisEventListener extends AbstractEventListener<GoalCompletedEvent> {
 
     private final List<String> topicNameKeys = List.of("goal-complete");
     private final Locale absolutelyCustomLocale = Locale.ENGLISH;
+    @Value("${spring.data.kafka.use-kafka}")
+    private boolean useKafka;
 
-    public GoalCompletedEventListener(List<NotificationService> notificationServices,
-                                      List<MessageBuilder<GoalCompletedEvent>> messageBuilders,
-                                      UserServiceClient userServiceClient,
-                                      ObjectMapper objectMapper,
-                                      RedisProperties redisProperties) {
+    public GoalCompletedRedisEventListener(List<NotificationService> notificationServices,
+                                           List<MessageBuilder<GoalCompletedEvent>> messageBuilders,
+                                           UserServiceClient userServiceClient,
+                                           ObjectMapper objectMapper,
+                                           RedisProperties redisProperties) {
         super(notificationServices, messageBuilders, userServiceClient, objectMapper, redisProperties);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
+        if (useKafka) return;
         try {
             GoalCompletedEvent event = objectMapper.readValue(message.getBody(), GoalCompletedEvent.class);
             String generalizedNotification = getMessage(absolutelyCustomLocale, event);
