@@ -24,6 +24,7 @@ class SmsServiceTest {
     SmsService smsService;
 
     private  UserDto user;
+
     @Value("${test.phone-number}")
     private String testPhoneNumber;
 
