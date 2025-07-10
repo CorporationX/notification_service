@@ -10,6 +10,7 @@ spring:
   kafka:
         bootstrap-servers: localhost:9092
         topics:
+          mentorship-request: mentorship-request-topic
           achievement: user_achievements  # Добавьте это определение
         consumer:
           group-id: notification-service-group

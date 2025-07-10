@@ -7,6 +7,9 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,9 +30,12 @@ public class AchievementEventListener extends AbstractEventListener<AchievementE
             groupId = "notification-service-group",
             containerFactory = "kafkaListenerContainerFactory"
     )
-
-    public void onMessage(AchievementEvent event) {
-        handleMessage(event, event.getUserId());
-        log.info("Processing message completed: {}", event);
+    public void onMessage(@Payload AchievementEvent event,
+                          @Header(KafkaHeaders.RECEIVED_KEY) String key) {
+        try {
+            log.info("Received achievement event with key {}: {}", key, event);
+        } catch (Exception e) {
+            log.error("Error processing achievement event: {}", event, e);
+        }
     }
 }

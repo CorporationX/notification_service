@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public abstract class MentorshipRequestListener extends AbstractEventListener<MentorshipRequestEvent> implements MessageListener {
+public class MentorshipRequestListener extends AbstractEventListener<MentorshipRequestEvent> implements MessageListener {
 
     public MentorshipRequestListener(ObjectMapper objectMapper,
                                      List<MessageBuilder<MentorshipRequestEvent>> messageBuilders,
