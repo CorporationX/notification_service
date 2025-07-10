@@ -1,9 +1,9 @@
 package faang.school.notificationservice.service;
 
+import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
-import faang.school.notificationservice.config.sms.SmsVonageClient;
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +17,13 @@ public class SmsService implements NotificationService {
     @Value("${vonage.sender}")
     private final String sender;
 
-    private final SmsVonageClient smsClient;
+    private final VonageClient smsClient;
 
     @Override
     public void send(UserDto user, String message) {
 
         TextMessage textMessage = new TextMessage(sender, user.getPhone(), message);
-        SmsSubmissionResponse response = smsClient.getClient().getSmsClient().submitMessage(textMessage);
+        SmsSubmissionResponse response = smsClient.getSmsClient().submitMessage(textMessage);
 
         if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
             log.info("SMS sent successfully to {}", user.getPhone());
