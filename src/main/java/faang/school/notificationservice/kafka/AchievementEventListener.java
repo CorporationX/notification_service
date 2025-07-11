@@ -1,8 +1,10 @@
-package faang.school.notificationservice.listener;
+package faang.school.notificationservice.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.AchievementEvent;
+import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.listener.AbstractEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,11 @@ public class AchievementEventListener extends AbstractEventListener<AchievementE
                           @Header(KafkaHeaders.RECEIVED_KEY) String key) {
         try {
             log.info("Received achievement event with key {}: {}", key, event);
+
+            UserDto user = userServiceClient.getUser(event.getUserId());
+            String text = getMessage(event, user.getLocale());
+            sendNotification(user.getId(), text);
+
         } catch (Exception e) {
             log.error("Error processing achievement event: {}", event, e);
         }
