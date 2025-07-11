@@ -45,6 +45,7 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
     implementation("com.vonage:client:7.3.0")
+    implementation("com.vonage:server-sdk:9.3.1")
 
     /**
      * Messaging
@@ -58,6 +59,7 @@ dependencies {
     implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
+    testImplementation("it.ozimov:embedded-redis:0.7.3")
 
     /**
      * Tests
@@ -65,6 +67,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.github.hakky54:logcaptor:2.11.0")
+
 }
 
 tasks.withType<Test> {
