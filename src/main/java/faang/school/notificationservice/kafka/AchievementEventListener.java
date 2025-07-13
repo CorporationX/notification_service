@@ -29,7 +29,7 @@ public class AchievementEventListener extends AbstractEventListener<AchievementE
 
     @KafkaListener(
             topics = "${spring.kafka.topics.achievement}",
-            groupId = "notification-service-group",
+            groupId = "${spring.kafka.consumer.group-id}",
             containerFactory = "kafkaListenerContainerFactory"
     )
     public void onMessage(@Payload AchievementEvent event,

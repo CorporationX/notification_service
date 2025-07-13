@@ -11,7 +11,7 @@ spring:
         bootstrap-servers: localhost:9092
         topics:
           mentorship-request: mentorship-request-topic
-          achievement: user_achievements  # Добавьте это определение
+          achievement: user_achievement
         consumer:
           group-id: notification-service-group
           auto-offset-reset: earliest
