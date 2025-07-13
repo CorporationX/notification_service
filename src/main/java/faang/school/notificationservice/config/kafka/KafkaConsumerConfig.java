@@ -1,6 +1,6 @@
 package faang.school.notificationservice.config.kafka;
 
-import faang.school.notificationservice.event.NotificationEvent;
+import faang.school.notificationservice.event.kafka.CommentCreationNotificationEvent;
 import faang.school.notificationservice.event.kafka.EventStartNotificationEvent;
 import faang.school.notificationservice.event.kafka.GoalCompletionNotificationEvent;
 import faang.school.notificationservice.event.kafka.NewFollowerEvent;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class KafkaConsumerConfig {
 
     private final KafkaProperties kafkaProperties;
-    @Value("spring.kafka.topics.recover.name")
+    @Value("${spring.kafka.topics.recover.name}")
     private String topic;
 
     @Bean
@@ -77,6 +77,12 @@ public class KafkaConsumerConfig {
     ) {
         return concurrentKafkaListenerJsonFactory(EventStartNotificationEvent.class, errorHandler);
     }
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, CommentCreationNotificationEvent> kafkaCommentCreationEventListener(
+            DefaultErrorHandler errorHandler
+    )  {
+        return concurrentKafkaListenerJsonFactory(CommentCreationNotificationEvent.class, errorHandler);
+    }
 
     private <T> ConcurrentKafkaListenerContainerFactory<String, T> concurrentKafkaListenerJsonFactory(
             Class<T> tClass,
@@ -92,6 +98,7 @@ public class KafkaConsumerConfig {
                 org.springframework.kafka.support.serializer.JsonDeserializer.class.getName());
         jsonFactoryConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         jsonFactoryConfig.put(JsonDeserializer.VALUE_DEFAULT_TYPE, tClass.getName());
+        jsonFactoryConfig.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
 
         ConcurrentKafkaListenerContainerFactory<String, T> factory = new ConcurrentKafkaListenerContainerFactory<>();
 
