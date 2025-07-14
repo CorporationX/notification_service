@@ -16,6 +16,7 @@ spring:
     trusted-packages: faang.school.notificationservice.dto
     topics:
       profile-view: profile-view-events
+      mentorship-accept: mentorship-accept-event
 
   mail:
     host: smtp.gmail.com

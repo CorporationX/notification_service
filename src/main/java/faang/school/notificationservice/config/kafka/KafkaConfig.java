@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.dto.MentorshipRequestDto;
 import faang.school.notificationservice.dto.ProfileViewEventDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -37,6 +38,11 @@ public class KafkaConfig {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, ProfileViewEventDto> profileViewKafkaListenerContainerFactory() {
         return listenerFactory(ProfileViewEventDto.class, ContainerProperties.AckMode.MANUAL);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, MentorshipRequestDto> mentorshipEventKafkaListenerContainerFactory() {
+        return listenerFactory(MentorshipRequestDto.class, ContainerProperties.AckMode.MANUAL);
     }
 
 }
