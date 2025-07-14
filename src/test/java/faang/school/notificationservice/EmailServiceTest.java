@@ -1,8 +1,8 @@
 package faang.school.notificationservice;
 
+import faang.school.notificationservice.config.notification.EmailConfig;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.EmailService;
-import faang.school.notificationservice.config.notification.EmailConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,12 +30,23 @@ public class EmailServiceTest {
         ReflectionTestUtils.setField(emailConfig, "starttls", true);
         ReflectionTestUtils.setField(emailConfig, "debug", true);
 
-        emailService = new EmailService(emailConfig.getJavaMailSender()); // injection
+        emailService = new EmailService(emailConfig.getJavaMailSender());
     }
 
     @Test
     public void sendEmailTest() {
-        emailService.send(new UserDto(1, "User", "kukuha@internet.ru", "+12345678910", UserDto.PreferredContact.EMAIL, Locale.ENGLISH), "Hi there!");
-        assertTrue(true); // It emailed me
+
+        UserDto user = UserDto.builder()
+                .id(1L)
+                .username("User")
+                .email("kukuha@internet.ru")
+                .phone("+12345678910")
+                .preference(UserDto.PreferredContact.EMAIL)
+                .language("ru-RU")
+                .build();
+
+        emailService.send(user, "Hi there!");
+
+        assertTrue(true, "Email should be sent successfully");
     }
 }

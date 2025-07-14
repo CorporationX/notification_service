@@ -7,12 +7,23 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-
+  kafka:
+        bootstrap-servers: localhost:9092
+        topics:
+          mentorship-request: mentorship-request-topic
+          achievement: user_achievement
+        consumer:
+          group-id: notification-service-group
+          auto-offset-reset: earliest
+          key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+          properties:
+            spring.json.trusted.packages: "faang.school.notificationservice.dto"
   mail:
     host: smtp.gmail.com
     port: 587
-    username: corporationx.bot@gmail.com #https://www.baeldung.com/spring-email
-    password: rzmcyykwdhhfppoa #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
+    username: corporationx.bot@gmail.com
+    password: rzmcyykwdhhfppoa
     debug: true
     transport:
       protocol: true
@@ -49,8 +60,7 @@ logging:
 
     feign.template: OFF
 
-#Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
-vonage: #https://dashboard.nexmo.com/getting-started/sms
+vonage:
   api:
     key: whatever
     secret: whatever
@@ -58,6 +68,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
 project-service:
   host: localhost
   port: 8082
+
 user-service:
   host: localhost
   port: 8080

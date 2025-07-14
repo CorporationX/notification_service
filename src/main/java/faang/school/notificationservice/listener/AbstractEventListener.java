@@ -18,7 +18,6 @@ public abstract class AbstractEventListener<T> {
     protected final List<MessageBuilder<T>> messageBuilders;
     protected final UserServiceClient userServiceClient;
     protected final List<NotificationService> notificationServices;
-
     protected String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
                 .filter(messageBuilder -> messageBuilder.getInstance().equals(event.getClass()))
