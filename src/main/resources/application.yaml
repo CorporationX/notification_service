@@ -19,6 +19,10 @@ spring:
         name: event-start
       comment-created-topic:
         name: comment-created-notification
+      post-liked-topic:
+        name: post-liked-event
+      comment-liked-topic:
+        name: comment-liked-event
 
   data:
     redis:

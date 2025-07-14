@@ -25,7 +25,7 @@ public class GoalCompletionEventListener extends AbstractEventListener<GoalCompl
 
     @KafkaListener(
             topics = "${spring.kafka.topics.goal-completed-topic.name}",
-            groupId = "${spring.kafka.consumer.group-id}",
+            groupId = "${spring.kafka.consumer.user-service.group-id}",
             containerFactory = "kafkaGoalCompletedEventListener"
     )
     public void listenGoalCompletion(GoalCompletionNotificationEvent event) {

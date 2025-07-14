@@ -23,7 +23,7 @@ public class NewFollowerEventListener extends AbstractEventListener<NewFollowerE
 
     @KafkaListener(
             topics = "${spring.kafka.topics.subscription.new-follower-topic.name}",
-            groupId = "${spring.kafka.consumer.group-id}",
+            groupId = "${spring.kafka.consumer.user-service.group-id}",
             containerFactory = "kafkaNewFollowerEventListener"
     )
     public void handle(NewFollowerEvent event) {
