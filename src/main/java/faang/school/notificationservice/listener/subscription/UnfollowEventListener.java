@@ -23,7 +23,7 @@ public class UnfollowEventListener extends AbstractEventListener<UnfollowEvent> 
 
     @KafkaListener(
             topics = "${spring.kafka.topics.subscription.unfollow-topic.name}",
-            groupId = "${spring.kafka.consumer.group-id}",
+            groupId = "${spring.kafka.consumer.user-service.group-id}",
             containerFactory = "kafkaUnfollowEventListener"
     )
     public void handle(UnfollowEvent event) {
