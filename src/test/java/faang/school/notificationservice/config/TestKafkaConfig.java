@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.event.kafka.CommentCreationNotificationEvent;
 import faang.school.notificationservice.event.kafka.GoalCompletionNotificationEvent;
 import faang.school.notificationservice.event.kafka.NewFollowerEvent;
 import faang.school.notificationservice.event.kafka.UnfollowEvent;
@@ -36,6 +37,9 @@ public class TestKafkaConfig {
     @Value(value = "${spring.kafka.topics.subscription.unfollow-topic.name}")
     private String unfollowEventTopic;
 
+    @Value(value = "${spring.kafka.topics.comment-created-topic}")
+    private String commentCreatedTopic;
+
     @Bean
     public KafkaTemplate<String, GoalCompletionNotificationEvent> kafkaTestTemplate() {
         return new KafkaTemplate<>(jsonProducerFactory());
@@ -48,6 +52,11 @@ public class TestKafkaConfig {
 
     @Bean
     public KafkaTemplate<String, UnfollowEvent> kafkaUnfollowTestTemplate() {
+        return new KafkaTemplate<>(jsonProducerFactory());
+    }
+
+    @Bean
+    public KafkaTemplate<String, CommentCreationNotificationEvent> kafkaCommentCreationTestTemplate() {
         return new KafkaTemplate<>(jsonProducerFactory());
     }
 
@@ -71,6 +80,11 @@ public class TestKafkaConfig {
     @Bean
     public NewTopic unfollowEventsTopic() {
         return new NewTopic(unfollowEventTopic, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic commentCreationEventsTopic() {
+        return new NewTopic(commentCreatedTopic, 1, (short) 1);
     }
 
     private <T> ProducerFactory<String, T> jsonProducerFactory() {

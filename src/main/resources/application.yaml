@@ -17,6 +17,8 @@ spring:
         name: transfer-events-dlt
       event-start-topic:
         name: event-start
+      comment-created-topic:
+        name: comment-created-notification
 
   data:
     redis:
