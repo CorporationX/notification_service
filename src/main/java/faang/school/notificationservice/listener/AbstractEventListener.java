@@ -3,13 +3,12 @@ package faang.school.notificationservice.listener;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.NotificationEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.notification.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationSenderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -18,14 +17,14 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T extends NotificationEvent> {
 
-    private final List<NotificationService> notificationServices;
+    protected final NotificationSenderService notificationSender;
     private final MessageBuilder<T> messageBuilder;
 
     public abstract boolean isEventValid(T event);
 
     protected void sendNotification(T event) {
         if (isEventValid(event)) {
-            sendMessage(event.getOwner(), getMessage(event));
+            notificationSender.send(event.getOwner(), getMessage(event));
         } else {
             log.error("Event validation failed. Event: {}", event);
         }
@@ -36,15 +35,6 @@ public abstract class AbstractEventListener<T extends NotificationEvent> {
                 ? LocaleContextHolder.getLocale()
                 : event.getOwner().getLocale();
         return messageBuilder.buildMessage(event, locale);
-    }
-
-    protected void sendMessage(UserDto userDto, String message) {
-        notificationServices.stream()
-                .filter(notificationService -> notificationService.getPreferredContact() == userDto.getPreference())
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "No notification service was found for user preferred notification type"))
-                .send(userDto, message);
     }
 
     @SafeVarargs

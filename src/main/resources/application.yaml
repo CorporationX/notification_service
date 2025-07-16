@@ -24,6 +24,21 @@ spring:
       comment-liked-topic:
         name: comment-liked-event
 
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
   data:
     redis:
       port: 6379
@@ -76,3 +91,10 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+notification-scheduler:
+    cron: "0 * * * * *"
+    batch_size: 1000
+    executor:
+      thread_pool_core_size: 8
+      thread_pool_max_size: 16
