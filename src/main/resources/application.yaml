@@ -2,7 +2,11 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
-      group-id: user-service-group
+      group-id: notification-service-group
+      user-service:
+        group-id: user-service-group
+      post-service:
+        group-id: post-service-group
     topics:
       goal-completed-topic:
         name: goal-completed
@@ -11,18 +15,13 @@ spring:
           name: new-follower-events
         unfollow-topic:
           name: unfollow-events
-      profile:
-        name: view-profile
-      recover:
-        name: transfer-events-dlt
       event-start-topic:
         name: event-start
-      comment-created-topic:
-        name: comment-created-notification
-      post-liked-topic:
-        name: post-liked-event
-      comment-liked-topic:
-        name: comment-liked-event
+      like:
+        post-liked-topic:
+          name: post-liked-event
+        comment-liked-topic:
+          name: comment-liked-event
 
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -46,6 +45,8 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+    kafka:
+      bootstrap-servers: localhost:9092
 
   mail:
     host: smtp.gmail.com
