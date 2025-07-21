@@ -19,6 +19,23 @@ spring:
         name: event-start
       comment-created-topic:
         name: comment-created-notification
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
   data:
     redis:
@@ -65,6 +82,12 @@ exolve:
     service-number: 79584811889
   api:
     key: whatever
+
+telegram:
+  bot:
+    username: CorpXBootCampNotifierBot
+    token: 7880406726:AAFNCK30XewGxlej-HLjshfRrUenPsD5cSQ
+    link-template: "https://t.me/${telegram.bot.username}?start=%s"
 
 project-service:
     host: localhost
