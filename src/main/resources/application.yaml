@@ -1,12 +1,11 @@
 spring:
   kafka:
     bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
-      group-id: notification-service-group
-      user-service:
-        group-id: user-service-group
-      post-service:
-        group-id: post-service-group
+      group-id: user-service-group
     topics:
       goal-completed-topic:
         name: goal-completed
@@ -15,28 +14,18 @@ spring:
           name: new-follower-events
         unfollow-topic:
           name: unfollow-events
+      profile:
+        name: view-profile
+      recover:
+        name: transfer-events-dlt
       event-start-topic:
         name: event-start
-      like:
-        post-liked-topic:
-          name: post-liked-event
-        comment-liked-topic:
-          name: comment-liked-event
-
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: user
-    password: password
-
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: none
-    show-sql: false
-    properties:
-      hibernate:
-        format_sql: true
+      comment-created-topic:
+        name: comment-created-notification
+      post-liked-topic:
+        name: post-liked-event
+      comment-liked-topic:
+        name: comment-liked-event
 
   data:
     redis:
@@ -45,8 +34,12 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
-    kafka:
-      bootstrap-servers: localhost:9092
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
 
   mail:
     host: smtp.gmail.com
@@ -72,6 +65,7 @@ server:
 logging:
   level:
     root: info
+    liquibase: debug
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
@@ -87,15 +81,14 @@ exolve:
     key: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
+post-service:
+  host: localhost
+  port: 8081
 
 notification-scheduler:
-    cron: "0 * * * * *"
-    batch_size: 1000
-    executor:
-      thread_pool_core_size: 8
-      thread_pool_max_size: 16
+  cron: "0 * * * * *"

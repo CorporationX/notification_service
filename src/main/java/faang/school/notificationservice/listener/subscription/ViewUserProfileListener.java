@@ -1,17 +1,15 @@
 package faang.school.notificationservice.listener.subscription;
 
 import faang.school.notificationservice.event.kafka.ViewProfileEvent;
-import faang.school.notificationservice.listener.AbstractEventListener;
+import faang.school.notificationservice.listener.DirectNotificationEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.notification.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationSenderService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
-public class ViewUserProfileListener extends AbstractEventListener<ViewProfileEvent> {
-    public ViewUserProfileListener(List<NotificationService> notificationServices,
+public class ViewUserProfileListener extends DirectNotificationEventListener<ViewProfileEvent> {
+    public ViewUserProfileListener(NotificationSenderService notificationServices,
                                    MessageBuilder<ViewProfileEvent> messageBuilder) {
         super(notificationServices, messageBuilder);
     }

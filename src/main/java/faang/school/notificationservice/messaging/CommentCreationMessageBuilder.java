@@ -9,7 +9,7 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class CommentCreationMessageBuilder implements MessageBuilder <CommentCreationNotificationEvent> {
+public class CommentCreationMessageBuilder implements MessageBuilder<CommentCreationNotificationEvent> {
     private final MessageSource messageSource;
 
     @Override

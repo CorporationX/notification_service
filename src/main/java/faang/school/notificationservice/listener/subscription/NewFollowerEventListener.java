@@ -1,21 +1,19 @@
 package faang.school.notificationservice.listener.subscription;
 
 import faang.school.notificationservice.event.kafka.NewFollowerEvent;
-import faang.school.notificationservice.listener.AbstractEventListener;
+import faang.school.notificationservice.listener.DirectNotificationEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.notification.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationSenderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Slf4j
 @Component
-public class NewFollowerEventListener extends AbstractEventListener<NewFollowerEvent> {
+public class NewFollowerEventListener extends DirectNotificationEventListener<NewFollowerEvent> {
 
     public NewFollowerEventListener(
-            List<NotificationService> notificationServices,
+            NotificationSenderService notificationServices,
             MessageBuilder<NewFollowerEvent> messageBuilder
     ) {
         super(notificationServices, messageBuilder);
@@ -23,7 +21,7 @@ public class NewFollowerEventListener extends AbstractEventListener<NewFollowerE
 
     @KafkaListener(
             topics = "${spring.kafka.topics.subscription.new-follower-topic.name}",
-            groupId = "${spring.kafka.consumer.user-service.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             containerFactory = "kafkaNewFollowerEventListener"
     )
     public void handle(NewFollowerEvent event) {

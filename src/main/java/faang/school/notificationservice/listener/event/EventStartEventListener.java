@@ -2,7 +2,7 @@ package faang.school.notificationservice.listener.event;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.kafka.EventStartNotificationEvent;
-import faang.school.notificationservice.listener.AbstractEventListener;
+import faang.school.notificationservice.listener.DirectNotificationEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.notification.NotificationSenderService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Slf4j
 @Component
-public class EventStartEventListener extends AbstractEventListener<EventStartNotificationEvent> {
+public class EventStartEventListener extends DirectNotificationEventListener<EventStartNotificationEvent> {
 
     public EventStartEventListener(
             NotificationSenderService notificationSender,
@@ -26,7 +26,7 @@ public class EventStartEventListener extends AbstractEventListener<EventStartNot
 
     @KafkaListener(
             topics = "${spring.kafka.topics.event-start-topic.name}",
-            groupId = "${spring.kafka.consumer.user-service.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             containerFactory = "kafkaEventStartEventListener"
     )
     public void listenerEventStart(EventStartNotificationEvent event) {

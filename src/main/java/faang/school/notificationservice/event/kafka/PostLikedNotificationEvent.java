@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostLikedNotificationEvent implements NotificationEvent {
     private Long likeId;
-    private Long likerId;
     private UserDto owner;
     private Long postId;
 }

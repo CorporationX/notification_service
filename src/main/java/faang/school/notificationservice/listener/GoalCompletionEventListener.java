@@ -1,5 +1,6 @@
 package faang.school.notificationservice.listener;
 
+
 import faang.school.notificationservice.event.kafka.GoalCompletionNotificationEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.notification.NotificationSenderService;
@@ -12,7 +13,7 @@ import java.util.Objects;
 
 @Slf4j
 @Component
-public class GoalCompletionEventListener extends AbstractEventListener<GoalCompletionNotificationEvent> {
+public class GoalCompletionEventListener extends DirectNotificationEventListener<GoalCompletionNotificationEvent> {
 
     public GoalCompletionEventListener(
             NotificationSenderService notificationSender,
@@ -23,7 +24,7 @@ public class GoalCompletionEventListener extends AbstractEventListener<GoalCompl
 
     @KafkaListener(
             topics = "${spring.kafka.topics.goal-completed-topic.name}",
-            groupId = "${spring.kafka.consumer.user-service.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             containerFactory = "kafkaGoalCompletedEventListener"
     )
     public void listenGoalCompletion(GoalCompletionNotificationEvent event) {

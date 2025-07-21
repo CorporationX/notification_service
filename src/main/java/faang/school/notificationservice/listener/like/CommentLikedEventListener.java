@@ -2,9 +2,8 @@ package faang.school.notificationservice.listener.like;
 
 import faang.school.notificationservice.event.kafka.CommentLikedNotificationEvent;
 import faang.school.notificationservice.listener.AbstractEventListener;
-import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.notification.NotificationSenderService;
-import faang.school.notificationservice.service.notification.implimentation.CommentLikedNotificationEventHandler;
+import faang.school.notificationservice.service.notification.handler.CommentLikedNotificationEventHandler;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -13,27 +12,19 @@ import java.util.Objects;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class CommentLikedEventListener extends AbstractEventListener<CommentLikedNotificationEvent> {
 
     private final CommentLikedNotificationEventHandler eventHandler;
 
-    public CommentLikedEventListener(
-            NotificationSenderService notificationSender,
-            MessageBuilder<CommentLikedNotificationEvent> messageBuilder,
-            CommentLikedNotificationEventHandler eventHandler
-    ) {
-        super(notificationSender, messageBuilder);
-        this.eventHandler = eventHandler;
-    }
-
     @KafkaListener(
-            topics = "${spring.kafka.topics.like.comment-liked-topic.name}",
-            groupId = "${spring.kafka.consumer.post-service.group-id}",
+            topics = "${spring.kafka.topics.comment-liked-topic.name}",
+            groupId = "${spring.kafka.consumer.group-id}",
             containerFactory = "kafkaCommentLikedEventListener"
     )
     public void listenCommentLiked(CommentLikedNotificationEvent event) {
         if (isEventValid(event)) {
-            eventHandler.handle(event);
+            eventHandler.saveNotification(event);
         } else {
             log.error("Event validation failed. Event: {}", event);
         }

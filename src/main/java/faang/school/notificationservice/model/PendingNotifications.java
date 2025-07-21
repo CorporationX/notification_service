@@ -1,48 +1,50 @@
 package faang.school.notificationservice.model;
 
+import faang.school.notificationservice.service.notification.EventType;
+import faang.school.notificationservice.service.notification.NotificationStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "pending_notifications")
 public class PendingNotifications {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @Column(name = "recipient_id", nullable = false)
-    private long recipientId;
+    @Column(name = "receiver_id", nullable = false)
+    private Long receiverId;
 
-    @Column(name = "notification_type", length = 50, nullable = false)
-    private String notificationType;
+    @Column(name = "target_entity_id", nullable = false)
+    private Long targetEntityId;
 
-    @Column(name = "status", length = 50, nullable = false)
-    private String status;
+    @Column(name = "related_entity_id")
+    private long relatedEntityId;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMPTZ")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "event_type", nullable = false, length = 50)
+    private EventType eventType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    private NotificationStatus status;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "sent_at", columnDefinition = "TIMESTAMPTZ")
+    @Column(name = "sent_at")
     private LocalDateTime sentAt;
-
-    @Column(name = "error_text", columnDefinition = "TEXT")
-    private String errorText;
-
-    @Column(name = "retry_count")
-    private int retryCount = 0;
 }

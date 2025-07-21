@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service.notification;
 
-public enum NotificationType {
+public enum EventType {
     POST_LIKED,
     COMMENT_LIKED
 }
