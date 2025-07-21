@@ -126,6 +126,7 @@ val jacocoClassExclude = listOf(
     "faang.school.notificationservice.service.SmsService", // Пока нет реализации - это класс заглушка.
     "faang.school.notificationservice.listener.kafka.AbstractEventListener", // тесты Стас
     "faang.school.notificationservice.listener.kafka.LikeEventListener", // тесты Стас
+    "faang.school.notificationservice.listener.kafka.FollowerEventListener", // тесты Василий
     "faang.school.notificationservice.config.*",
     "faang.school.notificationservice.dto.*",
     "faang.school.notificationservice.mapper.*",
