@@ -1,7 +1,7 @@
 package faang.school.notificationservice.config;
 
-
 import faang.school.notificationservice.listener.MentorshipRequestListener;
+import faang.school.notificationservice.listener.SkillAcquiredEventListener;
 import faang.school.notificationservice.messaging.FollowerEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,19 +29,16 @@ public class RedisConfig {
     private String followerTopic;
 
     @Bean
-    public JedisConnectionFactory jedisConnectionFactory(){
+    public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
         return new JedisConnectionFactory(redisConfig);
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(){
+    public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
-
         template.setConnectionFactory(jedisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
-
-
         return template;
     }
 
@@ -56,22 +53,34 @@ public class RedisConfig {
     }
 
     @Bean
+    public MessageListenerAdapter skillAcquiredListener(SkillAcquiredEventListener listener) {
+        return new MessageListenerAdapter(listener);
+    }
+
+    @Bean
     public RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener,
-                                                        MessageListenerAdapter mentorshipRequestListenerConfig) {
+                                                        MessageListenerAdapter mentorshipRequestListenerConfig,
+                                                        MessageListenerAdapter skillAcquiredListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(followerListener, topic());
         container.addMessageListener(mentorshipRequestListenerConfig, mentorshipRequestTopic());
+        container.addMessageListener(skillAcquiredListener, skillAcquiredTopic());
         return container;
     }
 
-    @Bean 
+    @Bean
     public ChannelTopic mentorshipRequestTopic() {
         return new ChannelTopic("mentorshipRequest_topic");
     }
-      
+
     @Bean
     public ChannelTopic topic() {
         return new ChannelTopic(followerTopic);
+    }
+
+    @Bean
+    public ChannelTopic skillAcquiredTopic() {
+        return new ChannelTopic("skillAcquired_topic");
     }
 }
