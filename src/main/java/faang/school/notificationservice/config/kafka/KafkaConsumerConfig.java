@@ -75,6 +75,7 @@ public class KafkaConsumerConfig {
 
         factory.getContainerProperties().setGroupId(kafkaConsumerProperties.groupId());
         factory.setCommonErrorHandler(defaultErrorHandler());
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
         consumer.accept(factory);
         return factory;
     }

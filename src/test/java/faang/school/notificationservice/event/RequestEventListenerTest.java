@@ -85,15 +85,12 @@ public class RequestEventListenerTest {
         when(messageBuilder.buildMessage(eq(event), eq(Locale.ENGLISH)))
                 .thenReturn("Your request is completed");
 
-        Acknowledgment ack = mock(Acknowledgment.class);
-
-        listener.onRequestEvent(event, ack);
+        listener.onRequestEvent(event);
 
         verify(emailService).send(
                 argThat(u -> u.equals(user)),
                 argThat(msg -> msg.equals("Your request is completed"))
         );
 
-        verify(ack).acknowledge();
     }
 }

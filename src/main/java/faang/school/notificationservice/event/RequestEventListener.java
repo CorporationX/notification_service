@@ -25,7 +25,7 @@ public class RequestEventListener extends AbstractEventListener<RequestEvent> {
             topics = "${spring.kafka.topics.request.name}",
             concurrency = "${spring.kafka.topics.request.concurrency}"
     )
-    public void onRequestEvent(RequestEvent event, Acknowledgment ack) {
+    public void onRequestEvent(RequestEvent event) {
         handleEvent(event, requestEvent -> {
             UserDto user = getUser(
                     requestEvent.getUserId(),
@@ -35,8 +35,6 @@ public class RequestEventListener extends AbstractEventListener<RequestEvent> {
 
             String message = getMessage(requestEvent, user.getLocale());
             sendNotification(user, message);
-
-            ack.acknowledge();
         });
     }
 }
