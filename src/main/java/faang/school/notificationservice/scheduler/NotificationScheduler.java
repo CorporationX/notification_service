@@ -5,6 +5,7 @@ import faang.school.notificationservice.repository.NotificationRepository;
 import faang.school.notificationservice.service.notification.NotificationSenderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,8 +21,14 @@ public class NotificationScheduler {
     private final NotificationRepository notificationRepository;
     private final NotificationSenderService notificationSender;
 
-    private static final LocalDateTime NOTIFICATION_DELAY = LocalDateTime.now().minusHours(1);
-    private static final LocalDateTime LAST_SENT_THRESHOLD = LocalDateTime.now().minusHours(24);
+    @Value("${notification-scheduler.notification-delay-hours}")
+    private static int delayHours;
+
+    @Value("${notification-scheduler.last-sent-threshold-hours}")
+    private static int lastSentThresholdHours;
+
+    private static final LocalDateTime NOTIFICATION_DELAY = LocalDateTime.now().minusHours(delayHours);
+    private static final LocalDateTime LAST_SENT_THRESHOLD = LocalDateTime.now().minusHours(lastSentThresholdHours);
 
     @Scheduled(cron = "${notification-scheduler.cron}")
     @Transactional

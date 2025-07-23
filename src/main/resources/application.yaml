@@ -91,3 +91,8 @@ post-service:
 
 notification-scheduler:
   cron: "0 * * * * *"
+  notification-delay-hours: 1
+  last-sent-threshold-hours: 24
+
+message-builder:
+  max-message-length: 100

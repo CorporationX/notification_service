@@ -8,6 +8,7 @@ import faang.school.notificationservice.dto.post.LikeDto;
 import faang.school.notificationservice.event.kafka.EventStartNotificationEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,8 @@ import static faang.school.notificationservice.util.MessageUtils.truncateContent
 @RequiredArgsConstructor
 public class CommentLikedEventMessageBuilder implements MessageBuilder<AggregatedNotificationsDto> {
 
-    private static final int MAX_MESSAGE_LENGTH = 100;
+    @Value("${message-builder.max-message-length}")
+    private int maxMessageLength;
 
     private final MessageSource messageSource;
     private final UserServiceClient userServiceClient;
@@ -48,7 +50,7 @@ public class CommentLikedEventMessageBuilder implements MessageBuilder<Aggregate
         UserDto liker = getUser(getLike(likeId).getUserId());
 
         return messageSource.getMessage(messageTemplateCode,
-                new Object[]{truncateContent(content, MAX_MESSAGE_LENGTH), liker.getUsername()},
+                new Object[]{truncateContent(content, maxMessageLength), liker.getUsername()},
                 locale
         );
     }
@@ -58,7 +60,7 @@ public class CommentLikedEventMessageBuilder implements MessageBuilder<Aggregate
         String content = getCommentContent(commentId);
 
         return messageSource.getMessage(messageTemplateCode,
-                new Object[]{truncateContent(content, MAX_MESSAGE_LENGTH), count},
+                new Object[]{truncateContent(content, maxMessageLength), count},
                 locale
         );
     }
