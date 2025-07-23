@@ -5,11 +5,13 @@ import faang.school.notificationservice.config.IntegrationTestContextInitializer
 import faang.school.notificationservice.config.TestKafkaConfig;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.enums.PreferredContact;
+import faang.school.notificationservice.event.kafka.CommentCreationNotificationEvent;
 import faang.school.notificationservice.event.kafka.GoalCompletionNotificationEvent;
 import faang.school.notificationservice.event.kafka.NewFollowerEvent;
 import faang.school.notificationservice.event.kafka.UnfollowEvent;
 import faang.school.notificationservice.service.notification.implimentation.EmailNotificationService;
 import faang.school.notificationservice.service.notification.implimentation.SmsNotificationService;
+import faang.school.notificationservice.service.notification.implimentation.TelegramNotificationService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -41,6 +43,8 @@ public class IntegrationEventListenerTest {
     private String goalTopic;
     @Value("${spring.kafka.topics.subscription.new-follower-topic.name}")
     private String newFollowerTopic;
+    @Value("${spring.kafka.topics.comment-created-topic}")
+    private String commentCreatedTopic;
 
     @Autowired
     private KafkaTemplate<String, GoalCompletionNotificationEvent> kafkaTestTemplate;
@@ -48,14 +52,19 @@ public class IntegrationEventListenerTest {
     private KafkaTemplate<String, NewFollowerEvent> newFollowerTestTemplate;
     @Autowired
     private KafkaTemplate<String, UnfollowEvent> unfollowEventTestKafkaTemplate;
+    @Autowired
+    private KafkaTemplate<String, CommentCreationNotificationEvent> commentCreatedTestKafkaTemplate;
 
     @MockBean
     private SmsNotificationService smsService;
     @MockBean
     private EmailNotificationService emailNotificationService;
+    @MockBean
+    private TelegramNotificationService telegramNotificationService;
 
     private static UserDto correctUserDtoEmail;
     private static UserDto correctUserDtoPhone;
+    private static UserDto correctUserDtoTelegram;
 
     @BeforeAll
     public static void beforeAll(){
@@ -73,6 +82,14 @@ public class IntegrationEventListenerTest {
                 .email("email")
                 .phone("phone")
                 .preference(PreferredContact.PHONE)
+                .build();
+
+        correctUserDtoTelegram = UserDto.builder()
+                .id(3L)
+                .username("username")
+                .email("email")
+                .phone("phone")
+                .preference(PreferredContact.TELEGRAM)
                 .build();
     }
 
@@ -146,6 +163,29 @@ public class IntegrationEventListenerTest {
 
                     assertNotNull(event);
                     assertEquals(correctUserDtoEmail.getId(), owner.getId());
+                });
+    }
+
+    @Test
+    public void testCommentCreationEventListenerWithTelegram() {
+        ArgumentCaptor<UserDto> ownerCaptor = ArgumentCaptor.forClass(UserDto.class);
+        CommentCreationNotificationEvent commentCreationEvent = CommentCreationNotificationEvent.builder()
+                .owner(correctUserDtoTelegram)
+                .commentAuthorUserName("username")
+                .shortContent("short content")
+                .build();
+
+        when(telegramNotificationService.getPreferredContact()).thenReturn(PreferredContact.TELEGRAM);
+        commentCreatedTestKafkaTemplate.send(commentCreatedTopic, commentCreationEvent);
+
+        Awaitility.await()
+                .atMost(5, TimeUnit.SECONDS)
+                .pollInterval(Duration.ofMillis(100))
+                .untilAsserted(() -> {
+                    verify(telegramNotificationService, times(1)).send(ownerCaptor.capture(), anyString());
+                    UserDto owner = ownerCaptor.getValue();
+                    assertNotNull(commentCreationEvent);
+                    assertEquals(correctUserDtoTelegram.getId(), owner.getId());
                 });
     }
 }
