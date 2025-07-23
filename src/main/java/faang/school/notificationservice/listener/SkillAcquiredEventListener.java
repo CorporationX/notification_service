@@ -30,7 +30,8 @@ public class SkillAcquiredEventListener extends AbstractEventListener<SkillAcqui
         handleEvent(message, SkillAcquiredEvent.class, event -> {
             String text = getMessage(event, Locale.getDefault());
             sendNotification(event.getUserId(), text);
-            log.info("Sent notification to user {} about skill {}", event.getUserId(), event.getSkillId());
+            log.info("Sent notification to user {} about skill {}",
+                    event.getUserId(), event.getSkillId());
         });
     }
 }
