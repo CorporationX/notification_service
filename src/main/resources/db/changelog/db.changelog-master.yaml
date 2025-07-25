@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
+      file: db/changelog/changeset/telegram_user_initial.sql
+  - include:
       file: db/changelog/changeset/notification_V001__initial.sql
