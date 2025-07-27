@@ -54,6 +54,9 @@ spring:
       recommendation-request:
         name: recommendation-request-topic
         concurrency: 4
+      request:
+        name: request-event-topic
+        concurrency: 3
 
   freemarker:
     template-loader-path: classpath:/templates/
