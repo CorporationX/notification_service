@@ -1,8 +1,9 @@
 package faang.school.notificationservice.config;
 
+
 import faang.school.notificationservice.listener.MentorshipRequestListener;
-import faang.school.notificationservice.listener.SkillAcquiredEventListener;
 import faang.school.notificationservice.messaging.FollowerEventListener;
+import faang.school.notificationservice.listener.SkillAcquiredEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,10 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.topic}")
     private String followerTopic;
+
+
+    @Value("${spring.data.redis.channel.skill_acquired}")
+    private String skillAcquiredChannel;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -69,6 +74,7 @@ public class RedisConfig {
         return container;
     }
 
+
     @Bean
     public ChannelTopic mentorshipRequestTopic() {
         return new ChannelTopic("mentorshipRequest_topic");
@@ -81,6 +87,6 @@ public class RedisConfig {
 
     @Bean
     public ChannelTopic skillAcquiredTopic() {
-        return new ChannelTopic("skillAcquired_topic");
+        return new ChannelTopic(skillAcquiredChannel);
     }
 }
