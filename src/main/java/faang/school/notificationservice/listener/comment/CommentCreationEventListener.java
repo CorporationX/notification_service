@@ -32,7 +32,7 @@ public class CommentCreationEventListener extends DirectNotificationEventListene
 
     @Override
     public boolean isEventValid(CommentCreationNotificationEvent event) {
-        return validateObjectNonNullData(event, event::owner, event::getShortContent, event::getCommentAuthorUserName)
-                && isUserDtoValid(event.owner());
+        return validateObjectNonNullData(event, event::getOwner, event::getShortContent, event::getCommentAuthorUserName)
+                && isUserDtoValid(event.getOwner());
     }
 }

@@ -4,9 +4,11 @@ import faang.school.notificationservice.service.notification.EventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class AggregatedNotificationsDto {
     private Long receiverId;

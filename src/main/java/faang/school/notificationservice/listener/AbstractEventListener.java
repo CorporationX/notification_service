@@ -20,7 +20,9 @@ public abstract class AbstractEventListener<T extends NotificationEvent> {
         return validateObjectNonNullData(
                 userDto,
                 userDto::getId,
-                userDto::getUsername
+                userDto::getUsername,
+                userDto::getEmail,
+                userDto::getPhone
         );
     }
 }

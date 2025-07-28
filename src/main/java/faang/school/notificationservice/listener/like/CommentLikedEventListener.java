@@ -7,7 +7,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 
 @Component
 public class CommentLikedEventListener extends BatchEventListener<CommentLikedNotificationEvent> {
@@ -27,6 +26,8 @@ public class CommentLikedEventListener extends BatchEventListener<CommentLikedNo
 
     @Override
     public boolean isEventValid(CommentLikedNotificationEvent event) {
-        return Objects.nonNull(event) && isUserDtoValid(event.owner());
+        return event != null &&
+                event.getOwner() != null &&
+                super.isUserDtoValid(event.getOwner());
     }
 }

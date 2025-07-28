@@ -9,23 +9,23 @@ import java.util.stream.Collectors;
 public class PendingNotificationsMapper {
 
     public static PendingNotificationsDto toDto(PendingNotifications entity) {
-        return new PendingNotificationsDto(
-                entity.getReceiverId(),
-                entity.getTargetEntityId(),
-                entity.getRelatedEntityId(),
-                entity.getEventType(),
-                entity.getStatus()
-        );
+        return PendingNotificationsDto.builder()
+                .receiverId(entity.getReceiverId())
+                .targetEntityId(entity.getTargetEntityId())
+                .relatedEntityId(entity.getRelatedEntityId())
+                .eventType(entity.getEventType())
+                .status(entity.getStatus())
+                .build();
     }
 
     public static PendingNotifications toEntity(PendingNotificationsDto dto) {
-        PendingNotifications entity = new PendingNotifications();
-        entity.setReceiverId(dto.getReceiverId());
-        entity.setTargetEntityId(dto.getTargetEntityId());
-        entity.setRelatedEntityId(dto.getRelatedEntityId());
-        entity.setEventType(dto.getEventType());
-        entity.setStatus(dto.getStatus());
-        return entity;
+        return PendingNotifications.builder()
+                .receiverId(dto.getReceiverId())
+                .targetEntityId(dto.getTargetEntityId())
+                .relatedEntityId(dto.getRelatedEntityId())
+                .eventType(dto.getEventType())
+                .status(dto.getStatus())
+                .build();
     }
 
     public static List<PendingNotificationsDto> toDtoList(List<PendingNotifications> entities) {

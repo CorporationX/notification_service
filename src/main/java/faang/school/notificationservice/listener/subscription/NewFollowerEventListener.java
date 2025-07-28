@@ -25,13 +25,17 @@ public class NewFollowerEventListener extends DirectNotificationEventListener<Ne
             containerFactory = "kafkaNewFollowerEventListener"
     )
     public void handle(NewFollowerEvent event) {
+        if (!isEventValid(event)) {
+            return;
+        }
+
         sendNotification(event);
     }
 
     @Override
     public boolean isEventValid(NewFollowerEvent event) {
-        return validateObjectNonNullData(event, event::owner, event::getFollower)
-                && isUserDtoValid(event.owner())
+        return validateObjectNonNullData(event, event::getOwner, event::getFollower)
+                && isUserDtoValid(event.getOwner())
                 && isUserDtoValid(event.getFollower());
     }
 }

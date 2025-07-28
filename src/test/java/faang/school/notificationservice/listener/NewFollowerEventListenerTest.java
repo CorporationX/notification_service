@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,7 +31,6 @@ public class NewFollowerEventListenerTest {
 
     @Test
     public void testInvalidEventDontSendNotification() {
-        ArgumentCaptor<NewFollowerEvent> eventNotificationCaptor = ArgumentCaptor.forClass(NewFollowerEvent.class);
         NewFollowerEvent newFollowerEvent = NewFollowerEvent.builder()
                 .owner(UserData.CORRECT_USER_DTO)
                 .follower(null)
@@ -40,43 +38,37 @@ public class NewFollowerEventListenerTest {
 
         newFollowerEventListener.handle(newFollowerEvent);
 
-        verify(newFollowerEventListener, times(1)).sendNotification(eventNotificationCaptor.capture());
         verify(newFollowerEventListener, never()).sendNotification(any(NewFollowerEvent.class));
-
-        assertEquals(UserData.CORRECT_USER_DTO.getId(), eventNotificationCaptor.getValue().owner().getId());
     }
 
     @Test
     public void testValidEventSendNotification() {
-        ArgumentCaptor<NewFollowerEvent> eventNotificationCaptor = ArgumentCaptor.forClass(NewFollowerEvent.class);
-        ArgumentCaptor<UserDto> userCaptor = ArgumentCaptor.forClass(UserDto.class);
-        ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
-
+        ArgumentCaptor<NewFollowerEvent> eventCaptor = ArgumentCaptor.forClass(NewFollowerEvent.class);
         NewFollowerEvent newFollowerEvent = NewFollowerEvent.builder()
                 .owner(UserData.CORRECT_USER_DTO)
                 .follower(UserData.CORRECT_USER_DTO)
                 .build();
 
         doNothing().when(newFollowerEventListener).sendNotification(any(NewFollowerEvent.class));
-        doReturn("Mocked message").when(newFollowerEventListener).getMessage(any(NewFollowerEvent.class));
 
         newFollowerEventListener.handle(newFollowerEvent);
 
-        verify(newFollowerEventListener, times(1)).sendNotification(eventNotificationCaptor.capture());
+        verify(newFollowerEventListener, times(1)).sendNotification(eventCaptor.capture());
 
-        assertEquals(userCaptor.getValue().getId(), eventNotificationCaptor.getValue().owner().getId());
-        assertEquals("Mocked message", messageCaptor.getValue());
+        NewFollowerEvent capturedEvent = eventCaptor.getValue();
+        assertEquals(UserData.CORRECT_USER_DTO.getId(), capturedEvent.getOwner().getId());
+        assertEquals(UserData.CORRECT_USER_DTO.getId(), capturedEvent.getFollower().getId());
     }
 
     @ParameterizedTest
     @MethodSource("faang.school.notificationservice.listener.data.UserData#invalidNewFollowerEvents")
     public void testInvalidNewFollowerEventValidation(UserDto owner, UserDto follower) {
-        NewFollowerEvent unfollowEvent = NewFollowerEvent.builder()
+        NewFollowerEvent newFollowerEvent = NewFollowerEvent.builder()
                 .owner(owner)
                 .follower(follower)
                 .build();
 
-        assertFalse(newFollowerEventListener.isEventValid(unfollowEvent));
+        assertFalse(newFollowerEventListener.isEventValid(newFollowerEvent));
     }
 
     @Test

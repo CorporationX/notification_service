@@ -23,7 +23,7 @@ public class NotificationAggregationService {
                 ));
 
         return groupedStats.entrySet().stream()
-                .map(this::mapToAggregatedNotificationsDto) // <-- И здесь стало намного чище
+                .map(this::mapToAggregatedNotificationsDto)
                 .toList();
     }
 

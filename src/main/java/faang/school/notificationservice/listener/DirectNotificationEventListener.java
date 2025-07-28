@@ -19,16 +19,16 @@ public abstract class DirectNotificationEventListener<T extends NotificationEven
 
     protected void sendNotification(T event) {
         if (isEventValid(event)) {
-            notificationSender.send(event.owner(), getMessage(event));
+            notificationSender.send(event.getOwner(), getMessage(event));
         } else {
             log.error("Event validation failed. Event: {}", event);
         }
     }
 
     protected String getMessage(T event) {
-        Locale locale = Objects.isNull(event.owner().getLocale())
+        Locale locale = Objects.isNull(event.getOwner().getLocale())
                 ? LocaleContextHolder.getLocale()
-                : event.owner().getLocale();
+                : event.getOwner().getLocale();
         return messageBuilder.buildMessage(event, locale);
     }
 }

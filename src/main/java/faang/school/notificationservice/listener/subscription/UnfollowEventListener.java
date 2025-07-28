@@ -25,13 +25,17 @@ public class UnfollowEventListener extends DirectNotificationEventListener<Unfol
             containerFactory = "kafkaUnfollowEventListener"
     )
     public void handle(UnfollowEvent event) {
+        if (!isEventValid(event)) {
+            return;
+        }
+
         sendNotification(event);
     }
 
     @Override
     public boolean isEventValid(UnfollowEvent event) {
-        return validateObjectNonNullData(event, event::owner, event::getFollower)
-                && isUserDtoValid(event.owner())
+        return validateObjectNonNullData(event, event::getOwner, event::getFollower)
+                && isUserDtoValid(event.getOwner())
                 && isUserDtoValid(event.getFollower());
     }
 }

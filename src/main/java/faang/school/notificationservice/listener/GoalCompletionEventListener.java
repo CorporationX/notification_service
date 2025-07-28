@@ -33,6 +33,6 @@ public class GoalCompletionEventListener extends DirectNotificationEventListener
 
     @Override
     public boolean isEventValid(GoalCompletionNotificationEvent event) {
-        return Objects.nonNull(event) && isUserDtoValid(event.owner());
+        return Objects.nonNull(event) && isUserDtoValid(event.getOwner());
     }
 }

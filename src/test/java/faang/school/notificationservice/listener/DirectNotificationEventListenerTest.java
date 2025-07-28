@@ -33,8 +33,7 @@ public class DirectNotificationEventListenerTest {
     }
 
     @Test
-    void testSendNotification_WhenEventIsValid_ShouldSendNotification() {
-        // Arrange
+    void testSendNotificationWhenEventIsValid() {
         UserDto owner = new UserDto();
         TestEvent validEvent = new TestEvent(owner, true);
         String expectedMessage = "Test Message";
@@ -48,8 +47,7 @@ public class DirectNotificationEventListenerTest {
     }
 
     @Test
-    void testSendNotification_WhenEventIsInvalid_ShouldNotSendNotification() {
-        // Arrange
+    void testSendNotificationWhenEventIsInvalid() {
         TestEvent invalidEvent = new TestEvent(new UserDto(), false);
 
         testEventListener.sendNotification(invalidEvent);
@@ -71,6 +69,6 @@ public class DirectNotificationEventListenerTest {
         }
     }
 
-    protected record TestEvent(UserDto owner, @Getter boolean valid) implements NotificationEvent {
+    protected record TestEvent(UserDto getOwner, @Getter boolean valid) implements NotificationEvent {
     }
 }
