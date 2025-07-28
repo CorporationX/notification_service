@@ -41,6 +41,9 @@ public class PendingNotifications {
     @Column(name = "status", nullable = false, length = 20)
     private NotificationStatus status;
 
+    @Column(name = "retry_count", nullable = false)
+    private int retryCount;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

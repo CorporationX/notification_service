@@ -91,14 +91,20 @@ public class KafkaConsumerConfig {
     ConcurrentKafkaListenerContainerFactory<String, CommentLikedNotificationEvent> kafkaCommentLikedEventListener(
             DefaultErrorHandler errorHandler
     ) {
-        return concurrentKafkaListenerJsonFactory(CommentLikedNotificationEvent.class, errorHandler);
+        ConcurrentKafkaListenerContainerFactory<String, CommentLikedNotificationEvent> factory =
+                concurrentKafkaListenerJsonFactory(CommentLikedNotificationEvent.class, errorHandler);
+        factory.setBatchListener(true);
+        return factory;
     }
 
     @Bean
     ConcurrentKafkaListenerContainerFactory<String, PostLikedNotificationEvent> kafkaPostLikedEventListener(
             DefaultErrorHandler errorHandler
     ) {
-        return concurrentKafkaListenerJsonFactory(PostLikedNotificationEvent.class, errorHandler);
+        ConcurrentKafkaListenerContainerFactory<String, PostLikedNotificationEvent> factory =
+                concurrentKafkaListenerJsonFactory(PostLikedNotificationEvent.class, errorHandler);
+        factory.setBatchListener(true);
+        return factory;
     }
 
     private <T> ConcurrentKafkaListenerContainerFactory<String, T> concurrentKafkaListenerJsonFactory(

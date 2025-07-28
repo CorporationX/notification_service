@@ -1,6 +1,8 @@
 package faang.school.notificationservice.service.notification.handler;
 
+import java.util.List;
+
 public interface NotificationEventHandler<T> {
 
-    void saveNotification(T event);
+    void saveNotifications(List<T> events);
 }

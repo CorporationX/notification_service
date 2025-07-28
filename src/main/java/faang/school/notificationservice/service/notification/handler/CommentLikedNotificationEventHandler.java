@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentLikedNotificationEventHandler implements NotificationEventHandler<CommentLikedNotificationEvent> {
@@ -19,17 +21,18 @@ public class CommentLikedNotificationEventHandler implements NotificationEventHa
 
     @Override
     @Transactional
-    public void saveNotification(CommentLikedNotificationEvent event) {
-        PendingNotificationsDto notificationsDto = PendingNotificationsDto.builder()
-                .receiverId(event.getOwner().getId())
-                .targetEntityId(event.getCommentId())
-                .relatedEntityId(event.getLikeId())
-                .eventType(EventType.COMMENT_LIKED)
-                .status(NotificationStatus.PENDING)
-                .build();
+    public void saveNotifications(List<CommentLikedNotificationEvent> events) {
+        List<PendingNotifications> notifications = events.stream()
+                .map(event -> PendingNotificationsMapper.toEntity(
+                        PendingNotificationsDto.builder()
+                                .receiverId(event.getOwner().getId())
+                                .targetEntityId(event.getCommentId())
+                                .relatedEntityId(event.getLikeId())
+                                .eventType(EventType.COMMENT_LIKED)
+                                .status(NotificationStatus.PENDING)
+                                .build()))
+                .toList();
 
-        PendingNotifications notifications = PendingNotificationsMapper.toEntity(notificationsDto);
-
-        notificationRepository.save(notifications);
+        notificationRepository.saveAll(notifications);
     }
 }

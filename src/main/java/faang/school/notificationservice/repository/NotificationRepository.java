@@ -1,6 +1,5 @@
 package faang.school.notificationservice.repository;
 
-import faang.school.notificationservice.dto.notification.AggregatedNotificationsDto;
 import faang.school.notificationservice.model.PendingNotifications;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,29 +13,27 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<PendingNotifications, Long> {
 
-    @Query("""
-                SELECT new faang.school.notificationservice.dto.notification.AggregatedNotificationsDto(
-                         pn.receiverId,
-                         pn.targetEntityId,
-                         MIN(pn.relatedEntityId),
-                         pn.eventType,
-                         COUNT(pn)
-                       )
-                FROM PendingNotifications pn
-                WHERE pn.status IN ('PENDING', 'FAILED')
-                  AND pn.createdAt <= :notificationDelay
-                  AND NOT EXISTS (
-                      SELECT 1
-                      FROM PendingNotifications sub
-                      WHERE sub.status = 'SENT'
-                        AND sub.targetEntityId = pn.targetEntityId
-                        AND sub.sentAt >= :lastSentThreshold
-                  )
-                GROUP BY pn.receiverId, pn.targetEntityId, pn.eventType
-            """)
-    List<AggregatedNotificationsDto> findNotRecentGroupedNotificationsToSend(
+    @Query(nativeQuery = true,
+            value = """
+                    SELECT *
+                    FROM pending_notifications pn
+                    WHERE pn.status IN ('PENDING', 'FAILED')
+                    AND retry_count < :maxRetryAttempts
+                      AND pn.created_at <= :notificationDelay
+                      AND NOT EXISTS (
+                          SELECT 1
+                          FROM pending_notifications sub
+                          WHERE sub.status = 'SENT'
+                            AND sub.target_entity_id = pn.target_entity_id
+                            AND sub.sent_at >= :lastSentThreshold
+                      )
+                    FOR UPDATE SKIP LOCKED
+                    LIMIT 10000
+                    """)
+    List<PendingNotifications> findAndLockPendingNotifications(
             @Param("notificationDelay") LocalDateTime notificationDelay,
-            @Param("lastSentThreshold") LocalDateTime lastSentThreshold
+            @Param("lastSentThreshold") LocalDateTime lastSentThreshold,
+            @Param("maxRetryAttempts") int maxRetryAttempts
     );
 
     @Modifying
@@ -54,4 +51,13 @@ public interface NotificationRepository extends JpaRepository<PendingNotificatio
             @Param("eventType") String eventType,
             @Param("status") String status
     );
+
+    @Modifying
+    @Query(nativeQuery = true,
+            value = """
+                    DELETE FROM pending_notifications pn
+                    WHERE  created_at <= :cleanupThreshold
+                    """
+    )
+    void deleteOldNotifications(@Param("cleanupThreshold") LocalDateTime cleanupThreshold);
 }

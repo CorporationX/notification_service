@@ -6,6 +6,16 @@ CREATE TABLE pending_notifications
     related_entity_id BIGINT,
     event_type        VARCHAR(50) NOT NULL,
     status            VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+    retry_count       INT         NOT NULL DEFAULT 0,
     created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     sent_at           TIMESTAMPTZ
 );
+
+CREATE INDEX idx_pending_notifications_status_created_at
+    ON pending_notifications (status, created_at);
+
+CREATE INDEX idx_pending_notifications_subquery_lookup
+    ON pending_notifications (target_entity_id, status, sent_at);
+
+CREATE INDEX idx_pending_notifications_update_group
+    ON pending_notifications (receiver_id, target_entity_id, event_type);
