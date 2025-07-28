@@ -4,5 +4,5 @@ import faang.school.notificationservice.dto.UserDto;
 
 public interface NotificationEvent {
 
-    UserDto getOwner();
+    UserDto owner();
 }

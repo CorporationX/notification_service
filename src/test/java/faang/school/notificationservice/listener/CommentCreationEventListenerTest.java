@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
@@ -43,15 +42,14 @@ public class CommentCreationEventListenerTest {
                 .shortContent(SHORT_CONTENT)
                 .build();
 
-        doNothing().when(commentCreationEventListener).sendMessage(any(UserDto.class), any());
+        doNothing().when(commentCreationEventListener).sendNotification(any(CommentCreationNotificationEvent.class));
         doReturn("Mocked message").when(commentCreationEventListener).getMessage(any(CommentCreationNotificationEvent.class));
 
         commentCreationEventListener.listenCommentCreation(commentCreationEvent);
 
         verify(commentCreationEventListener, times(1)).sendNotification(eventNotificationCaptor.capture());
-        verify(commentCreationEventListener, times(1)).sendMessage(userCaptor.capture(), messageCaptor.capture());
 
-        assertEquals(userCaptor.getValue().getId(), eventNotificationCaptor.getValue().getOwner().getId());
+        assertEquals(userCaptor.getValue().getId(), eventNotificationCaptor.getValue().owner().getId());
         assertEquals("Mocked message", messageCaptor.getValue());
 
     }
@@ -68,9 +66,9 @@ public class CommentCreationEventListenerTest {
         commentCreationEventListener.listenCommentCreation(commentCreationEvent);
 
         verify(commentCreationEventListener, times(1)).sendNotification(eventNotificationCaptor.capture());
-        verify(commentCreationEventListener, never()).sendMessage(any(UserDto.class), anyString());
+        verify(commentCreationEventListener, never()).sendNotification(any(CommentCreationNotificationEvent.class));
 
-        assertEquals(UserData.CORRECT_USER_DTO.getId(), eventNotificationCaptor.getValue().getOwner().getId());
+        assertEquals(UserData.CORRECT_USER_DTO.getId(), eventNotificationCaptor.getValue().owner().getId());
     }
 
     @Test

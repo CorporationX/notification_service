@@ -25,7 +25,7 @@ public class PostLikedNotificationEventHandler implements NotificationEventHandl
         List<PendingNotifications> notifications = events.stream()
                 .map(event -> PendingNotificationsMapper.toEntity(
                         PendingNotificationsDto.builder()
-                                .receiverId(event.getOwner().getId())
+                                .receiverId(event.owner().getId())
                                 .targetEntityId(event.getPostId())
                                 .relatedEntityId(event.getLikeId())
                                 .eventType(EventType.POST_LIKED)

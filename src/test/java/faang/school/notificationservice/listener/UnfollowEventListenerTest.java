@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
@@ -43,9 +42,9 @@ public class UnfollowEventListenerTest {
         unfollowEventListener.handle(unfollowEvent);
 
         verify(unfollowEventListener, times(1)).sendNotification(eventNotificationCaptor.capture());
-        verify(unfollowEventListener, never()).sendMessage(any(UserDto.class), anyString());
+        verify(unfollowEventListener, never()).sendNotification(any(UnfollowEvent.class));
 
-        assertEquals(UserData.CORRECT_USER_DTO.getId(), eventNotificationCaptor.getValue().getOwner().getId());
+        assertEquals(UserData.CORRECT_USER_DTO.getId(), eventNotificationCaptor.getValue().owner().getId());
     }
 
     @Test
@@ -59,15 +58,14 @@ public class UnfollowEventListenerTest {
                 .follower(UserData.CORRECT_USER_DTO)
                 .build();
 
-        doNothing().when(unfollowEventListener).sendMessage(any(UserDto.class), any());
+        doNothing().when(unfollowEventListener).sendNotification(any(UnfollowEvent.class));
         doReturn("Mocked message").when(unfollowEventListener).getMessage(any(UnfollowEvent.class));
 
         unfollowEventListener.handle(unfollowEvent);
 
         verify(unfollowEventListener, times(1)).sendNotification(eventNotificationCaptor.capture());
-        verify(unfollowEventListener, times(1)).sendMessage(userCaptor.capture(), messageCaptor.capture());
 
-        assertEquals(userCaptor.getValue().getId(), eventNotificationCaptor.getValue().getOwner().getId());
+        assertEquals(userCaptor.getValue().getId(), eventNotificationCaptor.getValue().owner().getId());
         assertEquals("Mocked message", messageCaptor.getValue());
     }
 

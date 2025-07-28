@@ -24,8 +24,8 @@ public class ViewUserProfileListener extends DirectNotificationEventListener<Vie
 
     @Override
     public boolean isEventValid(ViewProfileEvent event) {
-        return validateObjectNonNullData(event, event::getOwner, event::getFollower)
-                && isUserDtoValid(event.getOwner())
+        return validateObjectNonNullData(event, event::owner, event::getFollower)
+                && isUserDtoValid(event.owner())
                 && isUserDtoValid(event.getFollower());
     }
 }

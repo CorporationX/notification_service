@@ -27,6 +27,6 @@ public class CommentLikedEventListener extends BatchEventListener<CommentLikedNo
 
     @Override
     public boolean isEventValid(CommentLikedNotificationEvent event) {
-        return Objects.nonNull(event) && isUserDtoValid(event.getOwner());
+        return Objects.nonNull(event) && isUserDtoValid(event.owner());
     }
 }

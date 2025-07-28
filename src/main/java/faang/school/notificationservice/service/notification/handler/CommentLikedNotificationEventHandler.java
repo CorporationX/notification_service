@@ -25,7 +25,7 @@ public class CommentLikedNotificationEventHandler implements NotificationEventHa
         List<PendingNotifications> notifications = events.stream()
                 .map(event -> PendingNotificationsMapper.toEntity(
                         PendingNotificationsDto.builder()
-                                .receiverId(event.getOwner().getId())
+                                .receiverId(event.owner().getId())
                                 .targetEntityId(event.getCommentId())
                                 .relatedEntityId(event.getLikeId())
                                 .eventType(EventType.COMMENT_LIKED)

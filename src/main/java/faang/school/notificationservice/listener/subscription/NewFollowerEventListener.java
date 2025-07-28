@@ -30,8 +30,8 @@ public class NewFollowerEventListener extends DirectNotificationEventListener<Ne
 
     @Override
     public boolean isEventValid(NewFollowerEvent event) {
-        return validateObjectNonNullData(event, event::getOwner, event::getFollower)
-                && isUserDtoValid(event.getOwner())
+        return validateObjectNonNullData(event, event::owner, event::getFollower)
+                && isUserDtoValid(event.owner())
                 && isUserDtoValid(event.getFollower());
     }
 }

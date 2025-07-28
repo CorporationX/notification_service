@@ -30,8 +30,8 @@ public class UnfollowEventListener extends DirectNotificationEventListener<Unfol
 
     @Override
     public boolean isEventValid(UnfollowEvent event) {
-        return validateObjectNonNullData(event, event::getOwner, event::getFollower)
-                && isUserDtoValid(event.getOwner())
+        return validateObjectNonNullData(event, event::owner, event::getFollower)
+                && isUserDtoValid(event.owner())
                 && isUserDtoValid(event.getFollower());
     }
 }

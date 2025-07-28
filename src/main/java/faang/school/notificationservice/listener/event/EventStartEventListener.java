@@ -44,7 +44,7 @@ public class EventStartEventListener extends DirectNotificationEventListener<Eve
 
     public List<UserDto> splitEvent(EventStartNotificationEvent event) {
         List<UserDto> attendees = event.getAttendees();
-        UserDto owner = event.getOwner();
+        UserDto owner = event.owner();
 
         List<UserDto> users = new ArrayList<>();
         users.add(owner);
@@ -56,7 +56,7 @@ public class EventStartEventListener extends DirectNotificationEventListener<Eve
     @Override
     public boolean isEventValid(EventStartNotificationEvent event) {
         boolean eventIsValid = Objects.nonNull(event);
-        boolean ownerIsValid = isUserDtoValid(event.getOwner());
+        boolean ownerIsValid = isUserDtoValid(event.owner());
         boolean attendeesIsValid = event.getAttendees().stream()
                 .allMatch(this::isUserDtoValid);
         return eventIsValid && ownerIsValid && attendeesIsValid;

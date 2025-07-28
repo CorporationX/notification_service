@@ -27,6 +27,6 @@ public class PostLikedEventListener extends BatchEventListener<PostLikedNotifica
 
     @Override
     public boolean isEventValid(PostLikedNotificationEvent event) {
-        return Objects.nonNull(event) && isUserDtoValid(event.getOwner());
+        return Objects.nonNull(event) && isUserDtoValid(event.owner());
     }
 }
