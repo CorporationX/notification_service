@@ -8,18 +8,19 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         skill_acquired: skill_acquired_topic
+        comment: comment_channel
   kafka:
-        bootstrap-servers: localhost:9092
-        topics:
-          mentorship-request: mentorship-request-topic
-          achievement: user_achievement
-        consumer:
-          group-id: notification-service-group
-          auto-offset-reset: earliest
-          key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-          value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-          properties:
-            spring.json.trusted.packages: "faang.school.notificationservice.dto"
+    bootstrap-servers: localhost:9092
+    topics:
+      mentorship-request: mentorship-request-topic
+      achievement: user_achievement
+    consumer:
+      group-id: notification-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "faang.school.notificationservice.dto"
   mail:
     host: smtp.gmail.com
     port: 587
@@ -78,12 +79,10 @@ sms:
   url: "http://api.prostor-sms.ru/"
   username: "t89994676160"
   password: "504421"
-  
+
 telegram:
   chat: -1002709076416L
   bot:
     username: CorporationX_kraken_bot
     token: 7854027302:AAEaW444lQwgkW6UkC9cB5kgHvIf_0ShToc
     enable: true
-
-
