@@ -2,6 +2,7 @@ package faang.school.notificationservice.config;
 
 
 import faang.school.notificationservice.listener.MentorshipRequestListener;
+import faang.school.notificationservice.messaging.CommentEventListener;
 import faang.school.notificationservice.messaging.FollowerEventListener;
 import faang.school.notificationservice.listener.SkillAcquiredEventListener;
 import lombok.RequiredArgsConstructor;
@@ -63,14 +64,28 @@ public class RedisConfig {
     }
 
     @Bean
+    public MessageListenerAdapter commentEventListener(CommentEventListener listener) {
+        return new MessageListenerAdapter(listener);
+    }
+
+    @Bean
+    public ChannelTopic commentTopic(@Value("${spring.data.redis.channel.comment}")
+                                     String commentChannel) {
+        return new ChannelTopic(commentChannel);
+    }
+
+    @Bean
     public RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener,
                                                         MessageListenerAdapter mentorshipRequestListenerConfig,
-                                                        MessageListenerAdapter skillAcquiredListener) {
+                                                        MessageListenerAdapter skillAcquiredListener,
+                                                        MessageListenerAdapter commentEventListener,
+                                                        ChannelTopic commentTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(followerListener, topic());
         container.addMessageListener(mentorshipRequestListenerConfig, mentorshipRequestTopic());
         container.addMessageListener(skillAcquiredListener, skillAcquiredTopic());
+        container.addMessageListener(commentEventListener, commentTopic);
         return container;
     }
 
