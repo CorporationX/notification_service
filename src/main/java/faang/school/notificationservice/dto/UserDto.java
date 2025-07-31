@@ -22,7 +22,7 @@ public class UserDto {
 
     @Builder.Default
     private String language = "ru-RU";
-  
+
     private Locale locale;
 
     public enum PreferredContact {

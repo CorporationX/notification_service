@@ -29,7 +29,7 @@ class SmsServiceTest {
     }
 
     @Test
-    void testSendSmsWithUserPhoneNotNull(){
+    void testSendSmsWithUserPhoneNotNull() {
         UserDto userDto = new UserDto();
 
         String userPhone = "79999999999";

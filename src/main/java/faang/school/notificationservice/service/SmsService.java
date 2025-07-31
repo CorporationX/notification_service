@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class SmsService implements NotificationService{
+public class SmsService implements NotificationService {
     private final SmsClient smsClient;
 
     @Override
