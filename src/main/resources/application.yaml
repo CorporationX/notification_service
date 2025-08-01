@@ -8,7 +8,7 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
         skill_acquired: skill_acquired_topic
-        comment: comment_channel
+        comment: create_comment_topic
   kafka:
     bootstrap-servers: localhost:9092
     topics:
