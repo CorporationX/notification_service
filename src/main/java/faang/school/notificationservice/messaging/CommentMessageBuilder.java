@@ -23,11 +23,12 @@ public class CommentMessageBuilder implements MessageBuilder<CommentEvent> {
 
     @Override
     public String buildMessage(CommentEvent event, Locale locale) {
-        UserDto author = userServiceClient.getUser(event.getCommentAuthorId());
+        UserDto author = userServiceClient.getUser(event.commentAuthorId());
         return messageSource.getMessage(
                 "comment.new",
-                new Object[]{author.getUsername(), event.getPostId(), event.getCommentText()},
+                new Object[]{author.getUsername(), event.postId(), event.commentText()},
                 locale
         );
     }
 }
+
