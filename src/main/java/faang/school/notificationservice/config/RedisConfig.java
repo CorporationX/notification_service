@@ -30,9 +30,11 @@ public class RedisConfig {
     @Value("${spring.data.redis.topic}")
     private String followerTopic;
 
-
     @Value("${spring.data.redis.channel.skill_acquired}")
     private String skillAcquiredChannel;
+
+    @Value("${spring.data.redis.channel.comment_event}")
+    private String commentEventChannel;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -69,23 +71,26 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic commentTopic(@Value("${spring.data.redis.channel.comment}")
-                                     String commentChannel) {
-        return new ChannelTopic(commentChannel);
+    public ChannelTopic commentEventTopic() {
+        return new ChannelTopic(commentEventChannel);
+    }
+
+    @Bean
+    public MessageListenerAdapter commentEventListenerAdapter(CommentEventListener listener) {
+        return new MessageListenerAdapter(listener);
     }
 
     @Bean
     public RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener,
                                                         MessageListenerAdapter mentorshipRequestListenerConfig,
                                                         MessageListenerAdapter skillAcquiredListener,
-                                                        MessageListenerAdapter commentEventListener,
-                                                        ChannelTopic commentTopic) {
+                                                        MessageListenerAdapter commentEventListenerAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(followerListener, topic());
         container.addMessageListener(mentorshipRequestListenerConfig, mentorshipRequestTopic());
         container.addMessageListener(skillAcquiredListener, skillAcquiredTopic());
-        container.addMessageListener(commentEventListener, commentTopic);
+        container.addMessageListener(commentEventListenerAdapter, commentEventTopic());
         return container;
     }
 
