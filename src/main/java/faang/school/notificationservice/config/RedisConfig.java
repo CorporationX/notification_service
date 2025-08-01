@@ -61,11 +61,6 @@ public class RedisConfig {
     }
 
     @Bean
-    public MessageListenerAdapter skillAcquiredListener(SkillAcquiredEventListener listener) {
-        return new MessageListenerAdapter(listener);
-    }
-
-    @Bean
     public MessageListenerAdapter commentEventListener(CommentEventListener listener) {
         return new MessageListenerAdapter(listener);
     }
@@ -76,24 +71,18 @@ public class RedisConfig {
     }
 
     @Bean
-    public MessageListenerAdapter commentEventListenerAdapter(CommentEventListener listener) {
-        return new MessageListenerAdapter(listener);
-    }
-
-    @Bean
     public RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener,
                                                         MessageListenerAdapter mentorshipRequestListenerConfig,
                                                         MessageListenerAdapter skillAcquiredListener,
-                                                        MessageListenerAdapter commentEventListenerAdapter) {
+                                                        MessageListenerAdapter commentEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(followerListener, topic());
         container.addMessageListener(mentorshipRequestListenerConfig, mentorshipRequestTopic());
         container.addMessageListener(skillAcquiredListener, skillAcquiredTopic());
-        container.addMessageListener(commentEventListenerAdapter, commentEventTopic());
+        container.addMessageListener(commentEventListener, commentEventTopic());
         return container;
     }
-
 
     @Bean
     public ChannelTopic mentorshipRequestTopic() {
