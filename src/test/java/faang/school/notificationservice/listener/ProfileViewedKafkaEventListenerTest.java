@@ -1,5 +1,6 @@
 package faang.school.notificationservice.listener;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.config.kafka.KafkaProperties;
@@ -12,13 +13,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -44,40 +44,49 @@ public class ProfileViewedKafkaEventListenerTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        listener = spy(new ProfileViewedKafkaEventListener(
+        listener = new ProfileViewedKafkaEventListener(
                 List.of(notificationService),
                 List.of(messageBuilder),
                 kafkaProperties,
                 userServiceClient,
                 objectMapper
-        ));
+        );
     }
 
     @Test
     void handleProfileViewedEvent_success() throws Exception {
-        ProfileViewedEventDto event = new ProfileViewedEventDto();
-        event.setViewedId(2L);
-        event.setViewerId(1L);
+        ProfileViewedEventDto event = new ProfileViewedEventDto(
+                "Mike",
+                "Nike",
+                2L,
+                1L,
+                LocalDateTime.now()
 
-        UserDto viewedUser = new UserDto();
+        );
+
+
+        UserDto viewedUser = new UserDto(
+                2,
+                "Mike",
+                "someemail@gmail.com",
+                "89191991919",
+                UserDto.PreferredContact.EMAIL
+        );
         viewedUser.setId(2L);
 
         String json = "{\"viewerId\":1,\"viewedId\":2}";
 
         when(kafkaProperties.isUseKafka()).thenReturn(true);
         when(objectMapper.readValue(eq(json), eq(ProfileViewedEventDto.class))).thenReturn(event);
-        doReturn("Test message").when(listener).getMessage(any(Locale.class), any(ProfileViewedEventDto.class));
+        ProfileViewedKafkaEventListener spyListener = spy(listener);
+        doReturn("Test message").when(spyListener).getMessage(any(Locale.class), eq(event));
         when(userServiceClient.getUser(2L)).thenReturn(viewedUser);
-        doNothing().when(listener).sendNotification(eq(viewedUser), eq("Test message"));
 
+        spyListener.listen(json);
 
-        listener.listen(json);
-
-
-        verify(listener).getMessage(eq(Locale.ENGLISH), any(ProfileViewedEventDto.class));
+        verify(spyListener).getMessage(eq(Locale.ENGLISH), eq(event));
         verify(userServiceClient).getUser(2L);
-        verify(listener).sendNotification(eq(viewedUser), eq("Test message"));
+        verify(spyListener).sendNotification(eq(viewedUser), eq("Test message"));
     }
 
     @Test
@@ -86,10 +95,12 @@ public class ProfileViewedKafkaEventListenerTest {
 
         when(kafkaProperties.isUseKafka()).thenReturn(true);
         when(objectMapper.readValue(anyString(), eq(ProfileViewedEventDto.class)))
-                .thenThrow(new RuntimeException("fail"));
+                .thenThrow(new JsonProcessingException("fail") {});
 
-        assertThrows(RuntimeException.class, () -> listener.listen(badJson));
+        ProfileViewedKafkaEventListener spyListener = spy(listener);
 
-        verify(listener, never()).sendNotification(any(), anyString());
+        spyListener.listen(badJson);
+
+        verify(spyListener, never()).sendNotification(any(), anyString());
     }
 }
