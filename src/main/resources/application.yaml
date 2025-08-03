@@ -15,7 +15,13 @@ spring:
       auto_offset: earliest
       concurrency: 3
       topics:
-        goal-completed: goal_completed
+          - name: profile.viewed
+            partitions: 3
+            replication-factor: 1
+          - name: goal.completed
+            partitions: 3
+            replication-factor: 1
+
 
   mail:
     host: smtp.gmail.com
@@ -65,7 +71,7 @@ project-service:
     host: localhost
     port: 8082
 user-service:
-    host: localhost
+    host: http://localhost
     port: 8080
     url: localhost:8080
     path: /api/v1/users

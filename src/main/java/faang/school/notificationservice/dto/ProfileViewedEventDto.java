@@ -1,17 +1,18 @@
 package faang.school.notificationservice.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
+@ToString
 public class ProfileViewedEventDto {
-    private String viewerName;
-    private Long viewerId;
-    private Long viewedId;
-    private LocalDateTime localDateTime;
+    private final String viewerName;
+    private final String userName;
+    private final Long viewerId;
+    private final Long viewedId;
+    private final LocalDateTime localDateTime;
 }

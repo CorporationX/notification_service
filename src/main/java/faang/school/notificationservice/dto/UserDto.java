@@ -1,7 +1,7 @@
 package faang.school.notificationservice.dto;
 
-import lombok.AllArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data

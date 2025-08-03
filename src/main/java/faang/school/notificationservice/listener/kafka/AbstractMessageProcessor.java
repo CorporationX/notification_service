@@ -15,7 +15,7 @@ public class AbstractMessageProcessor<T> {
 
     public String getMessage(Locale locale, T event) {
         MessageBuilder<T> messageBuilder = messageBuilders.stream()
-                .filter(ms -> ms.getInstance() == event.getClass())
+                .filter(ms -> ms.getInstance().equals(event.getClass()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No required message builder found"));
 
