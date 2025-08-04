@@ -1,9 +1,6 @@
 package faang.school.notificationservice.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import faang.school.notificationservice.service.notification.EventType;
-import faang.school.notificationservice.service.notification.NotificationStatus;
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,8 +14,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
 
@@ -28,8 +23,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "pending_notifications")
-public class PendingNotifications {
+@Table(name = "last_sent_notifications")
+public class LastSentNotifications {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,22 +36,10 @@ public class PendingNotifications {
     @Column(name = "target_entity_id", nullable = false)
     private Long targetEntityId;
 
-    @Type(JsonBinaryType.class)
-    @Column(name = "event_data", columnDefinition = "jsonb", nullable = false)
-    private JsonNode eventData;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "event_type", nullable = false, length = 50)
     private EventType eventType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 20)
-    private NotificationStatus status;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
     @Column(name = "sent_at")
-    private LocalDateTime sentAt;
+    private LocalDateTime lastSentAt;
 }

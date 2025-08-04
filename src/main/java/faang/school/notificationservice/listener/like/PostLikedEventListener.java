@@ -7,7 +7,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 
 @Component
 public class PostLikedEventListener extends BatchEventListener<PostLikedNotificationEvent> {
@@ -22,11 +21,13 @@ public class PostLikedEventListener extends BatchEventListener<PostLikedNotifica
             containerFactory = "kafkaPostLikedEventListener"
     )
     public void listenPostLikedBatch(List<PostLikedNotificationEvent> events) {
-        eventHandler.saveNotifications(events);
+        processEventsBatch(events);
     }
 
     @Override
     public boolean isEventValid(PostLikedNotificationEvent event) {
-        return Objects.nonNull(event) && isUserDtoValid(event.getOwner());
+        return event != null &&
+                event.getOwner() != null &&
+                super.isUserDtoValid(event.getOwner());
     }
 }

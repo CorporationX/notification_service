@@ -209,7 +209,7 @@ public class IntegrationEventListenerTest {
     @Test
     public void testHandleCommentLikedNotificationEventIntegration() {
         CommentLikedNotificationEvent commentLikedEvent = CommentLikedNotificationEvent.builder()
-                .likeId(1L)
+                .commentId(202L)
                 .owner(correctUserDtoEmail)
                 .commentId(10L)
                 .build();
@@ -222,7 +222,7 @@ public class IntegrationEventListenerTest {
                 .untilAsserted(() -> verify(commentLikedNotificationEventHandler, times(1))
                         .saveNotifications(argThat(events ->
                                 events.stream().anyMatch(event ->
-                                        event.getLikeId().equals(1L) &&
+                                        event.getCommentId().equals(202L) &&
                                                 event.getCommentId().equals(10L) &&
                                                 event.getOwner().equals(correctUserDtoPhone)
                                 )
@@ -233,9 +233,10 @@ public class IntegrationEventListenerTest {
     @Test
     public void testHandlePostLikedNotificationEventIntegration() {
         PostLikedNotificationEvent postLikedEvent = PostLikedNotificationEvent.builder()
-                .likeId(2L)
-                .owner(correctUserDtoEmail)
                 .postId(20L)
+                .owner(correctUserDtoEmail)
+                .likerUsername("some_user")
+                .shortContent("test comment")
                 .build();
 
         postLikedTestKafkaTemplate.send(postLikedTopic, postLikedEvent);
@@ -246,8 +247,7 @@ public class IntegrationEventListenerTest {
                 .untilAsserted(() -> verify(postLikedNotificationEventHandler, times(1))
                         .saveNotifications(argThat(events ->
                                 events.stream().anyMatch(event ->
-                                        event.getLikeId().equals(2L) &&
-                                                event.getPostId().equals(20L) &&
+                                        event.getPostId().equals(20L) &&
                                                 event.getOwner().equals(correctUserDtoTelegram)
                                 )
                         ))

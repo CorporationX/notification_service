@@ -1,19 +1,20 @@
 package faang.school.notificationservice.dto.notification;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import faang.school.notificationservice.service.notification.EventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class AggregatedNotificationsDto {
     private Long receiverId;
     private Long targetEntityId;
-    private Long relatedEntityId;
+    private JsonNode eventData;
     private EventType eventType;
-    private Long notificationCount;
+    private int notificationCount;
 }

@@ -35,26 +35,32 @@ class PostLikedEventListenerTest {
 
     @BeforeEach
     void setUp() {
-        UserDto userDto = UserDto.builder().id(1L).build();
+        UserDto userDto = UserDto.builder()
+                .id(1L)
+                .username("test_user")
+                .email("test@gmail.com")
+                .phone("123456789")
+                .build();
+
         validEvent = PostLikedNotificationEvent.builder()
-                .owner(userDto)
-                .likeId(100L)
                 .postId(200L)
+                .likerUsername("some_user")
+                .owner(userDto)
+                .shortContent("test post")
                 .build();
     }
 
     @Test
     void testListenPostLikedBatch() {
-        PostLikedNotificationEvent invalidEvent = PostLikedNotificationEvent.builder().build(); // no owner
+        PostLikedNotificationEvent invalidEvent = PostLikedNotificationEvent.builder().build();
         List<PostLikedNotificationEvent> events = List.of(validEvent, invalidEvent);
 
-        postLikedEventListener.listenPostLikedBatch(events);
+        postLikedEventListener.processEventsBatch(events);
 
         verify(eventHandler, times(1)).saveNotifications(eventListCaptor.capture());
         List<PostLikedNotificationEvent> capturedEvents = eventListCaptor.getValue();
 
-        assertEquals(2, capturedEvents.size());
+        assertEquals(1, capturedEvents.size());
         assertEquals(validEvent, capturedEvents.get(0));
-
     }
 }

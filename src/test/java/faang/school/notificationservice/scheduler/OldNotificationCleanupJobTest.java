@@ -1,6 +1,6 @@
 package faang.school.notificationservice.scheduler;
 
-import faang.school.notificationservice.repository.NotificationRepository;
+import faang.school.notificationservice.service.notification.NotificationCleanupService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,48 +8,26 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.Field;
-import java.time.LocalDateTime;
-
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class OldNotificationsCleanupJobTest {
+class OldNotificationCleanupJobTest {
 
     @InjectMocks
     private OldNotificationsCleanupJob cleanupJob;
 
     @Mock
-    private NotificationRepository notificationRepository;
+    private NotificationCleanupService notificationCleanupService;
 
     @BeforeEach
-    void setUp() throws Exception {
-        setField(cleanupJob);
+    void setUp() {
     }
 
     @Test
-    void shouldCleanOldNotificationsSuccessfully() {
-        cleanupJob.cleanOldNotifications();
+    void shouldTriggerOldNotificationsCleanup() {
+        cleanupJob.triggerOldNotificationsCleanup();
 
-        verify(notificationRepository, times(1)).deleteOldNotifications(any(LocalDateTime.class));
-    }
-
-    @Test
-    void shouldHandleExceptionDuringCleanup() {
-        doThrow(new RuntimeException("Database error"))
-                .when(notificationRepository).deleteOldNotifications(any());
-
-        cleanupJob.cleanOldNotifications();
-
-        verify(notificationRepository, times(1)).deleteOldNotifications(any(LocalDateTime.class));
-    }
-
-    private void setField(Object target) throws Exception {
-        Field field = target.getClass().getDeclaredField("cleanupInterval");
-        field.setAccessible(true);
-        field.set(target, 30);
+        verify(notificationCleanupService, times(1)).cleanOldNotifications();
     }
 }

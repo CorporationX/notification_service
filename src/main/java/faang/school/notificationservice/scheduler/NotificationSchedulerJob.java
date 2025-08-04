@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,17 +29,24 @@ public class NotificationSchedulerJob {
     @Value("${notification-scheduler.last-sent-threshold-hours}")
     private int lastSentThresholdHours;
 
-    @Value("${notification-scheduler.maxRetryAttempts}")
-    private int maxRetryAttempts;
+    @Value("${notification-scheduler.total-instances}")
+    private int totalInstances;
+
+    @Value("${notification-scheduler.current-instance}")
+    private int currentInstance;
 
     @Scheduled(cron = "${notification-scheduler.cron}")
-    @Transactional
     public void publishNotifications() {
         LocalDateTime notificationDelay = LocalDateTime.now().minusHours(delayHours);
         LocalDateTime lastSentThreshold = LocalDateTime.now().minusHours(lastSentThresholdHours);
 
         List<PendingNotifications> pendingNotifications = notificationRepository
-                .findAndLockPendingNotifications(notificationDelay, lastSentThreshold, maxRetryAttempts);
+                .findAndLockPendingNotifications(
+                        notificationDelay,
+                        lastSentThreshold,
+                        totalInstances,
+                        currentInstance
+                );
 
         if (pendingNotifications.isEmpty()) {
             log.info("No pending notifications to send");

@@ -42,18 +42,19 @@ class NotificationSchedulerJobTest {
     void setUp() throws Exception {
         setField(notificationSchedulerJob, "delayHours", 3);
         setField(notificationSchedulerJob, "lastSentThresholdHours", 1);
-        setField(notificationSchedulerJob, "maxRetryAttempts", 5);
+        setField(notificationSchedulerJob, "totalInstances", 1);
+        setField(notificationSchedulerJob, "currentInstance", 1);
     }
 
     @Test
     void shouldNotSendIfNoPendingNotifications() {
-        when(notificationRepository.findAndLockPendingNotifications(any(), any(), anyInt()))
+        when(notificationRepository.findAndLockPendingNotifications(any(), any(), anyInt(), anyInt()))
                 .thenReturn(Collections.emptyList());
 
         notificationSchedulerJob.publishNotifications();
 
         verify(notificationRepository, times(1))
-                .findAndLockPendingNotifications(any(), any(), anyInt());
+                .findAndLockPendingNotifications(any(), any(), anyInt(), anyInt());
         verifyNoInteractions(aggregator, notificationSender);
     }
 
@@ -64,7 +65,7 @@ class NotificationSchedulerJobTest {
         AggregatedNotificationsDto aggregatedNotification = new AggregatedNotificationsDto();
         List<AggregatedNotificationsDto> aggregatedNotifications = List.of(aggregatedNotification);
 
-        when(notificationRepository.findAndLockPendingNotifications(any(), any(), anyInt()))
+        when(notificationRepository.findAndLockPendingNotifications(any(), any(), anyInt(), anyInt()))
                 .thenReturn(pendingNotifications);
         when(aggregator.aggregateNotifications(pendingNotifications))
                 .thenReturn(aggregatedNotifications);
@@ -72,7 +73,7 @@ class NotificationSchedulerJobTest {
         notificationSchedulerJob.publishNotifications();
 
         verify(notificationRepository, times(1))
-                .findAndLockPendingNotifications(any(), any(), anyInt());
+                .findAndLockPendingNotifications(any(), any(), anyInt(), anyInt());
         verify(aggregator, times(1))
                 .aggregateNotifications(pendingNotifications);
         verify(notificationSender, times(1))

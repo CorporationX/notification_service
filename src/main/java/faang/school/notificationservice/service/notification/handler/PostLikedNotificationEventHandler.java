@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service.notification.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.notification.PendingNotificationsDto;
 import faang.school.notificationservice.event.kafka.PostLikedNotificationEvent;
 import faang.school.notificationservice.mapper.PendingNotificationsMapper;
@@ -18,6 +19,7 @@ import java.util.List;
 public class PostLikedNotificationEventHandler implements NotificationEventHandler<PostLikedNotificationEvent> {
 
     private final NotificationRepository notificationRepository;
+    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
@@ -27,7 +29,7 @@ public class PostLikedNotificationEventHandler implements NotificationEventHandl
                         PendingNotificationsDto.builder()
                                 .receiverId(event.getOwner().getId())
                                 .targetEntityId(event.getPostId())
-                                .relatedEntityId(event.getLikeId())
+                                .eventData(objectMapper.valueToTree(event))
                                 .eventType(EventType.POST_LIKED)
                                 .status(NotificationStatus.PENDING)
                                 .build()))

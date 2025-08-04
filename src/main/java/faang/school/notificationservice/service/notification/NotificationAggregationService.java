@@ -5,7 +5,6 @@ import faang.school.notificationservice.model.PendingNotifications;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.LongSummaryStatistics;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -16,13 +15,13 @@ public class NotificationAggregationService {
     }
 
     public List<AggregatedNotificationsDto> aggregateNotifications(List<PendingNotifications> notifications) {
-        Map<NotificationGroupKey, LongSummaryStatistics> groupedStats = notifications.stream()
+        Map<NotificationGroupKey, List<PendingNotifications>> groupedNotifications = notifications.stream()
                 .collect(Collectors.groupingBy(
                         this::createGroupKey,
-                        Collectors.summarizingLong(PendingNotifications::getRelatedEntityId)
+                        Collectors.toList()
                 ));
 
-        return groupedStats.entrySet().stream()
+        return groupedNotifications.entrySet().stream()
                 .map(this::mapToAggregatedNotificationsDto)
                 .toList();
     }
@@ -35,16 +34,18 @@ public class NotificationAggregationService {
         );
     }
 
-    private AggregatedNotificationsDto mapToAggregatedNotificationsDto(Map.Entry<NotificationGroupKey, LongSummaryStatistics> entry) {
+    private AggregatedNotificationsDto mapToAggregatedNotificationsDto(Map.Entry<NotificationGroupKey, List<PendingNotifications>> entry) {
         NotificationGroupKey key = entry.getKey();
-        LongSummaryStatistics stats = entry.getValue();
+        List<PendingNotifications> group = entry.getValue();
+
+        PendingNotifications firstNotification = group.get(0);
 
         return AggregatedNotificationsDto.builder()
                 .receiverId(key.receiverId())
                 .targetEntityId(key.targetEntityId())
+                .eventData(firstNotification.getEventData())
                 .eventType(key.eventType())
-                .notificationCount(stats.getCount())
-                .relatedEntityId(stats.getMin())
+                .notificationCount(group.size())
                 .build();
     }
 }

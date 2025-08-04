@@ -12,7 +12,7 @@ public class PendingNotificationsMapper {
         return PendingNotificationsDto.builder()
                 .receiverId(entity.getReceiverId())
                 .targetEntityId(entity.getTargetEntityId())
-                .relatedEntityId(entity.getRelatedEntityId())
+                .eventData(entity.getEventData())
                 .eventType(entity.getEventType())
                 .status(entity.getStatus())
                 .build();
@@ -22,7 +22,7 @@ public class PendingNotificationsMapper {
         return PendingNotifications.builder()
                 .receiverId(dto.getReceiverId())
                 .targetEntityId(dto.getTargetEntityId())
-                .relatedEntityId(dto.getRelatedEntityId())
+                .eventData(dto.getEventData())
                 .eventType(dto.getEventType())
                 .status(dto.getStatus())
                 .build();

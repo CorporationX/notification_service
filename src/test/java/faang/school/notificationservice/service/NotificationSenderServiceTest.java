@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
-import faang.school.notificationservice.client.UserServiceClient;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.notification.AggregatedNotificationsDto;
 import faang.school.notificationservice.enums.PreferredContact;
@@ -10,6 +11,7 @@ import faang.school.notificationservice.repository.NotificationRepository;
 import faang.school.notificationservice.service.notification.EventType;
 import faang.school.notificationservice.service.notification.NotificationSenderService;
 import faang.school.notificationservice.service.notification.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,10 +25,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,7 +47,7 @@ class NotificationSenderServiceTest {
     private PostLikedEventMessageBuilder postMessageBuilder;
 
     @Mock
-    private UserServiceClient userServiceClient;
+    private ObjectMapper objectMapper;
 
     @Mock
     private NotificationRepository notificationRepository;
@@ -52,116 +56,135 @@ class NotificationSenderServiceTest {
     private NotificationSenderService notificationSenderService;
 
     private UserDto testUser;
+    private AggregatedNotificationsDto aggregatedDto;
+    private JsonNode eventData;
+    private NotificationService emailService;
+    private NotificationService smsService;
 
     @BeforeEach
     void setUp() {
+        emailService = mock(NotificationService.class);
+        smsService = mock(NotificationService.class);
+
         testUser = UserDto.builder()
-                .id(42L)
+                .id(1L)
+                .email("test@example.com")
                 .preference(PreferredContact.EMAIL)
                 .locale(Locale.UK)
                 .build();
-    }
 
-    @Test
-    void testWhenUsedCorrectNotificationService() {
-        NotificationService emailService = mock(NotificationService.class);
-        when(emailService.getPreferredContact()).thenReturn(PreferredContact.EMAIL);
-        when(notificationServices.stream()).thenReturn(Stream.of(emailService));
+        ObjectMapper realMapper = new ObjectMapper();
+        eventData = realMapper.createObjectNode()
+                .putObject("owner")
+                .put("id", 1L)
+                .put("preference", "EMAIL")
+                .put("locale", "en_GB");
 
-        notificationSenderService.send(testUser, "Notification message");
-
-        verify(emailService, times(1)).send(testUser, "Notification message");
-    }
-
-    @Test
-    void testWhenUsedWrongNotificationService() {
-        NotificationService smsService = mock(NotificationService.class);
-        when(smsService.getPreferredContact()).thenReturn(PreferredContact.PHONE);
-        when(notificationServices.stream()).thenReturn(Stream.of(smsService));
-
-        IllegalArgumentException thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> notificationSenderService.send(testUser, "Notification message"),
-                "Expected to throw because no service matches the preference"
-        );
-
-        assertEquals("No notification service was found for user preferred notification type", thrown.getMessage());
-    }
-
-    @Test
-    void testNotificationSenderWithCommentLikedEventType() {
-        AggregatedNotificationsDto notification = AggregatedNotificationsDto.builder()
-                .receiverId(42L)
-                .targetEntityId(123L)
-                .eventType(EventType.COMMENT_LIKED)
-                .build();
-
-        NotificationService emailService = mock(NotificationService.class);
-        when(emailService.getPreferredContact()).thenReturn(PreferredContact.EMAIL);
-        when(notificationServices.stream()).thenReturn(Stream.of(emailService));
-        when(userServiceClient.getUser(42L)).thenReturn(testUser);
-        when(commentMessageBuilder.buildMessage(eq(notification), any(Locale.class))).thenReturn("Comment Liked Message");
-
-        notificationSenderService.sendAggregatedNotifications(notification);
-
-        verify(userServiceClient, times(1)).getUser(42L);
-        verify(commentMessageBuilder, times(1)).buildMessage(eq(notification), eq(Locale.UK));
-        verify(notificationRepository, times(1)).updateStatusByGroup(
-                42L,
-                123L,
-                "COMMENT_LIKED",
-                "SENT"
-        );
-    }
-
-
-    @Test
-    void testNotificationSenderWithPostLikedEventType() {
-        AggregatedNotificationsDto notification = AggregatedNotificationsDto.builder()
-                .receiverId(42L)
-                .targetEntityId(456L)
+        aggregatedDto = AggregatedNotificationsDto.builder()
+                .receiverId(1L)
+                .targetEntityId(100L)
                 .eventType(EventType.POST_LIKED)
+                .eventData(eventData)
                 .build();
+    }
 
-        NotificationService emailService = mock(NotificationService.class);
+    private void setupNotificationServices() {
         when(emailService.getPreferredContact()).thenReturn(PreferredContact.EMAIL);
-        when(notificationServices.stream()).thenReturn(Stream.of(emailService));
-        when(userServiceClient.getUser(42L)).thenReturn(testUser);
-        when(postMessageBuilder.buildMessage(eq(notification), any(Locale.class)))
-                .thenReturn("Post Liked Message");
-
-        notificationSenderService.sendAggregatedNotifications(notification);
-
-        verify(userServiceClient, times(1)).getUser(42L);
-        verify(postMessageBuilder, times(1)).buildMessage(eq(notification), eq(Locale.UK));
-        verify(notificationRepository, times(1)).updateStatusByGroup(
-                42L,
-                456L,
-                "POST_LIKED",
-                "SENT"
-        );
+        when(notificationServices.stream()).thenAnswer(invocation -> Stream.of(emailService, smsService));
     }
 
     @Test
-    void testNotificationStatusUpdateWhenFailed() {
-        AggregatedNotificationsDto notification = AggregatedNotificationsDto.builder()
-                .receiverId(42L)
-                .targetEntityId(456L)
-                .eventType(EventType.POST_LIKED)
-                .build();
-        when(userServiceClient.getUser(42L)).thenReturn(testUser);
-        when(postMessageBuilder.buildMessage(eq(notification), any(Locale.class)))
-                .thenThrow(new RuntimeException("Test Exception"));
+    void send_ShouldCallCorrectNotificationService_WhenPreferenceMatches() {
+        setupNotificationServices();
+        String message = "Test Message";
+        testUser.setPreference(PreferredContact.EMAIL);
 
-        notificationSenderService.sendAggregatedNotifications(notification);
+        notificationSenderService.send(testUser, message);
 
-        verify(userServiceClient, times(1)).getUser(42L);
-        verify(postMessageBuilder, times(1)).buildMessage(eq(notification), eq(Locale.UK));
-        verify(notificationRepository, times(1)).updateStatusByGroup(
-                42L,
-                456L,
-                "POST_LIKED",
-                "FAILED"
-        );
+        verify(emailService).send(testUser, message);
+        verify(smsService, never()).send(any(), any());
+    }
+
+    @Test
+    void send_ShouldThrowException_WhenNoServiceMatchesPreference() {
+        setupNotificationServices();
+        String message = "Test Message";
+        testUser.setPreference(PreferredContact.TELEGRAM);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> notificationSenderService.send(testUser, message));
+
+        assertEquals("No notification service was found for user preferred notification type", exception.getMessage());
+    }
+
+    @Test
+    void sendAggregatedNotifications_ShouldSendPostLikedNotificationSuccessfully() {
+        setupNotificationServices();
+        String message = "Your post was liked!";
+        aggregatedDto.setEventType(EventType.POST_LIKED);
+
+        when(objectMapper.convertValue(eventData.get("owner"), UserDto.class)).thenReturn(testUser);
+        when(postMessageBuilder.buildMessage(aggregatedDto, Locale.UK)).thenReturn(message);
+
+        notificationSenderService.sendAggregatedNotifications(aggregatedDto);
+
+        verify(objectMapper).convertValue(eventData.get("owner"), UserDto.class);
+        verify(postMessageBuilder).buildMessage(aggregatedDto, Locale.UK);
+        verify(emailService).send(testUser, message);
+        verify(notificationRepository).updateStatusByGroup(
+                1L, 100L, EventType.POST_LIKED.name(), NotificationStatus.SENT.name());
+        verify(notificationRepository, never()).updateStatusByGroup(anyLong(), anyLong(), anyString(), eq(NotificationStatus.FAILED.name()));
+    }
+
+    @Test
+    void sendAggregatedNotifications_ShouldSendCommentLikedNotificationSuccessfully() {
+        setupNotificationServices();
+        String message = "Your comment was liked!";
+        aggregatedDto.setEventType(EventType.COMMENT_LIKED);
+
+        when(objectMapper.convertValue(eventData.get("owner"), UserDto.class)).thenReturn(testUser);
+        when(commentMessageBuilder.buildMessage(aggregatedDto, Locale.UK)).thenReturn(message);
+
+        notificationSenderService.sendAggregatedNotifications(aggregatedDto);
+
+        verify(objectMapper).convertValue(eventData.get("owner"), UserDto.class);
+        verify(commentMessageBuilder).buildMessage(aggregatedDto, Locale.UK);
+        verify(emailService).send(testUser, message);
+        verify(notificationRepository).updateStatusByGroup(
+                1L, 100L, EventType.COMMENT_LIKED.name(), NotificationStatus.SENT.name());
+        verify(notificationRepository, never()).updateStatusByGroup(anyLong(), anyLong(), anyString(), eq(NotificationStatus.FAILED.name()));
+    }
+
+    @Test
+    void sendAggregatedNotifications_ShouldUpdateStatusToFailed_WhenSendingThrowsException() {
+        aggregatedDto.setEventType(EventType.POST_LIKED);
+        RuntimeException testException = new RuntimeException("Message builder failed");
+
+        when(objectMapper.convertValue(eventData.get("owner"), UserDto.class)).thenReturn(testUser);
+        when(postMessageBuilder.buildMessage(aggregatedDto, Locale.UK)).thenThrow(testException);
+
+        notificationSenderService.sendAggregatedNotifications(aggregatedDto);
+
+        verify(notificationRepository).updateStatusByGroup(
+                1L, 100L, EventType.POST_LIKED.name(), NotificationStatus.FAILED.name());
+        verify(notificationRepository, never()).updateStatusByGroup(anyLong(), anyLong(), anyString(), eq(NotificationStatus.SENT.name()));
+        verify(emailService, never()).send(any(), any());
+    }
+
+    @Test
+    void sendAggregatedNotifications_ShouldUseDefaultLocale_WhenUserLocaleIsNull() {
+        setupNotificationServices();
+        String message = "Your post was liked!";
+        aggregatedDto.setEventType(EventType.POST_LIKED);
+        testUser.setLocale(null);
+        Locale defaultLocale = Locale.getDefault();
+
+        when(objectMapper.convertValue(eventData.get("owner"), UserDto.class)).thenReturn(testUser);
+        when(postMessageBuilder.buildMessage(aggregatedDto, defaultLocale)).thenReturn(message);
+
+        notificationSenderService.sendAggregatedNotifications(aggregatedDto);
+
+        verify(postMessageBuilder).buildMessage(aggregatedDto, defaultLocale);
+        verify(emailService).send(testUser, message);
     }
 }

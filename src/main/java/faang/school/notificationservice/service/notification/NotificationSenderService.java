@@ -1,6 +1,6 @@
 package faang.school.notificationservice.service.notification;
 
-import faang.school.notificationservice.client.UserServiceClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.notification.AggregatedNotificationsDto;
 import faang.school.notificationservice.messaging.like.CommentLikedEventMessageBuilder;
@@ -9,6 +9,7 @@ import faang.school.notificationservice.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
@@ -21,7 +22,7 @@ public class NotificationSenderService {
     private final List<NotificationService> notificationServices;
     private final CommentLikedEventMessageBuilder commentMessageBuilder;
     private final PostLikedEventMessageBuilder postMessageBuilder;
-    private final UserServiceClient userServiceClient;
+    private final ObjectMapper objectMapper;
     private final NotificationRepository notificationRepository;
 
     public void send(UserDto userDto, String message) {
@@ -34,11 +35,12 @@ public class NotificationSenderService {
                 .send(userDto, message);
     }
 
+    @Transactional
     public void sendAggregatedNotifications(AggregatedNotificationsDto notification) {
         EventType eventType = notification.getEventType();
 
         try {
-            sendMessageByType(notification, eventType);
+            sendMessage(notification, eventType);
 
             notificationRepository.updateStatusByGroup(
                     notification.getReceiverId(),
@@ -64,8 +66,8 @@ public class NotificationSenderService {
         }
     }
 
-    private void sendMessageByType(AggregatedNotificationsDto notification, EventType eventType) {
-        UserDto user = userServiceClient.getUser(notification.getReceiverId());
+    private void sendMessage(AggregatedNotificationsDto notification, EventType eventType) {
+        UserDto user = objectMapper.convertValue(notification.getEventData().get("owner"), UserDto.class);
         Locale locale = getLocale(user);
 
         switch (eventType) {

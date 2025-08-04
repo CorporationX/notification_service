@@ -1,5 +1,8 @@
 package faang.school.notificationservice.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import faang.school.notificationservice.dto.notification.AggregatedNotificationsDto;
 import faang.school.notificationservice.model.PendingNotifications;
 import faang.school.notificationservice.service.notification.EventType;
@@ -15,26 +18,50 @@ class NotificationAggregationServiceTest {
     private final NotificationAggregationService aggregationService =
             new NotificationAggregationService();
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Test
     void testNotificationsAggregatedCorrectly() {
+        JsonNode eventData1 = createEventNode(
+                2L,
+                "JaneSmith",
+                123L,
+                "First content...",
+                "JohnDoe"
+        );
+        JsonNode eventData2 = createEventNode(
+                3L,
+                "JohnSmith",
+                123L,
+                "Second content...",
+                "JaneDoe"
+        );
+        JsonNode eventData3 = createEventNode(
+                4L,
+                "Alice",
+                456L,
+                "Third content...",
+                "Bob"
+        );
+
         PendingNotifications notification1 = PendingNotifications.builder()
                 .receiverId(42L)
                 .targetEntityId(123L)
-                .relatedEntityId(1L)
+                .eventData(eventData1)
                 .eventType(EventType.COMMENT_LIKED)
                 .build();
 
         PendingNotifications notification2 = PendingNotifications.builder()
                 .receiverId(42L)
                 .targetEntityId(123L)
-                .relatedEntityId(2L)
+                .eventData(eventData2)
                 .eventType(EventType.COMMENT_LIKED)
                 .build();
 
         PendingNotifications notification3 = PendingNotifications.builder()
                 .receiverId(42L)
                 .targetEntityId(456L)
-                .relatedEntityId(3L)
+                .eventData(eventData3)
                 .eventType(EventType.POST_LIKED)
                 .build();
 
@@ -57,7 +84,7 @@ class NotificationAggregationServiceTest {
         assertEquals(123L, group1.getTargetEntityId());
         assertEquals(EventType.COMMENT_LIKED, group1.getEventType());
         assertEquals(2, group1.getNotificationCount());
-        assertEquals(1L, group1.getRelatedEntityId());
+        assertEquals(eventData1, group1.getEventData());
 
         AggregatedNotificationsDto group2 = aggregated.stream()
                 .filter(dto -> dto.getTargetEntityId().equals(456L))
@@ -67,6 +94,21 @@ class NotificationAggregationServiceTest {
         assertEquals(456L, group2.getTargetEntityId());
         assertEquals(EventType.POST_LIKED, group2.getEventType());
         assertEquals(1, group2.getNotificationCount());
-        assertEquals(3L, group2.getRelatedEntityId());
+        assertEquals(eventData3, group2.getEventData());
+    }
+
+    private JsonNode createEventNode(long ownerId, String username, long postId, String content, String likerUsername) {
+        ObjectNode rootNode = objectMapper.createObjectNode();
+        ObjectNode ownerNode = rootNode.putObject("owner");
+        ownerNode.put("id", ownerId);
+        ownerNode.put("email", username.toLowerCase() + "@example.com");
+        ownerNode.put("phone", "1234567890");
+        ownerNode.put("locale", "en");
+        ownerNode.put("username", username);
+        ownerNode.put("preference", "EMAIL");
+        rootNode.put("postId", postId);
+        rootNode.put("shortContent", content);
+        rootNode.put("likerUsername", likerUsername);
+        return rootNode;
     }
 }

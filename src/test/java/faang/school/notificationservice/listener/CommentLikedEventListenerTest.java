@@ -43,18 +43,19 @@ class CommentLikedEventListenerTest {
                 .build();
 
         validEvent = CommentLikedNotificationEvent.builder()
-                .owner(userDto)
-                .likeId(101L)
                 .commentId(202L)
+                .likerUsername("some_user")
+                .owner(userDto)
+                .shortContent("test comment")
                 .build();
     }
 
     @Test
     void testListenCommentLikedBatch() {
-        CommentLikedNotificationEvent invalidEvent = CommentLikedNotificationEvent.builder().build(); // no owner
+        CommentLikedNotificationEvent invalidEvent = CommentLikedNotificationEvent.builder().build();
         List<CommentLikedNotificationEvent> events = List.of(validEvent, invalidEvent);
 
-        commentLikedEventListener.listenCommentLikedBatch(events);
+        commentLikedEventListener.processEventsBatch(events);
 
         verify(eventHandler, times(1)).saveNotifications(eventListCaptor.capture());
         List<CommentLikedNotificationEvent> capturedEvents = eventListCaptor.getValue();
