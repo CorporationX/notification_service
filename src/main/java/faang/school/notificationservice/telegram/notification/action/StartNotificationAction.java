@@ -47,9 +47,9 @@ public class StartNotificationAction implements NotificationAction {
             if (updatedUserTelegramDto.telegramChatId() == null) {
                 throw new TelegramException(String.format("Failed to set chat id to user %d", userTelegramDto.userId()));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.info("Action: {}. Failed to connect chat {}", NotificationActionType.START.getAction(), message.getChatId(), e);
-            if (e instanceof FeignException && ((FeignException)e).status() == HttpStatus.NOT_FOUND.value()) {
+            if (e instanceof FeignException && ((FeignException) e).status() == HttpStatus.NOT_FOUND.value()) {
                 return StartNotificationMessage.FAILED_NEED_CONNECT.getMessage();
             }
 
