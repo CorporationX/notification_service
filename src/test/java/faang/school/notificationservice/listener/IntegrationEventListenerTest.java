@@ -6,9 +6,13 @@ import faang.school.notificationservice.config.TestKafkaConfig;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.enums.PreferredContact;
 import faang.school.notificationservice.event.kafka.CommentCreationNotificationEvent;
+import faang.school.notificationservice.event.kafka.CommentLikedNotificationEvent;
 import faang.school.notificationservice.event.kafka.GoalCompletionNotificationEvent;
 import faang.school.notificationservice.event.kafka.NewFollowerEvent;
+import faang.school.notificationservice.event.kafka.PostLikedNotificationEvent;
 import faang.school.notificationservice.event.kafka.UnfollowEvent;
+import faang.school.notificationservice.service.notification.handler.CommentLikedNotificationEventHandler;
+import faang.school.notificationservice.service.notification.handler.PostLikedNotificationEventHandler;
 import faang.school.notificationservice.service.notification.implimentation.EmailNotificationService;
 import faang.school.notificationservice.service.notification.implimentation.SmsNotificationService;
 import faang.school.notificationservice.service.notification.implimentation.TelegramNotificationService;
@@ -30,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,8 +48,12 @@ public class IntegrationEventListenerTest {
     private String goalTopic;
     @Value("${spring.kafka.topics.subscription.new-follower-topic.name}")
     private String newFollowerTopic;
-    @Value("${spring.kafka.topics.comment-created-topic}")
+    @Value("${spring.kafka.topics.comment-created-topic.name}")
     private String commentCreatedTopic;
+    @Value("${spring.kafka.topics.comment-liked-topic.name}")
+    private String commentLikedTopic;
+    @Value("${spring.kafka.topics.post-liked-topic.name}")
+    private String postLikedTopic;
 
     @Autowired
     private KafkaTemplate<String, GoalCompletionNotificationEvent> kafkaTestTemplate;
@@ -54,6 +63,14 @@ public class IntegrationEventListenerTest {
     private KafkaTemplate<String, UnfollowEvent> unfollowEventTestKafkaTemplate;
     @Autowired
     private KafkaTemplate<String, CommentCreationNotificationEvent> commentCreatedTestKafkaTemplate;
+    @Autowired
+    private KafkaTemplate<String, CommentLikedNotificationEvent> commentLikedTestKafkaTemplate;
+    @Autowired
+    private KafkaTemplate<String, PostLikedNotificationEvent> postLikedTestKafkaTemplate;
+    @Autowired
+    private CommentLikedNotificationEventHandler commentLikedNotificationEventHandler;
+    @Autowired
+    private PostLikedNotificationEventHandler postLikedNotificationEventHandler;
 
     @MockBean
     private SmsNotificationService smsService;
@@ -67,7 +84,7 @@ public class IntegrationEventListenerTest {
     private static UserDto correctUserDtoTelegram;
 
     @BeforeAll
-    public static void beforeAll(){
+    public static void beforeAll() {
         correctUserDtoEmail = UserDto.builder()
                 .id(1L)
                 .username("username")
@@ -187,5 +204,53 @@ public class IntegrationEventListenerTest {
                     assertNotNull(commentCreationEvent);
                     assertEquals(correctUserDtoTelegram.getId(), owner.getId());
                 });
+    }
+
+    @Test
+    public void testHandleCommentLikedNotificationEventIntegration() {
+        CommentLikedNotificationEvent commentLikedEvent = CommentLikedNotificationEvent.builder()
+                .commentId(202L)
+                .owner(correctUserDtoEmail)
+                .commentId(10L)
+                .build();
+
+        commentLikedTestKafkaTemplate.send(commentLikedTopic, commentLikedEvent);
+
+        Awaitility.await()
+                .atMost(10, TimeUnit.SECONDS)
+                .pollInterval(Duration.ofMillis(100))
+                .untilAsserted(() -> verify(commentLikedNotificationEventHandler, times(1))
+                        .saveNotifications(argThat(events ->
+                                events.stream().anyMatch(event ->
+                                        event.getCommentId().equals(202L) &&
+                                                event.getCommentId().equals(10L) &&
+                                                event.getOwner().equals(correctUserDtoPhone)
+                                )
+                        ))
+                );
+    }
+
+    @Test
+    public void testHandlePostLikedNotificationEventIntegration() {
+        PostLikedNotificationEvent postLikedEvent = PostLikedNotificationEvent.builder()
+                .postId(20L)
+                .owner(correctUserDtoEmail)
+                .likerUsername("some_user")
+                .shortContent("test comment")
+                .build();
+
+        postLikedTestKafkaTemplate.send(postLikedTopic, postLikedEvent);
+
+        Awaitility.await()
+                .atMost(10, TimeUnit.SECONDS)
+                .pollInterval(Duration.ofMillis(100))
+                .untilAsserted(() -> verify(postLikedNotificationEventHandler, times(1))
+                        .saveNotifications(argThat(events ->
+                                events.stream().anyMatch(event ->
+                                        event.getPostId().equals(20L) &&
+                                                event.getOwner().equals(correctUserDtoTelegram)
+                                )
+                        ))
+                );
     }
 }

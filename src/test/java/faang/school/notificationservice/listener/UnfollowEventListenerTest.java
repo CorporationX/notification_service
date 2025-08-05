@@ -17,9 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,8 +31,6 @@ public class UnfollowEventListenerTest {
 
     @Test
     public void testInvalidEventDontSendNotification() {
-        ArgumentCaptor<UnfollowEvent> eventNotificationCaptor = ArgumentCaptor.forClass(UnfollowEvent.class);
-
         UnfollowEvent unfollowEvent = UnfollowEvent.builder()
                 .owner(UserData.CORRECT_USER_DTO)
                 .follower(null)
@@ -42,33 +38,25 @@ public class UnfollowEventListenerTest {
 
         unfollowEventListener.handle(unfollowEvent);
 
-        verify(unfollowEventListener, times(1)).sendNotification(eventNotificationCaptor.capture());
-        verify(unfollowEventListener, never()).sendMessage(any(UserDto.class), anyString());
-
-        assertEquals(UserData.CORRECT_USER_DTO.getId(), eventNotificationCaptor.getValue().getOwner().getId());
+        verify(unfollowEventListener, never()).sendNotification(any(UnfollowEvent.class)); // sendNotification не должен вызываться
     }
+
 
     @Test
     public void testValidEventSendNotification() {
-        ArgumentCaptor<UnfollowEvent> eventNotificationCaptor = ArgumentCaptor.forClass(UnfollowEvent.class);
-        ArgumentCaptor<UserDto> userCaptor = ArgumentCaptor.forClass(UserDto.class);
-        ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<UnfollowEvent> eventCaptor = ArgumentCaptor.forClass(UnfollowEvent.class);
 
         UnfollowEvent unfollowEvent = UnfollowEvent.builder()
                 .owner(UserData.CORRECT_USER_DTO)
                 .follower(UserData.CORRECT_USER_DTO)
                 .build();
 
-        doNothing().when(unfollowEventListener).sendMessage(any(UserDto.class), any());
-        doReturn("Mocked message").when(unfollowEventListener).getMessage(any(UnfollowEvent.class));
+        doNothing().when(unfollowEventListener).sendNotification(any(UnfollowEvent.class));
 
         unfollowEventListener.handle(unfollowEvent);
 
-        verify(unfollowEventListener, times(1)).sendNotification(eventNotificationCaptor.capture());
-        verify(unfollowEventListener, times(1)).sendMessage(userCaptor.capture(), messageCaptor.capture());
-
-        assertEquals(userCaptor.getValue().getId(), eventNotificationCaptor.getValue().getOwner().getId());
-        assertEquals("Mocked message", messageCaptor.getValue());
+        verify(unfollowEventListener, times(1)).sendNotification(eventCaptor.capture());
+        assertEquals(UserData.CORRECT_USER_DTO.getId(), eventCaptor.getValue().getOwner().getId());
     }
 
     @ParameterizedTest

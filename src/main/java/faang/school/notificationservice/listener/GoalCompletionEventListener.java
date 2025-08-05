@@ -3,24 +3,23 @@ package faang.school.notificationservice.listener;
 
 import faang.school.notificationservice.event.kafka.GoalCompletionNotificationEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.notification.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationSenderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Objects;
 
 
 @Slf4j
 @Component
-public class GoalCompletionEventListener extends AbstractEventListener<GoalCompletionNotificationEvent> {
+public class GoalCompletionEventListener extends DirectNotificationEventListener<GoalCompletionNotificationEvent> {
 
     public GoalCompletionEventListener(
-            List<NotificationService> notificationList,
+            NotificationSenderService notificationSender,
             MessageBuilder<GoalCompletionNotificationEvent> messageBuilder
     ) {
-        super(notificationList, messageBuilder);
+        super(notificationSender, messageBuilder);
     }
 
     @KafkaListener(

@@ -1,8 +1,13 @@
 spring:
   kafka:
     bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       group-id: user-service-group
+      max-poll-records: 10000
+      fetch-max-wait: 500
     topics:
       goal-completed-topic:
         name: goal-completed
@@ -19,6 +24,11 @@ spring:
         name: event-start
       comment-created-topic:
         name: comment-created-notification
+      post-liked-topic:
+        name: post-liked-event
+      comment-liked-topic:
+        name: comment-liked-event
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
@@ -90,8 +100,22 @@ telegram:
     link-template: "https://t.me/${telegram.bot.username}?start=%s"
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
+post-service:
+  host: localhost
+  port: 8081
+
+notification-scheduler:
+  cron: "0 * * * * *"
+  notification-delay-hours: 1
+  last-sent-threshold-hours: 24
+  total-instances: 1
+  current-instance: 1
+
+notification-cleanup:
+  cron: "0 0 2 * * *"
+  cleanup-interval: 14

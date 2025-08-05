@@ -9,7 +9,7 @@ import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
-public class EventStartEventMassageBuilder implements MessageBuilder <EventStartNotificationEvent> {
+public class EventStartEventMassageBuilder implements MessageBuilder<EventStartNotificationEvent> {
 
     private final MessageSource messageSource;
 

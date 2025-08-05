@@ -1,9 +1,11 @@
 package faang.school.notificationservice.config.kafka;
 
 import faang.school.notificationservice.event.kafka.CommentCreationNotificationEvent;
+import faang.school.notificationservice.event.kafka.CommentLikedNotificationEvent;
 import faang.school.notificationservice.event.kafka.EventStartNotificationEvent;
 import faang.school.notificationservice.event.kafka.GoalCompletionNotificationEvent;
 import faang.school.notificationservice.event.kafka.NewFollowerEvent;
+import faang.school.notificationservice.event.kafka.PostLikedNotificationEvent;
 import faang.school.notificationservice.event.kafka.UnfollowEvent;
 import faang.school.notificationservice.event.kafka.ViewProfileEvent;
 import lombok.RequiredArgsConstructor;
@@ -77,11 +79,32 @@ public class KafkaConsumerConfig {
     ) {
         return concurrentKafkaListenerJsonFactory(EventStartNotificationEvent.class, errorHandler);
     }
+
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, CommentCreationNotificationEvent> kafkaCommentCreationEventListener(
             DefaultErrorHandler errorHandler
-    )  {
+    ) {
         return concurrentKafkaListenerJsonFactory(CommentCreationNotificationEvent.class, errorHandler);
+    }
+
+    @Bean
+    ConcurrentKafkaListenerContainerFactory<String, CommentLikedNotificationEvent> kafkaCommentLikedEventListener(
+            DefaultErrorHandler errorHandler
+    ) {
+        ConcurrentKafkaListenerContainerFactory<String, CommentLikedNotificationEvent> factory =
+                concurrentKafkaListenerJsonFactory(CommentLikedNotificationEvent.class, errorHandler);
+        factory.setBatchListener(true);
+        return factory;
+    }
+
+    @Bean
+    ConcurrentKafkaListenerContainerFactory<String, PostLikedNotificationEvent> kafkaPostLikedEventListener(
+            DefaultErrorHandler errorHandler
+    ) {
+        ConcurrentKafkaListenerContainerFactory<String, PostLikedNotificationEvent> factory =
+                concurrentKafkaListenerJsonFactory(PostLikedNotificationEvent.class, errorHandler);
+        factory.setBatchListener(true);
+        return factory;
     }
 
     private <T> ConcurrentKafkaListenerContainerFactory<String, T> concurrentKafkaListenerJsonFactory(

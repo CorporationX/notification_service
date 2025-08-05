@@ -1,21 +1,19 @@
 package faang.school.notificationservice.listener.subscription;
 
 import faang.school.notificationservice.event.kafka.UnfollowEvent;
-import faang.school.notificationservice.listener.AbstractEventListener;
+import faang.school.notificationservice.listener.DirectNotificationEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.notification.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationSenderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Slf4j
 @Component
-public class UnfollowEventListener extends AbstractEventListener<UnfollowEvent> {
+public class UnfollowEventListener extends DirectNotificationEventListener<UnfollowEvent> {
 
     public UnfollowEventListener(
-            List<NotificationService> notificationServices,
+            NotificationSenderService notificationServices,
             MessageBuilder<UnfollowEvent> messageBuilder
     ) {
         super(notificationServices, messageBuilder);
@@ -27,6 +25,10 @@ public class UnfollowEventListener extends AbstractEventListener<UnfollowEvent> 
             containerFactory = "kafkaUnfollowEventListener"
     )
     public void handle(UnfollowEvent event) {
+        if (!isEventValid(event)) {
+            return;
+        }
+
         sendNotification(event);
     }
 

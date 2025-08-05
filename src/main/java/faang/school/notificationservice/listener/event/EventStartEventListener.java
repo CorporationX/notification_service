@@ -2,9 +2,9 @@ package faang.school.notificationservice.listener.event;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.kafka.EventStartNotificationEvent;
-import faang.school.notificationservice.listener.AbstractEventListener;
+import faang.school.notificationservice.listener.DirectNotificationEventListener;
 import faang.school.notificationservice.messaging.MessageBuilder;
-import faang.school.notificationservice.service.notification.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationSenderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -15,13 +15,13 @@ import java.util.Objects;
 
 @Slf4j
 @Component
-public class EventStartEventListener extends AbstractEventListener<EventStartNotificationEvent> {
+public class EventStartEventListener extends DirectNotificationEventListener<EventStartNotificationEvent> {
 
     public EventStartEventListener(
-            List<NotificationService> notificationServices,
+            NotificationSenderService notificationSender,
             MessageBuilder<EventStartNotificationEvent> messageBuilder) {
 
-        super(notificationServices, messageBuilder);
+        super(notificationSender, messageBuilder);
     }
 
     @KafkaListener(
@@ -36,7 +36,7 @@ public class EventStartEventListener extends AbstractEventListener<EventStartNot
     public void sendNotification(EventStartNotificationEvent event) {
         if (isEventValid(event)) {
             List<UserDto> users = splitEvent(event);
-            users.forEach(userDto -> sendMessage(userDto, getMessage(event)));
+            users.forEach(userDto -> notificationSender.send(userDto, getMessage(event)));
         } else {
             log.error("Event validation failed. Event: {}", event);
         }

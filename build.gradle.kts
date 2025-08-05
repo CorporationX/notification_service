@@ -25,7 +25,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail:3.0.6")
     implementation("org.telegram:telegrambots-spring-boot-starter:6.9.7.1")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
-    implementation ("org.springframework.kafka:spring-kafka")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     /**
@@ -34,6 +33,7 @@ dependencies {
     implementation("org.liquibase:liquibase-core")
     implementation("redis.clients:jedis:4.3.2")
     runtimeOnly("org.postgresql:postgresql")
+    implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.10.3")
 
     /**
      * Utils & Logging
@@ -51,6 +51,7 @@ dependencies {
      *Kafka
      */
     implementation("org.springframework.kafka:spring-kafka")
+
     /**
      * Test containers
      */
@@ -71,12 +72,6 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.kafka:spring-kafka-test:3.3.6")
-
-
-    /**
-     * Message Broker
-     */
-    implementation("org.springframework.kafka:spring-kafka:3.3.6")
 }
 
 tasks.withType<Test> {
