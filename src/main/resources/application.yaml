@@ -33,10 +33,18 @@ logging:
     root: info
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
-vonage: #https://dashboard.nexmo.com/getting-started/sms
-  api:
-    key: whatever
-    secret: whatever
+sms:
+  vonage: #https://dashboard.nexmo.com/getting-started/sms
+    api:
+      key: whatever
+      secret: whatever
+      sender: CorporationX
+
+  prostorsms:
+    api:
+      baseUrl: http://api.prostor-sms.ru/messages/v2
+      login: whatever
+      password: whatever
 
 project-service:
     host: localhost
