@@ -1,0 +1,11 @@
+sms:
+  vonage:
+    api:
+      key: dummy-key
+      secret: dummy-secret
+      sender: CorporationX-Test
+
+  prostorsms:
+    api:
+      login: dummy-login
+      password: dummy-password
