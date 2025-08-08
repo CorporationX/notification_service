@@ -38,6 +38,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
+telegram:
+  bot:
+    token: 8039668541:AAGr3Str6dq18fvkgz-s0CqvxDP-9bhUajc
+    username: corpx_tgservice_bot
+
 project-service:
     host: localhost
     port: 8082
