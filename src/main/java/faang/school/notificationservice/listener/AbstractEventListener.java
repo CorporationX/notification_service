@@ -7,12 +7,10 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Locale;
 
-@Component
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
     private final ObjectMapper objectMapper;
