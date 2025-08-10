@@ -13,10 +13,10 @@ import java.util.Locale;
 
 @RequiredArgsConstructor
 public abstract class AbstractEventListener<T> {
-    private final ObjectMapper objectMapper;
-    private final UserServiceClient userServiceClient;
-    private final List<NotificationService> notificationServices;
-    private final List<MessageBuilder<T>> messageBuilders;
+    protected final ObjectMapper objectMapper;
+    protected final UserServiceClient userServiceClient;
+    protected final List<NotificationService> notificationServices;
+    protected final List<MessageBuilder<T>> messageBuilders;
 
     protected String getMessage(T event, Locale locale) {
         return messageBuilders.stream()
