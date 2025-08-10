@@ -6,6 +6,7 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        event: event_channel
 
   mail:
     host: smtp.gmail.com
@@ -47,5 +48,4 @@ user-service:
 
 telegram:
   bot-username: "CorporationXNotificationBot"
-  bot-djawndwa: "dmioadnwai"
   bot-token: "someToken"
