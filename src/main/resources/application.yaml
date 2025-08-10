@@ -47,4 +47,5 @@ user-service:
 
 telegram:
   bot-username: "CorporationXNotificationBot"
+  bot-djawndwa: "dmioadnwai"
   bot-token: "someToken"
