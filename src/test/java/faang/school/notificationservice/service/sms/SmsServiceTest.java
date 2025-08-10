@@ -2,7 +2,8 @@ package faang.school.notificationservice.service.sms;
 
 import faang.school.notificationservice.config.properties.VonageProperties;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.exception.SmsValidationException;
+import faang.school.notificationservice.exception.InvalidMessageException;
+import faang.school.notificationservice.validation.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import static faang.school.notificationservice.dto.UserDto.PreferredContact.PHON
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class SmsServiceTest {
@@ -22,17 +24,20 @@ class SmsServiceTest {
     @Mock
     private SmsGateway smsGateway;
 
-    @InjectMocks
-    private SmsService smsService;
+    @Mock
+    private UserValidator userValidator;
 
     private final String sender = "CorpX";
     private final String recipientPhoneNumber = "+48123456789";
     private final String message = "Your verification code is 123456";
 
+    @InjectMocks
+    private SmsService smsService;
+
     @BeforeEach
     void setUp() {
         VonageProperties properties = new VonageProperties("BANK", "fake-secret", sender);
-        smsService = new SmsService(smsGateway, properties);
+        smsService = new SmsService(smsGateway, properties, userValidator);
     }
 
     @Test
@@ -43,40 +48,8 @@ class SmsServiceTest {
 
         smsService.send(user, message);
 
+        verify(userValidator).validateForSms(user);
         verify(smsGateway).send(sender, recipientPhoneNumber, message);
-    }
-
-    @Test
-    @DisplayName("Should throw exception when user is null")
-    void shouldThrowWhenUserIsNull() {
-        SmsValidationException exception = assertThrows(SmsValidationException.class,
-                () -> smsService.send(null, message));
-
-        assertEquals("User must not be null", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Should throw exception when phone number is null")
-    void shouldThrowWhenPhoneIsNull() {
-        UserDto user = new UserDto();
-        user.setPhone(null);
-
-        SmsValidationException exception = assertThrows(SmsValidationException.class,
-                () -> smsService.send(user, message));
-
-        assertEquals("Phone number is missing", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Should throw exception when phone number is blank")
-    void shouldThrowWhenPhoneIsBlank() {
-        UserDto user = new UserDto();
-        user.setPhone("   ");
-
-        SmsValidationException exception = assertThrows(SmsValidationException.class,
-                () -> smsService.send(user, message));
-
-        assertEquals("Phone number is missing", exception.getMessage());
     }
 
     @Test
@@ -85,10 +58,11 @@ class SmsServiceTest {
         UserDto user = new UserDto();
         user.setPhone(recipientPhoneNumber);
 
-        SmsValidationException exception = assertThrows(SmsValidationException.class,
+        assertThrows(InvalidMessageException.class,
                 () -> smsService.send(user, null));
 
-        assertEquals("Message is missing", exception.getMessage());
+        verify(userValidator).validateForSms(user);
+        verifyNoInteractions(smsGateway);
     }
 
     @Test
@@ -97,10 +71,11 @@ class SmsServiceTest {
         UserDto user = new UserDto();
         user.setPhone(recipientPhoneNumber);
 
-        SmsValidationException exception = assertThrows(SmsValidationException.class,
+        assertThrows(InvalidMessageException.class,
                 () -> smsService.send(user, "  "));
 
-        assertEquals("Message is missing", exception.getMessage());
+        verify(userValidator).validateForSms(user);
+        verifyNoInteractions(smsGateway);
     }
 
     @Test

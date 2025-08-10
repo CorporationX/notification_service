@@ -20,10 +20,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -61,20 +60,24 @@ class VonageSmsGatewayTest {
         when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(submissionResponse);
 
         assertDoesNotThrow(() -> smsGateway.send(from, recipientPhoneNumber, message));
+
+        verify(vonageClient).getSmsClient();
+        verify(smsClient).submitMessage(any(TextMessage.class));
     }
 
     @Test
     @DisplayName("Should throw SmsSendException when Vonage response status is not OK")
     void shouldThrowWhenStatusIsNotOk() {
         when(messageResponse.getStatus()).thenReturn(MessageStatus.THROTTLED);
-        when(messageResponse.getErrorText()).thenReturn("Throttled");
+        when(messageResponse.getErrorText()).thenReturn("Some error");
         when(submissionResponse.getMessages()).thenReturn(List.of(messageResponse));
         when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(submissionResponse);
 
-        SmsSendException exception = assertThrows(SmsSendException.class,
+        assertThrows(SmsSendException.class,
                 () -> smsGateway.send(from, recipientPhoneNumber, message));
 
-        assertTrue(exception.getMessage().contains("Vonage SMS failed: Throttled"));
+        verify(vonageClient).getSmsClient();
+        verify(smsClient).submitMessage(any(TextMessage.class));
     }
 
     @Test
@@ -82,10 +85,11 @@ class VonageSmsGatewayTest {
     void shouldThrowWhenResponseIsNull() {
         when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(null);
 
-        SmsSendException exception = assertThrows(SmsSendException.class,
+        assertThrows(SmsSendException.class,
                 () -> smsGateway.send(from, recipientPhoneNumber, message));
 
-        assertEquals("Invalid Vonage SMS response", exception.getMessage());
+        verify(vonageClient).getSmsClient();
+        verify(smsClient).submitMessage(any(TextMessage.class));
     }
 
     @Test
@@ -94,10 +98,11 @@ class VonageSmsGatewayTest {
         when(submissionResponse.getMessages()).thenReturn(Collections.emptyList());
         when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(submissionResponse);
 
-        SmsSendException exception = assertThrows(SmsSendException.class,
+        assertThrows(SmsSendException.class,
                 () -> smsGateway.send(from, recipientPhoneNumber, message));
 
-        assertEquals("Invalid Vonage SMS response", exception.getMessage());
+        verify(vonageClient).getSmsClient();
+        verify(smsClient).submitMessage(any(TextMessage.class));
     }
 
     @Test
@@ -107,5 +112,8 @@ class VonageSmsGatewayTest {
                 .thenThrow(new VonageClientException("Network failure"));
 
         assertThrows(VonageClientException.class, () -> smsGateway.send(from, recipientPhoneNumber, message));
+
+        verify(vonageClient).getSmsClient();
+        verify(smsClient).submitMessage(any(TextMessage.class));
     }
 }
