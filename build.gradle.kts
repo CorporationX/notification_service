@@ -26,6 +26,12 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     /**
+     * Broker
+     */
+    implementation("org.springframework.kafka:spring-kafka")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
+
+    /**
      * Database
      */
     implementation("redis.clients:jedis:4.3.2")

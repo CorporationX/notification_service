@@ -6,6 +6,9 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+  kafka:
+    bootstrap-servers: localhost:9092
+    group-id: notification_service
 
   mail:
     host: smtp.gmail.com
