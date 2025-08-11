@@ -188,7 +188,7 @@ public class EmailService implements NotificationService {
         return args -> {
             UserDto user = new UserDto();
             user.setId(1L);
-            user.setUsername("User");
+            user.setUsername("TestUser");
             user.setEmail("dqkvii@gmail.com");
             user.setPreference(UserDto.PreferredContact.EMAIL);
 
