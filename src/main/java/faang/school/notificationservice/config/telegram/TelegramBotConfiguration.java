@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.telegram;
 
+import faang.school.notificationservice.exception.TelegramBotRegistrationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,7 @@ public class TelegramBotConfiguration {
             return botsApi;
         } catch (TelegramApiException e) {
             log.error("Failed to register telegram bot", e);
-            throw new RuntimeException("Failed to register telegram bot", e);
+            throw new TelegramBotRegistrationException("Failed to register telegram bot", e);
         }
     }
 }
