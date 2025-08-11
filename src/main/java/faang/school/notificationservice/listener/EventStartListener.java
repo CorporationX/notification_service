@@ -2,7 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.EventDto;
+import faang.school.notificationservice.dto.EventStartEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.springframework.data.redis.connection.Message;
@@ -13,19 +13,19 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class EventStartListener extends AbstractEventListener<EventDto> implements MessageListener {
+public class EventStartListener extends AbstractEventListener<EventStartEvent> implements MessageListener {
 
     public EventStartListener(ObjectMapper objectMapper,
                               UserServiceClient userServiceClient,
                               List<NotificationService> notificationServices,
-                              List<MessageBuilder<EventDto>> messageBuilders) {
+                              List<MessageBuilder<EventStartEvent>> messageBuilders) {
         super(objectMapper, userServiceClient, notificationServices, messageBuilders);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            EventDto event = objectMapper.readValue(message.getBody(), EventDto.class);
+            EventStartEvent event = objectMapper.readValue(message.getBody(), EventStartEvent.class);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
