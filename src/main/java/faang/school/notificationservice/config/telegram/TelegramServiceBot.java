@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.telegram;
 
+import faang.school.notificationservice.exception.TelegramMessageSendException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -20,10 +21,14 @@ public class TelegramServiceBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String messageText = update.getMessage().getText();
-            long chatId = update.getMessage().getChatId();
-            log.info("Received message: {} from chat: {}", messageText, chatId);
+        try {
+            if (update.hasMessage() && update.getMessage().hasText()) {
+                String messageText = update.getMessage().getText();
+                long chatId = update.getMessage().getChatId();
+                log.info("Received message: {} from chat: {}", messageText, chatId);
+            }
+        } catch (Exception e) {
+            log.error("Error processing update: {}", update, e);
         }
     }
 
@@ -43,7 +48,7 @@ public class TelegramServiceBot extends TelegramLongPollingBot {
             log.info("Message sent to chat: {}", chatId);
         } catch (TelegramApiException e) {
             log.error("Failed to send message to chat: {}", chatId, e);
-            throw new RuntimeException("Failed to send telegram message", e);
+            throw new TelegramMessageSendException("Failed to send telegram message", e);
         }
     }
 }
