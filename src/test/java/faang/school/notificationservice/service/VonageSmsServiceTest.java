@@ -18,13 +18,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,6 +36,10 @@ class VonageSmsServiceTest {
     private VonageClient vonageClient;
     @Mock
     private SmsClient smsClient;
+    @Mock
+    private SmsSubmissionResponseMessage responseMessage;
+    @Mock
+    private SmsSubmissionResponse response;
     @Captor
     private ArgumentCaptor<TextMessage> textMessageCaptor;
 
@@ -54,7 +56,11 @@ class VonageSmsServiceTest {
     @DisplayName("Успешная отправка SMS по номеру")
     void positive_shouldSendSms() {
         UserDto user = getPreparedUserDto();
-        prepareBehavior(MessageStatus.OK);
+        when(vonageClient.getSmsClient()).thenReturn(smsClient);
+        when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(response);
+        when(responseMessage.getStatus()).thenReturn(MessageStatus.OK);
+        when(response.getMessageCount()).thenReturn(1);
+        when(response.getMessages()).thenReturn(List.of(responseMessage));
 
         vonageSmsService.send(user, MESSAGE);
 
@@ -80,7 +86,6 @@ class VonageSmsServiceTest {
     @DisplayName("Ошибка отправки SMS по номеру - нет message в response")
     void negative_whenMessagesNotExists_throwsError() {
         UserDto user = getPreparedUserDto();
-        SmsSubmissionResponse response = mock(SmsSubmissionResponse.class);
         when(vonageClient.getSmsClient()).thenReturn(smsClient);
         when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(response);
         when(response.getMessageCount()).thenReturn(0);
@@ -94,7 +99,12 @@ class VonageSmsServiceTest {
     @DisplayName("Ошибка отправки SMS по номеру - статус не ОК")
     void negative_whenReturnsStatusNotOk_logsError() {
         UserDto user = getPreparedUserDto();
-        prepareBehavior(MessageStatus.INVALID_CREDENTIALS);
+        when(vonageClient.getSmsClient()).thenReturn(smsClient);
+        when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(response);
+        when(responseMessage.getStatus()).thenReturn(MessageStatus.INVALID_CREDENTIALS);
+        when(response.getMessageCount()).thenReturn(1);
+        when(response.getMessages()).thenReturn(List.of(responseMessage));
+
 
         assertThrows(MessageSendException.class,
                      () ->  vonageSmsService.send(user, MESSAGE));
@@ -107,16 +117,5 @@ class VonageSmsServiceTest {
         return UserDto.builder()
                 .phone(PHONE)
                 .build();
-    }
-
-    private void prepareBehavior(MessageStatus messageStatus) {
-        SmsSubmissionResponseMessage responseMessage = mock(SmsSubmissionResponseMessage.class);
-        SmsSubmissionResponse response = mock(SmsSubmissionResponse.class);
-
-        when(vonageClient.getSmsClient()).thenReturn(smsClient);
-        when(smsClient.submitMessage(any(TextMessage.class))).thenReturn(response);
-        when(responseMessage.getStatus()).thenReturn(messageStatus);
-        when(response.getMessageCount()).thenReturn(1);
-        when(response.getMessages()).thenReturn(List.of(responseMessage));
     }
 }
