@@ -4,7 +4,7 @@ import faang.school.notificationservice.config.properties.VonageProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.InvalidMessageException;
 import faang.school.notificationservice.service.NotificationService;
-import faang.school.notificationservice.validation.UserValidator;
+import faang.school.notificationservice.validation.UserSmsValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,15 +18,16 @@ public class SmsService implements NotificationService {
 
     private final SmsGateway gateway;
     private final VonageProperties props;
-    private final UserValidator userValidator;
+    private final UserSmsValidator userSmsValidator;
 
     @Override
     public void send(UserDto user, String message) {
-        userValidator.validateForSms(user);
+        userSmsValidator.validateForSms(user);
         validateMessage(message);
 
         String recipientPhoneNumber = user.getPhone();
-        log.info("Triggering SMS send for user: {}", recipientPhoneNumber);
+        log.info("Triggering SMS send for user {} with phone {}", user.getId(), recipientPhoneNumber);
+
         gateway.send(props.from(), recipientPhoneNumber, message);
     }
 

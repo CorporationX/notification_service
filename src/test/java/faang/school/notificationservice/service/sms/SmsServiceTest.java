@@ -3,7 +3,7 @@ package faang.school.notificationservice.service.sms;
 import faang.school.notificationservice.config.properties.VonageProperties;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.InvalidMessageException;
-import faang.school.notificationservice.validation.UserValidator;
+import faang.school.notificationservice.validation.UserSmsValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,11 +25,10 @@ class SmsServiceTest {
     private SmsGateway smsGateway;
 
     @Mock
-    private UserValidator userValidator;
+    private UserSmsValidator userSmsValidator;
 
     private final String sender = "CorpX";
     private final String recipientPhoneNumber = "+48123456789";
-    private final String message = "Your verification code is 123456";
 
     @InjectMocks
     private SmsService smsService;
@@ -37,7 +36,7 @@ class SmsServiceTest {
     @BeforeEach
     void setUp() {
         VonageProperties properties = new VonageProperties("BANK", "fake-secret", sender);
-        smsService = new SmsService(smsGateway, properties, userValidator);
+        smsService = new SmsService(smsGateway, properties, userSmsValidator);
     }
 
     @Test
@@ -46,9 +45,10 @@ class SmsServiceTest {
         UserDto user = new UserDto();
         user.setPhone(recipientPhoneNumber);
 
+        String message = "Your verification code is 123456";
         smsService.send(user, message);
 
-        verify(userValidator).validateForSms(user);
+        verify(userSmsValidator).validateForSms(user);
         verify(smsGateway).send(sender, recipientPhoneNumber, message);
     }
 
@@ -61,7 +61,7 @@ class SmsServiceTest {
         assertThrows(InvalidMessageException.class,
                 () -> smsService.send(user, null));
 
-        verify(userValidator).validateForSms(user);
+        verify(userSmsValidator).validateForSms(user);
         verifyNoInteractions(smsGateway);
     }
 
@@ -74,7 +74,7 @@ class SmsServiceTest {
         assertThrows(InvalidMessageException.class,
                 () -> smsService.send(user, "  "));
 
-        verify(userValidator).validateForSms(user);
+        verify(userSmsValidator).validateForSms(user);
         verifyNoInteractions(smsGateway);
     }
 

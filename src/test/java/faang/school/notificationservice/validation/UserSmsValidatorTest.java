@@ -9,9 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class UserValidatorTest {
+public class UserSmsValidatorTest {
 
-    private final UserValidator validator = new UserValidator();
+    private final UserSmsValidator validator = new UserSmsValidator();
 
     @Test
     @DisplayName("Should throw InvalidUserException when user is null")
@@ -53,5 +53,17 @@ public class UserValidatorTest {
         user.setPhone("+48123456789");
 
         assertDoesNotThrow(() -> validator.validateForSms(user));
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidUserException when phone format is invalid")
+    void shouldThrowWhenPhoneFormatIsInvalid() {
+        UserDto user = new UserDto();
+        user.setPhone("123abc");
+
+        InvalidUserException exception = assertThrows(InvalidUserException.class,
+                () -> validator.validateForSms(user));
+
+        assertEquals("Invalid phone number format: 123abc", exception.getMessage());
     }
 }
