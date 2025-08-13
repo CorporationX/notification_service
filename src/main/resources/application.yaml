@@ -9,8 +9,16 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
+    backoff:
+      init-interval: 1000
+      max-retries: 2
+      max-interval: 5000
+      multiplier: 2
     consumer:
-        group-id: notification-group
+      group-id: notification-group
+      auto-offset-reset: earliest
+    topic:
+      commentNew: comment.new
 
   mail:
     host: smtp.gmail.com
@@ -61,4 +69,4 @@ project-service:
     port: 8082
 user-service:
     host: localhost
-    port: 8888
+    port: 8080
