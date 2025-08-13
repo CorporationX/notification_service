@@ -36,7 +36,7 @@ dependencies {
     /**
      * Kafka
      */
-    implementation("org.springframework.kafka:spring-kafka:3.0.10")
+    implementation("org.springframework.kafka:spring-kafka")
 
     /**
      * Utils & Logging
@@ -64,7 +64,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.kafka:spring-kafka-test:3.0.10")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 tasks.withType<Test> {

@@ -9,3 +9,7 @@ sms:
     api:
       login: dummy-login
       password: dummy-password
+spring:
+  kafka:
+    topic:
+      commentNew: comment.new
