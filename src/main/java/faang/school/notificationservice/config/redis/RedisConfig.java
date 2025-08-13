@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.dto.EventStartEvent;
 import faang.school.notificationservice.listener.EventStartListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -23,16 +26,16 @@ public class RedisConfig {
     private String eventTopic;
 
     @Bean
-    public MessageListenerAdapter eventStartListener(EventStartListener eventStartListener) {
+    public MessageListenerAdapter eventStartListenerAdapter(EventStartListener eventStartListener) {
         return new MessageListenerAdapter(eventStartListener);
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListener) {
+    public RedisMessageListenerContainer redisContainer(MessageListenerAdapter eventStartListenerAdapter) {
         RedisMessageListenerContainer container
                 = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(eventStartListener, topic());
+        container.addMessageListener(eventStartListenerAdapter, topic());
         return container;
     }
 
@@ -41,7 +44,7 @@ public class RedisConfig {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return template;
     }
 
