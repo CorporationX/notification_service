@@ -56,13 +56,7 @@ public class EmailService implements NotificationService {
 
     public <T> void sendEvent(UserDto user, T event, Locale locale) {
         validateUser(user);
-
         MessageBuilder<T> builder = findMessageBuilder(event.getClass());
-        if (builder == null) {
-            log.warn("No message builder found for event type: {}", event.getClass().getName());
-            throw new IllegalArgumentException("No message builder for event type: " + event.getClass().getName());
-        }
-
         String message = builder.buildMessage(event, locale != null ? locale : Locale.getDefault());
         send(user, message);
     }
@@ -102,7 +96,9 @@ public class EmailService implements NotificationService {
         return (MessageBuilder<T>) messageBuilders.stream()
                 .filter(builder -> builder.getInstance().isAssignableFrom(eventClass))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No message builder found for event type: " + eventClass.getName()
+                ));
     }
 
     private void validateUser(UserDto user) {
@@ -138,35 +134,35 @@ public class EmailService implements NotificationService {
 
     private String buildHtmlContent(UserDto user, String message) {
         return String.format("""
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <style>
-                    body { font-family: Arial, sans-serif; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: #4CAF50; color: white; padding: 20px; text-align: center; }
-                    .content { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; }
-                    .message { background: white; padding: 15px; margin: 15px 0; border-left: 4px solid #4CAF50; }
-                    .footer { text-align: center; color: #666; font-size: 12px; margin-top: 20px; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        <h2>Notification Service</h2>
-                    </div>
-                    <div class="content">
-                        <p>Hello, <strong>%s</strong>!</p>
-                        <div class="message">%s</div>
-                    </div>
-                    <div class="footer">
-                        <p>Sent at: %s</p>
-                    </div>
-                </div>
-            </body>
-            </html>
-            """,
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta charset="UTF-8">
+                            <style>
+                                body { font-family: Arial, sans-serif; color: #333; }
+                                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                                .header { background: #4CAF50; color: white; padding: 20px; text-align: center; }
+                                .content { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; }
+                                .message { background: white; padding: 15px; margin: 15px 0; border-left: 4px solid #4CAF50; }
+                                .footer { text-align: center; color: #666; font-size: 12px; margin-top: 20px; }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="container">
+                                <div class="header">
+                                    <h2>Notification Service</h2>
+                                </div>
+                                <div class="content">
+                                    <p>Hello, <strong>%s</strong>!</p>
+                                    <div class="message">%s</div>
+                                </div>
+                                <div class="footer">
+                                    <p>Sent at: %s</p>
+                                </div>
+                            </div>
+                        </body>
+                        </html>
+                        """,
                 user.getUsername() != null ? user.getUsername() : "User",
                 escapeHtml(message),
                 LocalDateTime.now().format(DATE_FORMATTER)

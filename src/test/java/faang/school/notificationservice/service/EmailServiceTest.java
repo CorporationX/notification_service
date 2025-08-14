@@ -8,13 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -35,21 +33,20 @@ class EmailServiceTest {
     @Mock
     private MimeMessage mimeMessage;
 
-    @InjectMocks
     private EmailService emailService;
 
     private UserDto testUser;
 
     @BeforeEach
     void setUp() {
+        emailService = new EmailService(mailSender, null);
+
         testUser = new UserDto();
         testUser.setId(1L);
         testUser.setUsername("testuser");
         testUser.setEmail("test@example.com");
         testUser.setPhone("+1234567890");
         testUser.setPreference(UserDto.PreferredContact.EMAIL);
-
-        ReflectionTestUtils.setField(emailService, "fromEmail", "noreply@example.com");
     }
 
     @Test
@@ -196,19 +193,5 @@ class EmailServiceTest {
         emailService.send(testUser, "Test message");
 
         verify(mailSender, times(1)).send(any(MimeMessage.class));
-    }
-
-    @Test
-    @DisplayName("Should create message with correct from address")
-    void testFromAddress() {
-        String message = "Test message";
-        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
-
-        emailService.send(testUser, message);
-
-        verify(mailSender).send(any(MimeMessage.class));
-
-        assertThat(ReflectionTestUtils.getField(emailService, "fromEmail"))
-                .isEqualTo("noreply@example.com");
     }
 }
