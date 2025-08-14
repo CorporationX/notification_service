@@ -9,6 +9,8 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     group-id: notification_service
+    topic:
+      comment: post.comment.created
 
   mail:
     host: smtp.gmail.com
@@ -52,3 +54,8 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+    retry:
+      max-attempts: 3
+      delay: 1000
+      multiplier: 2.0
+      max-delay: 5000
