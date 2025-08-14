@@ -29,8 +29,6 @@ public class RedisMessageSubscriber implements MessageListener {
                 notificationService.send(userServiceClient.getUser(participantsId),
                         messageBuilder.buildMessage(eventStartEvent, Locale.ENGLISH));
             }
-        } else {
-            // Handle unexpected type or log
         }
     }
 }
