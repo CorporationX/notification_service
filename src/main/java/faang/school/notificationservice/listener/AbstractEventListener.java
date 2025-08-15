@@ -2,7 +2,7 @@ package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
-import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserNotificationDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,15 +28,12 @@ public abstract class AbstractEventListener<T> {
     }
 
     protected void sendNotification(Long userId, String messageText) {
-        UserDto userDto = new UserDto();
-        userDto.setId(userId);
-        userDto.setPreference(UserDto.PreferredContact.TELEGRAM);
+        UserNotificationDto userDto = userServiceClient.getContactInfoById(userId);
         notificationServices.stream()
                 .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreference()))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Отсутствует notification service с типом " +
                         userDto.getPreference()))
                 .send(userDto, messageText);
-
     }
 }

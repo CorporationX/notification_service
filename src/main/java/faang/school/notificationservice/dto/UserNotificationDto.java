@@ -3,12 +3,11 @@ package faang.school.notificationservice.dto;
 import lombok.Data;
 
 @Data
-public class UserDto {
-    private long id;
-    private String username;
+public class UserNotificationDto {
+    private PreferredContact preference;
     private String email;
     private String phone;
-    private PreferredContact preference;
+    private Long chatId;
 
     public enum PreferredContact {
         EMAIL, PHONE, TELEGRAM
