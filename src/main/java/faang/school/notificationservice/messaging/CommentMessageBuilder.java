@@ -1,6 +1,8 @@
 package faang.school.notificationservice.messaging;
 
 import faang.school.notificationservice.dto.CommentEvent;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
@@ -15,7 +17,10 @@ import java.util.Locale;
  * @since 13.08.2025
  */
 @Component
+@RequiredArgsConstructor
 public class CommentMessageBuilder implements MessageBuilder<CommentEvent> {
+    private final MessageSource messageSource;
+
     @Override
     public Class<?> getInstance() {
         return CommentEvent.class;
@@ -23,8 +28,10 @@ public class CommentMessageBuilder implements MessageBuilder<CommentEvent> {
 
     @Override
     public String buildMessage(CommentEvent event, Locale locale) {
-        return "Пользователь " + event.commentAuthorId() +
-               " прокомментировал ваш пост " + event.postId() +
-               ": \"" + event.text() + "\"";
+        return messageSource.getMessage(
+                "comment.new",
+                new Object[]{event.commentAuthorId(), event.postId(), event.text()},
+                locale
+        );
     }
 }
