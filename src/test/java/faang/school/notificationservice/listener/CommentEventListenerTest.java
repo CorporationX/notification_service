@@ -1,7 +1,9 @@
 package faang.school.notificationservice.listener;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.CommentEvent;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.DeserializationException;
 import faang.school.notificationservice.exception.MessageBuilderNotFoundException;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
@@ -28,7 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CommentEventListenerTest {
+class CommentEventListenerTest {
 
     @Mock
     private MessageBuilder<CommentEvent> messageBuilder;
@@ -42,22 +44,27 @@ public class CommentEventListenerTest {
     @Mock
     private FeignUserService feignUserService;
 
+    private ObjectMapper objectMapper;
+
     @InjectMocks
     private CommentEventListener listener;
 
     @BeforeEach
     void setUp() {
+        objectMapper = new ObjectMapper();
         listener = new CommentEventListener(
                 List.of(messageBuilder),
                 serviceResolver,
-                feignUserService
+                feignUserService,
+                objectMapper
         );
     }
 
     @Test
-    @DisplayName("Should handle CommentEvent and send notification")
-    public void shouldHandleCommentEvent() {
+    @DisplayName("Should consume JSON, build message and send notification")
+    void shouldConsumeAndSendNotification() throws Exception {
         CommentEvent event = buildCommentEvent();
+        String json = objectMapper.writeValueAsString(event);
         UserDto recipient = buildUserDto();
         String builtMessage = "New comment received";
 
@@ -67,7 +74,7 @@ public class CommentEventListenerTest {
         when(serviceResolver.getServiceForPreferredContact(UserDto.PreferredContact.PHONE))
                 .thenReturn(notificationService);
 
-        listener.onCommentEvent(event);
+        listener.listenCommentEvent(json);
 
         verify(messageBuilder).getInstance();
         verify(feignUserService).getById(event.postAuthorId());
@@ -78,7 +85,7 @@ public class CommentEventListenerTest {
 
     @Test
     @DisplayName("Should return correct recipient ID from event")
-    public void shouldReturnCorrectRecipientId() {
+    void shouldReturnCorrectRecipientId() {
         CommentEvent event = buildCommentEvent();
         Long recipientId = listener.recipientId(event);
         assertEquals(event.postAuthorId(), recipientId);
@@ -86,18 +93,28 @@ public class CommentEventListenerTest {
 
     @Test
     @DisplayName("Should throw if no MessageBuilder found")
-    public void shouldThrowIfNoBuilderFound() {
+    void shouldThrowIfNoBuilderFound() throws Exception {
+        ObjectMapper om = new ObjectMapper();
         CommentEvent event = buildCommentEvent();
+        String json = om.writeValueAsString(event);
+
         CommentEventListener listenerWithoutBuilders = new CommentEventListener(
-                List.of(), serviceResolver, feignUserService
+                List.of(), serviceResolver, feignUserService, om
         );
 
-        MessageBuilderNotFoundException exception = assertThrows(
+        MessageBuilderNotFoundException ex = assertThrows(
                 MessageBuilderNotFoundException.class,
-                () -> listenerWithoutBuilders.onCommentEvent(event)
+                () -> listenerWithoutBuilders.listenCommentEvent(json)
         );
+        assertTrue(ex.getMessage().contains("No MessageBuilder"));
+    }
 
-        assertTrue(exception.getMessage().contains("No MessageBuilder"));
+    @Test
+    @DisplayName("Should throw DeserializationException on invalid JSON")
+    void shouldThrowDeserializationExceptionOnInvalidJson() {
+        String invalidJson = "{ this is not valid json }";
+
+        assertThrows(DeserializationException.class, () -> listener.listenCommentEvent(invalidJson));
     }
 
     private CommentEvent buildCommentEvent() {
