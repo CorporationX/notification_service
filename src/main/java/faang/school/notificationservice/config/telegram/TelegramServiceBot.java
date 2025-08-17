@@ -12,11 +12,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 public class TelegramServiceBot extends TelegramLongPollingBot {
 
-    private final TelegramBotProperties telegramBotProperties;
+    private final TelegramBotProperties properties;
 
-    public TelegramServiceBot(TelegramBotProperties telegramBotProperties) {
-        super(telegramBotProperties.token());
-        this.telegramBotProperties = telegramBotProperties;
+    public TelegramServiceBot(TelegramBotProperties properties) {
+        super(properties.token());
+        this.properties = properties;
     }
 
     @Override
@@ -26,6 +26,10 @@ public class TelegramServiceBot extends TelegramLongPollingBot {
                 String messageText = update.getMessage().getText();
                 long chatId = update.getMessage().getChatId();
                 log.info("Received message: {} from chat: {}", messageText, chatId);
+
+                if (messageText.equals("/start")) {
+                    sendMessage(chatId, "Welcome to Notification Bot!");
+                }
             }
         } catch (Exception e) {
             log.error("Error processing update: {}", update, e);
@@ -34,15 +38,14 @@ public class TelegramServiceBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return telegramBotProperties.username();
+        return properties.username();
     }
 
     public void sendMessage(long chatId, String text) {
-        SendMessage message = SendMessage.builder()
-                .chatId(chatId)
-                .text(text)
-                .build();
-        
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText(text);
+
         try {
             execute(message);
             log.info("Message sent to chat: {}", chatId);
