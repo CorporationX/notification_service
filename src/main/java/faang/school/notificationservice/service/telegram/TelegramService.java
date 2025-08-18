@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service.telegram;
 
+import faang.school.notificationservice.dto.PreferredContact;
 import faang.school.notificationservice.dto.UserNotificationDto;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class TelegramService implements NotificationService {
     }
 
     @Override
-    public UserNotificationDto.PreferredContact getPreferredContact() {
-        return UserNotificationDto.PreferredContact.TELEGRAM;
+    public PreferredContact getPreferredContact() {
+        return PreferredContact.TELEGRAM;
     }
 }
