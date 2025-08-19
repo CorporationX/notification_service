@@ -1,18 +1,15 @@
 package faang.school.notificationservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserDto {
-    private long id;
-    private String username;
+@AllArgsConstructor
+public class UserNotificationDto {
+    private PreferredContact preference;
     private String email;
     private String phone;
-    private PreferredContact preference;
-
-    public enum PreferredContact {
-        EMAIL, PHONE, TELEGRAM
-    }
+    private Long chatId;
 }
