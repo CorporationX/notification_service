@@ -1,6 +1,12 @@
 package faang.school.notificationservice.service;
 
+import faang.school.notificationservice.config.email.EmailProperties;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.EmailMessageCreationException;
+import faang.school.notificationservice.exception.EmailSendingException;
+import faang.school.notificationservice.exception.InvalidEmailFormatException;
+import faang.school.notificationservice.exception.InvalidUserException;
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,9 +16,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -33,13 +40,16 @@ class EmailServiceTest {
     @Mock
     private MimeMessage mimeMessage;
 
+    @Mock
+    private EmailProperties emailProperties;
+
     private EmailService emailService;
 
     private UserDto testUser;
 
     @BeforeEach
     void setUp() {
-        emailService = new EmailService(mailSender, null);
+        emailService = new EmailService(mailSender, Collections.emptyList(), emailProperties);
 
         testUser = new UserDto();
         testUser.setId(1L);
@@ -54,46 +64,43 @@ class EmailServiceTest {
     void testSendEmailSuccess() {
         String message = "Test notification message";
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        when(emailProperties.getFrom()).thenReturn("noreply@test.com");
 
-        emailService.send(testUser, message);
+        assertDoesNotThrow(() -> emailService.send(testUser, message));
 
         verify(mailSender, times(1)).send(any(MimeMessage.class));
         verify(mailSender, times(1)).createMimeMessage();
     }
 
     @Test
-    @DisplayName("Should throw exception when user is null")
+    @DisplayName("Should throw InvalidUserException when user is null")
     void testSendEmailWithNullUser() {
-        String message = "Test message";
-
-        assertThatThrownBy(() -> emailService.send(null, message))
-                .isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> emailService.send(null, "msg"))
+                .isInstanceOf(InvalidUserException.class)
                 .hasMessage("User cannot be null");
 
         verify(mailSender, never()).send(any(MimeMessage.class));
     }
 
     @Test
-    @DisplayName("Should throw exception when user email is null")
+    @DisplayName("Should throw InvalidUserException when user email is null")
     void testSendEmailWithNullEmail() {
         testUser.setEmail(null);
-        String message = "Test message";
 
-        assertThatThrownBy(() -> emailService.send(testUser, message))
-                .isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> emailService.send(testUser, "msg"))
+                .isInstanceOf(InvalidUserException.class)
                 .hasMessageContaining("Email is not set for user");
 
         verify(mailSender, never()).send(any(MimeMessage.class));
     }
 
     @Test
-    @DisplayName("Should throw exception when user email is empty")
+    @DisplayName("Should throw InvalidUserException when user email is empty")
     void testSendEmailWithEmptyEmail() {
         testUser.setEmail("");
-        String message = "Test message";
 
-        assertThatThrownBy(() -> emailService.send(testUser, message))
-                .isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> emailService.send(testUser, "msg"))
+                .isInstanceOf(InvalidUserException.class)
                 .hasMessageContaining("Email is not set for user");
 
         verify(mailSender, never()).send(any(MimeMessage.class));
@@ -101,14 +108,13 @@ class EmailServiceTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"invalid-email", "@example.com", "user@", "user@.com", "user space@test.com"})
-    @DisplayName("Should throw exception when email format is invalid")
+    @DisplayName("Should throw InvalidEmailFormatException when email format is invalid")
     void testSendEmailWithInvalidEmailFormat(String invalidEmail) {
         testUser.setEmail(invalidEmail);
-        String message = "Test message";
 
-        assertThatThrownBy(() -> emailService.send(testUser, message))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Invalid email format");
+        assertThatThrownBy(() -> emailService.send(testUser, "msg"))
+                .isInstanceOf(InvalidEmailFormatException.class)
+                .hasMessageContaining("Invalid email format for user");
 
         verify(mailSender, never()).send(any(MimeMessage.class));
     }
@@ -124,52 +130,61 @@ class EmailServiceTest {
     void testValidEmailFormats(String validEmail) {
         testUser.setEmail(validEmail);
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        when(emailProperties.getFrom()).thenReturn("noreply@test.com");
+        when(emailProperties.getFromName()).thenReturn("Test Service");
 
-        assertDoesNotThrow(() -> emailService.send(testUser, "Test"));
-    }
-
-    @Test
-    @DisplayName("Should handle mail sending exception")
-    void testSendEmailMailException() {
-        String message = "Test message";
-        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
-        doThrow(new MailSendException("SMTP connection failed"))
-                .when(mailSender).send(any(MimeMessage.class));
-
-        assertThatThrownBy(() -> emailService.send(testUser, message))
-                .isInstanceOf(MailException.class)
-                .hasMessageContaining("SMTP connection failed");
+        assertDoesNotThrow(() -> emailService.send(testUser, "Test message"));
 
         verify(mailSender, times(1)).send(any(MimeMessage.class));
     }
 
     @Test
-    @DisplayName("Should handle message creation exception")
-    void testSendEmailMessagingException() {
-        String message = "Test message";
-        when(mailSender.createMimeMessage()).thenThrow(new RuntimeException("Failed to create message"));
+    @DisplayName("Should throw EmailSendingException when MailException occurs during sending")
+    void testSendEmailMailException() {
+        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        when(emailProperties.getFrom()).thenReturn("noreply@test.com");
+        when(emailProperties.getFromName()).thenReturn("Test Service");
+        doThrow(new MailSendException("SMTP connection failed"))
+                .when(mailSender).send(any(MimeMessage.class));
 
-        assertThatThrownBy(() -> emailService.send(testUser, message))
-                .isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> emailService.send(testUser, "msg"))
+                .isInstanceOf(EmailSendingException.class)
+                .hasMessage("Failed to send email notification");
 
-        verify(mailSender, never()).send(any(MimeMessage.class));
+        verify(mailSender, times(1)).send(any(MimeMessage.class));
+    }
+
+    @Test
+    @DisplayName("Should throw EmailMessageCreationException when MessagingException occurs")
+    void testSendEmailMessagingException() throws Exception {
+        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        when(emailProperties.getFrom()).thenReturn("noreply@test.com");
+        when(emailProperties.getFromName()).thenReturn("Test Service");
+        doThrow(new MessagingException("Failed to set header"))
+                .when(mimeMessage).setHeader(any(), any());
+
+        assertThatThrownBy(() -> emailService.send(testUser, "msg"))
+                .isInstanceOf(EmailMessageCreationException.class)
+                .hasMessage("Failed to create email message");
     }
 
     @Test
     @DisplayName("Should return EMAIL as preferred contact")
     void testGetPreferredContact() {
-        UserDto.PreferredContact preferredContact = emailService.getPreferredContact();
-
-        assertThat(preferredContact).isEqualTo(UserDto.PreferredContact.EMAIL);
+        assertThat(emailService.getPreferredContact())
+                .isEqualTo(UserDto.PreferredContact.EMAIL);
     }
 
     @Test
     @DisplayName("Should handle special characters in message")
     void testSpecialCharactersInMessage() {
-        String message = "Test & message with <special> \"characters\" 'and' line\nbreaks";
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        when(emailProperties.getFrom()).thenReturn("noreply@test.com");
+        when(emailProperties.getFromName()).thenReturn("Test Service");
 
-        emailService.send(testUser, message);
+        String messageWithSpecialChars = "Test & msg <with> \"chars\" 'and'\nline breaks";
+
+        assertDoesNotThrow(() -> emailService.send(testUser, messageWithSpecialChars));
 
         verify(mailSender, times(1)).send(any(MimeMessage.class));
     }
@@ -178,8 +193,10 @@ class EmailServiceTest {
     @DisplayName("Should handle null message gracefully")
     void testNullMessage() {
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        when(emailProperties.getFrom()).thenReturn("noreply@test.com");
+        when(emailProperties.getFromName()).thenReturn("Test Service");
 
-        emailService.send(testUser, null);
+        assertDoesNotThrow(() -> emailService.send(testUser, null));
 
         verify(mailSender, times(1)).send(any(MimeMessage.class));
     }
@@ -189,8 +206,60 @@ class EmailServiceTest {
     void testUserWithoutUsername() {
         testUser.setUsername(null);
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        when(emailProperties.getFrom()).thenReturn("noreply@test.com");
+        when(emailProperties.getFromName()).thenReturn("Test Service");
 
-        emailService.send(testUser, "Test message");
+        assertDoesNotThrow(() -> emailService.send(testUser, "Test message"));
+
+        verify(mailSender, times(1)).send(any(MimeMessage.class));
+    }
+
+    @Test
+    @DisplayName("Should handle user with empty username")
+    void testUserWithEmptyUsername() {
+        testUser.setUsername("");
+        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        when(emailProperties.getFrom()).thenReturn("noreply@test.com");
+        when(emailProperties.getFromName()).thenReturn("Test Service");
+
+        assertDoesNotThrow(() -> emailService.send(testUser, "Test message"));
+
+        verify(mailSender, times(1)).send(any(MimeMessage.class));
+    }
+
+    @Test
+    @DisplayName("Should handle empty message gracefully")
+    void testEmptyMessage() {
+        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        when(emailProperties.getFrom()).thenReturn("noreply@test.com");
+        when(emailProperties.getFromName()).thenReturn("Test Service");
+
+        assertDoesNotThrow(() -> emailService.send(testUser, ""));
+
+        verify(mailSender, times(1)).send(any(MimeMessage.class));
+    }
+
+    @Test
+    @DisplayName("Should handle whitespace-only message")
+    void testWhitespaceOnlyMessage() {
+        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        when(emailProperties.getFrom()).thenReturn("noreply@test.com");
+        when(emailProperties.getFromName()).thenReturn("Test Service");
+
+        assertDoesNotThrow(() -> emailService.send(testUser, "   \n\t   "));
+
+        verify(mailSender, times(1)).send(any(MimeMessage.class));
+    }
+
+    @Test
+    @DisplayName("Should handle long message")
+    void testLongMessage() {
+        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        when(emailProperties.getFrom()).thenReturn("noreply@test.com");
+        when(emailProperties.getFromName()).thenReturn("Test Service");
+        String longMessage = "Test message. ".repeat(100);
+
+        assertDoesNotThrow(() -> emailService.send(testUser, longMessage));
 
         verify(mailSender, times(1)).send(any(MimeMessage.class));
     }

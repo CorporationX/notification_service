@@ -1,14 +1,17 @@
 package faang.school.notificationservice.service;
 
+import faang.school.notificationservice.config.email.EmailProperties;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.EmailMessageCreationException;
+import faang.school.notificationservice.exception.EmailSendingException;
+import faang.school.notificationservice.exception.InvalidEmailFormatException;
+import faang.school.notificationservice.exception.InvalidUserException;
+import faang.school.notificationservice.exception.MessageBuilderNotFoundException;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -28,9 +31,7 @@ public class EmailService implements NotificationService {
 
     private final JavaMailSender mailSender;
     private final List<MessageBuilder<?>> messageBuilders;
-
-    @Value("${spring.mail.username}")
-    private String fromEmail;
+    private final EmailProperties emailProperties;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -40,17 +41,16 @@ public class EmailService implements NotificationService {
 
         try {
             MimeMessage mimeMessage = createMimeMessage(user, message);
-
             log.info("Sending email to user: {} ({})", user.getUsername(), user.getEmail());
             mailSender.send(mimeMessage);
             log.info("Email successfully sent to: {}", user.getEmail());
 
         } catch (MessagingException e) {
             log.error("Failed to create email message for user: {}", user.getEmail(), e);
-            throw new RuntimeException("Failed to send email notification", e);
+            throw new EmailMessageCreationException("Failed to create email message", e);
         } catch (MailException e) {
             log.error("Failed to send email to: {}", user.getEmail(), e);
-            throw e;
+            throw new EmailSendingException("Failed to send email notification", e);
         }
     }
 
@@ -61,6 +61,15 @@ public class EmailService implements NotificationService {
         send(user, message);
     }
 
+    public <T> void sendEvent(UserDto user, T event) {
+        sendEvent(user, event, Locale.getDefault());
+    }
+
+    @Override
+    public UserDto.PreferredContact getPreferredContact() {
+        return UserDto.PreferredContact.EMAIL;
+    }
+
     private MimeMessage createMimeMessage(UserDto user, String message) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(
@@ -69,7 +78,19 @@ public class EmailService implements NotificationService {
                 StandardCharsets.UTF_8.name()
         );
 
-        helper.setFrom(String.format("Notification Service <%s>", fromEmail));
+        String fromAddress;
+        try {
+            String fromName = emailProperties.getFromName();
+            if (fromName != null && !fromName.isEmpty()) {
+                fromAddress = String.format("%s <%s>", fromName, emailProperties.getFrom());
+            } else {
+                fromAddress = String.format("Notification Service <%s>", emailProperties.getFrom());
+            }
+        } catch (Exception e) {
+            fromAddress = String.format("Notification Service <%s>", emailProperties.getFrom());
+        }
+
+        helper.setFrom(fromAddress);
         helper.setTo(user.getEmail());
         helper.setSubject(generateSubject());
 
@@ -82,39 +103,30 @@ public class EmailService implements NotificationService {
         return mimeMessage;
     }
 
-    public <T> void sendEvent(UserDto user, T event) {
-        sendEvent(user, event, Locale.getDefault());
-    }
-
-    @Override
-    public UserDto.PreferredContact getPreferredContact() {
-        return UserDto.PreferredContact.EMAIL;
-    }
-
     @SuppressWarnings("unchecked")
     private <T> MessageBuilder<T> findMessageBuilder(Class<?> eventClass) {
         return (MessageBuilder<T>) messageBuilders.stream()
                 .filter(builder -> builder.getInstance().isAssignableFrom(eventClass))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
+                .orElseThrow(() -> new MessageBuilderNotFoundException(
                         "No message builder found for event type: " + eventClass.getName()
                 ));
     }
 
     private void validateUser(UserDto user) {
         if (user == null) {
-            throw new IllegalArgumentException("User cannot be null");
+            throw new InvalidUserException("User cannot be null");
         }
 
         if (!StringUtils.hasText(user.getEmail())) {
-            throw new IllegalArgumentException(
+            throw new InvalidUserException(
                     String.format("Email is not set for user: %s (id: %d)",
                             user.getUsername(), user.getId())
             );
         }
 
         if (!isValidEmail(user.getEmail())) {
-            throw new IllegalArgumentException(
+            throw new InvalidEmailFormatException(
                     String.format("Invalid email format for user %s: %s",
                             user.getUsername(), user.getEmail())
             );
@@ -125,7 +137,6 @@ public class EmailService implements NotificationService {
         return email != null &&
                 email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
     }
-
 
     private String generateSubject() {
         return String.format("Notification - %s",
@@ -177,18 +188,5 @@ public class EmailService implements NotificationService {
                 .replace("\"", "&quot;")
                 .replace("'", "&#39;")
                 .replace("\n", "<br>");
-    }
-
-    @Bean
-    CommandLineRunner testEmail(EmailService emailService) {
-        return args -> {
-            UserDto user = new UserDto();
-            user.setId(1L);
-            user.setUsername("TestUser");
-            user.setEmail("dqkvii@gmail.com");
-            user.setPreference(UserDto.PreferredContact.EMAIL);
-
-            emailService.send(user, "This is a test email from the Notification Service!");
-        };
     }
 }
