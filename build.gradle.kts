@@ -26,6 +26,12 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     /**
+     * Spring Retry для повторных попыток отправки email
+     */
+    implementation("org.springframework.retry:spring-retry")
+    implementation("org.springframework:spring-aspects")
+
+    /**
      * Database
      */
     implementation("redis.clients:jedis:4.3.2")
