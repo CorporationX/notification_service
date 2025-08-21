@@ -1,5 +1,7 @@
 package faang.school.notificationservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.RecommendationRequestEvent;
@@ -35,6 +37,7 @@ class NotificationConsumerTest {
 
     private RecommendationRequestEvent event;
     private UserDto user;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
@@ -50,14 +53,16 @@ class NotificationConsumerTest {
     }
 
     @Test
-    void consumeShouldProcessEventAndSendTelegramNotification() {
+    void consumeShouldProcessEventAndSendTelegramNotification() throws JsonProcessingException {
         String expectedMessage = "Test notification message";
         
         when(userServiceClient.getUser(2L)).thenReturn(user);
         when(recommendationRequestMessageBuilder.buildMessage(eq(event), any(Locale.class)))
                 .thenReturn(expectedMessage);
 
-        notificationConsumer.consume(event);
+        String jsonString = objectMapper.writeValueAsString(event);
+
+        notificationConsumer.handleRecommendationRequest(jsonString);
 
         verify(userServiceClient).getUser(2L);
         verify(recommendationRequestMessageBuilder).buildMessage(eq(event), any(Locale.class));

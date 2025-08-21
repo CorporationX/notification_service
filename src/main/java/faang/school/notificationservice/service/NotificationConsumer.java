@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.RecommendationRequestEvent;
@@ -19,8 +20,17 @@ public class NotificationConsumer {
     private final RecommendationRequestMessageBuilder recommendationRequestMessageBuilder;
 
     @KafkaListener(topics = "recommendation-request-topic", groupId = "notification-group")
-    public void consume(RecommendationRequestEvent event) {
-        log.info("Получено новое событие (запрос рекомендации): {}", event);
+    public void handleRecommendationRequest(String payload) {
+        log.info("Получено новое событие (запрос рекомендации): {}", payload);
+
+        RecommendationRequestEvent event = new RecommendationRequestEvent();
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            event = objectMapper.readValue(payload, RecommendationRequestEvent.class);
+        } catch (Exception e) {
+            log.error("Ошибка при десериализации события", e);
+        }
 
         long receiverId = event.getReceiverId();
         UserDto receiver = userServiceClient.getUser(receiverId);
