@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Locale;
 
+import static faang.school.notificationservice.dto.UserDto.PreferredContact.TELEGRAM;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -37,7 +38,7 @@ class NotificationConsumerTest {
 
     private RecommendationRequestEvent event;
     private UserDto user;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
@@ -46,9 +47,14 @@ class NotificationConsumerTest {
         event.setReceiverId(2L);
         event.setRecommendationRequestId(3L);
 
-        user = new UserDto();
-        user.setId(2L);
-        user.setUsername("testuser");
+        user = UserDto.builder()
+                .id(2L)
+                .username("testUserName")
+                .email("testuser@example.com")
+                .phone("+1234567890")
+                .aboutMe("This is a test user")
+                .build();
+        user.setPreference(TELEGRAM);
         user.setLocale(Locale.ENGLISH);
     }
 

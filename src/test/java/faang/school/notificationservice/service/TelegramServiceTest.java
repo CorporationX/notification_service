@@ -27,9 +27,10 @@ class TelegramServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new UserDto();
-        user.setId(123L);
-        user.setUsername("testuser");
+        user = UserDto.builder()
+                        .id(123L)
+                        .username("testuser")
+                        .build();
     }
 
     @Test
