@@ -44,6 +44,7 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
 project-service:
   host: localhost
   port: 8082
+
 user-service:
   host: localhost
   port: 8080
