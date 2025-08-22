@@ -50,3 +50,8 @@ user-service:
 notification:
   email:
     from: "noreply@myapp.com"
+
+telegram:
+  bot:
+    username: faang_notify_bot
+    token: 8416441109:AAFmk5HwCTrfr85Gi_bbZqwmqIHuIMejL-U

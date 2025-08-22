@@ -38,6 +38,11 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     /**
+     * Telegramm
+     */
+    implementation("org.telegram:telegrambots-spring-boot-starter:6.5.0")
+
+    /**
      * Utils & Logging
      */
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
