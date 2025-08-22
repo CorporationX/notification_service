@@ -23,7 +23,7 @@ import java.util.Map;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class KafkaConsumerConfig {
+public class KafkaCommentConsumerConfig {
     private final KafkaProperty property;
 
     @Bean
