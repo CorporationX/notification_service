@@ -1,17 +1,15 @@
 package faang.school.notificationservice.builder;
 
 import faang.school.notificationservice.event.RecommendationRequestedEvent;
-import faang.school.notificationservice.messaging.MessageBuilder;
 import org.springframework.stereotype.Component;
 
-import java.util.Locale;
-
-
 @Component
-public class RecommendationRequestMessageBuilder implements MessageBuilder<RecommendationRequestedEvent> {
+public class RecommendationRequestMessageBuilder
+        implements MessageBuilder<RecommendationRequestedEvent>,
+        MessageTypeProvider<RecommendationRequestedEvent> {
 
     @Override
-    public String buildMessage(RecommendationRequestedEvent event, Locale locale) {
+    public String buildMessage(RecommendationRequestedEvent event) {
         return "Пользователь с ID " + event.getAuthorId() + " запросил рекомендацию.";
     }
 
