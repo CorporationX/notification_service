@@ -27,13 +27,14 @@ class TelegramServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new UserDto();
-        user.setId(123L);
-        user.setUsername("testuser");
+        user = UserDto.builder()
+                        .id(123L)
+                        .username("testuser")
+                        .build();
     }
 
     @Test
-    void send_ShouldSendMessageSuccessfully() {
+    void sendShouldSendMessageSuccessfully() {
         String message = "Test notification";
 
         telegramService.send(user, message);
@@ -44,18 +45,18 @@ class TelegramServiceTest {
     @Test
     void sendShouldThrowExceptionWhenBotFails() {
         String message = "Test notification";
-        RuntimeException exception = new RuntimeException("Bot error");
+        RuntimeException exception = new RuntimeException("Failed to send telegram message");
         doThrow(exception).when(telegramServiceBot).sendMessage(123L, message);
 
         assertThatThrownBy(() -> telegramService.send(user, message))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("Bot error");
+                .hasMessage("Failed to send telegram message");
 
         verify(telegramServiceBot).sendMessage(123L, message);
     }
 
     @Test
-    void getPreferredContact_ShouldReturnTelegram() {
+    void getPreferredContactShouldReturnTelegram() {
         UserDto.PreferredContact result = telegramService.getPreferredContact();
 
         assertThat(result).isEqualTo(UserDto.PreferredContact.TELEGRAM);

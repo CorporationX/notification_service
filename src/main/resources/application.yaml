@@ -7,6 +7,11 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+        group-id: notification-group
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -48,7 +53,7 @@ sms:
 
 telegram:
   bot:
-    token: 8039668541:AAGr3Str6dq18fvkgz-s0CqvxDP-9bhUajc
+    token: 8039668541:AAHKltRbTX35wKUiRpP7E9hdjY_oIgMbjFY
     username: corpx_tgservice_bot
 
 project-service:
@@ -56,4 +61,4 @@ project-service:
     port: 8082
 user-service:
     host: localhost
-    port: 8080
+    port: 8888
