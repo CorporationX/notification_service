@@ -10,7 +10,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecommendationRequestedEvent implements Serializable {
-    private Long authorId;
+    private Long senderId;
     private Long receiverId;
-    private Long requestId;
+    private Long recommendationId;
 }

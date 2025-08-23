@@ -15,8 +15,8 @@ public class MessageBuilderRecommendationRequestedEvent implements MessageBuilde
 
     @Override
     public String buildMessage(RecommendationRequestedEvent event, Locale locale) {
-        return "Пользователь с ID " + event.getAuthorId() +
-                " запросил у вас рекомендацию. ID запроса: " + event.getRequestId();
+        return "Пользователь с ID " + event.getSenderId() +
+                " запросил у вас рекомендацию. ID запроса: " + event.getRecommendationId();
     }
 
     @Override

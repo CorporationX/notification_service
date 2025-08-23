@@ -10,7 +10,7 @@ public class RecommendationRequestMessageBuilder
 
     @Override
     public String buildMessage(RecommendationRequestedEvent event) {
-        return "Пользователь с ID " + event.getAuthorId() + " запросил рекомендацию.";
+        return "Пользователь с ID " + event.getSenderId() + " запросил рекомендацию.";
     }
 
     @Override
