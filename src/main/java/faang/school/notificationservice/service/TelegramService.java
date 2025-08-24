@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.TelegramNotificationException;
 import faang.school.notificationservice.telegram.MyTelegramBot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,13 @@ public class TelegramService implements NotificationService {
 
     @Override
     public void send(UserDto userDto, String message) {
+        if (userDto == null) {
+            throw new IllegalArgumentException("userDto must not be null");
+        }
         Long telegramUserId = userDto.getTelegramId();
+        if (telegramUserId == null) {
+            throw new IllegalArgumentException("telegramId must not be null");
+        }
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(telegramUserId.toString());
@@ -26,9 +33,11 @@ public class TelegramService implements NotificationService {
         try {
             myTelegramBot.execute(sendMessage);
         } catch (TelegramApiException e) {
-            log.error("Не удалось отправить сообщение пользователю Telegram c ID {}. "
+            log.error("Не удалось отправить сообщение пользователю Telegram с ID {}. "
                     + "Ошибка: {}", telegramUserId, e.getMessage(), e);
-            throw new RuntimeException("Failed to send message to Telegram user " + telegramUserId, e);
+            throw new TelegramNotificationException(
+                    "Failed to send message to Telegram user " + telegramUserId, e
+            );
         }
     }
 
