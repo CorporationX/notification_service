@@ -11,15 +11,24 @@ import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 
-
 @Service
 public class RedisMessageSubscriber implements MessageListener {
-    NotificationService notificationService;
-    UserServiceClient userServiceClient;
-    MessageBuilder<EventStartEvent> messageBuilder;
+    private NotificationService notificationService;
+    private UserServiceClient userServiceClient;
+    private MessageBuilder<EventStartEvent> messageBuilder;
+
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    public RedisMessageSubscriber(RedisTemplate<String, Object> redisTemplate,
+                                  NotificationService notificationService,
+                                  UserServiceClient userServiceClient,
+                                  MessageBuilder<EventStartEvent> messageBuilder) {
+        this.redisTemplate = redisTemplate;
+        this.notificationService = notificationService;
+        this.userServiceClient = userServiceClient;
+        this.messageBuilder = messageBuilder;
+    }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
