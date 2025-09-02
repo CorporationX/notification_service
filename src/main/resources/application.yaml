@@ -38,9 +38,24 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
+sms:
+  prostor:
+    url: "https://api.prostor-sms.ru"
+    api: "/messages/v2/send/"
+    login: t89192486554
+    password: 970540
+    sender: "Prostor-R"
+
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
+
+redis:
+  topic:
+    recommendation-request: "recommendation_request_topic"
+
+message-source:
+  encoding: "ISO-8859-1"
