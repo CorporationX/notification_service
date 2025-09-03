@@ -26,7 +26,6 @@ public class FollowerEventListener extends AbstractEventListener<FollowerEvent> 
         super(objectMapper, userServiceClient, notificationServices, messageBuilders);
     }
 
-
     @Override
     @KafkaListener(topics = "${kafka.topics.follower}", groupId = "my-group-id", containerFactory = "kafkaListenerContainerFactory")
     public void onMessage(ConsumerRecord<String, String> record) {
