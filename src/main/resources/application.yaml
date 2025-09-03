@@ -9,6 +9,10 @@ spring:
         event: event_channel
         comment: comment.event.topic
 
+kafka:
+  topics:
+    follower: follower-event-topic
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -50,4 +54,4 @@ user-service:
 
 telegram:
   bot-username: "CorporationXNotificationBot"
-  bot-token: "someToken"
+  bot-token: "8488354049:AAH2U8n8LZKnwLg1tDBX06eUTW2vEYR1GBk"
