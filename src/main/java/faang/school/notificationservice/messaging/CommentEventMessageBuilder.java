@@ -24,4 +24,9 @@ public class CommentEventMessageBuilder implements MessageBuilder<CommentEvent> 
         Object[] args = {e.postId(), e.authorId(), e.content()};
         return messageSource.getMessage(KEY, args, locale);
     }
+
+    @Override
+    public boolean supportsEventType(CommentEvent eventType) {
+        return false;
+    }
 }
