@@ -16,4 +16,10 @@ public class KafkaTopicConfig {
         return TopicBuilder.name(property.topic().commentNew())
                 .build();
     }
+
+    @Bean
+    public NewTopic skillOfferTopic() {
+        return TopicBuilder.name(property.topic().skillOffer())
+                .build();
+    }
 }

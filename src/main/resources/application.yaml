@@ -19,6 +19,7 @@ spring:
       auto-offset-reset: earliest
     topic:
       commentNew: comment.new
+      skillOffer: skill-offer-event-topic
 
   mail:
     host: smtp.gmail.com

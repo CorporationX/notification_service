@@ -6,7 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum MessageCode {
-    COMMENT_NEW("comment.new");
+    COMMENT_NEW("comment.new"),
+    SKILL_OFFER("skill-offer");
 
     private final String code;
 }
