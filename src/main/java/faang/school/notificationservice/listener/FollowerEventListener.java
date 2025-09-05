@@ -27,7 +27,7 @@ public class FollowerEventListener extends AbstractEventListener<FollowerEvent> 
     }
 
     @Override
-    @KafkaListener(topics = "${kafka.topics.follower}", groupId = "my-group-id", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(topics = "${kafka.topics.follower}", groupId = "follower-event-group", containerFactory = "kafkaListenerContainerFactory")
     public void onMessage(ConsumerRecord<String, String> record) {
         try {
             FollowerEvent event = objectMapper.readValue(record.value(), FollowerEvent.class);

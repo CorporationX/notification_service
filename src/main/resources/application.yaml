@@ -54,4 +54,4 @@ user-service:
 
 telegram:
   bot-username: "CorporationXNotificationBot"
-  bot-token: "8488354049:AAH2U8n8LZKnwLg1tDBX06eUTW2vEYR1GBk"
+  bot-token: "someToken"

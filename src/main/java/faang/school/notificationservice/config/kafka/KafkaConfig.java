@@ -27,7 +27,7 @@ public class KafkaConfig {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "my-group-id");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "follower-event-group");
         return props;
     }
 
@@ -36,6 +36,7 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<Long, FollowerEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        factory.setConcurrency(10);
         return factory;
     }
 

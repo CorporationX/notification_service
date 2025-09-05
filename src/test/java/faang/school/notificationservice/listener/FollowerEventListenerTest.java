@@ -45,7 +45,7 @@ public class FollowerEventListenerTest {
 
         doNothing().when(spyEventListener).sendNotification(any(), any());
 
-        kafkaTemplate.send(topic, eventDto);
+        kafkaTemplate.send(topic, String.valueOf(eventDto.getFolloweeId()), eventDto);
 
         await()
                 .atMost(10, TimeUnit.SECONDS)
