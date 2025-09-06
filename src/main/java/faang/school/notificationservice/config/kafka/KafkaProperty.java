@@ -14,6 +14,7 @@ public record KafkaProperty(
         Topic topic
 ) {
     public record Topic(
-            @NonNull String commentNew
+            @NonNull String commentNew,
+            @NonNull String skillOffer
     ) {}
 }
