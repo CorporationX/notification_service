@@ -9,6 +9,8 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     group-id: notification_service
+    topic:
+      comment: post.comment.created
 
   mail:
     host: smtp.gmail.com
@@ -38,15 +40,29 @@ logging:
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: whatever
-    secret: whatever
+    key: e48815c4
+    secret: co7kceLCozq0GNFT
+    from: "Vonage APIs"
+  retry:
+    max-attempts: 3
+    delay: 2000
+    multiplier: 2.0
 
 project-service:
   host: localhost
   port: 8082
 
 user-service:
-  host: localhost
+
+    host: localhost
+    port: 8080
+    retry:
+      max-attempts: 3
+      delay: 1000
+      multiplier: 2.0
+      max-delay: 5000
+
+host: localhost
   port: 8080
 
 telegram:
