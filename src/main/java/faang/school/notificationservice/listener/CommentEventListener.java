@@ -1,25 +1,22 @@
 package faang.school.notificationservice.listener;
 
-import faang.school.notificationservice.events.CommentEvent;
+import faang.school.notificationservice.event.CommentEvent;
+import faang.school.notificationservice.exception.EventProcessingException;
 import faang.school.notificationservice.service.CommentNotificationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class CommentEventListener implements MessageListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(CommentEventListener.class);
-
-    @Autowired
-    private CommentNotificationService commentNotificationService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final CommentNotificationService commentNotificationService;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
@@ -27,13 +24,14 @@ public class CommentEventListener implements MessageListener {
             String messageBody = new String(message.getBody());
             CommentEvent event = objectMapper.readValue(messageBody, CommentEvent.class);
 
-            logger.info("Received comment event for post {} by user {}",
+            log.info("Received comment event for post {} by user {}",
                     event.postId(), event.commentAuthorId());
 
             commentNotificationService.sendCommentNotification(event);
 
         } catch (Exception e) {
-            logger.error("Error processing comment event", e);
+            String rawMessage = new String(message.getBody());
+            throw new EventProcessingException("Failed to process comment event: " + rawMessage, e);
         }
     }
 }

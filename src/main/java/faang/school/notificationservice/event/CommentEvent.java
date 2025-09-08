@@ -1,6 +1,5 @@
-package faang.school.notificationservice.events;
+package faang.school.notificationservice.event;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public record CommentEvent(
@@ -10,6 +9,5 @@ public record CommentEvent(
         Long postAuthorId,
         String commentText,
         LocalDateTime createdAt
-) implements Serializable {
-    private static final long serialVersionUID = 1L;
+) {
 }

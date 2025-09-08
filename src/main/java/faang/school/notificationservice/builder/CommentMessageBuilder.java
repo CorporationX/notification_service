@@ -1,6 +1,6 @@
-package faang.school.notificationservice.builders;
+package faang.school.notificationservice.builder;
 
-import faang.school.notificationservice.events.CommentEvent;
+import faang.school.notificationservice.event.CommentEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;

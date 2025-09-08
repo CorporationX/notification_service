@@ -2,7 +2,10 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.events.CommentEvent;
+import faang.school.notificationservice.event.CommentEvent;
+import faang.school.notificationservice.exception.MessageBuilderNotFoundException;
+import faang.school.notificationservice.exception.UserNotFoundException;
+import faang.school.notificationservice.exception.UserServiceException;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import feign.FeignException;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -44,7 +48,7 @@ class CommentNotificationServiceTest {
     private PhoneNotificationService phoneService;
 
     @Mock
-    private TelegramNotificationService telegramService;
+    private TelegramService telegramService;
 
     private CommentNotificationService commentNotificationService;
 
@@ -94,30 +98,32 @@ class CommentNotificationServiceTest {
     }
 
     @Test
-    @DisplayName("Should handle user not found")
+    @DisplayName("Should throw UserNotFoundException if user not found")
     void testUserNotFound() {
         when(userServiceClient.getUser(4L)).thenThrow(FeignException.NotFound.class);
 
-        assertDoesNotThrow(() -> commentNotificationService.sendCommentNotification(testEvent));
+        assertThrows(UserNotFoundException.class,
+                () -> commentNotificationService.sendCommentNotification(testEvent));
 
         verifyNoInteractions(emailService, phoneService, telegramService);
     }
 
     @Test
-    @DisplayName("Should handle missing MessageBuilder")
+    @DisplayName("Should throw MessageBuilderNotFoundException if no builder available")
     void testMissingMessageBuilder() {
         testUser.setPreference(UserDto.PreferredContact.EMAIL);
 
         when(userServiceClient.getUser(4L)).thenReturn(testUser);
         when(messageBuilder.getInstance()).thenReturn((Class) Object.class);
 
-        assertDoesNotThrow(() -> commentNotificationService.sendCommentNotification(testEvent));
+        assertThrows(MessageBuilderNotFoundException.class,
+                () -> commentNotificationService.sendCommentNotification(testEvent));
 
         verifyNoInteractions(emailService, phoneService, telegramService);
     }
 
     @Test
-    @DisplayName("Should handle unsupported PreferredContact (null)")
+    @DisplayName("Should not send notification if preferred contact is null")
     void testUnsupportedPreferredContact() {
         testUser.setPreference(null);
 
@@ -131,7 +137,7 @@ class CommentNotificationServiceTest {
     }
 
     @Test
-    @DisplayName("Should log error if NotificationService throws exception")
+    @DisplayName("Should wrap delivery failures into UserServiceException")
     void testNotificationServiceThrowsException() {
         testUser.setPreference(UserDto.PreferredContact.EMAIL);
 
@@ -141,7 +147,8 @@ class CommentNotificationServiceTest {
         doThrow(new RuntimeException("Delivery failed"))
                 .when(emailService).send(any(), any());
 
-        assertDoesNotThrow(() -> commentNotificationService.sendCommentNotification(testEvent));
+        assertThrows(UserServiceException.class,
+                () -> commentNotificationService.sendCommentNotification(testEvent));
 
         verify(emailService).send(testUser, "Test message");
     }

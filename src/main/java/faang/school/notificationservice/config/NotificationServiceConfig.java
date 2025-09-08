@@ -4,7 +4,7 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.service.EmailService;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.PhoneNotificationService;
-import faang.school.notificationservice.service.TelegramNotificationService;
+import faang.school.notificationservice.service.TelegramService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ public class NotificationServiceConfig {
 
     private final EmailService emailService;
     private final PhoneNotificationService phoneService;
-    private final TelegramNotificationService telegramService;
+    private final TelegramService telegramService;
 
     @Bean
     public Map<UserDto.PreferredContact, NotificationService> notificationServiceMap() {
