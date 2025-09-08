@@ -49,9 +49,11 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     multiplier: 2.0
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
+
 user-service:
+
     host: localhost
     port: 8080
     retry:
@@ -59,3 +61,11 @@ user-service:
       delay: 1000
       multiplier: 2.0
       max-delay: 5000
+
+host: localhost
+  port: 8080
+
+telegram:
+  bot:
+    username: test_89851111865_bot
+    token: 8342880616:AAFQWJJenlRqHR8eFYxzQkaduvJwU-FS-RE
