@@ -30,10 +30,10 @@ public abstract class AbstractEventListener<T> {
     protected void sendNotification(Long userId, String messageText) {
         UserNotificationDto userDto = userServiceClient.getContactInfoById(userId);
         notificationServices.stream()
-                .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreference()))
+                .filter(notificationService -> notificationService.getPreferredContact().equals(userDto.getPreferredContact()))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Отсутствует notification service с типом " +
-                        userDto.getPreference()))
+                        userDto.getPreferredContact()))
                 .send(userDto, messageText);
     }
 }
