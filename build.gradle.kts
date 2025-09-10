@@ -28,6 +28,11 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     /**
+     * Kafka
+     */
+    implementation("org.springframework.kafka:spring-kafka")
+
+    /**
      * Database
      */
     implementation("redis.clients:jedis:4.3.2")

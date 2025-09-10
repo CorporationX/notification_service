@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserNotificationDto {

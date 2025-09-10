@@ -10,6 +10,14 @@ spring:
         comment: comment.event.topic
         goal: goal_channel
 
+
+  kafka:
+    topics:
+      follower: follower-event-topic
+    host: "localhost:9092"
+    group:
+      follower-event: "follower-event-group"
+
   messages:
     basename: messages
 
