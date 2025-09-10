@@ -9,6 +9,14 @@ spring:
         event: event_channel
         comment: comment.event.topic
 
+  kafka:
+    topics:
+      follower: follower-event-topic
+    host: "localhost:9092"
+    group:
+      follower-event: "follower-event-group"
+
+
   mail:
     host: smtp.gmail.com
     port: 587
