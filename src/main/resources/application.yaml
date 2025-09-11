@@ -8,6 +8,8 @@ spring:
         achievement: achievement_channel
         event: event_channel
         comment: comment.event.topic
+        goal: goal_channel
+
 
   kafka:
     topics:
@@ -15,22 +17,6 @@ spring:
     host: "localhost:9092"
     group:
       follower-event: "follower-event-group"
-
-
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: your_email@gmail.com #https://www.baeldung.com/spring-email
-    password: whatever #генерируем для своего Google аккаунта по инструкции https://support.google.com/accounts/answer/185833
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
 
   messages:
     basename: messages
@@ -58,4 +44,4 @@ user-service:
 
 telegram:
   bot-username: "CorporationXNotificationBot"
-  bot-token: "someToken"
+  bot-token: 8488354049:AAH2U8n8LZKnwLg1tDBX06eUTW2vEYR1GBk

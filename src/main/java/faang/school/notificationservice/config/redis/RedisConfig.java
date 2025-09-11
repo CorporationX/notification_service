@@ -1,6 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.CommentEventListener;
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
 import lombok.RequiredArgsConstructor;
 import faang.school.notificationservice.listener.EventStartListener;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     private final CommentEventListener listener;
+    private final GoalCompletedEventListener goalListener;
 
     @Value("${spring.data.redis.host}")
     private String redisHost;
@@ -31,10 +33,18 @@ public class RedisConfig {
     private String eventTopic;
     @Value("${spring.data.redis.channel.comment}")
     private String commentTopic;
+    @Value("${spring.data.redis.channel.goal}")
+    private String goalTopic;
+
 
     @Bean
     public MessageListenerAdapter eventStartListenerAdapter(EventStartListener eventStartListener) {
         return new MessageListenerAdapter(eventStartListener);
+    }
+
+    @Bean
+    public MessageListenerAdapter goalListenerAdapter(GoalCompletedEventListener goalListener) {
+        return new MessageListenerAdapter(goalListener);
     }
 
     @Bean
@@ -44,6 +54,7 @@ public class RedisConfig {
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(eventStartListenerAdapter, topic());
         container.addMessageListener(listener, commentTopic());
+        container.addMessageListener(goalListener, goalTopic());
         return container;
     }
 
@@ -80,5 +91,10 @@ public class RedisConfig {
     @Bean
     public ChannelTopic commentTopic() {
         return new ChannelTopic(commentTopic);
+    }
+
+    @Bean
+    public ChannelTopic goalTopic() {
+        return new ChannelTopic(goalTopic);
     }
 }

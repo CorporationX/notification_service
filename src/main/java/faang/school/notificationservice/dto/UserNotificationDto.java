@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserNotificationDto {
     private PreferredContact preferredContact;
     private String email;
