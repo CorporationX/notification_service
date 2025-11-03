@@ -57,12 +57,12 @@ class SmsServiceImplTest {
     }
 
     @Test
-    void send_givenInvalidPhone_whenValidating_thenThrowsIllegalArgumentException() {
+    void send_givenInvalidPhone_whenValidating_thenThrowsSmsSendException() {
         UserDto invalidUserNullPhone = new UserDto(1L, null, UserDto.PreferredContact.PHONE);
         UserDto invalidUserBlankPhone = new UserDto(1L, "", UserDto.PreferredContact.PHONE);
 
-        assertThrows(IllegalArgumentException.class, () -> smsServiceImpl.send(invalidUserNullPhone, MESSAGE_TEXT));
-        assertThrows(IllegalArgumentException.class, () -> smsServiceImpl.send(invalidUserBlankPhone, MESSAGE_TEXT));
+        assertThrows(SmsSendException.class, () -> smsServiceImpl.send(invalidUserNullPhone, MESSAGE_TEXT));
+        assertThrows(SmsSendException.class, () -> smsServiceImpl.send(invalidUserBlankPhone, MESSAGE_TEXT));
         verifyNoInteractions(smsGateway);
     }
 
@@ -84,13 +84,13 @@ class SmsServiceImplTest {
     }
 
     @Test
-    void sendFromRequest_givenRequestWithInvalidPhone_whenValidating_thenThrowsException() {
+    void sendFromRequest_givenRequestWithInvalidPhone_whenValidating_thenThrowsSmsSendException() {
         SendSmsRequestDto requestNullPhone = new SendSmsRequestDto(1L, null, MESSAGE_TEXT);
         SendSmsRequestDto requestBlankPhone = new SendSmsRequestDto(1L, "", MESSAGE_TEXT);
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(SmsSendException.class,
                 () -> smsServiceImpl.sendFromRequest(requestNullPhone, MESSAGE_TEXT));
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(SmsSendException.class,
                 () -> smsServiceImpl.sendFromRequest(requestBlankPhone, MESSAGE_TEXT));
 
         verify(smsGateway, times(0)).send(any(), any());
