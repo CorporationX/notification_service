@@ -35,8 +35,11 @@ logging:
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
-    key: whatever
-    secret: whatever
+    key: ${VONAGE_API_KEY:beb56a84}
+    secret: ${VONAGE_API_SECRET:0gj1KiEBtRzJ41Gc}
+  from: ${VONAGE_FROM:FaangSchool}
+  enabled: ${VONAGE_ENABLED:true}
+  defaultCountry: ${VONAGE_DEFAULT_COUNTRY:RU}
 
 project-service:
     host: localhost
@@ -44,3 +47,4 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
