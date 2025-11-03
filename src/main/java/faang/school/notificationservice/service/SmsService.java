@@ -6,8 +6,10 @@ import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.SmsSubmissionResponseMessage;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.config.vonage.VonageProperties;
+import faang.school.notificationservice.dto.SendSmsRequestDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.error.SmsSendException;
+import faang.school.notificationservice.mapper.NotificationMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Backoff;
@@ -23,6 +25,7 @@ public class SmsService implements NotificationService {
 
     private final VonageClient vonageClient;
     private final VonageProperties props;
+    private final NotificationMapper notificationMapper;
 
     private static final Map<String, String> COUNTRY_CODES = Map.of(
             "SG", "+65",
@@ -65,6 +68,11 @@ public class SmsService implements NotificationService {
             log.error("SMS send failed to {}: {}", to, e.getMessage(), e);
             throw new SmsSendException("SMS send failed", e);
         }
+    }
+
+    public void sendFromRequest(SendSmsRequestDto request, String message) {
+        UserDto user = notificationMapper.toUserDto(request);
+        send(user, message);
     }
 
     @Override

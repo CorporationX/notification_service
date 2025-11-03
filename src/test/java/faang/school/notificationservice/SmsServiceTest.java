@@ -6,14 +6,18 @@ import com.vonage.client.sms.SmsClient;
 import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.SmsSubmissionResponseMessage;
 import faang.school.notificationservice.config.vonage.VonageProperties;
+import faang.school.notificationservice.dto.SendSmsRequestDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.error.SmsSendException;
+import faang.school.notificationservice.mapper.NotificationMapper;
 import faang.school.notificationservice.service.SmsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -44,19 +48,22 @@ class SmsServiceTest {
     @Mock
     SmsClient smsClient;
 
+    @Spy
+    NotificationMapper notificationMapper = Mappers.getMapper(NotificationMapper.class);
+
     @InjectMocks
     SmsService smsService;
 
     @BeforeEach
     void setUp() {
-        smsService = new SmsService(vonageClient, buildProps());
+        smsService = new SmsService(vonageClient, buildProps(), notificationMapper);
     }
 
     @Test
     void send_givenServiceDisabled_whenSubmitting_thenSkipsSending() {
         VonageProperties disabledProps = buildProps();
         disabledProps.setEnabled(false);
-        smsService = new SmsService(vonageClient, disabledProps);
+        smsService = new SmsService(vonageClient, disabledProps, notificationMapper);
 
         UserDto user = new UserDto(1L, DEFAULT_PHONE, UserDto.PreferredContact.PHONE);
 
@@ -65,7 +72,7 @@ class SmsServiceTest {
     }
 
     @Test
-    void send_givenUnnormalizedPhone_whenSubmitting_thenNormalizesPhone() throws Exception {
+    void send_givenUnnormalizedPhone_whenSubmitting_thenNormalizesPhone() {
         String unnormalizedPhone = "88888888"; // Missing country code
         UserDto user = new UserDto(1L, unnormalizedPhone, UserDto.PreferredContact.PHONE);
 
@@ -84,7 +91,53 @@ class SmsServiceTest {
     }
 
     @Test
-    void send_givenUnexpectedClientError_whenSubmitting_thenThrowsSmsSendException() throws Exception {
+    void sendFromRequest_givenValidRequest_whenSubmitting_thenMapperCalledAndSendsSuccessfully() {
+        SendSmsRequestDto request = new SendSmsRequestDto(1L, "88888888", MESSAGE_TEXT);
+
+        SmsSubmissionResponseMessage okMsg = mock(SmsSubmissionResponseMessage.class);
+        when(vonageClient.getSmsClient()).thenReturn(smsClient);
+        when(okMsg.getStatus()).thenReturn(MessageStatus.OK);
+
+        SmsSubmissionResponse resp = mock(SmsSubmissionResponse.class);
+        when(resp.getMessages()).thenReturn(List.of(okMsg));
+        when(smsClient.submitMessage(any())).thenReturn(resp);
+
+        assertDoesNotThrow(() -> smsService.sendFromRequest(request, MESSAGE_TEXT), "Expected no exception");
+
+        // Verify mapper was called
+        verify(notificationMapper, times(1)).toUserDto(request);
+
+        // Verify SMS was sent with normalized phone
+        verify(smsClient, times(1)).submitMessage(argThat(msg ->
+                msg.getTo().equals("+788888888")
+        ));
+    }
+
+    @Test
+    void sendFromRequest_givenMapperConvertsCorrectly_whenSubmitting_thenUsesMapperResult() {
+        SendSmsRequestDto request = new SendSmsRequestDto(42L, "+79991234567", MESSAGE_TEXT);
+
+        SmsSubmissionResponseMessage okMsg = mock(SmsSubmissionResponseMessage.class);
+        when(vonageClient.getSmsClient()).thenReturn(smsClient);
+        when(okMsg.getStatus()).thenReturn(MessageStatus.OK);
+
+        SmsSubmissionResponse resp = mock(SmsSubmissionResponse.class);
+        when(resp.getMessages()).thenReturn(List.of(okMsg));
+        when(smsClient.submitMessage(any())).thenReturn(resp);
+
+        smsService.sendFromRequest(request, MESSAGE_TEXT);
+
+        // Verify mapper was called with the request
+        verify(notificationMapper, times(1)).toUserDto(request);
+
+        // Verify the mapped values are used correctly
+        verify(smsClient, times(1)).submitMessage(argThat(msg ->
+                msg.getTo().equals("+79991234567")
+        ));
+    }
+
+    @Test
+    void send_givenUnexpectedClientError_whenSubmitting_thenThrowsSmsSendException() {
         when(vonageClient.getSmsClient()).thenReturn(smsClient);
         when(smsClient.submitMessage(any())).thenThrow(new RuntimeException("Unexpected error"));
 
@@ -108,7 +161,7 @@ class SmsServiceTest {
     }
 
     @Test
-    void send_givenValidPhone_whenSubmitting_thenSendsSuccessfully() throws Exception {
+    void send_givenValidPhone_whenSubmitting_thenSendsSuccessfully() {
         SmsSubmissionResponseMessage okMsg = mock(SmsSubmissionResponseMessage.class);
         when(vonageClient.getSmsClient()).thenReturn(smsClient);
         when(okMsg.getStatus()).thenReturn(MessageStatus.OK);
@@ -124,7 +177,7 @@ class SmsServiceTest {
     }
 
     @Test
-    void send_givenProviderRejected_whenSubmitting_thenThrowsSmsSendException() throws Exception {
+    void send_givenProviderRejected_whenSubmitting_thenThrowsSmsSendException() {
         SmsSubmissionResponseMessage failMsg = mock(SmsSubmissionResponseMessage.class);
         when(vonageClient.getSmsClient()).thenReturn(smsClient);
         when(failMsg.getStatus()).thenReturn(MessageStatus.THROTTLED);
