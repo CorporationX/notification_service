@@ -13,8 +13,8 @@ public class VonageConfig {
     public VonageClient vonageClient(VonageProperties props
     ) {
         return VonageClient.builder()
-                .apiKey(props.getApi().getKey())
-                .apiSecret(props.getApi().getSecret())
+                .apiKey(props.getApiKey())
+                .apiSecret(props.getApiSecret())
                 .build();
     }
 }

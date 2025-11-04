@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 public interface NotificationMapper {
 
     @Mapping(source = "userId", target = "id")
-    @Mapping(source = "phone", target = "phone")
     @Mapping(target = "username", ignore = true)
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "preference", constant = "PHONE")

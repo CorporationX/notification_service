@@ -8,7 +8,8 @@ import java.util.Map;
 @Data
 @ConfigurationProperties(prefix = "vonage")
 public class VonageProperties {
-    private Api api = new Api();
+    private String apiKey;
+    private String apiSecret;
     private String from;
     private boolean enabled = true;
     private String defaultCountry = "SG";
@@ -20,10 +21,5 @@ public class VonageProperties {
             "CN", "+86",
             "RU", "+7"
     );
-
-    @Data
-    public static class Api {
-        private String key;
-        private String secret;
-    }
 }
+

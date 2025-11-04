@@ -249,10 +249,8 @@ class VonageSmsGatewayImplTest {
 
     private VonageProperties buildProps() {
         VonageProperties props = new VonageProperties();
-        VonageProperties.Api api = new VonageProperties.Api();
-        api.setKey("k");
-        api.setSecret("s");
-        props.setApi(api);
+        props.setApiKey("k");
+        props.setApiSecret("k");
         props.setFrom(FROM_NAME);
         props.setEnabled(true);
         props.setDefaultCountry(DEFAULT_COUNTRY);

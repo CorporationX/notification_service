@@ -10,16 +10,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MissingUserHeaderException.class)
+    @ExceptionHandler({MissingUserHeaderException.class, InvalidUserHeaderException.class})
     public ResponseEntity<Map<String, Object>> handleMissingHeader(MissingUserHeaderException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
-                "error", "Bad Request",
-                "message", ex.getMessage()
-        ));
-    }
-
-    @ExceptionHandler(InvalidUserHeaderException.class)
-    public ResponseEntity<Map<String, Object>> handleInvalidHeader(InvalidUserHeaderException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
                 "error", "Bad Request",
                 "message", ex.getMessage()
