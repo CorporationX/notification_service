@@ -38,9 +38,18 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
+telegram:
+  bot:
+    username: "learning_phoenix12_bot"
+    token: "8557149554:AAG3uix2iR4Q8n3j3zQhP4vTOtdC8rU3sHg"
+    notification:
+      max-retry-attempts: 3
+      retry-delay-ms: 1000
+
 project-service:
     host: localhost
     port: 8082
 user-service:
     host: localhost
     port: 8080
+
