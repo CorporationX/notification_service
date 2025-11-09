@@ -1,10 +1,7 @@
 package faang.school.notificationservice.config.redis;
 
-import faang.school.notificationservice.listener.AbstractNotificationClass;
-import faang.school.notificationservice.service.telegram.TelegramService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
