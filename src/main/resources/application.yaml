@@ -22,6 +22,20 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: notification-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+    topic:
+      events: event.events
+
+
   messages:
     basename: messages
 
@@ -43,4 +57,4 @@ project-service:
     port: 8082
 user-service:
     host: localhost
-    port: 8080
+    port: 8081
