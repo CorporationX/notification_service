@@ -13,7 +13,7 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public void send(UserDto user, String message) {
-
+        log.info("{} - {}", user, message);
     }
 
     @Override

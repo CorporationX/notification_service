@@ -5,6 +5,8 @@ import java.util.List;
 public record EventStartEventDto(
         Long eventId,
         Long userId,
-        List<Long> attendeesIds
+        List<Long> attendeesIds,
+        String baseMessage,
+        String title
 ) {
 }
