@@ -21,7 +21,7 @@ public class CommentEventConsumer {
 
     @KafkaListener(topics = "${kafka.topic.notifications}",
             groupId = "notification-service",
-            containerFactory = "kafkaListenerContainerFactory"
+            containerFactory = "commentConcurrentKafkaListenerContainerFactory"
     )
     public void handleCommentEvent(CommentEventDto event) {
         log.info("Received CommentEvent: {}", event);
