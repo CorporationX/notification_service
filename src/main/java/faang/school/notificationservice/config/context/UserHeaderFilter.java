@@ -1,5 +1,7 @@
 package faang.school.notificationservice.config.context;
 
+import faang.school.notificationservice.error.InvalidUserHeaderException;
+import faang.school.notificationservice.error.MissingUserHeaderException;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,14 +22,19 @@ public class UserHeaderFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+
         HttpServletRequest req = (HttpServletRequest) request;
         String userId = req.getHeader("x-user-id");
-        if (userId != null) {
-            userContext.setUserId(Long.parseLong(userId));
-        } else {
-            throw new IllegalArgumentException("Missing required header 'x-user-id'. Please include 'x-user-id' header with a valid user ID in your request.");
-        }
         try {
+            if (userId == null || userId.isBlank()) {
+                throw new MissingUserHeaderException("Missing required header 'x-user-id'");
+            }
+            try {
+                long parsed = Long.parseLong(userId);
+                userContext.setUserId(parsed);
+            } catch (NumberFormatException nfe) {
+                throw new InvalidUserHeaderException("Header 'x-user-id' must be a valid long");
+            }
             chain.doFilter(request, response);
         } finally {
             userContext.clear();
