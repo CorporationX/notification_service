@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.listener.EventStartListener;
 import faang.school.notificationservice.config.serializer.GenericJacksonConfig;
 import faang.school.notificationservice.listener.MentorshipOfferedListener;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RedisConfig {
     private final RedisProperties redisProperties;
-    private final GenericJacksonConfig genericJackson;
     private final Map<MessageListenerAdapter, ChannelTopic> adaptersTopics = new HashMap<>();
 
     @Bean
@@ -37,17 +37,29 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public RedisTemplate<String, Object> redisTemplate(GenericJackson2JsonRedisSerializer genericJackson) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory());
-        GenericJackson2JsonRedisSerializer genericJackson = this.genericJackson.getGenericJackson();
         StringRedisSerializer stringSerializer = new StringRedisSerializer();
-        template.setKeySerializer(stringSerializer);
-        template.setValueSerializer(genericJackson);
         template.setHashKeySerializer(stringSerializer);
-        template.setHashValueSerializer(genericJackson);
-        template.setDefaultSerializer(genericJackson);
+        template.setKeySerializer(stringSerializer);
+        template.setValueSerializer(stringSerializer);
+        template.setHashValueSerializer(stringSerializer);
+        template.setDefaultSerializer(stringSerializer);
         return template;
+    }
+
+    @Bean
+    public ChannelTopic eventStartTopic(@Value("${spring.redis.topics.name.event-start-topic}") String topicName) {
+        return new ChannelTopic(topicName);
+    }
+
+    @Bean
+    public MessageListenerAdapter eventStartAdapter(EventStartListener eventStartListener,
+                                                    ChannelTopic eventStartTopic) {
+        MessageListenerAdapter adapter = new MessageListenerAdapter(eventStartListener, "onMessage");
+        adaptersTopics.put(adapter, eventStartTopic);
+        return adapter;
     }
 
     @Bean
