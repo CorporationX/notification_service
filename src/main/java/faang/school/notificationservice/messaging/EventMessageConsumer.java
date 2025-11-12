@@ -1,30 +1,32 @@
 package faang.school.notificationservice.messaging;
 
+import faang.school.notificationservice.dto.EventStartEventDto;
+import faang.school.notificationservice.dto.TimeLeft;
 import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.connection.Message;
 import org.springframework.stereotype.Component;
 
+import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class EventMessageConsumer implements MessageBuilder<UserDto> {
+public class EventMessageConsumer implements MessageBuilder<EventStartEventDto> {
     @Override
     public Class<?> getInstance() {
         return null;
     }
 
     @Override
-    public String buildMessage(UserDto userDto, Locale locale) {
+    public String buildMessage(EventStartEventDto eventStartEventDto, Locale locale) {
         ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Уважаемый ")
-                .append(userDto.getUsername())
-                .append(bundle.getString("event.start"));
 
-        return stringBuilder.toString();
+            String text = bundle.getString(eventStartEventDto.timeLeft().getMessageKey());
+
+        return MessageFormat.format(text, eventStartEventDto.title());
     }
 }

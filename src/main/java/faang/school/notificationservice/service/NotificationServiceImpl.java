@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 public class NotificationServiceImpl implements NotificationService{
 
     @Override
-    public void send(UserDto user, String message) {
-        log.info("{} - {}", user, message);
+    public void send(Long id, String message) {
+        log.info("{} - {}", id, message);
     }
 
     @Override

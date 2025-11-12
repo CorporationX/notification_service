@@ -3,6 +3,7 @@ package faang.school.notificationservice.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.EventStartEventDto;
+import faang.school.notificationservice.dto.TimeLeft;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.EventMessageConsumer;
 import faang.school.notificationservice.service.NotificationService;
@@ -21,7 +22,7 @@ import java.util.Map;
 public class EventsEventConsumer {
 
     private final NotificationService notificationService;
-    private final EventMessageConsumer eventMessageConsumer;
+    private final EventMessageConsumer eventOwnerMessageConsumer;
     private final UserServiceClient userServiceClient;
     private final ObjectMapper objectMapper;
 
@@ -30,12 +31,14 @@ public class EventsEventConsumer {
     public void handleEventListener(Map<String, Object> message) {
 
         EventStartEventDto eventStartEventDto = objectMapper.convertValue(message, EventStartEventDto.class);
-        List<UserDto> attendeesIds = userServiceClient.getUser(eventStartEventDto.attendeesIds());
-        log.info("{}", attendeesIds);
+
         UserDto owerUser = userServiceClient.getById(eventStartEventDto.userId());
-        String text = eventMessageConsumer.buildMessage(owerUser, Locale.getDefault());
-        String result = String.format("%s%s!!! %s", text, eventStartEventDto.title(), eventStartEventDto.baseMessage());
-        notificationService.send(owerUser, result);
-        log.info("📩 Received EventStartEvent: {}  {}", owerUser, eventStartEventDto.baseMessage());
+
+        String text = eventOwnerMessageConsumer.buildMessage(eventStartEventDto, Locale.getDefault());
+        notificationService.send(eventStartEventDto.userId(), text);
+
+        eventStartEventDto.attendeesIds()
+                        .forEach(id -> notificationService.send(id, text));
+        log.info("📩 Received EventStartEvent: {} ", owerUser);
     }
 }
