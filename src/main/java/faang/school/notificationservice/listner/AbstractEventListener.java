@@ -33,7 +33,6 @@ public class AbstractEventListener {
         this.messageBuildersMap = messageBuilders.stream()
                 .collect(Collectors.toMap(
                         builder -> {
-
                             try {
                                 Method getInstance = builder.getClass().getMethod("getInstance");
                                 return (Class<?>) getInstance.invoke(builder);
@@ -42,9 +41,7 @@ public class AbstractEventListener {
                             }
                         },
                         Function.identity(),
-                        (existing, replacement) -> {
-                            return existing;
-                        }
+                        (existing, replacement) -> existing
                 ));
 
         this.notificationServicesMap = notificationServices.stream()
