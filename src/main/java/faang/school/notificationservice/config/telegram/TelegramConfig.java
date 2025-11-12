@@ -15,10 +15,6 @@ public class TelegramConfig {
         TelegramBotsApi botsApi;
         try {
             botsApi = new TelegramBotsApi(DefaultBotSession.class);
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
-        }
-        try {
             botsApi.registerBot(telegramServiceImpl);
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);

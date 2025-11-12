@@ -47,4 +47,3 @@ user-service:
 
 telegram:
   token: "${BOT_TOKEN}"
-  name-bot: "${BOT_NAME}"

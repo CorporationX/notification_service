@@ -6,20 +6,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.GetMe;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Slf4j
 @Service
-public class TelegramServiceImpl extends TelegramLongPollingBot implements NotificationService, TelegramService{
-    private final String botName;
+public class TelegramServiceImpl extends TelegramLongPollingBot implements NotificationService{
 
-    public TelegramServiceImpl(@Value("${telegram.token}") String botToken,
-                               @Value("${telegram.name-bot}") String botName) {
+    public TelegramServiceImpl(@Value("${telegram.token}") String botToken) {
         super(botToken);
-        this.botName = botName;
-        log.info("Telegram bot '{}' initialized", botName);
+        log.info("Telegram bot '{}' initialized", getBotUsername());
     }
 
     @Override
@@ -31,7 +30,7 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Notif
         }
     }
 
-    public void executeMessage(long chatId, String messageText) {
+    private void executeMessage(long chatId, String messageText) {
         if (chatId < 0 && messageText == null) {
             return;
         }
@@ -41,13 +40,21 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Notif
         try {
             execute(message);
         } catch (TelegramApiException e) {
+            log.error("Error sending message via telegram");
             throw new RuntimeException(e);
         }
     }
 
     @Override
     public String getBotUsername() {
-        return botName;
+        try {
+            GetMe getMe = new GetMe();
+            User botUser = execute(getMe);
+            return botUser.getUserName();
+        } catch (TelegramApiException e) {
+            log.error("Error getting bot info");
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
