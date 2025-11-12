@@ -9,6 +9,8 @@ import faang.school.notificationservice.messaging.EventMessageConsumer;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +20,25 @@ import java.util.Map;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class EventsEventConsumer {
 
+    @Autowired
+    @Qualifier("eventNotificationService")
     private final NotificationService notificationService;
     private final EventMessageConsumer eventOwnerMessageConsumer;
     private final UserServiceClient userServiceClient;
     private final ObjectMapper objectMapper;
+
+    public EventsEventConsumer(@Qualifier("eventNotificationService") NotificationService notificationService,
+                               EventMessageConsumer eventOwnerMessageConsumer,
+                               UserServiceClient userServiceClient,
+                               ObjectMapper objectMapper) {
+
+        this.notificationService = notificationService;
+        this.eventOwnerMessageConsumer = eventOwnerMessageConsumer;
+        this.userServiceClient = userServiceClient;
+        this.objectMapper = objectMapper;
+    }
 
     @KafkaListener(topics =  "${spring.kafka.topic.events}",
             containerFactory = "eventConcurrentKafkaListenerContainerFactory")
