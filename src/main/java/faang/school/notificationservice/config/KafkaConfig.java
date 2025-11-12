@@ -17,18 +17,22 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 @Configuration
 public class KafkaConfig {
 
-    @Bean(value = "commentConsumerFactory")
-    public ConsumerFactory<String, CommentEventDto> consumerFactory(KafkaProperties kafkaProperties) {
+    public static <T> ConsumerFactory<String, T> createConsumerFactory(KafkaProperties props, Class<T> valueType) {
         return new DefaultKafkaConsumerFactory<>(
-                kafkaProperties.buildConsumerProperties(),
+                props.buildConsumerProperties(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(CommentEventDto.class, false)
+                new JsonDeserializer<>(valueType, false)
         );
     }
 
-    @Bean(value = "commentConcurrentKafkaListenerContainerFactory")
+    @Bean(value = "consumerFactory")
+    public ConsumerFactory<String, CommentEventDto> commentConsumerFactory(KafkaProperties props) {
+        return createConsumerFactory(props, CommentEventDto.class);
+    }
+
+    @Bean(value = "concurrentKafkaListenerContainerFactory")
     public ConcurrentKafkaListenerContainerFactory<String, CommentEventDto> kafkaListenerContainerFactory(
-            @Qualifier("commentConsumerFactory") ConsumerFactory<String, CommentEventDto> consumerFactory) {
+            @Qualifier("consumerFactory") ConsumerFactory<String, CommentEventDto> consumerFactory) {
         ConcurrentKafkaListenerContainerFactory<String, CommentEventDto> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);

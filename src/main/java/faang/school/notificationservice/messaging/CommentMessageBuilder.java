@@ -16,7 +16,10 @@ public class CommentMessageBuilder implements MessageBuilder<CommentEventDto> {
 
     @Override
     public String buildMessage(CommentEventDto event, Locale locale) {
-        return String.format("User %d left a comment on your post %d: \"%s\"",
-                event.commentAuthorId(), event.postId(), event.commentText());
+        return String.format("User %s left you a comment \"%s\" under post \"%s\"",
+                event.commentAuthorName(),
+                event.commentText(),
+                event.postContent()
+        );
     }
 }

@@ -6,7 +6,8 @@ import lombok.Builder;
 public record CommentEventDto(
         Long commentId,
         Long postId,
-        Long commentAuthorId,
         Long postAuthorId,
-        String commentText
+        String commentText,
+        String commentAuthorName,
+        String postContent
 ) {}
