@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
+import faang.school.notificationservice.config.serializer.GenericJacksonConfig;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.util.StringUtils;
 
@@ -21,6 +23,7 @@ import java.util.Map;
 public class RedisConfig {
     @Valid
     private final RedisProperties redisProperties;
+    private final GenericJacksonConfig generic;
     private final Map<MessageListenerAdapter, ChannelTopic> adaptersTopics = new HashMap<>();
 
     @Bean
@@ -37,10 +40,13 @@ public class RedisConfig {
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory());
-        StringRedisSerializer redisSerializer = new StringRedisSerializer();
-        template.setKeySerializer(redisSerializer);
-        template.setValueSerializer(redisSerializer);
-        template.setDefaultSerializer(redisSerializer);
+        GenericJackson2JsonRedisSerializer genericJackson = generic.getGenericJackson();
+        StringRedisSerializer stringSerializer = new StringRedisSerializer();
+        template.setKeySerializer(stringSerializer);
+        template.setValueSerializer(genericJackson);
+        template.setHashKeySerializer(stringSerializer);
+        template.setHashValueSerializer(genericJackson);
+        template.setDefaultSerializer(genericJackson);
         return template;
     }
 
