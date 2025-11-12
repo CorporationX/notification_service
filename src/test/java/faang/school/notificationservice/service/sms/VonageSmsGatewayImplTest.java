@@ -1,4 +1,4 @@
-package faang.school.notificationservice;
+package faang.school.notificationservice.service.sms;
 
 import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;
@@ -8,7 +8,6 @@ import com.vonage.client.sms.SmsSubmissionResponseMessage;
 import com.vonage.client.sms.messages.TextMessage;
 import faang.school.notificationservice.config.vonage.VonageProperties;
 import faang.school.notificationservice.error.SmsGatewayException;
-import faang.school.notificationservice.sms.VonageSmsGatewayImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: notification-service
   data:
     redis:
       port: 6379
@@ -6,6 +8,30 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+
+  # Kafka вместо Redis
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: notification-service
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        # при необходимости: максимальный размер, опции ретраев и т.д.
+        max.poll.interval.ms: 300000 # 5 минут
+        max.poll.records: 100
+    listener:
+      ack-mode: record
+
+# Топики приложения (Kafka)
+app:
+  topics:
+    follower: ${TOPIC_FOLLOWER:follower}
+    achievement: ${TOPIC_ACHIEVEMENT:achievement}
+  locale:
+    default: en
+    new-follower: en
 
   mail:
     host: smtp.gmail.com
@@ -31,6 +57,7 @@ server:
 logging:
   level:
     root: info
+    faang.school.notificationservice: debug
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms

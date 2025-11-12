@@ -1,4 +1,4 @@
-package faang.school.notificationservice;
+package faang.school.notificationservice.service;
 
 import com.vonage.client.sms.SmsClient;
 import faang.school.notificationservice.dto.SendSmsRequestDto;
@@ -6,8 +6,7 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.error.SmsGatewayException;
 import faang.school.notificationservice.error.SmsSendException;
 import faang.school.notificationservice.mapper.NotificationMapper;
-import faang.school.notificationservice.service.SmsServiceImpl;
-import faang.school.notificationservice.sms.SmsGateway;
+import faang.school.notificationservice.service.sms.SmsGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
