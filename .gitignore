@@ -53,3 +53,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# ===== Environment / Secrets =====
+.env
+.env.*
+application-secrets.yml
+application-secrets.yaml

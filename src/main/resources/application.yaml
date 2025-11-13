@@ -25,6 +25,9 @@ spring:
   messages:
     basename: messages
 
+  config:
+    import: optional:classpath:application-secrets.yml
+
 server:
   port: 8083
 
@@ -44,3 +47,4 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
