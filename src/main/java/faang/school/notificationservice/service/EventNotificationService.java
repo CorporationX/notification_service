@@ -26,7 +26,7 @@ public class EventNotificationService {
         return UserDto.PreferredContact.PHONE;
     }
 
-    public void processEventStart(EventStartEventDto eventStartEventDto) {
+    public void processEventNotification(EventStartEventDto eventStartEventDto) {
         String text = eventOwnerMessageConsumer.buildMessage(eventStartEventDto, Locale.getDefault());
 
         log.info("Information about the event has arrived! event id - {}, owner id-{} and name-{}, name event -{}",

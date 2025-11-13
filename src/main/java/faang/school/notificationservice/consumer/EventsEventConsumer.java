@@ -26,7 +26,7 @@ public class EventsEventConsumer {
 
         EventStartEventDto eventStartEventDto = objectMapper.convertValue(message, EventStartEventDto.class);
 
-        eventNotificationService.processEventStart(eventStartEventDto);
+        eventNotificationService.processEventNotification(eventStartEventDto);
 
         ack.acknowledge();
     }
