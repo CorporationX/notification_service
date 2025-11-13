@@ -3,7 +3,7 @@ package faang.school.notificationservice.service.user;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.EntityNotFoundException;
-import faang.school.notificationservice.exception.ServiceException;
+import faang.school.notificationservice.exception.ExternalServiceException;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +20,9 @@ public class UserServiceImpl implements UserService {
     private final UserServiceClient userServiceClient;
 
     @Retryable(retryFor = {FeignException.InternalServerError.class, FeignException.ServiceUnavailable.class},
-            maxAttempts = 3,
-            backoff = @Backoff(delay = 1000, multiplier = 2))
+            maxAttemptsExpression = "${services.user-service.retryable.maxAttempts}",
+            backoff = @Backoff(delayExpression = "${services.user-service.retryable.delay}",
+                    multiplierExpression = "${services.user-service.retryable.multiplier}"))
     public UserDto getUserWithRetry(long userId) {
         return userServiceClient.getUser(userId);
     }
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException(USER_NOT_FOUND_MSG.formatted(userId));
         } catch (FeignException e) {
             log.error("Failed to get user {} after retries", userId, e);
-            throw new ServiceException("User service unavailable");
+            throw new ExternalServiceException("User service unavailable");
         }
     }
 }

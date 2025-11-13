@@ -3,7 +3,7 @@ package faang.school.notificationservice.service;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.EntityNotFoundException;
-import faang.school.notificationservice.exception.ServiceException;
+import faang.school.notificationservice.exception.ExternalServiceException;
 import faang.school.notificationservice.service.user.UserServiceImpl;
 import feign.FeignException;
 import org.junit.jupiter.api.Test;
@@ -70,10 +70,10 @@ public class UserServiceImplTest {
     void testGetUserCatchFeignException() {
         when(userServiceClient.getUser(userId)).thenThrow(FeignException.class);
 
-        ServiceException serviceException = assertThrows(ServiceException.class,
+        ExternalServiceException externalServiceException = assertThrows(ExternalServiceException.class,
                 () -> userService.getUser(userId));
 
-        assertEquals("User service unavailable", serviceException.getMessage());
+        assertEquals("User service unavailable", externalServiceException.getMessage());
     }
 
     @Test

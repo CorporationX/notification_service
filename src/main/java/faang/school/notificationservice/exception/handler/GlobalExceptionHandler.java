@@ -1,7 +1,7 @@
 package faang.school.notificationservice.exception.handler;
 
 import faang.school.notificationservice.exception.EntityNotFoundException;
-import faang.school.notificationservice.exception.ServiceException;
+import faang.school.notificationservice.exception.ExternalServiceException;
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -35,9 +35,9 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(ex.getMessage());
     }
 
-    @ExceptionHandler(ServiceException.class)
+    @ExceptionHandler(ExternalServiceException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleServiceException(ServiceException ex) {
+    public ErrorResponse handleServiceException(ExternalServiceException ex) {
         return new ErrorResponse(ex.getMessage());
     }
 }

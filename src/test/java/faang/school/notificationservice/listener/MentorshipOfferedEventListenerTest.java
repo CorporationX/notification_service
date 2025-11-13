@@ -33,22 +33,24 @@ public class MentorshipOfferedEventListenerTest {
     private ArgumentCaptor<UserDto> userDtoArgumentCaptor;
 
     @Mock
-    private UserService userService;
-    @Mock
     private NotificationService notificationService;
+    @Mock
+    private UserService userService;
     @Mock
     private MentorshipOfferedEventMessageBuilder mentorshipOfferedEventMessageBuilder;
 
-    MentorshipOfferedEventListener mentorshipOfferedEventListener;
+    private MentorshipOfferedEventListener mentorshipOfferedEventListener;
 
     @BeforeEach
     void setup() {
         mentorshipOfferedEventListener = new MentorshipOfferedEventListener(objectMapper,
-                List.of(notificationService), mentorshipOfferedEventMessageBuilder, userService);
+                List.of(notificationService), userService, mentorshipOfferedEventMessageBuilder);
+
+        mentorshipOfferedEventListener.init();
     }
 
     @Test
-    void testOnMessage() throws JsonProcessingException {
+    void testOnMessage(){
         MentorshipOfferedEvent mentorshipOfferedEvent = MentorshipOfferedEvent.builder()
                 .mentorshipRequestId(3L)
                 .mentorId(1L)
@@ -57,7 +59,8 @@ public class MentorshipOfferedEventListenerTest {
 
         UserDto userDto = UserDto.builder()
                 .id(mentorshipOfferedEvent.mentorId())
-                .preference(UserDto.PreferredContact.TELEGRAM)
+                .preference(UserDto.PreferredContact.SMS)
+                .locale(Locale.CANADA)
                 .build();
 
         String messageText = "test text";
@@ -67,7 +70,7 @@ public class MentorshipOfferedEventListenerTest {
         when(userService.getUser(userDto.getId())).thenReturn(userDto);
         when(notificationService.getPreferredContact()).thenReturn(userDto.getPreference());
 
-        mentorshipOfferedEventListener.onMessage(objectMapper.writeValueAsString(mentorshipOfferedEvent));
+        mentorshipOfferedEventListener.onMessage(mentorshipOfferedEvent);
 
         verify(notificationService).send(userDtoArgumentCaptor.capture(), Mockito.eq(messageText));
 
