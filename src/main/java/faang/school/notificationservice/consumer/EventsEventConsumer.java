@@ -29,12 +29,11 @@ public class EventsEventConsumer {
 
     private final EventNotificationService eventNotificationService;
     private final EventMessageConsumer eventOwnerMessageConsumer;
-    private final UserServiceClient userServiceClient;
     private final ObjectMapper objectMapper;
 
     @KafkaListener(topics = "${spring.kafka.topic.events}",
             containerFactory = "eventConcurrentKafkaListenerContainerFactory")
-    public void handleEventListener(@Payload Map<String, Object> message,Acknowledgment  ack) {
+    public void handleEventListener(@Payload Map<String, Object> message, Acknowledgment  ack) {
 
         EventStartEventDto eventStartEventDto = objectMapper.convertValue(message, EventStartEventDto.class);
 
@@ -49,8 +48,6 @@ public class EventsEventConsumer {
         if (attendeesIds.isEmpty()) {
             log.info("There are no subscribers to the event {}.", eventStartEventDto.eventId());
         } else {
-           // List<UserDto> userDtos = userServiceClient.getUser(userIdsClientDto);
-
             attendeesIds.forEach(user -> eventNotificationService.send(user
                     , text));
         }
