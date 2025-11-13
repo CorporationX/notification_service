@@ -5,8 +5,9 @@ import java.util.List;
 public record EventStartEventDto(
         Long eventId,
         Long userId,
-        List<Long> attendeesIds,
-        String title,
+        String nameOwner,
+        List<UserDto> attendeesUser,
+        String titleEvent,
         TimeLeft timeLeft
 ) {
 }

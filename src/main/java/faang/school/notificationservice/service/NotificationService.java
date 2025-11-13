@@ -4,7 +4,7 @@ import faang.school.notificationservice.dto.UserDto;
 
 public interface NotificationService {
 
-    void send(Long id, String message);
+    void send(UserDto userDto, String message);
 
     UserDto.PreferredContact getPreferredContact();
 }

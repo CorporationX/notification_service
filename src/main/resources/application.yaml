@@ -30,7 +30,6 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       enable-auto-commit: false
-      auto-commit-interval: null
       properties:
         spring.json.trusted.packages: "*"
         spring.json.use.type.headers: false
@@ -60,3 +59,4 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+

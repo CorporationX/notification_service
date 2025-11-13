@@ -5,13 +5,17 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.EventStartEventDto;
 import faang.school.notificationservice.dto.TimeLeft;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserIdsClientDto;
 import faang.school.notificationservice.messaging.EventMessageConsumer;
+import faang.school.notificationservice.service.EventNotificationService;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.support.Acknowledgment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,39 +24,37 @@ import java.util.Map;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class EventsEventConsumer {
 
-    @Autowired
-    @Qualifier("eventNotificationService")
-    private final NotificationService notificationService;
+    private final EventNotificationService eventNotificationService;
     private final EventMessageConsumer eventOwnerMessageConsumer;
     private final UserServiceClient userServiceClient;
     private final ObjectMapper objectMapper;
 
-    public EventsEventConsumer(@Qualifier("eventNotificationService") NotificationService notificationService,
-                               EventMessageConsumer eventOwnerMessageConsumer,
-                               UserServiceClient userServiceClient,
-                               ObjectMapper objectMapper) {
-
-        this.notificationService = notificationService;
-        this.eventOwnerMessageConsumer = eventOwnerMessageConsumer;
-        this.userServiceClient = userServiceClient;
-        this.objectMapper = objectMapper;
-    }
-
-    @KafkaListener(topics =  "${spring.kafka.topic.events}",
+    @KafkaListener(topics = "${spring.kafka.topic.events}",
             containerFactory = "eventConcurrentKafkaListenerContainerFactory")
-    public void handleEventListener(Map<String, Object> message) {
+    public void handleEventListener(@Payload Map<String, Object> message,Acknowledgment  ack) {
 
         EventStartEventDto eventStartEventDto = objectMapper.convertValue(message, EventStartEventDto.class);
 
-        UserDto owerUser = userServiceClient.getById(eventStartEventDto.userId());
-
         String text = eventOwnerMessageConsumer.buildMessage(eventStartEventDto, Locale.getDefault());
-        notificationService.send(eventStartEventDto.userId(), text);
 
-        eventStartEventDto.attendeesIds()
-                        .forEach(id -> notificationService.send(id, text));
-        log.info("📩 Received EventStartEvent: {} ", owerUser);
+        log.info("Information about the event has arrived! event id - {}, owner id-{} and name-{}, name event -{}",
+                eventStartEventDto.eventId(), eventStartEventDto.userId(),
+                eventStartEventDto.nameOwner(), eventStartEventDto.titleEvent());
+
+        List<UserDto> attendeesIds = eventStartEventDto.attendeesUser();
+
+        if (attendeesIds.isEmpty()) {
+            log.info("There are no subscribers to the event {}.", eventStartEventDto.eventId());
+        } else {
+           // List<UserDto> userDtos = userServiceClient.getUser(userIdsClientDto);
+
+            attendeesIds.forEach(user -> eventNotificationService.send(user
+                    , text));
+        }
+        log.info("Received EventStartEvent: {} ", eventStartEventDto.nameOwner());
+        ack.acknowledge();
     }
 }

@@ -11,8 +11,6 @@ public enum TimeLeft {
     HOUR_1(60, "event.before.1hour"),
     HOURS_5(300, "event.before.5hour"),
     HOURS_24(1440, "event.before.24hour");
-    ;
-
     private final int minutes;
     private final String messageKey;
 }

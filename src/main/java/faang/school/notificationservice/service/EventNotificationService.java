@@ -9,18 +9,15 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class EventNotificationService implements NotificationService{
+public class EventNotificationService {
 
-    UserServiceClient userServiceClient;
 
-    @Override
-    public void send(Long id, String message) {
-        UserDto user = userServiceClient.getById(id);
-        log.info("{} {} - {}", id, user.getUsername(), message);
+    public void send(UserDto userDto, String message) {
+        log.info("{} - {}", userDto.getId(), message);
     }
 
-    @Override
+
     public UserDto.PreferredContact getPreferredContact() {
-        return null;
+        return UserDto.PreferredContact.PHONE;
     }
 }

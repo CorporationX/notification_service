@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 public class NotificationServiceImpl implements NotificationService{
 
     @Override
-    public void send(Long id, String message) {
-        log.info("{} - {}", id, message);
+    public void send(UserDto userDto, String message) {
+        log.info("{} - {}", userDto.getId(), message);
     }
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {
-        return null;
+        return UserDto.PreferredContact.PHONE;
     }
 }

@@ -24,9 +24,8 @@ public class EventMessageConsumer implements MessageBuilder<EventStartEventDto> 
     @Override
     public String buildMessage(EventStartEventDto eventStartEventDto, Locale locale) {
         ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
+        String text = bundle.getString(eventStartEventDto.timeLeft().getMessageKey());
 
-            String text = bundle.getString(eventStartEventDto.timeLeft().getMessageKey());
-
-        return MessageFormat.format(text, eventStartEventDto.title());
+        return MessageFormat.format(text, eventStartEventDto.titleEvent(), eventStartEventDto.nameOwner());
     }
 }
