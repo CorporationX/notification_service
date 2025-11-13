@@ -1,6 +1,7 @@
 package faang.school.notificationservice.service.telegram;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.NotificationException;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +15,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Slf4j
 @Service
-public class TelegramServiceImpl extends TelegramLongPollingBot implements NotificationService{
+public class TelegramServiceImpl extends TelegramLongPollingBot implements NotificationService {
 
     public TelegramServiceImpl(@Value("${telegram.token}") String botToken) {
         super(botToken);
@@ -31,7 +32,7 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Notif
     }
 
     private void executeMessage(long chatId, String messageText) {
-        if (chatId < 0 && messageText == null) {
+        if (chatId < 0 || messageText == null) {
             return;
         }
         SendMessage message = new SendMessage();
@@ -41,7 +42,7 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Notif
             execute(message);
         } catch (TelegramApiException e) {
             log.error("Error sending message via telegram");
-            throw new RuntimeException(e);
+            throw new NotificationException("Error for send notification telegram, %d chatId".formatted(chatId));
         }
     }
 

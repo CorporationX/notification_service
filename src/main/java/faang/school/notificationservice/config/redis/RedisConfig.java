@@ -1,7 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.config.serializer.GenericJacksonConfig;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,9 +20,8 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
-    @Valid
     private final RedisProperties redisProperties;
-    private final GenericJacksonConfig generic;
+    private final GenericJacksonConfig genericJackson;
     private final Map<MessageListenerAdapter, ChannelTopic> adaptersTopics = new HashMap<>();
 
     @Bean
@@ -40,7 +38,7 @@ public class RedisConfig {
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory());
-        GenericJackson2JsonRedisSerializer genericJackson = generic.getGenericJackson();
+        GenericJackson2JsonRedisSerializer genericJackson = this.genericJackson.getGenericJackson();
         StringRedisSerializer stringSerializer = new StringRedisSerializer();
         template.setKeySerializer(stringSerializer);
         template.setValueSerializer(genericJackson);
