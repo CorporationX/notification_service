@@ -6,13 +6,10 @@ import faang.school.notificationservice.exception.NotificationException;
 import faang.school.notificationservice.exception.UserNotFoundException;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
 
-
-@Component
 @RequiredArgsConstructor
 public abstract class AbstractNotification {
     private final UserServiceClient userServiceClient;
