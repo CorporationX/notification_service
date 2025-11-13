@@ -1,6 +1,8 @@
 package faang.school.notificationservice.config.context;
 
 import faang.school.notificationservice.listener.RecommendationRequestListener;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,14 +19,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 public class RedisConfiguration {
 
-    @Value("{spring.data.redis.host}")
+    @Value("${spring.data.redis.host}")
     private String redisHost;
 
-    @Value("{spring.data.redis.port}")
+    @Value("${spring.data.redis.port}")
     private int redisPort;
-
-    @Value("{spring.data.redis.channel.recommendation}")
-    private String recommendRequestTopic;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -42,8 +41,8 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public ChannelTopic recommendRequestTopic() {
-        return new ChannelTopic(recommendRequestTopic);
+    public ChannelTopic recommendRequestTopic(@Value("{spring.data.redis.channel.recommendation}") String topicName) {
+        return new ChannelTopic(topicName);
     }
 
     @Bean
@@ -52,10 +51,22 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(MessageListenerAdapter recommendRequestListener) {
+    public RedisMessageListenerContainer redisMessageListenerContainer(
+            Map<String, ChannelTopic> topics,
+            Map<String, MessageListenerAdapter> listeners) {
+
+        Map<MessageListenerAdapter, ChannelTopic> listenersAndTopics = new HashMap<>();
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(recommendRequestListener, recommendRequestTopic());
+
+        topics.forEach((topicBeanName, topic) -> {
+            String listenerBeanName = topicBeanName.replace("Listener", "Topic");
+            MessageListenerAdapter listener = listeners.get(listenerBeanName);
+            listenersAndTopics.put(listener, topic);
+        });
+
+        listenersAndTopics.forEach(container::addMessageListener);
+
         return container;
     }
 }

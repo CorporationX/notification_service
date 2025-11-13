@@ -7,26 +7,23 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import java.util.List;
 import java.util.Locale;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RecommendationRequestListener extends AbstractEventListener<RecommendationRequestEvent>
-        implements MessageListener {
+public class RecommendationRequestListener extends AbstractEventListener<RecommendationRequestEvent> {
 
-    public RecommendationRequestListener(ObjectMapper objectMapper,
-                                         UserServiceClient userServiceClient,
-                                         List<NotificationService> notificationServices,
-                                         List<MessageBuilder<RecommendationRequestEvent>> messageBuilders) {
-        super(objectMapper, userServiceClient, notificationServices, messageBuilders);
+    public RecommendationRequestListener(
+            ObjectMapper objectMapper,
+            UserServiceClient userServiceClient,
+            List<NotificationService> notificationServices,
+            List<MessageBuilder<RecommendationRequestEvent>> messageBuilders,
+            Class<RecommendationRequestEvent> eventType) {
+        super(objectMapper, userServiceClient, notificationServices, messageBuilders, eventType);
     }
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
-        handleEvent(message, RecommendationRequestEvent.class, event -> {
-            String text = getMessage(event, Locale.UK);
-            sendNotification(event.recommenderId(), text);
-        });
+    protected void processEvent(RecommendationRequestEvent event) {
+        String text = getMessage(event, Locale.UK);
+        sendNotification(event.recommenderId(), text);
     }
 }
