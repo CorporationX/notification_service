@@ -24,7 +24,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail:3.0.6")
     implementation("org.telegram:telegrambots-spring-boot-starter:6.7.0")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("org.springframework.retry:spring-retry")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
+    annotationProcessor("org.springframework:spring-aspects")
 
     /**
      * Database
