@@ -1,6 +1,5 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.mentorship.MentorshipOfferedEvent;
@@ -29,6 +28,18 @@ public class MentorshipOfferedEventListenerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private final MentorshipOfferedEvent mentorshipOfferedEvent = MentorshipOfferedEvent.builder()
+            .mentorshipRequestId(3L)
+            .mentorId(1L)
+            .menteeId(2L)
+            .build();
+
+    private final UserDto userDto = UserDto.builder()
+            .id(mentorshipOfferedEvent.mentorId())
+            .preference(UserDto.PreferredContact.SMS)
+            .locale(Locale.CANADA)
+            .build();
+
     @Captor
     private ArgumentCaptor<UserDto> userDtoArgumentCaptor;
 
@@ -43,6 +54,7 @@ public class MentorshipOfferedEventListenerTest {
 
     @BeforeEach
     void setup() {
+        when(notificationService.getPreferredContact()).thenReturn(userDto.getPreference());
         mentorshipOfferedEventListener = new MentorshipOfferedEventListener(objectMapper,
                 List.of(notificationService), userService, mentorshipOfferedEventMessageBuilder);
 
@@ -50,25 +62,12 @@ public class MentorshipOfferedEventListenerTest {
     }
 
     @Test
-    void testOnMessage(){
-        MentorshipOfferedEvent mentorshipOfferedEvent = MentorshipOfferedEvent.builder()
-                .mentorshipRequestId(3L)
-                .mentorId(1L)
-                .menteeId(2L)
-                .build();
-
-        UserDto userDto = UserDto.builder()
-                .id(mentorshipOfferedEvent.mentorId())
-                .preference(UserDto.PreferredContact.SMS)
-                .locale(Locale.CANADA)
-                .build();
-
+    void testOnMessage() {
         String messageText = "test text";
 
         when(mentorshipOfferedEventMessageBuilder.buildMessage(Mockito.any(MentorshipOfferedEvent.class),
                 Mockito.any(Locale.class))).thenReturn(messageText);
         when(userService.getUser(userDto.getId())).thenReturn(userDto);
-        when(notificationService.getPreferredContact()).thenReturn(userDto.getPreference());
 
         mentorshipOfferedEventListener.onMessage(mentorshipOfferedEvent);
 
