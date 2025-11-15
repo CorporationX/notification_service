@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.mentorship.MentorshipOfferedEvent;
 import faang.school.notificationservice.messaging.message_builder.MentorshipOfferedEventMessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import faang.school.notificationservice.service.user.UserService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +45,7 @@ public class MentorshipOfferedEventListener {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    @KafkaListener(topics = "${kafka.topic.mentorship-offer}")
+    @KafkaListener(topics = "${kafka.topics.mentorship-offer}")
     public void onMessage(MentorshipOfferedEvent mentorshipOfferedEvent) {
 
         UserDto mentor = userService.getUser(mentorshipOfferedEvent.mentorId());

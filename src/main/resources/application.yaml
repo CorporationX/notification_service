@@ -31,10 +31,13 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       properties:
         spring.json.trusted.packages: "*"
+    listener:
+      ack-mode: manual
 
 kafka:
-  topic:
+  topics:
     mentorship-offer: mentorship_offer_topic
+    follower: follower_topic
 
   messages:
     basename: messages
@@ -45,6 +48,8 @@ server:
 logging:
   level:
     root: info
+    org.apache.kafka: warn
+    org.springframework.kafka: debug
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
