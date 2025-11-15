@@ -21,8 +21,12 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Value("${telegram.bot.username}")
     private String botUsername;
 
-    @Value("${telegram.bot.token}")
-    private String botToken;
+    @Value("${telegram.bot.welcome-message}")
+    private String welcomeMessage;
+
+    public TelegramBot(@Value("${telegram.bot.token}") String botToken) {
+        super(botToken);
+    }
 
     @Retryable(
             retryFor = TelegramApiException.class,
@@ -30,21 +34,15 @@ public class TelegramBot extends TelegramLongPollingBot {
             backoff = @Backoff(delayExpression = "${telegram.notification.retry-delay-ms:1000}")
     )
     public void sendNotification(Long chatId, String message) {
-        SendMessage sendMessage = SendMessage.builder()
-                .chatId(chatId)
-                .text(message)
-                .build();
-        try {
-            execute(sendMessage); // Sending our message object to user
-        } catch (TelegramApiException e) {
-            log.error("Error sending message to user", e);
-            throw new RuntimeException(e);
-        }
+       sendMessage(chatId, message);
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            long chatId = update.getMessage().getChatId();
+            sendMessage(chatId, welcomeMessage);
+        }
     }
 
     @Override
@@ -55,5 +53,18 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public void onRegister() {
         super.onRegister();
+    }
+
+    private void sendMessage(long chatId, String text) {
+        SendMessage message = SendMessage.builder()
+                .chatId(String.valueOf(chatId))
+                .text(text).build();
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            log.error("Error sending message to user", e);
+            throw new RuntimeException(e);
+        }
     }
 }
