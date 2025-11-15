@@ -22,6 +22,20 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
+  kafka:
+    bootstrap-servers: localhost:9094
+    consumer:
+      group-id: notification-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+kafka:
+  topic:
+    mentorship-offer: mentorship_offer_topic
+
   messages:
     basename: messages
 
@@ -37,10 +51,16 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
-
-project-service:
+services:
+  project-service:
     host: localhost
     port: 8082
-user-service:
+  user-service:
     host: localhost
     port: 8080
+    servlet:
+      context-path: /api
+    retryable:
+      maxAttempts: 3
+      delay: 1000
+      multiplier: 2
