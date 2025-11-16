@@ -19,18 +19,14 @@ public class SmsNotificationService implements NotificationService {
     @Override
     public void send(UserDto user, String message) {
         String phone = user.getPhone();
-        if (phone == null || phone.isBlank()) {
-            log.warn("User {} has no phone number. SMS not sent.", user.getId());
+
+        if (!isUserPhoneValid(phone)) {
+            log.warn("User {} has invalid or empty phone number: {}", user.getId(), phone);
             return;
         }
 
-        if (!phone.matches("\\d{11}")) {
-            log.warn("Invalid phone format: {}", phone);
-            return;
-        }
-
-        String url = UriComponentsBuilder.fromHttpUrl(properties.url())
-                .queryParam("api_id", properties.key())
+        String url = UriComponentsBuilder.fromHttpUrl(properties.getUrl())
+                .queryParam("api_id", properties.getKey())
                 .queryParam("to", phone)
                 .queryParam("msg", message)
                 .queryParam("json", 1)
@@ -46,5 +42,9 @@ public class SmsNotificationService implements NotificationService {
     @Override
     public UserDto.PreferredContact getPreferredContact() {
         return UserDto.PreferredContact.PHONE;
+    }
+
+    private boolean isUserPhoneValid(String phone) {
+        return phone != null && !phone.isBlank() && phone.matches("\\d{11}");
     }
 }

@@ -57,5 +57,5 @@ out/
 # ===== Environment / Secrets =====
 .env
 .env.*
-application-secrets.yml
-application-secrets.yaml
+src/main/resources/application-secrets.yml
+src/main/resources/application-secrets.yaml
