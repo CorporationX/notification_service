@@ -37,7 +37,7 @@ public class EmailService implements NotificationService {
                 return null;
             });
         } catch (MailSendException e) {
-            throw new NotificationException("Email service temporarily unavailable for: %s".formatted(userEmail), e);
+            throw new NotificationException("Email service temporarily unavailable for: %s".formatted(userEmail));
         }
     }
 
