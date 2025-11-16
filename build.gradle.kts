@@ -60,8 +60,10 @@ dependencies {
     /**
      * Kafka
      */
-    implementation("org.apache.kafka:kafka-clients:3.8.0")
-    implementation("org.springframework.kafka:spring-kafka")
+    dependencies {
+        implementation("org.springframework.kafka:spring-kafka:3.1.6")
+        implementation("org.apache.kafka:kafka-clients:3.6.0")
+    }
 }
 
 tasks.withType<Test> {
