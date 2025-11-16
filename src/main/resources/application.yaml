@@ -24,6 +24,8 @@ spring:
 
   messages:
     basename: messages
+  profiles:
+    active: local
 
 server:
   port: 8083
@@ -37,6 +39,10 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+
+    notification:
+      max-retry-attempts: 3
+      retry-delay-ms: 1000
 
 project-service:
     host: localhost

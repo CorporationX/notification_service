@@ -1,12 +1,19 @@
 package faang.school.notificationservice.dto;
 
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
 public class UserDto {
-    private long id;
+    @NotNull
+    private Long id;
+    @NotNull
     private String username;
+    @NotNull
     private String email;
+    @NotNull
     private String phone;
     private PreferredContact preference;
 
