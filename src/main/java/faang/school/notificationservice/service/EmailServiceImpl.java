@@ -10,10 +10,10 @@ public class EmailServiceImpl implements NotificationService {
     @Override
     public void send(UserDto user, String message) {
         // Stub, to replace with real implementation.
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
+        if (user.email() == null || user.email().isBlank()) {
             throw new IllegalArgumentException("User email is empty");
         }
-        log.info("EMAIL to {}: {}", user.getEmail(), message);
+        log.info("EMAIL to {}: {}", user.email(), message);
     }
 
     @Override

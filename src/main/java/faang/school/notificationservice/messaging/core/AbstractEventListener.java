@@ -3,22 +3,51 @@ package faang.school.notificationservice.messaging.core;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.dto.UserDto.PreferredContact;
+import faang.school.notificationservice.error.UserNotFoundException;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import feign.FeignException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
-@RequiredArgsConstructor
 public abstract class AbstractEventListener<E> {
+
     private final ObjectMapper mapper;
-    protected final UserServiceClient userServiceClient;
-    private final List<NotificationService> notificationServices;
-    private final List<MessageBuilder<? extends E>> messageBuilders;
+    private final UserServiceClient userServiceClient;
+    private final Map<Class<?>, MessageBuilder<?>> buildersByType;
+    private final Map<PreferredContact, NotificationService> notificationServiceByPreference;
+
+    @Value("${app.core.max_logged_json_length:200}")
+    private int maxLoggedJsonLength;
+
+    protected AbstractEventListener(ObjectMapper mapper,
+                                    UserServiceClient userServiceClient,
+                                    List<NotificationService> notificationServices,
+                                    List<MessageBuilder<?>> messageBuilders) {
+
+        this.mapper = mapper;
+        this.userServiceClient = userServiceClient;
+
+        this.buildersByType = messageBuilders.stream()
+                .collect(Collectors.toUnmodifiableMap(
+                        MessageBuilder::getInstance,
+                        Function.identity()
+                ));
+
+        this.notificationServiceByPreference = notificationServices.stream()
+                .collect(Collectors.toUnmodifiableMap(
+                        NotificationService::getPreferredContact,
+                        Function.identity()
+                ));
+    }
 
     /**
      * Тип события, который слушает конкретный листенер.
@@ -31,39 +60,48 @@ public abstract class AbstractEventListener<E> {
     protected E readEvent(String json) {
         try {
             E event = mapper.readValue(json, getEventType());
+
             if (log.isDebugEnabled()) {
                 log.debug("Deserialized {}: {}",
                         getEventType().getSimpleName(),
-                        abbreviate(json, 200));
+                        abbreviate(json, maxLoggedJsonLength));
             }
+
             return event;
+
         } catch (Exception e) {
             log.error("Failed to deserialize {} from JSON ({} chars)",
                     getEventType().getSimpleName(),
                     json != null ? json.length() : 0, e);
-            throw new IllegalArgumentException("Failed to deserialize event " + getEventType(), e);
+
+            throw new IllegalArgumentException(
+                    String.format("Failed to deserialize event %s", getEventType().getSimpleName()), e
+            );
         }
     }
 
     /**
      * Подбор MessageBuilder по классу события и сборка текста.
      */
-    public String getMessage(E event, Locale locale) {
+    protected String getMessage(E event, Locale locale) {
         Class<?> type = event.getClass();
-        @SuppressWarnings("unchecked")
-        MessageBuilder<E> builder = (MessageBuilder<E>) messageBuilders.stream()
-                .filter(b -> b.getInstance().equals(type))
-                .findFirst()
-                .orElseThrow(() -> {
-                    log.warn("No MessageBuilder found for event type {}", type.getName());
-                    return new IllegalStateException("No message builder for event type " + type.getName());
-                });
 
-        Locale effectiveLocale = (locale == null ? Locale.getDefault() : locale);
+        @SuppressWarnings("unchecked")
+        MessageBuilder<E> builder = (MessageBuilder<E>) buildersByType.get(type);
+
+        if (builder == null) {
+            log.warn("No MessageBuilder found for event type {}", type.getName());
+            throw new IllegalStateException(
+                    String.format("No message builder for event type %s", type.getName()));
+        }
+
+        Locale effectiveLocale = (locale != null ? locale : Locale.getDefault());
 
         if (log.isTraceEnabled()) {
-            log.trace("Using {} for type {}, locale={}",
-                    builder.getClass().getSimpleName(), type.getSimpleName(), effectiveLocale);
+            log.trace("Using {} for {}, locale={}",
+                    builder.getClass().getSimpleName(),
+                    type.getSimpleName(),
+                    effectiveLocale);
         }
 
         String message = builder.buildMessage(event, effectiveLocale);
@@ -72,41 +110,71 @@ public abstract class AbstractEventListener<E> {
             log.debug("Built message for {} (len={}): {}",
                     type.getSimpleName(),
                     message != null ? message.length() : 0,
-                    abbreviate(message, 200));
+                    abbreviate(message, maxLoggedJsonLength));
         }
 
         return message;
     }
 
     /**
-     * Загрузка пользователя, выбор сервиса по preference и отправка.
+     * Загрузка пользователя из user-service с нормальным маппингом ошибок.
+     * UserNotFoundException — бизнес-кейс (404).
+     * IllegalStateException — техническая ошибка (ретраи/DLT).
      */
-    public void sendNotification(long userId, String message) {
-        final UserDto user;
+    protected UserDto loadUser(long userId) {
         try {
-            user = userServiceClient.getUser(userId);
+            UserDto user = userServiceClient.getUser(userId);
             if (log.isDebugEnabled()) {
-                log.debug("Loaded user {} with preference {}", userId, user.getPreference());
+                log.debug("Loaded user {} with preference {}", userId, user.preference());
             }
+            return user;
         } catch (FeignException.NotFound nf) {
             log.warn("User {} not found in user-service", userId);
-            throw new faang.school.notificationservice.error.UserNotFoundException(userId);
+            throw new UserNotFoundException(userId);
         } catch (FeignException fx) {
             log.error("User-service error {} for userId={}", fx.status(), userId, fx);
-            throw new IllegalStateException("User service error: " + fx.status() + " for userId=" + userId, fx);
+            throw new IllegalStateException(
+                    String.format("User service error: %s for userId=%s", fx.status(), userId),
+                    fx
+            );
+        }
+    }
+
+    /**
+     * Универсальная нормализация locale с падением на default.
+     */
+    protected Locale resolveLocale(String userLocale, String defaultLocaleTag) {
+        if (userLocale == null || userLocale.isBlank()) {
+            return Locale.forLanguageTag(defaultLocaleTag);
+        }
+        return Locale.forLanguageTag(userLocale);
+    }
+
+    /**
+     * Выбор сервиса по preference и отправка.
+     * Здесь больше нет вызовов user-service — работаем с уже загруженным user.
+     */
+    protected void sendNotification(UserDto user, String message) {
+        final PreferredContact preferred;
+        try {
+            preferred = user.preferredContact();
+        } catch (IllegalArgumentException ex) {
+            log.error("Unknown preferred contact '{}' for user {}", user.preference(), user.id(), ex);
+            throw new IllegalStateException(
+                    String.format("Unknown preferred contact '%s' for user %s",
+                            user.preference(), user.id()),
+                    ex
+            );
         }
 
-        NotificationService service = notificationServices.stream()
-                .filter(s -> s.getPreferredContact() == user.getPreference())
-                .findFirst()
-                .orElseThrow(() -> {
-                    log.error("No NotificationService matches preference {} for user {}",
-                            user.getPreference(), userId);
-                    return new IllegalStateException("No NotificationService for contact " + user.getPreference());
-                });
+        NotificationService service = notificationServiceByPreference.get(preferred);
+        if (service == null) {
+            log.error("No NotificationService matches preference {} for user {}", preferred, user.id());
+            throw new IllegalStateException("No NotificationService for contact " + preferred);
+        }
 
         log.info("Sending notification via {} to user {} (preference={})",
-                service.getClass().getSimpleName(), userId, user.getPreference());
+                service.getClass().getSimpleName(), user.id(), preferred);
 
         service.send(user, message);
     }

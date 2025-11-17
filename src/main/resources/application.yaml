@@ -9,29 +9,28 @@ spring:
         follower: follower_channel
         achievement: achievement_channel
 
-  # Kafka вместо Redis
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: notification-service
-      auto-offset-reset: latest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    bootstrap-servers: localhost:9092
+    properties:
+      security:
+        protocol: PLAINTEXT
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
       properties:
-        # при необходимости: максимальный размер, опции ретраев и т.д.
-        max.poll.interval.ms: 300000 # 5 минут
-        max.poll.records: 100
-    listener:
-      ack-mode: record
+        spring.json.add.type.headers: false
 
-# Топики приложения (Kafka)
 app:
+  core:
+    max_logged_json_length: 200
   topics:
-    follower: ${TOPIC_FOLLOWER:follower}
-    achievement: ${TOPIC_ACHIEVEMENT:achievement}
+    subscription-create-events: ${TOPIC_FOLLOWER:subscription-create-events}
+    achievement-create-events: ${TOPIC_ACHIEVEMENT:achievement-create-events}
   locale:
     default: en
-    new-follower: en
 
   mail:
     host: smtp.gmail.com
@@ -50,6 +49,8 @@ app:
 
   messages:
     basename: messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
 
 server:
   port: 8083
@@ -57,7 +58,7 @@ server:
 logging:
   level:
     root: info
-    faang.school.notificationservice: debug
+    faang.school.notificationservice: info
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
@@ -68,10 +69,18 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   enabled: ${VONAGE_ENABLED:true}
   defaultCountry: ${VONAGE_DEFAULT_COUNTRY:RU}
 
-project-service:
-  host: localhost
-  port: 8082
 user-service:
   host: localhost
   port: 8080
+  context-path: /api/v1
+
+project-service:
+  host: localhost
+  port: 8082
+  context-path: /api/v1
+
+payment-service:
+  host: localhost
+  port: 9080
+  context-path: /api/v1
 

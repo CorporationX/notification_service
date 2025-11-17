@@ -2,10 +2,12 @@ package faang.school.notificationservice.messaging.listeners;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.error.UserNotFoundException;
+import faang.school.notificationservice.events.NewFollowerEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.messaging.core.AbstractEventListener;
 import faang.school.notificationservice.service.NotificationService;
-import faang.school.notificationservice.events.NewFollowerEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -18,13 +20,13 @@ import java.util.Locale;
 @Component
 public class NewFollowerListener extends AbstractEventListener<NewFollowerEvent> {
 
-    @Value("${app.locale.new-follower:en}")
-    private String localeTag;
+    @Value("${app.locale.default:en}")
+    private String defaultLocale;
 
     public NewFollowerListener(ObjectMapper mapper,
                                UserServiceClient userServiceClient,
                                List<NotificationService> notificationServices,
-                               List<MessageBuilder<? extends NewFollowerEvent>> messageBuilders) {
+                               List<MessageBuilder<?>> messageBuilders) {
         super(mapper, userServiceClient, notificationServices, messageBuilders);
     }
 
@@ -33,30 +35,34 @@ public class NewFollowerListener extends AbstractEventListener<NewFollowerEvent>
         return NewFollowerEvent.class;
     }
 
-    /**
-     * Consumes JSON events from Kafka, builds a localized message, and sends a notification
-     * using the user's preferred channel.
-     * Topic is configured in application.yaml under app.topics.follower
-     * Group id defaults to spring.kafka.consumer.group-id (or "notification-service").
-     */
     @KafkaListener(
-            topics = "${app.topics.follower}",
+            topics = "${app.topics.subscription-create-events}",
             groupId = "${spring.kafka.consumer.group-id:notification-service}"
     )
     public void onMessage(String json) {
+        NewFollowerEvent event = null;
         try {
-            NewFollowerEvent event = readEvent(json);
+            event = readEvent(json);
 
-            Locale locale = Locale.forLanguageTag(localeTag);
+            final UserDto receiver;
+            try {
+                receiver = loadUser(event.receiverId());
+            } catch (UserNotFoundException e) {
+                log.warn("Receiver with id {} not found, skip notification", event.receiverId());
+                return;
+            }
+
+            Locale locale = resolveLocale(receiver.locale(), defaultLocale);
 
             String message = getMessage(event, locale);
-            sendNotification(event.getTargetUserId(), message);
+            sendNotification(receiver, message);
 
             log.debug("Processed NewFollowerEvent followerId={} targetUserId={}",
-                    event.getFollowerId(), event.getFollowerId());
+                    event.actorId(), event.receiverId());
+
         } catch (Exception e) {
-            log.error("Failed to process NewFollowerEvent: {}", json, e);
-            throw e;
+            log.error("Failed to process NewFollowerEvent: event={} json={}", event, json, e);
+            throw e; // to Kafka error handler (retry/DLT)
         }
     }
 }

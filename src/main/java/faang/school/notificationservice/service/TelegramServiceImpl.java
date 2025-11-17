@@ -10,7 +10,7 @@ public class TelegramServiceImpl implements NotificationService {
     @Override
     public void send(UserDto user, String message) {
         // Stub, to replace with real implementation.
-        log.info("TELEGRAM to user {}: {}", user.getId(), message);
+        log.info("TELEGRAM to user {}: {}", user.id(), message);
     }
 
     @Override

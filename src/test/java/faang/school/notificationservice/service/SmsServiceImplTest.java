@@ -15,13 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SmsServiceImplTest {
@@ -29,6 +27,8 @@ class SmsServiceImplTest {
     private static final String DEFAULT_PHONE = "+78888888888";
     private static final String EMPTY_PHONE_SPACES = "   ";
     private static final String MESSAGE_TEXT = "Hi!";
+    private static final String DEFAULT_LOCALE = "en";
+    private static final String DEFAULT_PREFERENCE = "PHONE";
 
     @Mock
     private SmsGateway smsGateway;
@@ -47,9 +47,25 @@ class SmsServiceImplTest {
         smsServiceImpl = new SmsServiceImpl(notificationMapper, smsGateway);
     }
 
+    /**
+     * Helper to build a UserDto for tests.
+     * Only phone and preference really matter for SmsServiceImpl.
+     */
+    private static UserDto newUser(Long id, String phone) {
+        return new UserDto(
+                id,
+                null,
+                null,
+                phone,
+                null,
+                DEFAULT_LOCALE,
+                DEFAULT_PREFERENCE
+        );
+    }
+
     @Test
     void send_givenValidInput_whenSending_thenCallsSmsGatewayWithCorrectArguments() {
-        UserDto user = new UserDto(1L, DEFAULT_PHONE, UserDto.PreferredContact.PHONE);
+        UserDto user = newUser(1L, DEFAULT_PHONE);
 
         assertDoesNotThrow(() -> smsServiceImpl.send(user, MESSAGE_TEXT));
         verify(smsGateway, times(1)).send(DEFAULT_PHONE, MESSAGE_TEXT);
@@ -57,8 +73,8 @@ class SmsServiceImplTest {
 
     @Test
     void send_givenInvalidPhone_whenValidating_thenThrowsSmsSendException() {
-        UserDto invalidUserNullPhone = new UserDto(1L, null, UserDto.PreferredContact.PHONE);
-        UserDto invalidUserBlankPhone = new UserDto(1L, "", UserDto.PreferredContact.PHONE);
+        UserDto invalidUserNullPhone = newUser(1L, null);
+        UserDto invalidUserBlankPhone = newUser(1L, "");
 
         assertThrows(SmsSendException.class, () -> smsServiceImpl.send(invalidUserNullPhone, MESSAGE_TEXT));
         assertThrows(SmsSendException.class, () -> smsServiceImpl.send(invalidUserBlankPhone, MESSAGE_TEXT));
@@ -67,7 +83,8 @@ class SmsServiceImplTest {
 
     @Test
     void send_givenEmptyPhone_whenValidating_thenThrowsAndDoesNotCallClient() {
-        UserDto user = new UserDto(1L, EMPTY_PHONE_SPACES, UserDto.PreferredContact.PHONE);
+        UserDto user = newUser(1L, EMPTY_PHONE_SPACES);
+
         assertThrows(SmsSendException.class, () -> smsServiceImpl.send(user, MESSAGE_TEXT));
         verifyNoInteractions(smsClient);
     }

@@ -22,10 +22,10 @@ public class SmsServiceImpl implements NotificationService {
     @Override
     @Retryable(backoff = @Backoff(delay = 500, multiplier = 2.0))
     public void send(UserDto user, String message) {
-        if (user.getPhone() == null || user.getPhone().isBlank()) {
+        if (user.phone() == null || user.phone() .isBlank()) {
             throw new SmsSendException("User phone is empty");
         }
-        smsGateway.send(user.getPhone(), message);
+        smsGateway.send(user.phone() , message);
     }
 
     public void sendFromRequest(SendSmsRequestDto request, String message) {
