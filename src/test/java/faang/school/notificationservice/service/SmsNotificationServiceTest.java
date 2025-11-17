@@ -42,7 +42,7 @@ public class SmsNotificationServiceTest {
         lenient().when(requestHeadersUriSpec.uri(anyString()))
                 .thenReturn((WebClient.RequestHeadersSpec) requestHeadersSpec);
         lenient().when(requestHeadersUriSpec.uri(Mockito.<java.util.function.Function>any()))
-                .thenReturn((WebClient.RequestHeadersSpec) requestHeadersSpec);
+                .thenReturn(requestHeadersSpec);
 
         lenient().when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         lenient().when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.just("OK"));
