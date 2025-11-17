@@ -2,90 +2,98 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.config.provider.SmsRuProperties;
 import faang.school.notificationservice.dto.UserDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class SmsNotificationServiceTest {
 
     @Mock
-    private RestTemplate restTemplate;
+    private WebClient webClient;
+    @Mock
+    private WebClient.RequestHeadersUriSpec<?> requestHeadersUriSpec;
+    @Mock
+    private WebClient.RequestHeadersSpec<?> requestHeadersSpec;
+    @Mock
+    private WebClient.ResponseSpec responseSpec;
 
-    @InjectMocks
+    private SmsRuProperties properties = new SmsRuProperties("test-key", "https://sms.ru/sms/send");
     private SmsNotificationService service;
 
-    @Test
-    void sendValidPhoneCallsRestTemplate() {
-        SmsRuProperties properties = new SmsRuProperties("test-key", "https://sms.ru/sms/send");
-        SmsNotificationService service = new SmsNotificationService(restTemplate, properties);
+    @BeforeEach
+    void setup() {
+        service = new SmsNotificationService(webClient, properties);
 
+        lenient().when(webClient.get())
+                .thenReturn((WebClient.RequestHeadersUriSpec) requestHeadersUriSpec);
+
+        lenient().when(requestHeadersUriSpec.uri(anyString()))
+                .thenReturn((WebClient.RequestHeadersSpec) requestHeadersSpec);
+        lenient().when(requestHeadersUriSpec.uri(Mockito.<java.util.function.Function>any()))
+                .thenReturn((WebClient.RequestHeadersSpec) requestHeadersSpec);
+
+        lenient().when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+        lenient().when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.just("OK"));
+    }
+
+    @Test
+    void sendValidPhoneCallsWebClient() {
         UserDto user = new UserDto();
         user.setId(1L);
         user.setPhone("79991234567");
 
         service.send(user, "Test message");
 
-        verify(restTemplate, times(1)).getForObject(anyString(), eq(String.class));
+        Mockito.verify(webClient, times(1)).get();
     }
 
     @Test
-    void sendNullPhoneDoesNotCallRestTemplate() {
-        SmsRuProperties properties = new SmsRuProperties("test-key", "https://sms.ru/sms/send");
-        SmsNotificationService service = new SmsNotificationService(restTemplate, properties);
-
+    void sendNullPhoneDoesNotCallWebClient() {
         UserDto user = new UserDto();
         user.setId(1L);
         user.setPhone(null);
 
         service.send(user, "Test message");
 
-        verify(restTemplate, never()).getForObject(anyString(), eq(String.class));
+        Mockito.verify(webClient, never()).get();
     }
 
     @Test
-    void sendInvalidPhoneDoesNotCallRestTemplate() {
-        SmsRuProperties properties = new SmsRuProperties("test-key", "https://sms.ru/sms/send");
-        SmsNotificationService service = new SmsNotificationService(restTemplate, properties);
-
+    void sendInvalidPhoneDoesNotCallWebClient() {
         UserDto user = new UserDto();
         user.setId(1L);
         user.setPhone("12345");
 
         service.send(user, "Test message");
 
-        verify(restTemplate, never()).getForObject(anyString(), eq(String.class));
+        Mockito.verify(webClient, never()).get();
     }
 
     @Test
-    void sendBlankPhoneDoesNotCallRestTemplate() {
-        SmsRuProperties properties = new SmsRuProperties("test-key", "https://sms.ru/sms/send");
-        SmsNotificationService service = new SmsNotificationService(restTemplate, properties);
-
+    void sendBlankPhoneDoesNotCallWebClient() {
         UserDto user = new UserDto();
         user.setId(1L);
         user.setPhone("   ");
 
         service.send(user, "Test message");
 
-        verify(restTemplate, never()).getForObject(anyString(), eq(String.class));
+        Mockito.verify(webClient, never()).get();
     }
 
     @Test
     void getPreferredContact_ReturnsPhone() {
-        SmsRuProperties properties = new SmsRuProperties("test-key", "https://sms.ru/sms/send");
-        SmsNotificationService service = new SmsNotificationService(restTemplate, properties);
-
         assertEquals(UserDto.PreferredContact.PHONE, service.getPreferredContact());
     }
 }

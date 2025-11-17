@@ -2,12 +2,14 @@ package faang.school.notificationservice.client;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
+
 
 @Configuration
-public class RestTemplate {
+public class WebClientConfig {
 
     @Bean
-    public org.springframework.web.client.RestTemplate restTemplate() {
-        return new org.springframework.web.client.RestTemplate();
+    public WebClient webClient() {
+        return WebClient.builder().build();
     }
 }

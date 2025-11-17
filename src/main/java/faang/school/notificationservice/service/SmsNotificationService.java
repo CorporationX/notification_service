@@ -5,15 +5,14 @@ import faang.school.notificationservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class SmsNotificationService implements NotificationService {
 
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
     private final SmsRuProperties properties;
 
     @Override
@@ -25,15 +24,19 @@ public class SmsNotificationService implements NotificationService {
             return;
         }
 
-        String url = UriComponentsBuilder.fromHttpUrl(properties.getUrl())
-                .queryParam("api_id", properties.getKey())
-                .queryParam("to", phone)
-                .queryParam("msg", message)
-                .queryParam("json", 1)
-                .toUriString();
-
         try {
-            restTemplate.getForObject(url, String.class);
+            webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path(properties.getUrl())
+                            .queryParam("api_id", properties.getKey())
+                            .queryParam("to", phone)
+                            .queryParam("msg", message)
+                            .queryParam("json", 1)
+                            .build()
+                    )
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
         } catch (Exception e) {
             log.error("Failed to send SMS to {} via sms.ru", user.getPhone(), e);
         }
