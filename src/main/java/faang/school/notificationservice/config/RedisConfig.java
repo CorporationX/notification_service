@@ -42,16 +42,19 @@ public class RedisConfig {
         return new MessageListenerAdapter(goalCompletedEventListener);
     }
 
+    @Value("${spring.data.redis.channel.topic}")
+    private String goalCompletedTopic;
+
     @Bean
-    ChannelTopic topic() {
-        return new ChannelTopic("goal_completed_topic");
+    ChannelTopic goalCompletedTopic() {
+        return new ChannelTopic(goalCompletedTopic);
     }
 
     @Bean
     RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerEventListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        container.addMessageListener(followerEventListener, topic());
+        container.addMessageListener(followerEventListener, goalCompletedTopic());
         return container;
     }
 }
