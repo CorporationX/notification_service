@@ -1,4 +1,4 @@
-package faang.school.notificationservice.events;
+package faang.school.notificationservice.dto.events;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
@@ -8,7 +8,7 @@ import lombok.Builder;
  * Published to Kafka and consumed by notification-service.
  */
 @Builder
-public record NewFollowerEvent(
+public record NewFollowerEventDto(
         long actorId,
         long receiverId,
         String eventType

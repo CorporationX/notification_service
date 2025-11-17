@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.error.UserNotFoundException;
-import faang.school.notificationservice.events.NewFollowerEvent;
+import faang.school.notificationservice.dto.events.NewFollowerEventDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.messaging.core.AbstractEventListener;
 import faang.school.notificationservice.service.NotificationService;
@@ -18,7 +18,7 @@ import java.util.Locale;
 
 @Slf4j
 @Component
-public class NewFollowerListener extends AbstractEventListener<NewFollowerEvent> {
+public class NewFollowerListener extends AbstractEventListener<NewFollowerEventDto> {
 
     @Value("${app.locale.default:en}")
     private String defaultLocale;
@@ -31,8 +31,8 @@ public class NewFollowerListener extends AbstractEventListener<NewFollowerEvent>
     }
 
     @Override
-    protected Class<NewFollowerEvent> getEventType() {
-        return NewFollowerEvent.class;
+    protected Class<NewFollowerEventDto> getEventType() {
+        return NewFollowerEventDto.class;
     }
 
     @KafkaListener(
@@ -40,7 +40,7 @@ public class NewFollowerListener extends AbstractEventListener<NewFollowerEvent>
             groupId = "${spring.kafka.consumer.group-id:notification-service}"
     )
     public void onMessage(String json) {
-        NewFollowerEvent event = null;
+        NewFollowerEventDto event = null;
         try {
             event = readEvent(json);
 

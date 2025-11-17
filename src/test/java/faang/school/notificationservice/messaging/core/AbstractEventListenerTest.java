@@ -3,7 +3,7 @@ package faang.school.notificationservice.messaging.core;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.events.NewFollowerEvent;
+import faang.school.notificationservice.dto.events.NewFollowerEventDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import feign.FeignException;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class AbstractEventListenerTest {
 
-    private static final Class<NewFollowerEvent> EVENT_CLASS = NewFollowerEvent.class;
+    private static final Class<NewFollowerEventDto> EVENT_CLASS = NewFollowerEventDto.class;
 
     private static final long FID_ALICE = 1L;
     private static final long TID_ALICE = 2L;
@@ -53,11 +53,11 @@ class AbstractEventListenerTest {
     @Mock
     NotificationService email;
     @Mock
-    MessageBuilder<NewFollowerEvent> builder;
+    MessageBuilder<NewFollowerEventDto> builder;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private AbstractEventListener<NewFollowerEvent> listener;
+    private AbstractEventListener<NewFollowerEventDto> listener;
 
     private void initListener(List<NotificationService> services,
                               List<MessageBuilder<?>> builders) {
@@ -68,7 +68,7 @@ class AbstractEventListenerTest {
                 builders
         ) {
             @Override
-            protected Class<NewFollowerEvent> getEventType() {
+            protected Class<NewFollowerEventDto> getEventType() {
                 return EVENT_CLASS;
             }
         };
@@ -76,8 +76,8 @@ class AbstractEventListenerTest {
 
     private void initBuilderDefaults() {
         doReturn(EVENT_CLASS).when(builder).getInstance();
-        when(builder.buildMessage(any(NewFollowerEvent.class), any(Locale.class)))
-                .thenAnswer(inv -> "MSG:" + ((NewFollowerEvent) inv.getArgument(0)).getKey());
+        when(builder.buildMessage(any(NewFollowerEventDto.class), any(Locale.class)))
+                .thenAnswer(inv -> "MSG:" + ((NewFollowerEventDto) inv.getArgument(0)).getKey());
     }
 
     private void initDefaultListener() {
@@ -88,8 +88,8 @@ class AbstractEventListenerTest {
         initListener(List.of(sms, email), List.of(builder));
     }
 
-    private static NewFollowerEvent newEvent(long followerId, long targetUserId, String followerName) {
-        return new NewFollowerEvent(followerId, targetUserId, followerName);
+    private static NewFollowerEventDto newEvent(long followerId, long targetUserId, String followerName) {
+        return new NewFollowerEventDto(followerId, targetUserId, followerName);
     }
 
     private static UserDto newUser(long id, String phone, String locale, String preference) {
