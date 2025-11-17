@@ -15,7 +15,6 @@ import java.util.Locale;
 public class NewFollowerMessageBuilder implements MessageBuilder<NewFollowerEventDto> {
 
     private final MessageSource messageSource;
-    private final UserServiceClient userClient;
 
     @Override
     public Class<?> getInstance() {
@@ -24,10 +23,9 @@ public class NewFollowerMessageBuilder implements MessageBuilder<NewFollowerEven
 
     @Override
     public String buildMessage(NewFollowerEventDto event, Locale locale) {
-        UserDto actorUserDto = userClient.getUser(event.actorId());
         return messageSource.getMessage(
                 "follower.new.notification.message",
-                new Object[]{actorUserDto.username()},
+                new Object[]{event.followerDisplayName()},
                 locale
         );
     }

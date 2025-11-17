@@ -153,7 +153,7 @@ class AbstractEventListenerTest {
         var json = MAPPER.writeValueAsString(newEvent(FID_BOB, TID_BOB, NAME_BOB));
         var e = listener.readEvent(json);
 
-        assertEquals(NAME_BOB, e.eventType());
+        assertEquals(NAME_BOB, e.followerDisplayName());
         assertEquals(FID_BOB, e.actorId());
         assertEquals(TID_BOB, e.receiverId());
 

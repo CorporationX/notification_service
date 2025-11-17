@@ -11,7 +11,7 @@ import lombok.Builder;
 public record NewFollowerEventDto(
         long actorId,
         long receiverId,
-        String eventType
+        String followerDisplayName
 ) {
     /**
      * Computed Kafka message key: actorId-receiverId-eventType.

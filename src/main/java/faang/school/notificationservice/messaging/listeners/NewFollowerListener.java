@@ -36,7 +36,7 @@ public class NewFollowerListener extends AbstractEventListener<NewFollowerEventD
     }
 
     @KafkaListener(
-            topics = "${app.topics.subscription-create-events}",
+            topics = "${app.topics.follower-create-events}",
             groupId = "${spring.kafka.consumer.group-id:notification-service}"
     )
     public void onMessage(String json) {

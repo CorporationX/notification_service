@@ -27,7 +27,7 @@ app:
   core:
     max_logged_json_length: 200
   topics:
-    subscription-create-events: ${TOPIC_FOLLOWER:subscription-create-events}
+    follower-create-events: ${TOPIC_FOLLOWER:follower-create-events}
     achievement-create-events: ${TOPIC_ACHIEVEMENT:achievement-create-events}
   locale:
     default: en
