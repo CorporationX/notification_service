@@ -8,6 +8,7 @@ import faang.school.notificationservice.service.NotificationService;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -17,32 +18,17 @@ import java.util.stream.Collectors;
 @Component
 public class AbstractEventListener {
 
-    private final ObjectMapper objectMapper;
-    private final UserServiceClient userServiceClient;
     private final Map<Class<?>, MessageBuilder> messageBuildersMap;
     private final Map<UserDto.PreferredContact, NotificationService> notificationServicesMap;
 
     public AbstractEventListener(
-            ObjectMapper objectMapper,
-            UserServiceClient userServiceClient,
             List<NotificationService> notificationServices,
             List<MessageBuilder> messageBuilders) {
 
-        this.objectMapper = objectMapper;
-        this.userServiceClient = userServiceClient;
-        this.messageBuildersMap = messageBuilders.stream()
-                .collect(Collectors.toMap(
-                        builder -> {
-                            try {
-                                Method getInstance = builder.getClass().getMethod("getInstance");
-                                return (Class<?>) getInstance.invoke(builder);
-                            } catch (Exception e) {
-                                throw new RuntimeException("Cannot get instance type from MessageBuilder", e);
-                            }
-                        },
-                        Function.identity(),
-                        (existing, replacement) -> existing
-                ));
+        this.messageBuildersMap = new HashMap<>();
+        for (MessageBuilder builder : messageBuilders) {
+            this.messageBuildersMap.put(builder.getInstance(), builder);
+        }
 
         this.notificationServicesMap = notificationServices.stream()
                 .collect(Collectors.toMap(
@@ -59,10 +45,10 @@ public class AbstractEventListener {
         return builder.buildMessage(parameters, locale);
     }
 
-    public void sendNotification(Long userId, String message) {
-        UserDto user = userServiceClient.getUser(userId);
-        NotificationService service = notificationServicesMap.get(user.getPreference());
-        service.send(user, message);
+    public void sendNotification(UserDto userDto, String message) {
+
+        NotificationService service = notificationServicesMap.get(userDto.getPreference());
+        service.send(userDto, message);
     }
 
 }
