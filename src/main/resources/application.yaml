@@ -1,8 +1,4 @@
 spring:
-  http:
-    encoding.charset=UTF-8
-    encoding.enabled=true
-    encoding.force=true
 
   redis:
     host: ${REDIS_HOST}
