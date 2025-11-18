@@ -39,6 +39,22 @@ kafka:
   messages:
     basename: messages
 
+  kafka:
+    bootstrap-servers: localhost:9094
+    consumer:
+      group-id: notification-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+app:
+  kafka:
+    topics:
+      recommendation-received-events: "recommendation-received-events"
+
 server:
   port: 8083
 
