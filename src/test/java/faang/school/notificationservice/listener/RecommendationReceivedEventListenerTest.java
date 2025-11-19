@@ -1,8 +1,5 @@
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.notificationservice.dto.RecommendationReceivedEventDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.message_builder.RecommendationReceivedEventMessageBuilder;
@@ -35,16 +32,6 @@ public class RecommendationReceivedEventListenerTest {
     private final long author_id = DEFAULT_ID;
     private final long receiver_id = RECEIVER_ID;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    private final String jsonEvent = """
-            {
-            	"id": 16,
-            	"authorId": 1,
-            	"receiverId": 7,
-            	"createdAt": "2025-11-12T12:06:09"
-            }
-            """;
     private final RecommendationReceivedEventDto recommendationReceivedEventDto = RecommendationReceivedEventDto.builder()
             .id(recommendation_id)
             .authorId(author_id)
@@ -72,14 +59,10 @@ public class RecommendationReceivedEventListenerTest {
 
     @BeforeEach
     void prepareTestData() {
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         when(notificationService.getPreferredContact()).thenReturn(userDto.getPreference());
-        recommendationReceivedEventListener = new RecommendationReceivedEventListener(objectMapper,
-                userService,
+        recommendationReceivedEventListener = new RecommendationReceivedEventListener(userService,
                 recommendationReceivedEventMessageBuilder,
                 List.of(notificationService));
-        recommendationReceivedEventListener.init();
     }
 
     @Test
@@ -90,7 +73,7 @@ public class RecommendationReceivedEventListenerTest {
                 Mockito.any(Locale.class))).thenReturn(messageText);
         when(userService.getUser(userDto.getId())).thenReturn(userDto);
 
-        recommendationReceivedEventListener.handleRecommendationReceivedEvent(jsonEvent);
+        recommendationReceivedEventListener.handleRecommendationReceivedEvent(recommendationReceivedEventDto);
 
         verify(notificationService).send(userDtoArgumentCaptor.capture(), Mockito.eq(messageText));
         UserDto capturedUserDto = userDtoArgumentCaptor.getValue();

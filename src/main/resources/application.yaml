@@ -35,6 +35,7 @@ spring:
 kafka:
   topic:
     mentorship-offer: mentorship_offer_topic
+    recommendation-received-events: "recommendation_received_events"
 
   messages:
     basename: messages
@@ -49,11 +50,6 @@ kafka:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
-app:
-  kafka:
-    topics:
-      recommendation-received-events: "recommendation-received-events"
 
 server:
   port: 8083

@@ -1,14 +1,11 @@
 
 package faang.school.notificationservice.listener;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.RecommendationReceivedEventDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.message_builder.RecommendationReceivedEventMessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.user.UserService;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -21,17 +18,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class RecommendationReceivedEventListener {
-    private final ObjectMapper objectMapper;
     private final UserService userService;
     private final RecommendationReceivedEventMessageBuilder recommendationReceivedEventMessageBuilder;
     private final Map<UserDto.PreferredContact, NotificationService> notificationServiceMap;
 
-    public RecommendationReceivedEventListener(ObjectMapper objectMapper,
-                                               UserService userService,
+    public RecommendationReceivedEventListener(UserService userService,
                                                RecommendationReceivedEventMessageBuilder
                                                        recommendationReceivedEventMessageBuilder,
                                                List<NotificationService> notificationServices) {
-        this.objectMapper = objectMapper;
         this.userService = userService;
         this.recommendationReceivedEventMessageBuilder = recommendationReceivedEventMessageBuilder;
         this.notificationServiceMap = notificationServices.stream()
@@ -42,19 +36,12 @@ public class RecommendationReceivedEventListener {
                 );
     }
 
-    @PostConstruct
-    public void init() {
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
-
-    @KafkaListener(topics = "${app.kafka.topics.recommendation-received-events}")
-    public void handleRecommendationReceivedEvent(String jsonEvent) {
+    @KafkaListener(topics = "${kafka.topic.recommendation-received-events}")
+    public void handleRecommendationReceivedEvent(RecommendationReceivedEventDto jsonEvent) {
         try {
-            RecommendationReceivedEventDto recommendationReceivedEventDto =
-                    objectMapper.readValue(jsonEvent, RecommendationReceivedEventDto.class);
-            log.info("Successfully listen event from a recommendation-received-events topic");
-            UserDto recommendationReceiver = userService.getUser(recommendationReceivedEventDto.receiverId());
-            String message = recommendationReceivedEventMessageBuilder.buildMessage(recommendationReceivedEventDto,
+            log.info("Successfully listen event from a recommendation-received-events topic: {}", jsonEvent);
+            UserDto recommendationReceiver = userService.getUser(jsonEvent.receiverId());
+            String message = recommendationReceivedEventMessageBuilder.buildMessage(jsonEvent,
                     recommendationReceiver.getLocale());
 
             NotificationService service = notificationServiceMap.get(recommendationReceiver.getPreference());
