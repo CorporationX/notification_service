@@ -25,6 +25,5 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public UserDto.PreferredContact getPreferredContact() {
         return UserDto.PreferredContact.EMAIL;
-        return UserDto.PreferredContact.PHONE;
     }
 }
