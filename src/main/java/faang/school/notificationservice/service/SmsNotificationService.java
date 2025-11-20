@@ -2,6 +2,7 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.config.provider.SmsRuProperties;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.HandleSmsSendException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 public class SmsNotificationService implements NotificationService {
 
-    private final WebClient webClient;
+    private final WebClient smsRuWebClient;
     private final SmsRuProperties properties;
 
     @Override
@@ -25,7 +26,7 @@ public class SmsNotificationService implements NotificationService {
         }
 
         try {
-            webClient.get()
+            smsRuWebClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path(properties.getUrl())
                             .queryParam("api_id", properties.getKey())
@@ -37,7 +38,7 @@ public class SmsNotificationService implements NotificationService {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-        } catch (Exception e) {
+        } catch (HandleSmsSendException e) {
             log.error("Failed to send SMS to {} via sms.ru", user.getPhone(), e);
         }
     }

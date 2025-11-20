@@ -46,6 +46,14 @@ public class SmsNotificationServiceTest {
 
         lenient().when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         lenient().when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.just("OK"));
+
+        UserDto user = UserDto.builder()
+                .id(123L)
+                .username("testUser")
+                .email("email@email")
+                .phone("111222333")
+                .preference(UserDto.PreferredContact.TELEGRAM)
+                .build();
     }
 
     @Test
