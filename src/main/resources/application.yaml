@@ -35,6 +35,7 @@ spring:
         spring.json.use.type.headers: false
     topic:
       events: event.events
+      comments: comment.event
 
 
   messages:
