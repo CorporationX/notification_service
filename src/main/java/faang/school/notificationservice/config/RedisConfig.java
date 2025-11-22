@@ -36,6 +36,7 @@ public class RedisConfig {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
         return template;
     }
 
@@ -45,15 +46,15 @@ public class RedisConfig {
     }
 
     @Bean
-    ChannelTopic recommendationTopic(@Value ("${spring.data.redis.channel.receive-recommendation}") String topic) {
+    ChannelTopic recommendationTopic(@Value("${spring.data.redis.channel.receive-recommendation}") String topic) {
         return new ChannelTopic(topic);
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(Map<ChannelTopic, MessageListenerAdapter> listenerAdapterMap) {
+    RedisMessageListenerContainer redisContainer(Map<MessageListenerAdapter, ChannelTopic> listenerAdapterMap) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
-        listenerAdapterMap.forEach((k, v) -> container.addMessageListener(v, k));
+        listenerAdapterMap.forEach((container::addMessageListener));
         return container;
     }
 }

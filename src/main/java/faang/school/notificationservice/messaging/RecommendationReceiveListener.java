@@ -23,7 +23,7 @@ public class RecommendationReceiveListener extends AbstractEventListener<Recomme
     }
 
     @Override
-    protected void eventConsumer(RecommendationEvent event) {
+    public void eventConsumer(RecommendationEvent event) {
 
         sendNotification(event.receiverId(), getMessage(event, Locale.ENGLISH));
     }

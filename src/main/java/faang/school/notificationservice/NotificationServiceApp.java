@@ -15,6 +15,7 @@ public class NotificationServiceApp {
         new SpringApplicationBuilder(NotificationServiceApp.class)
                 .bannerMode(Banner.Mode.OFF)
                 .run(args);
+
     }
 
     @Bean
