@@ -2,6 +2,7 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.NotificationException;
+import faang.school.notificationservice.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -27,7 +31,7 @@ public class EmailService implements NotificationService {
     public void send(UserDto user, String message) {
         validateParams(user, message);
 
-        String userEmail = user.getEmail().trim();
+        String userEmail = user.getEmail();
 
         try {
             retryTemplate.execute(context -> {
@@ -56,16 +60,22 @@ public class EmailService implements NotificationService {
     }
 
     private void validateParams(UserDto user, String message) {
+        List<String> errors = new ArrayList<>();
+
         if (fromAddress == null || fromAddress.isEmpty()) {
-            throw new IllegalStateException("Sender email address is not configured");
+            errors.add("Sender email address is not configured");
         }
 
         if (user.getEmail() == null || user.getEmail().isEmpty()) {
-            throw new IllegalArgumentException("User email is missing");
+            errors.add("User email is missing");
         }
 
         if (message == null || message.trim().isEmpty()) {
-            throw new IllegalArgumentException("Message cannot be null or empty");
+            errors.add("Message cannot be null or empty");
+        }
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException(errors);
         }
     }
 }

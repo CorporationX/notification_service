@@ -51,13 +51,20 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic mentorshipOfferedTopic(@Value("${spring.redis.topics.name.mentorship-offered}") String topicName) {
+    public ChannelTopic mentorshipOfferedTopic(
+            @Value("${spring.redis.topics.name.mentorship-offered}") String topicName
+    ) {
         return new ChannelTopic(topicName);
     }
 
     @Bean
-    public MessageListenerAdapter mentorshipOfferedAdapter(MentorshipOfferedListener mentorshipOfferedListener, ChannelTopic mentorshipOfferedTopic) {
-        MessageListenerAdapter adapter = new MessageListenerAdapter(mentorshipOfferedListener, "onMessage");
+    public MessageListenerAdapter mentorshipOfferedAdapter(
+            MentorshipOfferedListener mentorshipOfferedListener,
+            ChannelTopic mentorshipOfferedTopic
+    ) {
+        MessageListenerAdapter adapter = new MessageListenerAdapter(
+                mentorshipOfferedListener, "onMessage"
+        );
         adaptersTopics.put(adapter, mentorshipOfferedTopic);
         return adapter;
     }
