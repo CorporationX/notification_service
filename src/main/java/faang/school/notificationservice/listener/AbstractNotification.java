@@ -22,7 +22,7 @@ public abstract class AbstractNotification {
         }
         NotificationService preferredService = notificationService.stream()
                 .filter(service ->
-                        Objects.equals(service.getPreferredContact(), dto.getPreference()))
+                        Objects.equals(service.getPreferredContact(), dto.getContactPreference()))
                 .findFirst()
                 .orElseThrow(() ->
                         new NotificationException("The user has not specified their preferred notification type"));

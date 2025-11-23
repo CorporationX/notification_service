@@ -1,7 +1,9 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.config.serializer.GenericJacksonConfig;
+import faang.school.notificationservice.listener.MentorshipOfferedListener;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -46,6 +48,18 @@ public class RedisConfig {
         template.setHashValueSerializer(genericJackson);
         template.setDefaultSerializer(genericJackson);
         return template;
+    }
+
+    @Bean
+    public ChannelTopic mentorshipOfferedTopic(@Value("${spring.redis.topics.name.mentorship-offered}") String topicName) {
+        return new ChannelTopic(topicName);
+    }
+
+    @Bean
+    public MessageListenerAdapter mentorshipOfferedAdapter(MentorshipOfferedListener mentorshipOfferedListener, ChannelTopic mentorshipOfferedTopic) {
+        MessageListenerAdapter adapter = new MessageListenerAdapter(mentorshipOfferedListener, "onMessage");
+        adaptersTopics.put(adapter, mentorshipOfferedTopic);
+        return adapter;
     }
 
     @Bean
