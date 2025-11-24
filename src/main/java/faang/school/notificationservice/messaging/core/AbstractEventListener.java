@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -49,23 +50,15 @@ public abstract class AbstractEventListener<E> {
                 ));
     }
 
-    /**
-     * Тип события, который слушает конкретный листенер.
-     */
     protected abstract Class<E> getEventType();
 
-    /**
-     * JSON → Event.
-     */
     protected E readEvent(String json) {
         try {
             E event = mapper.readValue(json, getEventType());
 
-            if (log.isDebugEnabled()) {
-                log.debug("Deserialized {}: {}",
-                        getEventType().getSimpleName(),
-                        abbreviate(json, maxLoggedJsonLength));
-            }
+            log.debug("Deserialized {}: {}",
+                    getEventType().getSimpleName(),
+                    abbreviate(json, maxLoggedJsonLength));
 
             return event;
 
@@ -80,9 +73,6 @@ public abstract class AbstractEventListener<E> {
         }
     }
 
-    /**
-     * Подбор MessageBuilder по классу события и сборка текста.
-     */
     protected String getMessage(E event, Locale locale) {
         Class<?> type = event.getClass();
 
@@ -95,7 +85,7 @@ public abstract class AbstractEventListener<E> {
                     String.format("No message builder for event type %s", type.getName()));
         }
 
-        Locale effectiveLocale = (locale != null ? locale : Locale.getDefault());
+        Locale effectiveLocale = Optional.ofNullable(locale).orElse(Locale.getDefault());
 
         if (log.isTraceEnabled()) {
             log.trace("Using {} for {}, locale={}",
@@ -106,27 +96,18 @@ public abstract class AbstractEventListener<E> {
 
         String message = builder.buildMessage(event, effectiveLocale);
 
-        if (log.isDebugEnabled()) {
-            log.debug("Built message for {} (len={}): {}",
-                    type.getSimpleName(),
-                    message != null ? message.length() : 0,
-                    abbreviate(message, maxLoggedJsonLength));
-        }
+        log.debug("Built message for {} (len={}): {}",
+                type.getSimpleName(),
+                message != null ? message.length() : 0,
+                abbreviate(message, maxLoggedJsonLength));
 
         return message;
     }
 
-    /**
-     * Загрузка пользователя из user-service с нормальным маппингом ошибок.
-     * UserNotFoundException — бизнес-кейс (404).
-     * IllegalStateException — техническая ошибка (ретраи/DLT).
-     */
     protected UserDto loadUser(long userId) {
         try {
             UserDto user = userServiceClient.getUser(userId);
-            if (log.isDebugEnabled()) {
-                log.debug("Loaded user {} with preference {}", userId, user.preference());
-            }
+            log.debug("Loaded user {} with preference {}", userId, user.preference());
             return user;
         } catch (FeignException.NotFound nf) {
             log.warn("User {} not found in user-service", userId);
@@ -140,20 +121,16 @@ public abstract class AbstractEventListener<E> {
         }
     }
 
-    /**
-     * Универсальная нормализация locale с падением на default.
-     */
-    protected Locale resolveLocale(String userLocale, String defaultLocaleTag) {
+    @Value("${app.locale.default:en}")
+    private String defaultLocale;
+
+    protected Locale resolveLocale(String userLocale) {
         if (userLocale == null || userLocale.isBlank()) {
-            return Locale.forLanguageTag(defaultLocaleTag);
+            return Locale.forLanguageTag(defaultLocale);
         }
         return Locale.forLanguageTag(userLocale);
     }
 
-    /**
-     * Выбор сервиса по preference и отправка.
-     * Здесь больше нет вызовов user-service — работаем с уже загруженным user.
-     */
     protected void sendNotification(UserDto user, String message) {
         final PreferredContact preferred;
         try {

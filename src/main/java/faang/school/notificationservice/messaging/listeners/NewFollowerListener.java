@@ -9,7 +9,6 @@ import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.messaging.core.AbstractEventListener;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +19,6 @@ import java.util.Locale;
 @Component
 public class NewFollowerListener extends AbstractEventListener<NewFollowerEventDto> {
 
-    @Value("${app.locale.default:en}")
-    private String defaultLocale;
 
     public NewFollowerListener(ObjectMapper mapper,
                                UserServiceClient userServiceClient,
@@ -52,7 +49,7 @@ public class NewFollowerListener extends AbstractEventListener<NewFollowerEventD
                 return;
             }
 
-            Locale locale = resolveLocale(receiver.locale(), defaultLocale);
+            Locale locale = resolveLocale(receiver.locale());
 
             String message = getMessage(event, locale);
             sendNotification(receiver, message);
