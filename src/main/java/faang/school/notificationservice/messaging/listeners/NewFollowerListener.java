@@ -10,6 +10,7 @@ import faang.school.notificationservice.messaging.core.AbstractEventListener;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,32 +35,30 @@ public class NewFollowerListener extends AbstractEventListener<NewFollowerEventD
 
     @KafkaListener(
             topics = "${app.topics.follower-create-events}",
-            groupId = "${spring.kafka.consumer.group-id:notification-service}"
+            groupId = "${spring.kafka.consumer.group-id:notification-service}",
+            properties = "spring.json.value.default.type=" +
+                    "faang.school.notificationservice.dto.events.NewFollowerEventDto"
     )
-    public void onMessage(String json) {
-        NewFollowerEventDto event = null;
+    public void onMessage(NewFollowerEventDto eventDto, Acknowledgment ack) {
         try {
-            event = readEvent(json);
-
             final UserDto receiver;
             try {
-                receiver = loadUser(event.receiverId());
+                receiver = loadUser(eventDto.receiverId());
             } catch (UserNotFoundException e) {
-                log.warn("Receiver with id {} not found, skip notification", event.receiverId());
+                log.warn("Receiver with id {} not found, skip notification", eventDto.receiverId());
                 return;
             }
 
             Locale locale = resolveLocale(receiver.locale());
 
-            String message = getMessage(event, locale);
+            String message = getMessage(eventDto, locale);
             sendNotification(receiver, message);
 
+            ack.acknowledge();
             log.debug("Processed NewFollowerEvent followerId={} targetUserId={}",
-                    event.actorId(), event.receiverId());
-
+                    eventDto.actorId(), eventDto.receiverId());
         } catch (Exception e) {
-            log.error("Failed to process NewFollowerEvent: event={} json={}", event, json, e);
-            throw e; // to Kafka error handler (retry/DLT)
+            log.error("Failed to process NewFollowerEvent: event={}", eventDto, e);
         }
     }
 }

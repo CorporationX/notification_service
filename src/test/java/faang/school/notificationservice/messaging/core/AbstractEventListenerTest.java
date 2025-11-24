@@ -77,7 +77,8 @@ class AbstractEventListenerTest {
     private void initBuilderDefaults() {
         doReturn(EVENT_CLASS).when(builder).getInstance();
         when(builder.buildMessage(any(NewFollowerEventDto.class), any(Locale.class)))
-                .thenAnswer(inv -> "MSG:" + ((NewFollowerEventDto) inv.getArgument(0)).getKey());
+                .thenAnswer(inv -> "MSG:"
+                        + ((NewFollowerEventDto) inv.getArgument(0)).receiverId());
     }
 
     private void initDefaultListener() {
@@ -112,7 +113,7 @@ class AbstractEventListenerTest {
         var event = newEvent(FID_ALICE, TID_ALICE, NAME_ALICE);
         var msg = listener.getMessage(event, LOCALE_EN);
 
-        assertEquals("MSG:" + event.getKey(), msg);
+        assertEquals("MSG:" + event.receiverId(), msg);
         verify(builder).buildMessage(eq(event), any(Locale.class));
 
         verifyNoInteractions(userClient);
