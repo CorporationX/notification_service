@@ -54,3 +54,9 @@ application-local.yml
 
 ### VS Code ###
 .vscode/
+
+# ===== Environment / Secrets =====
+.env
+.env.*
+src/main/resources/application-secrets.yml
+src/main/resources/application-secrets.yaml
