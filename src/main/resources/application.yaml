@@ -23,15 +23,6 @@ spring:
       properties:
         spring.json.add.type.headers: false
 
-app:
-  core:
-    max_logged_json_length: 200
-  topics:
-    follower-create-events: ${TOPIC_FOLLOWER:follower-create-events}
-    achievement-create-events: ${TOPIC_ACHIEVEMENT:achievement-create-events}
-  locale:
-    default: en
-
   mail:
     host: smtp.gmail.com
     port: 587
@@ -51,6 +42,15 @@ app:
     basename: messages
     encoding: UTF-8
     fallback-to-system-locale: false
+
+app:
+  core:
+    max_logged_json_length: 200
+  topics:
+    follower-create-events: ${TOPIC_FOLLOWER:follower-create-events}
+    achievement-create-events: ${TOPIC_ACHIEVEMENT:achievement-create-events}
+  locale:
+    default: en
 
 server:
   port: 8083
