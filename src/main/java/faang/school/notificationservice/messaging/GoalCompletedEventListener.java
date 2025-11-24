@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.event.GoalCompletedEvent;
+import faang.school.notificationservice.exception.DataValidationException;
 import faang.school.notificationservice.service.EmailService;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Locale;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GoalCompletedEventListener implements MessageListener {
@@ -28,10 +32,16 @@ public class GoalCompletedEventListener implements MessageListener {
         try {
             event = objectMapper.readValue(message.getBody(), GoalCompletedEvent.class);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Message conversion resulted in error: " + e);
+            throw new DataValidationException("Message conversion resulted in error: " + e);
         }
-        UserDto recipient = userServiceClient.getUser(event.userId());
-        String text = goalCompletedMessageBuilder.buildMessage(event, Locale.getDefault());
-        emailService.send(recipient, text);
+        try {
+            UserDto recipient = userServiceClient.getUser(event.userId());
+            String text = goalCompletedMessageBuilder.buildMessage(event, Locale.getDefault());
+            emailService.send(recipient, text);
+            log.info("E-mail notification sent");
+        } catch (FeignException e) {
+            log.error("User service error: ", e);
+            throw e;
+        }
     }
 }

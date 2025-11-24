@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class EmailService implements NotificationService{
 
     private final JavaMailSender mailSender;
+    private static final String SUBJECT = "Goal has been achieved!";
 
     @Override
     public UserDto.PreferredContact getPreferredContact() {return UserDto.PreferredContact.EMAIL;}
@@ -19,7 +20,7 @@ public class EmailService implements NotificationService{
     public void send(UserDto user, String text){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
-        message.setSubject("subject");
+        message.setSubject(SUBJECT);
         message.setText(text);
         mailSender.send(message);
     }

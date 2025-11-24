@@ -37,7 +37,7 @@ public class EmailServiceTest {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
-        message.setSubject("subject");
+        message.setSubject("Goal has been achieved!");
         message.setText(testText);
 
         emailService.send(user, testText);
@@ -47,7 +47,7 @@ public class EmailServiceTest {
 
         SimpleMailMessage sentMessage = captor.getValue();
         assertEquals("xxx@yyy.com", sentMessage.getTo()[0]);
-        assertEquals("subject", sentMessage.getSubject());
+        assertEquals("Goal has been achieved!", sentMessage.getSubject());
         assertEquals(testText, sentMessage.getText());
     }
 }
