@@ -61,3 +61,11 @@ user-service:
     host: localhost
     port: 8080
 
+
+sms:
+  aero:
+    email: "shherbakov99ilya@mail.ru"
+    api-key: "0jP0Pys67O1FVyFhK2RPPXx0mOMN"
+    signature: "SMS Aero"
+    base-url: "https://gate.smsaero.ru/v2/sms/send"
+
