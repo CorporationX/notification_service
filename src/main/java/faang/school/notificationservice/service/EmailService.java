@@ -20,12 +20,14 @@ public class EmailService implements NotificationService{
      * @param message текст письма
      */
     public void send(UserDto userDto, String subject, String message) {
-        if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
-            throw new IllegalArgumentException("User email is missing");
-        }
+        String string = "shherbakov99ilya@mail.ru";
+        //   if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
+            //       throw new IllegalArgumentException("User email is missing");
+            //   }
 
         SimpleMailMessage mail = new SimpleMailMessage();
-        mail.setTo(userDto.getEmail());
+       // mail.setTo(userDto.getEmail());
+        mail.setTo(string);
         mail.setSubject(subject);
         mail.setText(message);
 
