@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Slf4j
@@ -33,7 +34,7 @@ public class SmsMessageService {
         //todo просто левый номер для отправки
         // есть конечно морока с отправкой (из-за работы со сторонним сервисом)
         // поэтому тут моки
-        String test = "send Misha";
+        String test = "send test";
         String numberTest = "89197282055";
 
         try(CloseableHttpClient client = HttpClients.createDefault()) {
@@ -42,15 +43,15 @@ public class SmsMessageService {
             String auth = email + ":" + apiKey;
             String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
             request.setHeader("Authorization", "Basic " + encodedAuth);
-            request.setHeader("Content-Type", "application/json");
+            request.setHeader("Content-Type", "application/json; charset=UTF-8");
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("number", numberTest);
-            jsonObject.put("text", message);
+            jsonObject.put("text", test);
             jsonObject.put("sign", defaultSignature);
             jsonObject.put("channel", "DIRECT");
 
-            StringEntity entity = new StringEntity(jsonObject.toString());
+            StringEntity entity = new StringEntity(jsonObject.toString(), StandardCharsets.UTF_8 );
             request.setEntity(entity);
 
             HttpResponse httpResponse = client.execute(request);

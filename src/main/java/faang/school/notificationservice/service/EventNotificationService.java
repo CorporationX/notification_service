@@ -42,8 +42,6 @@ public class EventNotificationService {
             attendeesIds.forEach(user -> send(user
                     , text));
         }
-        //todo тут вызываться метод для отправки должен
-        smsMessageService.sendMessage(text);
         log.info("Received EventStartEvent: {} ", eventStartEventDto.nameOwner());
     }
 }
