@@ -32,10 +32,10 @@ public class SmsMessageService {
 
     public String sendMessage(String message) {
         //todo просто левый номер для отправки
-        // есть конечно морока с отправкой (из-за работы со сторонним сервисом)
-        // поэтому тут моки
+        // тут просто моки, ибо колабиться полноценно проблема
+        // но для демо норм я думаю
         String test = "send test";
-        String numberTest = "89197282055";
+        String numberTest = "чей-то номер";
 
         try(CloseableHttpClient client = HttpClients.createDefault()) {
             HttpPost request = new HttpPost(baseUrl);
