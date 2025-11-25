@@ -5,76 +5,159 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.mentorship.MentorshipOfferedEvent;
 import faang.school.notificationservice.messaging.listeners.MentorshipOfferedEventListener;
 import faang.school.notificationservice.messaging.message_builder.MentorshipOfferedEventMessageBuilder;
+import faang.school.notificationservice.messaging.message_builder.MessageBuilder;
 import faang.school.notificationservice.service.notification.NotificationService;
 import faang.school.notificationservice.service.user.UserService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Locale;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MentorshipOfferedEventListenerTest {
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    private final MentorshipOfferedEvent mentorshipOfferedEvent = MentorshipOfferedEvent.builder()
-            .mentorshipRequestId(3L)
-            .mentorId(1L)
-            .menteeId(2L)
-            .build();
-
-    private final UserDto userDto = UserDto.builder()
-            .id(mentorshipOfferedEvent.mentorId())
-            .preference(UserDto.PreferredContact.SMS)
-            .locale(Locale.CANADA)
-            .build();
-
-    @Captor
-    private ArgumentCaptor<UserDto> userDtoArgumentCaptor;
+class MentorshipOfferedEventListenerTest {
 
     @Mock
-    private NotificationService notificationService;
+    private ObjectMapper objectMapper;
+
     @Mock
     private UserService userService;
-    @Mock
-    private MentorshipOfferedEventMessageBuilder mentorshipOfferedEventMessageBuilder;
 
-    private MentorshipOfferedEventListener mentorshipOfferedEventListener;
+    @Mock
+    private NotificationService emailNotificationService;
+
+    @Mock
+    private NotificationService smsNotificationService;
+
+    @Mock
+    private MentorshipOfferedEventMessageBuilder mentorshipMessageBuilder;
+
+    private MentorshipOfferedEventListener listener;
+
+    private UserDto mentor;
+    private MentorshipOfferedEvent event;
 
     @BeforeEach
-    void setup() {
-        when(notificationService.getPreferredContact()).thenReturn(userDto.getPreference());
-        mentorshipOfferedEventListener = new MentorshipOfferedEventListener(objectMapper,
-                List.of(notificationService), userService, mentorshipOfferedEventMessageBuilder);
+    void setUp() {
+        when(emailNotificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
+        when(smsNotificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.SMS);
+        when(mentorshipMessageBuilder.getInstance()).thenReturn((Class) MentorshipOfferedEvent.class);
 
-        mentorshipOfferedEventListener.init();
+        List<NotificationService> notificationServices = List.of(emailNotificationService, smsNotificationService);
+        List<MessageBuilder<?>> messageBuilders = List.of(mentorshipMessageBuilder);
+
+        listener = new MentorshipOfferedEventListener(
+                objectMapper,
+                userService,
+                notificationServices,
+                messageBuilders
+        );
+
+        mentor = UserDto.builder()
+                .id(10L)
+                .username("mentor")
+                .email("mentor@example.com")
+                .phone("+1234567890")
+                .locale(Locale.ENGLISH)
+                .preference(UserDto.PreferredContact.EMAIL)
+                .build();
+
+        event = MentorshipOfferedEvent.builder()
+                .mentorshipRequestId(100L)
+                .mentorId(10L)
+                .menteeId(20L)
+                .build();
     }
 
     @Test
-    void testOnMessage() {
-        String messageText = "test text";
+    void onMessage_shouldProcessEventAndSendNotification() {
+        // Arrange
+        String expectedMessage = "You've a new mentorship request";
+        when(userService.getUser(10L)).thenReturn(mentor);
+        when(mentorshipMessageBuilder.buildMessage(eq(event), eq(Locale.ENGLISH)))
+                .thenReturn(expectedMessage);
 
-        when(mentorshipOfferedEventMessageBuilder.buildMessage(Mockito.any(MentorshipOfferedEvent.class),
-                Mockito.any(Locale.class))).thenReturn(messageText);
-        when(userService.getUser(userDto.getId())).thenReturn(userDto);
+        // Act
+        listener.onMessage(event);
 
-        mentorshipOfferedEventListener.onMessage(mentorshipOfferedEvent);
+        // Assert
+        verify(userService, times(2)).getUser(10L); // Once for getting locale, once for sending notification
+        verify(mentorshipMessageBuilder).buildMessage(event, Locale.ENGLISH);
+        verify(emailNotificationService).send(mentor, expectedMessage);
+    }
 
-        verify(notificationService).send(userDtoArgumentCaptor.capture(), Mockito.eq(messageText));
+    @Test
+    void onMessage_shouldUseMentorLocale() {
+        // Arrange
+        mentor.setLocale(Locale.FRENCH);
+        String expectedMessage = "Vous avez une nouvelle demande de mentorat";
+        when(userService.getUser(10L)).thenReturn(mentor);
+        when(mentorshipMessageBuilder.buildMessage(eq(event), eq(Locale.FRENCH)))
+                .thenReturn(expectedMessage);
 
-        UserDto capturedUserDto = userDtoArgumentCaptor.getValue();
+        // Act
+        listener.onMessage(event);
 
-        Assertions.assertEquals(userDto.getId(), capturedUserDto.getId());
+        // Assert
+        verify(mentorshipMessageBuilder).buildMessage(event, Locale.FRENCH);
+        verify(emailNotificationService).send(mentor, expectedMessage);
+    }
+
+    @Test
+    void onMessage_shouldUseSmsService_whenMentorPrefersSms() {
+        // Arrange
+        mentor.setPreference(UserDto.PreferredContact.SMS);
+        String expectedMessage = "You've a new mentorship request";
+        when(userService.getUser(10L)).thenReturn(mentor);
+        when(mentorshipMessageBuilder.buildMessage(any(), any()))
+                .thenReturn(expectedMessage);
+
+        // Act
+        listener.onMessage(event);
+
+        // Assert
+        verify(smsNotificationService).send(mentor, expectedMessage);
+        verify(emailNotificationService, never()).send(any(), any());
+    }
+
+    @Test
+    void onMessage_shouldSendNotificationToCorrectMentor() {
+        // Arrange
+        String expectedMessage = "You've a new mentorship request";
+        when(userService.getUser(10L)).thenReturn(mentor);
+        when(mentorshipMessageBuilder.buildMessage(any(), any()))
+                .thenReturn(expectedMessage);
+
+        // Act
+        listener.onMessage(event);
+
+        // Assert
+        verify(userService, times(2)).getUser(event.mentorId());
+        verify(emailNotificationService).send(mentor, expectedMessage);
+    }
+
+    @Test
+    void onMessage_shouldNotSendToMentee() {
+        // Arrange
+        String expectedMessage = "You've a new mentorship request";
+        when(userService.getUser(10L)).thenReturn(mentor);
+        when(mentorshipMessageBuilder.buildMessage(any(), any()))
+                .thenReturn(expectedMessage);
+
+        // Act
+        listener.onMessage(event);
+
+        // Assert
+        verify(userService, never()).getUser(event.menteeId());
     }
 }
