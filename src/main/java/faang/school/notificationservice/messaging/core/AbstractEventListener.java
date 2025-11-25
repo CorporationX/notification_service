@@ -29,6 +29,9 @@ public abstract class AbstractEventListener<E> {
     @Value("${app.core.max_logged_json_length:200}")
     private int maxLoggedJsonLength;
 
+    @Value("${app.locale.default:en}")
+    private String defaultLocale;
+
     protected AbstractEventListener(ObjectMapper mapper,
                                     UserServiceClient userServiceClient,
                                     List<NotificationService> notificationServices,
@@ -120,9 +123,6 @@ public abstract class AbstractEventListener<E> {
             );
         }
     }
-
-    @Value("${app.locale.default:en}")
-    private String defaultLocale;
 
     protected Locale resolveLocale(String userLocale) {
         if (userLocale == null || userLocale.isBlank()) {
