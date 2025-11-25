@@ -19,15 +19,9 @@ public record UserDto(
 
     @Getter
     public enum PreferredContact {
-        EMAIL(0),
-        PHONE(1),
-        TELEGRAM(2);
-
-        private final int code;
-
-        PreferredContact(int code) {
-            this.code = code;
-        }
+        EMAIL,
+        PHONE,
+        TELEGRAM;
 
         public static PreferredContact fromString(String preference) {
             for (PreferredContact contact : PreferredContact.values()) {
