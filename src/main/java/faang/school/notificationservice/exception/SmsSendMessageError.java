@@ -1,4 +1,4 @@
-package faang.school.notificationservice;
+package faang.school.notificationservice.exception;
 
 public class SmsSendMessageError extends RuntimeException {
 

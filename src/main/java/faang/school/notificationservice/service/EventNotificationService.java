@@ -16,7 +16,6 @@ import java.util.Locale;
 public class EventNotificationService {
 
     private final EventMessageConsumer eventOwnerMessageConsumer;
-    private final SmsMessageService smsMessageService;
 
     public void send(UserDto userDto, String message) {
         log.info("{} - {}", userDto.getId(), message);
