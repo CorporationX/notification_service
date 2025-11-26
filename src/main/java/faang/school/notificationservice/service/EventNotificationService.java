@@ -43,13 +43,6 @@ public class EventNotificationService {
             attendeesIds.forEach(user -> send(user
                     , text));
         }
-        UserDto userDto = new UserDto();
-        userDto.setEmail("shherbakov99ilya@mail.ru");
-        userDto.setId(1);
-        userDto.setPhone("89197282055");
-        userDto.setUsername("4Akira");
-        userDto.setAboutMe("just about me");
-        emailService.send(userDto, "Love confession" ,  "Ilyusha is the best. s asta");
         log.info("Received EventStartEvent: {} ", eventStartEventDto.nameOwner());
     }
 }
