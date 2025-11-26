@@ -8,6 +8,7 @@ spring:
         achievement: achievement_channel
         goal_completed: goal_completed_channel
         topic: goal_completed_topic
+        recommendation: recommendation_channel
 
   mail:
     host: smtp.gmail.com
@@ -26,6 +27,11 @@ spring:
 
   messages:
     basename: messages
+  profiles:
+    active: local
+
+  config:
+    import: optional:classpath:application-secrets.yml
 
 server:
   port: 8083
@@ -40,9 +46,14 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
+    notification:
+      max-retry-attempts: 3
+      retry-delay-ms: 1000
+
 project-service:
     host: localhost
     port: 8082
 user-service:
     host: localhost
     port: 8080
+

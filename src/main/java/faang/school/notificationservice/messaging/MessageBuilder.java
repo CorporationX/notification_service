@@ -4,7 +4,7 @@ import java.util.Locale;
 
 public interface MessageBuilder<T> {
 
-    Class<?> getInstance();
+    Class<?> supportsEventType();
 
     String buildMessage(T event, Locale locale);
 }
