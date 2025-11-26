@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: notification-service
   data:
     redis:
       port: 6379
@@ -6,6 +8,24 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+
+  kafka:
+    listener:
+      ack-mode: manual_immediate
+    bootstrap-servers: localhost:9092
+    properties:
+      security:
+        protocol: PLAINTEXT
+    consumer:
+      group-id: notification-service
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.type.mapping: "newFollowerEvent:faang.school.notificationservice.dto.events.NewFollowerEventDto"
+        spring.json.use.type.headers: false
 
   mail:
     host: smtp.gmail.com
@@ -24,6 +44,17 @@ spring:
 
   messages:
     basename: messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+
+app:
+  core:
+    max_logged_json_length: 200
+  topics:
+    follower-create-events: ${TOPIC_FOLLOWER:follower-create-events}
+    achievement-create-events: ${TOPIC_ACHIEVEMENT:achievement-create-events}
+  locale:
+    default: en
 
 server:
   port: 8083
@@ -31,20 +62,28 @@ server:
 logging:
   level:
     root: info
+    faang.school.notificationservice: info
 
 #Можно зарегистрировать аккаунт без привязки карты. Будет 2 евро на отправку тестовых SMS
 vonage: #https://dashboard.nexmo.com/getting-started/sms
-  api:
-    key: ${VONAGE_API_KEY:beb56a84}
-    secret: ${VONAGE_API_SECRET:0gj1KiEBtRzJ41Gc}
+  apiKey: ${VONAGE_API_KEY:beb56a84}
+  apiSecret: ${VONAGE_API_SECRET:0gj1KiEBtRzJ41Gc}
   from: ${VONAGE_FROM:FaangSchool}
   enabled: ${VONAGE_ENABLED:true}
   defaultCountry: ${VONAGE_DEFAULT_COUNTRY:RU}
 
-project-service:
-  host: localhost
-  port: 8082
 user-service:
   host: localhost
   port: 8080
+  context-path: /api/v1
+
+project-service:
+  host: localhost
+  port: 8082
+  context-path: /api/v1
+
+payment-service:
+  host: localhost
+  port: 9080
+  context-path: /api/v1
 

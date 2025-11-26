@@ -3,7 +3,6 @@ package faang.school.notificationservice.controller;
 import faang.school.notificationservice.dto.SendSmsRequestDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.mapper.NotificationMapper;
-import faang.school.notificationservice.service.NotificationService;
 import faang.school.notificationservice.service.SmsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,4 +1,4 @@
-package faang.school.notificationservice.sms;
+package faang.school.notificationservice.service.sms;
 
 import com.vonage.client.VonageClient;
 import com.vonage.client.sms.MessageStatus;

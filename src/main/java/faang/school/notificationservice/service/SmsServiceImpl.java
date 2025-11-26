@@ -4,7 +4,7 @@ import faang.school.notificationservice.dto.SendSmsRequestDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.error.SmsSendException;
 import faang.school.notificationservice.mapper.NotificationMapper;
-import faang.school.notificationservice.sms.SmsGateway;
+import faang.school.notificationservice.service.sms.SmsGateway;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Backoff;
@@ -22,11 +22,10 @@ public class SmsServiceImpl implements NotificationService {
     @Override
     @Retryable(backoff = @Backoff(delay = 500, multiplier = 2.0))
     public void send(UserDto user, String message) {
-        if (user.getPhone() == null || user.getPhone().isBlank()) {
+        if (user.phone() == null || user.phone() .isBlank()) {
             throw new SmsSendException("User phone is empty");
         }
-        smsGateway.send(user.getPhone(), message);
-
+        smsGateway.send(user.phone() , message);
     }
 
     public void sendFromRequest(SendSmsRequestDto request, String message) {

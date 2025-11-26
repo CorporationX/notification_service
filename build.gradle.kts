@@ -27,7 +27,8 @@ dependencies {
     // Spring Retry + AOP (needed for @EnableRetry)
     implementation("org.springframework.retry:spring-retry:2.0.2")
     implementation("org.springframework.boot:spring-boot-starter-aop")
-
+    // Enable Kafka
+    implementation("org.springframework.kafka:spring-kafka")
     /**
      * Database
      */
@@ -44,7 +45,6 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.26")
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
-    implementation("com.vonage:client:7.3.0")
     implementation("com.vonage:server-sdk:9.3.1")
 
     /**
@@ -60,6 +60,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 tasks.withType<Test> {
