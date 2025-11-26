@@ -6,6 +6,8 @@ spring:
       channel:
         follower: follower_channel
         achievement: achievement_channel
+        goal_completed: goal_completed_channel
+        topic: goal_completed_topic
         recommendation: recommendation_channel
 
   mail:
