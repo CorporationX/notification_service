@@ -2,13 +2,15 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.dto.UserDto;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @AllArgsConstructor
-public class EmailService implements NotificationService{
+public class EmailService implements NotificationService {
 
     private final JavaMailSender mailSender;
 
@@ -20,18 +22,23 @@ public class EmailService implements NotificationService{
      * @param message текст письма
      */
     public void send(UserDto userDto, String subject, String message) {
-        String string = "shherbakov99ilya@mail.ru";
-        //   if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
-            //       throw new IllegalArgumentException("User email is missing");
-            //   }
+
+        if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
+            throw new IllegalArgumentException("User email is missing");
+        }
 
         SimpleMailMessage mail = new SimpleMailMessage();
-       // mail.setTo(userDto.getEmail());
-        mail.setTo(string);
+        mail.setTo(userDto.getEmail());
         mail.setSubject(subject);
         mail.setText(message);
 
-        mailSender.send(mail);
+        try {
+            mailSender.send(mail);
+            log.info("Email send to {}", userDto.getEmail());
+        } catch (Exception ex) {
+            log.error("Failed to send email to {}", userDto.getEmail(), ex);
+            throw new RuntimeException("Failed to send email", ex);
+        }
     }
 
     @Override
