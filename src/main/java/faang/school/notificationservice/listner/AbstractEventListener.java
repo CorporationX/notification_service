@@ -3,6 +3,7 @@ package faang.school.notificationservice.listner;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class AbstractEventListener {
 
@@ -39,6 +41,7 @@ public class AbstractEventListener {
         if (builder == null) {
             throw new IllegalArgumentException("No MessageBuilder found for event type: " + eventType);
         }
+        log.info("Продолжаем работать с билдером {}", builder);
         return builder.buildMessage(parameters, locale);
     }
 

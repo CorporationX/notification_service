@@ -20,7 +20,7 @@ public class EventsEventConsumer {
     private final EventNotificationService eventNotificationService;
     private final ObjectMapper objectMapper;
 
-    @KafkaListener(topics = "${spring.kafka.topic.events}",
+    @KafkaListener(topics = "${spring.kafka.topics.events}",
             containerFactory = "eventConcurrentKafkaListenerContainerFactory")
     public void handleEventListener(@Payload Map<String, Object> message, Acknowledgment  ack) {
 

@@ -33,9 +33,10 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
         spring.json.use.type.headers: false
-    topic:
+    topics:
       events: event.events
-
+      like-events: "like-events-topic"
+      unlike-events: "unlike-events-topic"
 
   messages:
     basename: messages
@@ -54,9 +55,9 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     secret: whatever
 
 project-service:
-    host: localhost
-    port: 8082
+  host: localhost
+  port: 8082
 user-service:
-    host: localhost
-    port: 8080
+  host: localhost
+  port: 8080
 

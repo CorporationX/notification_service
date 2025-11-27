@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserContext {
+    private final static Integer ADMIN_ID = 13;
 
     private final ThreadLocal<Long> userIdHolder = new ThreadLocal<>();
 
@@ -12,7 +13,8 @@ public class UserContext {
     }
 
     public long getUserId() {
-        return userIdHolder.get() != null ? userIdHolder.get() : 0;
+        return userIdHolder.get() != null ? userIdHolder.get() : ADMIN_ID;
+
     }
 
     public void clear() {
