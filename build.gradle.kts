@@ -25,7 +25,8 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.springframework.kafka:spring-kafka")
-
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+//yxql sasi xxmm ybbh
     /**
      * Database
      */
@@ -69,6 +70,14 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+
+    testLogging {
+        events("PASSED", "FAILED", "SKIPPED")
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
 }
 
 val test by tasks.getting(Test::class) { testLogging.showStandardStreams = true }
