@@ -1,5 +1,6 @@
 package faang.school.notificationservice.service;
 
+import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.exception.SmsSendMessageError;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import java.util.Base64;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class SmsMessageService {
+public class SmsMessageService implements NotificationService{
 
     private final static String TEST_MESSAGE = "send test";
     private final static String MOCK_NUMBER = "89000000000";
@@ -33,8 +34,17 @@ public class SmsMessageService {
     @Value("${sms.aero.base-url}")
     private String baseUrl;
 
-    public void sendMessage(String message, String number) {
+    @Override
+    public void send(UserDto userDto, String message) {
+        sendMessage(message, userDto.getPhone());
+    }
 
+    @Override
+    public UserDto.PreferredContact getPreferredContact() {
+        return UserDto.PreferredContact.PHONE;
+    }
+
+    public void sendMessage(String message, String number) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
 
             HttpPost request = buildHttpPost();
@@ -87,4 +97,5 @@ public class SmsMessageService {
 
         return request;
     }
+
 }
