@@ -16,10 +16,11 @@ import java.util.Locale;
 @Component
 public class FollowerEventListener extends AbstractEventListener<FollowerEvent> implements MessageListener {
 
-    public FollowerEventListener(ObjectMapper objectMapper,
-                                 UserServiceClient serviceClient,
-                                 List<MessageBuilder<FollowerEvent>> messageBuilders,
-                                 List<NotificationService> notificationServices) {
+    public FollowerEventListener(
+            ObjectMapper objectMapper,
+            UserServiceClient serviceClient,
+            List<MessageBuilder<FollowerEvent>> messageBuilders,
+            List<NotificationService> notificationServices) {
         super(objectMapper, serviceClient, messageBuilders, notificationServices);
     }
 
