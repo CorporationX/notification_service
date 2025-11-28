@@ -17,6 +17,8 @@ public class EventNotificationService {
 
     private final EventMessageConsumer eventOwnerMessageConsumer;
 
+    private final EmailService emailService;
+
     public void send(UserDto userDto, String message) {
         log.info("{} - {}", userDto.getId(), message);
     }
