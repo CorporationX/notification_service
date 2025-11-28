@@ -21,6 +21,9 @@ import java.util.Base64;
 @Service
 public class SmsMessageService {
 
+    private final static String TEST_MESSAGE = "send test";
+    private final static String MOCK_NUMBER = "89000000000";
+
     @Value("${sms.aero.email}")
     private String email;
     @Value("${sms.aero.api-key}")
@@ -30,41 +33,58 @@ public class SmsMessageService {
     @Value("${sms.aero.base-url}")
     private String baseUrl;
 
-    public String sendMessage(String message) {
-        //todo просто левый номер для отправки
-        // тут просто моки, ибо колабиться полноценно проблема
-        // но для демо норм я думаю
-        // полноценное сообщение отправлять тоже не получится, ибо для теста только send test принимают
-        String test = "send test";
-        String numberTest = "чей-то номер";
+    public void sendMessage(String message, String number) {
 
-        try(CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpPost request = new HttpPost(baseUrl);
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
 
-            String auth = email + ":" + apiKey;
-            String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
-            request.setHeader("Authorization", "Basic " + encodedAuth);
-            request.setHeader("Content-Type", "application/json; charset=UTF-8");
+            HttpPost request = buildHttpPost();
 
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("number", numberTest);
-            jsonObject.put("text", test);
-            jsonObject.put("sign", defaultSignature);
-            jsonObject.put("channel", "DIRECT");
+            JSONObject jsonObject = buildJSONObject();
 
-            StringEntity entity = new StringEntity(jsonObject.toString(), StandardCharsets.UTF_8 );
+            StringEntity entity = new StringEntity(jsonObject.toString(), StandardCharsets.UTF_8);
             request.setEntity(entity);
 
             HttpResponse httpResponse = client.execute(request);
             String response = EntityUtils.toString(httpResponse.getEntity());
-            log.info("Text {} send on user telephone for sms ", message);
-            return  new StringBuilder("Status - ")
+
+            checkingServerResponse(httpResponse, response, message);
+
+        } catch (Exception e) {
+            throw new SmsSendMessageError("Error sending message to API SMS Aero", e);
+        }
+    }
+
+    private void checkingServerResponse(HttpResponse httpResponse, String response, String message) {
+        Integer statusCode = httpResponse.getStatusLine().getStatusCode();
+        if (statusCode >= 200 && statusCode < 300) {
+            log.info("Text {} send on user telephone for sms. Status code {} ", message, statusCode);
+        } else {
+            String mesError = new StringBuilder("Status - ")
                     .append(httpResponse.getStatusLine().getStatusCode())
                     .append(". Response-")
                     .append(response)
                     .toString();
-        } catch (Exception e) {
-            throw new SmsSendMessageError("Error sending message to API SMS Aero", e);
+            log.error("The notification was not sent due to an error - {} ", mesError);
         }
+    }
+
+    private JSONObject buildJSONObject() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("number", MOCK_NUMBER);
+        jsonObject.put("text", TEST_MESSAGE);
+        jsonObject.put("sign", defaultSignature);
+        jsonObject.put("channel", "DIRECT");
+        return jsonObject;
+    }
+
+    private HttpPost buildHttpPost() {
+        HttpPost request = new HttpPost(baseUrl);
+
+        String auth = email + ":" + apiKey;
+        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
+        request.setHeader("Authorization", "Basic " + encodedAuth);
+        request.setHeader("Content-Type", "application/json; charset=UTF-8");
+
+        return request;
     }
 }
