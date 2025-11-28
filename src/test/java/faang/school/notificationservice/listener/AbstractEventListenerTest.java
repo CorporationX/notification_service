@@ -1,6 +1,5 @@
 package faang.school.notificationservice.listener;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.mentorship.MentorshipOfferedEvent;
@@ -78,25 +77,20 @@ class AbstractEventListenerTest {
 
     @Test
     void getMessage_shouldReturnBuiltMessage_whenMessageBuilderExists() {
-        // Arrange
         String expectedMessage = "You've a new mentorship request";
         when(mentorshipMessageBuilder.buildMessage(eq(testEvent), eq(Locale.ENGLISH)))
                 .thenReturn(expectedMessage);
 
-        // Act
         String actualMessage = testEventListener.getMessage(testEvent, MentorshipOfferedEvent.class, Locale.ENGLISH);
 
-        // Assert
         assertEquals(expectedMessage, actualMessage);
         verify(mentorshipMessageBuilder).buildMessage(testEvent, Locale.ENGLISH);
     }
 
     @Test
     void getMessage_shouldThrowException_whenMessageBuilderNotFound() {
-        // Arrange
         Class<?> unknownEventClass = String.class;
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> testEventListener.getMessage("unknown", unknownEventClass, Locale.ENGLISH)
@@ -108,14 +102,11 @@ class AbstractEventListenerTest {
 
     @Test
     void sendNotification_shouldSendViaEmailService_whenUserPrefersEmail() {
-        // Arrange
         String message = "Test notification";
         when(userService.getUser(1L)).thenReturn(testUser);
 
-        // Act
         testEventListener.sendNotification(1L, message);
 
-        // Assert
         verify(userService).getUser(1L);
         verify(emailNotificationService).send(testUser, message);
         verify(smsNotificationService, never()).send(any(), any());
@@ -123,15 +114,12 @@ class AbstractEventListenerTest {
 
     @Test
     void sendNotification_shouldSendViaSmsService_whenUserPrefersSms() {
-        // Arrange
         String message = "Test notification";
         testUser.setPreference(UserDto.PreferredContact.SMS);
         when(userService.getUser(1L)).thenReturn(testUser);
 
-        // Act
         testEventListener.sendNotification(1L, message);
 
-        // Assert
         verify(userService).getUser(1L);
         verify(smsNotificationService).send(testUser, message);
         verify(emailNotificationService, never()).send(any(), any());
@@ -139,12 +127,10 @@ class AbstractEventListenerTest {
 
     @Test
     void sendNotification_shouldThrowException_whenNotificationServiceNotFound() {
-        // Arrange
         String message = "Test notification";
         testUser.setPreference(UserDto.PreferredContact.TELEGRAM);
         when(userService.getUser(1L)).thenReturn(testUser);
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> testEventListener.sendNotification(1L, message)
@@ -159,7 +145,6 @@ class AbstractEventListenerTest {
 
     @Test
     void constructor_shouldInitializeMaps_withProvidedServices() {
-        // Assert
         assertNotNull(testEventListener.notificationServiceMap);
         assertNotNull(testEventListener.messageBuilderMap);
         assertEquals(2, testEventListener.notificationServiceMap.size());
@@ -171,36 +156,29 @@ class AbstractEventListenerTest {
 
     @Test
     void getMessage_shouldWorkWithDifferentLocales() {
-        // Arrange
         Locale frenchLocale = Locale.FRENCH;
         String expectedFrenchMessage = "Vous avez une nouvelle demande de mentorat";
         when(mentorshipMessageBuilder.buildMessage(eq(testEvent), eq(frenchLocale)))
                 .thenReturn(expectedFrenchMessage);
 
-        // Act
         String actualMessage = testEventListener.getMessage(testEvent, MentorshipOfferedEvent.class, frenchLocale);
 
-        // Assert
         assertEquals(expectedFrenchMessage, actualMessage);
         verify(mentorshipMessageBuilder).buildMessage(testEvent, frenchLocale);
     }
 
     @Test
     void sendNotification_shouldRetrieveUserOnce() {
-        // Arrange
         String message = "Test notification";
         when(userService.getUser(1L)).thenReturn(testUser);
 
-        // Act
         testEventListener.sendNotification(1L, message);
 
-        // Assert
         verify(userService, times(1)).getUser(1L);
     }
 
-    // Test implementation of AbstractEventListener for testing purposes
     static class TestEventListener extends AbstractEventListener {
-        protected TestEventListener(
+        public TestEventListener(
                 ObjectMapper objectMapper,
                 UserService userService,
                 List<NotificationService> notificationServices,

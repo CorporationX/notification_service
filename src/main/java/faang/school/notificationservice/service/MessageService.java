@@ -32,10 +32,7 @@ public class MessageService {
     }
 
     public <T> String buildMessage(Class<T> eventType, T event, Locale locale) {
-        MessageBuilder<T> builder = getMessageBuilder(eventType);
-        String message = builder.buildMessage(event, locale);
-        log.debug("Built message for event type {}", eventType.getSimpleName());
-        return message;
+        return getMessageBuilder(eventType).buildMessage(event, locale);
     }
 
     @SuppressWarnings("unchecked")

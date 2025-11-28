@@ -5,7 +5,6 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.message_builder.MessageBuilder;
 import faang.school.notificationservice.service.notification.NotificationService;
 import faang.school.notificationservice.service.user.UserService;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -17,12 +16,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class AbstractEventListener {
 
-    protected final ObjectMapper objectMapper;
-    protected final UserService userService;
+    public final ObjectMapper objectMapper;
+    public final UserService userService;
     public final Map<UserDto.PreferredContact, NotificationService> notificationServiceMap;
     public final Map<Class<?>, MessageBuilder<?>> messageBuilderMap;
 
-    protected AbstractEventListener(
+    public AbstractEventListener(
             ObjectMapper objectMapper,
             UserService userService,
             List<NotificationService> notificationServices,
@@ -41,17 +40,8 @@ public abstract class AbstractEventListener {
                 ));
     }
 
-    @PostConstruct
-    public void init() {
-        log.info("Initializing {} with {} notification services and {} message builders",
-                this.getClass().getSimpleName(),
-                notificationServiceMap.size(),
-                messageBuilderMap.size());
-    }
-
-    protected <T> String getMessage(T event, Class<?> eventClass, Locale locale) {
-        MessageBuilder<T> messageBuilder = getMessageBuilder(eventClass);
-        return messageBuilder.buildMessage(event, locale);
+    protected <T> String getMessage(T event, Class<?> eventType, Locale locale) {
+        return getMessageBuilder(eventType).buildMessage(event, locale);
     }
 
     protected void sendNotification(long userId, String message) {
@@ -67,7 +57,6 @@ public abstract class AbstractEventListener {
             );
         }
 
-        log.debug("Sending notification to user {} via {}", userId, user.getPreference());
         notificationService.send(user, message);
     }
 
