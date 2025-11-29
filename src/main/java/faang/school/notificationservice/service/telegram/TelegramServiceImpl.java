@@ -65,14 +65,23 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Notif
 
     @Override
     public void send(UserDto dto, String messageText) {
-        if (Objects.equals(dto.getContactPreference(), UserDto.PreferredContact.TELEGRAM)) {
+        if (dto.getContactPreference() == UserDto.PreferredContact.TELEGRAM) {
             long contactId = dto.getContacts().stream()
                     .filter(contactDto ->
                             contactDto.getType().equals(ContactDto.ContactType.TELEGRAM))
                     .findFirst()
-                    .map(contactDto -> Long.valueOf(contactDto.getContact()))
-                    .orElseThrow(() -> new ContactTypeNoSuchException("Error to found user contact Telegram"));
-
+                    .map(contactDto -> {
+                        if (contactDto.getContact() != null) {
+                            try {
+                                return Long.parseLong(contactDto.getContact());
+                            } catch (NumberFormatException e) {
+                                throw new IllegalArgumentException("Invalid contact Telegram " +
+                                        contactDto.getContact());
+                            }
+                        }
+                        return null;
+                    })
+                    .orElseThrow(() -> new ContactTypeNoSuchException("Telegram contact not found for user:"));
             executeMessage(contactId, messageText);
         } else {
             throw new NotificationException("The user did not specify a telegram contact");

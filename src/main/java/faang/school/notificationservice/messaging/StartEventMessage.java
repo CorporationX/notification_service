@@ -9,13 +9,14 @@ import java.util.Locale;
 
 @RequiredArgsConstructor
 @Component
-public class EventStartMessage implements MessageBuilder<EventStartDto> {
+public class StartEventMessage implements MessageBuilder<EventStartDto> {
+    private static final String CODE_MESSAGE_PROPERTIES = "event.start";
     private final MessageSource messageSource;
 
     @Override
     public String buildMessage(EventStartDto event, Locale locale) {
         return messageSource.getMessage(
-                "event.start",
+                CODE_MESSAGE_PROPERTIES,
                 new Object[]{event.title(), prepareEventMessage(event.eventStart(), locale)},
                 locale
         );
@@ -27,6 +28,7 @@ public class EventStartMessage implements MessageBuilder<EventStartDto> {
             case FIVE_HOURS -> messageSource.getMessage("reminder.five_hours", null, locale);
             case ONE_HOUR -> messageSource.getMessage("reminder.one_hour", null, locale);
             case TEN_MINUTES -> messageSource.getMessage("reminder.ten_minutes", null, locale);
+            default -> messageSource.getMessage("reminder.default", null, locale);
         };
     }
 
