@@ -15,8 +15,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.Objects;
-
 @Slf4j
 @Service
 public class TelegramServiceImpl extends TelegramLongPollingBot implements NotificationService {
