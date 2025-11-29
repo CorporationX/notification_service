@@ -36,6 +36,7 @@ kafka:
   topic:
     mentorship-offer: mentorship_offer_topic
     recommendation-received-events: "recommendation_received_events"
+    mentorship-accept: mentorship_accept_topic
 
   messages:
     basename: messages
