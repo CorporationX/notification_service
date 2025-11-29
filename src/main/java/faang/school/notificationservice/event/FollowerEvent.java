@@ -6,4 +6,10 @@ public record FollowerEvent(
         long followeeId,
         long followerId,
         LocalDateTime timestamp
-) {}
+) implements NotificationEvent {
+
+    @Override
+    public long getReceiverId() {
+        return followeeId;
+    }
+}

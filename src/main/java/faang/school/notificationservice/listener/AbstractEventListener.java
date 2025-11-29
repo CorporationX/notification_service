@@ -3,48 +3,69 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.event.NotificationEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Consumer;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
-public abstract class AbstractEventListener<T> {
+public abstract class AbstractEventListener<T extends NotificationEvent> {
     protected final ObjectMapper objectMapper;
     protected final UserServiceClient userClient;
-    private final List<MessageBuilder<T>> messageBuilders;
-    private final List<NotificationService> notificationServices;
+    private final Map<Class<?>, MessageBuilder<T>> messageBuilders;
+    private final Map<UserDto.PreferredContact, NotificationService> notificationServices;
 
-    protected void handleEvent(Message message, Class<T> eventType, Consumer<T> consumer) {
+    public AbstractEventListener(
+            ObjectMapper objectMapper,
+            UserServiceClient userClient,
+            List<MessageBuilder<T>> messageBuildersList,
+            List<NotificationService> notificationServicesList
+    ) {
+        this.objectMapper = objectMapper;
+        this.userClient = userClient;
+        this.messageBuilders = messageBuildersList.stream()
+                .collect(Collectors.toMap(MessageBuilder::getInstance, b -> b));
+        this.notificationServices = notificationServicesList.stream()
+                .collect(Collectors.toMap(NotificationService::getPreferredContact, s -> s));
+    }
+
+    protected void handleEvent(Message message, Class<T> eventType) {
         try {
             T event = objectMapper.readValue(message.getBody(), eventType);
-            consumer.accept(event);
+            long receiverId = event.getReceiverId();
+            UserDto receiver = userClient.getUser(receiverId);
+            sendNotification(receiver, getMessage(event, Locale.ENGLISH));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    protected String getMessage(T event, Locale userLocale) {
-        return messageBuilders.stream()
-                .filter(messageBuilder -> messageBuilder.getInstance() == event.getClass())
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Not found any message builder for the event type: " + event.getClass().getName())
-                ).buildMessage(event, userLocale);
+    protected String getMessage(T event, Locale locale) {
+        MessageBuilder<T> messageBuilder = messageBuilders.get(event.getClass());
+
+        if (messageBuilder == null) {
+            throw new IllegalArgumentException(
+                    "not found any message builder for event type: " + event.getClass().getName()
+            );
+        }
+
+        return messageBuilder.buildMessage(event, locale);
     }
 
     protected void sendNotification(UserDto user, String message) {
-        notificationServices.stream()
-                .filter(notificationService ->
-                        notificationService.getPreferredContact() == user.getPreference())
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Not found any notification service for user's preferred contact: " + user.getPreference())
-                ).send(user, message);
+        NotificationService notificationService = notificationServices.get(user.getPreference());
+
+        if (notificationService == null) {
+            throw new IllegalArgumentException(
+                    "not found any notification service for user's preferred contact: " + user.getPreference()
+            );
+        }
+
+        notificationService.send(user, message);
     }
 }
