@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.implementation
+
 plugins {
     java
     id("org.springframework.boot") version "3.0.6"
@@ -59,6 +61,11 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
+
+    implementation("org.apache.httpcomponents:httpclient:4.5.14")
+    implementation("org.json:json:20231013")
+
+
     /**
      * Kafka
      */
@@ -66,6 +73,8 @@ dependencies {
         implementation("org.springframework.kafka:spring-kafka:3.1.6")
         implementation("org.apache.kafka:kafka-clients:3.6.0")
     }
+
+
 }
 
 tasks.withType<Test> {

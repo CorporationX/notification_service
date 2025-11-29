@@ -43,6 +43,7 @@ public class EventNotificationService {
             attendeesIds.forEach(user -> send(user
                     , text));
         }
+
         log.info("Received EventStartEvent: {} ", eventStartEventDto.nameOwner());
     }
 }
