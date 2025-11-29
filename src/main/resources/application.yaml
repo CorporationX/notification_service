@@ -7,8 +7,6 @@ spring:
     topics:
       name:
         event-start-topic: "event_start_topic"
-    topics:
-      name:
         mentorship-offered: "mentorship-offered"
     channel:
       follower: follower_channel
