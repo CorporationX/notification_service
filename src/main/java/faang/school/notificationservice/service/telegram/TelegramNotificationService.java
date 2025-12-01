@@ -1,12 +1,15 @@
 package faang.school.notificationservice.service.telegram;
 
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.RegistrationInTelegramBotException;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TelegramNotificationService implements NotificationService {
 
     private final TelegramBot telegramBot;
@@ -14,7 +17,8 @@ public class TelegramNotificationService implements NotificationService {
     @Override
     public void send(UserDto user, String message) {
         if (user.getChatId() == null) {
-            throw new NullPointerException("User must be registered in TelegramBot");
+            log.error("User #{} is not registered in TelegramBot", user.getId());
+            throw new RegistrationInTelegramBotException("User must be registered in TelegramBot");
         }
         telegramBot.sendMessage(user.getChatId(), message);
     }

@@ -14,7 +14,7 @@ import java.util.List;
 @FeignClient(name = "user-service", url = "${user-service.host}:${user-service.port}")
 public interface UserServiceClient {
 
-    @PutMapping("/api/v1/users/user/{chatId}")
+    @PostMapping("/api/v1/users/chats/{chatId}") //TODO: изменить параметры на @RequestBody
     UserDto updateChatIdByEmail(@PathVariable long chatId, @RequestParam("email") String email);
 
     @GetMapping("/api/v1/users/{userId}")

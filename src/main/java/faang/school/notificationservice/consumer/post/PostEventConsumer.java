@@ -5,9 +5,8 @@ import faang.school.notificationservice.dto.PostPublishedEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -18,27 +17,27 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class PostEventConsumer {
 
     private final UserServiceClient userServiceClient;
-    private final List<NotificationService> notificationServices;
-    private final List<MessageBuilder<?>> messageBuilders;
-    private Map<UserDto.PreferredContact, NotificationService> notificationServiceMap;
-    private Map<Class<?>, MessageBuilder<?>> messageBuilderMap;
+    private final Map<UserDto.PreferredContact, NotificationService> notificationServiceMap;
+    private final Map<Class<?>, MessageBuilder<?>> messageBuilderMap;
 
-    @PostConstruct
-    public void init() {
-        notificationServiceMap = notificationServices.stream()
+    @Autowired
+    public PostEventConsumer(
+            UserServiceClient userServiceClient,
+            List<NotificationService> notificationServices,
+            List<MessageBuilder<?>> messageBuilders) {
+        this.userServiceClient = userServiceClient;
+        this.notificationServiceMap = notificationServices.stream()
                 .collect(Collectors.toMap(NotificationService::getPreferredContact, Function.identity()));
-        messageBuilderMap = messageBuilders.stream()
+        this.messageBuilderMap = messageBuilders.stream()
                 .collect(Collectors.toMap(MessageBuilder::getEventType, Function.identity()));
     }
 
-    @KafkaListener(topics = "post-published-events",
-            groupId = "notification-service",
-            properties = "spring.json.value.default.type: faang.school.notificationservice.dto.PostPublishedEvent")
+    @KafkaListener(topics = "${app.kafka.topics.post-published.name}",
+            groupId = "${spring.kafka.consumer.group-id}")
     public void handlePostPublished(PostPublishedEvent event) {
         log.info("Received post published event: {}", event);
         UserDto postAuthor = userServiceClient.getUserById(event.authorId());
@@ -46,6 +45,7 @@ public class PostEventConsumer {
         @SuppressWarnings("unchecked")
         MessageBuilder<PostPublishedEvent> builder =
                 (MessageBuilder<PostPublishedEvent>) messageBuilderMap.get(event.getClass());
+        //TODO: исправить Locale.getDefault(), когда пользователю добавят Locale
         String postPublishedMessage = builder.buildMessage(event, postAuthor, Locale.getDefault());
         for (UserDto follower : followers) {
             notificationServiceMap.get(follower.getPreference()).send(follower, postPublishedMessage);
