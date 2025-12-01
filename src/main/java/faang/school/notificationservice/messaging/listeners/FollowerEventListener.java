@@ -26,7 +26,7 @@ public class FollowerEventListener extends AbstractEventListener {
 
     @KafkaListener(topics = "${kafka.topics.follower}",
         containerFactory = "followerEventKafkaListenerContainerFactory",
-        groupId = "notification-service-group")
+        groupId = "${spring.kafka.consumer.group-id}")
     public void onMessage(FollowerEvent followerEvent) {
         try {
             log.info("Received follower event: {}", followerEvent);
