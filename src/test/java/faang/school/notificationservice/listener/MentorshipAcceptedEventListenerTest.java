@@ -1,0 +1,75 @@
+package faang.school.notificationservice.listener;
+
+import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.event.mentorship.MentorshipAcceptedEvent;
+import faang.school.notificationservice.messaging.listeners.MentorshipAcceptedEventListener;
+import faang.school.notificationservice.messaging.message_builder.MentorshipAcceptedEventMessageBuilder;
+import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.user.UserService;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Locale;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+public class MentorshipAcceptedEventListenerTest {
+
+    private final MentorshipAcceptedEvent mentorshipAcceptedEvent = MentorshipAcceptedEvent.builder()
+            .mentorshipRequestId(3L)
+            .mentorId(1L)
+            .menteeId(2L)
+            .build();
+
+    private final UserDto userDto = UserDto.builder()
+            .id(mentorshipAcceptedEvent.mentorId())
+            .preference(UserDto.PreferredContact.SMS)
+            .locale(Locale.CANADA)
+            .build();
+
+    @Captor
+    private ArgumentCaptor<UserDto> userDtoArgumentCaptor;
+
+    @Mock
+    private NotificationService notificationService;
+    @Mock
+    private UserService userService;
+    @Mock
+    private MentorshipAcceptedEventMessageBuilder mentorshipAcceptedEventMessageBuilder;
+
+    private MentorshipAcceptedEventListener mentorshipAcceptedEventListener;
+
+    @BeforeEach
+    void setup() {
+        when(notificationService.getPreferredContact()).thenReturn(userDto.getPreference());
+        mentorshipAcceptedEventListener = new MentorshipAcceptedEventListener(
+                List.of(notificationService), userService, mentorshipAcceptedEventMessageBuilder);
+    }
+
+    @Test
+    void testOnMessage() {
+        String messageText = "test text";
+
+        when(mentorshipAcceptedEventMessageBuilder.buildMessage(Mockito.any(MentorshipAcceptedEvent.class),
+                Mockito.any(Locale.class))).thenReturn(messageText);
+        when(userService.getUser(userDto.getId())).thenReturn(userDto);
+
+        mentorshipAcceptedEventListener.onMessage(mentorshipAcceptedEvent);
+
+        verify(notificationService).send(userDtoArgumentCaptor.capture(), Mockito.eq(messageText));
+
+        UserDto capturedUserDto = userDtoArgumentCaptor.getValue();
+
+        Assertions.assertEquals(userDto.getId(), capturedUserDto.getId());
+    }
+}

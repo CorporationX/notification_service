@@ -38,6 +38,7 @@ kafka:
   topics:
     mentorship-offer: mentorship_offer_topic
     recommendation-received-events: "recommendation_received_events"
+    mentorship-accept: mentorship_accept_topic
     follower: follower_topic
 
   messages:
