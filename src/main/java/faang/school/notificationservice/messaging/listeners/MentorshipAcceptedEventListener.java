@@ -3,7 +3,7 @@ package faang.school.notificationservice.messaging.listeners;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.mentorship.MentorshipAcceptedEvent;
 import faang.school.notificationservice.messaging.message_builder.MentorshipAcceptedEventMessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import faang.school.notificationservice.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -36,7 +36,7 @@ public class MentorshipAcceptedEventListener {
         this.mentorshipAcceptedEventMessageBuilder = mentorshipAcceptedEventMessageBuilder;
     }
 
-    @KafkaListener(topics = "${kafka.topic.mentorship-accept}")
+    @KafkaListener(topics = "${kafka.topics.mentorship-accept}")
     public void onMessage(MentorshipAcceptedEvent mentorshipAcceptedEvent) {
 
         UserDto mentor = userService.getUser(mentorshipAcceptedEvent.mentorId());
