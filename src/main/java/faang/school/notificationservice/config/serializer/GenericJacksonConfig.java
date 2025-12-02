@@ -8,7 +8,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 public class GenericJacksonConfig {
 
     @Bean
-    public GenericJackson2JsonRedisSerializer getGenericJackson(){
+    public GenericJackson2JsonRedisSerializer genericJackson() {
         return new GenericJackson2JsonRedisSerializer();
     }
 }

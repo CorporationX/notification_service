@@ -1,6 +1,8 @@
 package faang.school.notificationservice.service.telegram;
 
+import faang.school.notificationservice.dto.ContactDto;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.exception.ContactTypeNoSuchException;
 import faang.school.notificationservice.exception.NotificationException;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,7 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Notif
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = "Greetings, glad to have joined Corporation X";
             long chatId = update.getMessage().getChatId();
+            System.out.println(update.getMessage() + " " + chatId);
             executeMessage(chatId, messageText);
         }
     }
@@ -60,7 +63,27 @@ public class TelegramServiceImpl extends TelegramLongPollingBot implements Notif
 
     @Override
     public void send(UserDto dto, String messageText) {
-        executeMessage(dto.getId(), messageText);
+        if (dto.getContactPreference() == UserDto.PreferredContact.TELEGRAM) {
+            long contactId = dto.getContacts().stream()
+                    .filter(contactDto ->
+                            contactDto.getType().equals(ContactDto.ContactType.TELEGRAM))
+                    .findFirst()
+                    .map(contactDto -> {
+                        if (contactDto.getContact() != null) {
+                            try {
+                                return Long.parseLong(contactDto.getContact());
+                            } catch (NumberFormatException e) {
+                                throw new IllegalArgumentException("Invalid contact Telegram " +
+                                        contactDto.getContact());
+                            }
+                        }
+                        return null;
+                    })
+                    .orElseThrow(() -> new ContactTypeNoSuchException("Telegram contact not found for user:"));
+            executeMessage(contactId, messageText);
+        } else {
+            throw new NotificationException("The user did not specify a telegram contact");
+        }
     }
 
     @Override
