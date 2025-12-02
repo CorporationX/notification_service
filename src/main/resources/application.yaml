@@ -25,6 +25,9 @@ spring:
 
   messages:
     basename: messages
+    use-code-as-default-message: true
+    fallback-to-system-locale: true
+    cache-duration: 3600s
 
 server:
   port: 8083

@@ -5,6 +5,7 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.builder.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
@@ -51,10 +52,11 @@ public abstract class AbstractEventListener<T> implements MessageListener {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No notification service found for the user: " + id))
                 .send(user, message);
+        log.info("Notification sent to user: {}", id);
     }
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
+    public void onMessage(@NonNull Message message, byte[] pattern) {
         handleEvent(message, eventType, this::eventConsumer);
     }
 

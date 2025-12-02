@@ -15,7 +15,7 @@ public class RecommendationMessageBuilder implements MessageBuilder<Recommendati
 
     @Override
     public String buildMessage(RecommendationEvent event, Locale locale) {
-        return messageSource.getMessage("recommendation.receive", new Object[]{event.receiverId()}, locale);
+        return messageSource.getMessage("recommendation.receive.new", new Object[]{event.receiverId()}, locale);
     }
 
     @Override

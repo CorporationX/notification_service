@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.messaging.RecommendationReceiveListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,9 +12,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
@@ -32,11 +32,12 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public RedisTemplate<String, Object> redisTemplate(JedisConnectionFactory jedisConnectionFactory,
+                                                       ObjectMapper objectMapper) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(jedisConnectionFactory());
+        template.setConnectionFactory(jedisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
         return template;
     }
 
@@ -51,10 +52,12 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(Map<MessageListenerAdapter, ChannelTopic> listenerAdapterMap) {
+    RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationListener,
+                                                 ChannelTopic recommendationTopic,
+                                                 JedisConnectionFactory jedisConnectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(jedisConnectionFactory());
-        listenerAdapterMap.forEach((container::addMessageListener));
+        container.setConnectionFactory(jedisConnectionFactory);
+        container.addMessageListener(recommendationListener, recommendationTopic);
         return container;
     }
 }
