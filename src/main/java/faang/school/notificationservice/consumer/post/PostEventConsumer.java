@@ -6,7 +6,6 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +23,6 @@ public class PostEventConsumer {
     private final Map<UserDto.PreferredContact, NotificationService> notificationServiceMap;
     private final Map<Class<?>, MessageBuilder<?>> messageBuilderMap;
 
-    @Autowired
     public PostEventConsumer(
             UserServiceClient userServiceClient,
             List<NotificationService> notificationServices,
