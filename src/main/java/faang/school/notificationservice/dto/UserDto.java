@@ -1,15 +1,20 @@
 package faang.school.notificationservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.Locale;
+import java.util.List;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
     private long id;
     private String username;
     private String email;
     private String phone;
+    private Long chatId;
+    private List<Long> followersIds;
     private PreferredContact preference;
     private Locale locale;
 
