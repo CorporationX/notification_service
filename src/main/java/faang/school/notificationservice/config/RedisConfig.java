@@ -1,5 +1,6 @@
 package faang.school.notificationservice.config;
 
+import faang.school.notificationservice.messaging.GoalCompletedEventListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.messaging.RecommendationReceiveListener;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
+    @Value("${spring.data.redis.channel.topic}")
+    private String goalCompletedTopicName;
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
@@ -32,18 +36,23 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(JedisConnectionFactory jedisConnectionFactory,
+    public RedisTemplate<String, Object> redisTemplate(JedisConnectionFactory сonnectionFactory,
                                                        ObjectMapper objectMapper) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(jedisConnectionFactory);
+        template.setConnectionFactory(сonnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
         return template;
     }
 
     @Bean
-    MessageListenerAdapter recommendationListener(RecommendationReceiveListener receiveListener) {
+    public MessageListenerAdapter recommendationListener(RecommendationReceiveListener receiveListener) {
         return new MessageListenerAdapter(receiveListener);
+    }
+
+    @Bean
+    public MessageListenerAdapter goalCompletedEventListener(GoalCompletedEventListener listener) {
+        return new MessageListenerAdapter(listener);
     }
 
     @Bean
@@ -52,11 +61,20 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter recommendationListener,
-                                                 ChannelTopic recommendationTopic,
-                                                 JedisConnectionFactory jedisConnectionFactory) {
+    public ChannelTopic goalCompletedTopic() {
+        return new ChannelTopic(goalCompletedTopicName);
+    }
+
+
+    @Bean
+    public RedisMessageListenerContainer redisContainer(JedisConnectionFactory connectionFactory,
+                                                        MessageListenerAdapter goalCompletedEventListener,
+                                                        ChannelTopic goalCompletedTopic,
+                                                        MessageListenerAdapter recommendationListener,
+                                                        ChannelTopic recommendationTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(jedisConnectionFactory);
+        container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(goalCompletedEventListener, goalCompletedTopic);
         container.addMessageListener(recommendationListener, recommendationTopic);
         return container;
     }
