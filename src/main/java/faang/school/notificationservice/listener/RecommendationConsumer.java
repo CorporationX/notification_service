@@ -5,12 +5,9 @@ import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.recommendation.RecommendationEventDto;
 import faang.school.notificationservice.service.MessageBuilderUtils;
 import faang.school.notificationservice.service.NotificationService;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,12 +19,13 @@ public class RecommendationConsumer extends AbstractNotification {
     private final MessageBuilderUtils<RecommendationEventDto> messageBuilderUtils;
     private final ObjectMapper objectMapper;
 
+
     public RecommendationConsumer(MessageBuilderUtils<RecommendationEventDto> messageBuilderUtils,
                                   UserServiceClient userServiceClient, List<NotificationService> notificationService,
                                   ObjectMapper objectMapper) {
         super(userServiceClient, notificationService);
-        this.messageBuilderUtils = messageBuilderUtils;
         this.objectMapper = objectMapper;
+        this.messageBuilderUtils = messageBuilderUtils;
     }
 
     @KafkaListener(topics = "${spring.kafka.consumer.topics.recommendation}",
@@ -35,12 +33,11 @@ public class RecommendationConsumer extends AbstractNotification {
             groupId = "${spring.kafka.consumer.group-id.recommendation}")
     public void recommendationConsumer(ConsumerRecord<String, Object> consumerRecord) {
         log.info("Received {} - message from the topic", consumerRecord);
-        RecommendationEventDto receivedDto = objectMapper.convertValue(consumerRecord.value(), RecommendationEventDto.class);
+        RecommendationEventDto receivedDto = objectMapper.convertValue(consumerRecord.value(),
+                RecommendationEventDto.class);
         log.info("Convert Successful {}", receivedDto);
-        //Locale locale = Locale.getDefault();
         Locale locale = receivedDto.locale() == null ? Locale.getDefault() : receivedDto.locale();
         String text = messageBuilderUtils.getMessage(receivedDto, locale);
         sendNotification(receivedDto.receiverId(), text);
-        /*ack.acknowledge();*/
     }
 }

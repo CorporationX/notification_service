@@ -10,7 +10,7 @@ import java.util.Locale;
 
 @RequiredArgsConstructor
 @Component
-public class RecommendationMessageBuilder implements MessageBuilder<RecommendationEventDto>{
+public class RecommendationMessageBuilder implements MessageBuilder<RecommendationEventDto> {
     private final MessageSource messageSource;
     private final UserServiceClient userServiceClient;
 

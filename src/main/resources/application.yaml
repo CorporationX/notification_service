@@ -13,7 +13,7 @@ spring:
       achievement: achievement_channel
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT}
     consumer:
       topics:
         recommendation: "recommendation-topic"

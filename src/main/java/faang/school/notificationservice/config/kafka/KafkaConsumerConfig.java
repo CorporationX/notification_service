@@ -1,9 +1,7 @@
 package faang.school.notificationservice.config.kafka;
 
-
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,8 +19,6 @@ import java.util.Map;
 public class KafkaConsumerConfig {
     @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
-    @Value(value = "${spring.kafka.consumer.group-id.recommendation}")
-    private String groupId;
 
     @Bean
     public ConsumerFactory<String, Object> consumerFactory() {
@@ -38,7 +34,7 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, Object> objectContainerFactory(
-           ConsumerFactory<String, Object> consumerFactory
+            ConsumerFactory<String, Object> consumerFactory
     ) {
         ConcurrentKafkaListenerContainerFactory<String, Object> container =
                 new ConcurrentKafkaListenerContainerFactory<>();

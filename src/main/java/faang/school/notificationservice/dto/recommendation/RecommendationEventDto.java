@@ -7,13 +7,6 @@ import jakarta.validation.constraints.Positive;
 import java.util.Locale;
 
 public record RecommendationEventDto(
-/*
-        Long authorId,
-        Long receiverId,
-        Long recommendationId,
-        String content
-*/
-
         @NotNull(message = "Author recommendation cannot be null")
         @Positive(message = "Author recommendation must have positive")
         Long authorId,
