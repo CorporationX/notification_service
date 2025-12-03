@@ -22,6 +22,14 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    topic:
+      comment-events: comment-events-topic
+
   messages:
     basename: messages
 
