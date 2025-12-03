@@ -25,6 +25,31 @@ spring:
   messages:
     basename: messages
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    properties:
+      request.timeout.ms: 30000
+      session.timeout.ms: 30000
+    consumer:
+      group-id: notification-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: faang.school.notificationservice.dto.PostPublishedEvent
+
+telegram:
+  bot:
+    username: ${TELEGRAM_BOT_USERNAME}
+    token: ${TELEGRAM_BOT_TOKEN}
+    cleanup:
+      state:
+        fixed-rate: 259200000 #Три дня в миллисекундах
+  messages:
+    max-length-visible: 17
+
 server:
   port: 8083
 
@@ -44,3 +69,11 @@ project-service:
 user-service:
     host: localhost
     port: 8080
+
+app:
+  kafka:
+    topics:
+      post-published:
+        name: post-published-events
+        partitions: 3
+        replicas: 1
