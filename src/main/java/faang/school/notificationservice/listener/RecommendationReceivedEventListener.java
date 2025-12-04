@@ -4,7 +4,7 @@ package faang.school.notificationservice.listener;
 import faang.school.notificationservice.dto.RecommendationReceivedEventDto;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.messaging.message_builder.RecommendationReceivedEventMessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import faang.school.notificationservice.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -36,7 +36,7 @@ public class RecommendationReceivedEventListener {
                 );
     }
 
-    @KafkaListener(topics = "${kafka.topic.recommendation-received-events}")
+    @KafkaListener(topics = "${kafka.topics.recommendation-received-events}")
     public void handleRecommendationReceivedEvent(RecommendationReceivedEventDto jsonEvent) {
         try {
             log.info("Successfully listen event from a recommendation-received-events topic: {}", jsonEvent);

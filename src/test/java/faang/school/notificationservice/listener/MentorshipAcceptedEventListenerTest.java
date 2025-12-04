@@ -4,7 +4,7 @@ import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.event.mentorship.MentorshipAcceptedEvent;
 import faang.school.notificationservice.messaging.listeners.MentorshipAcceptedEventListener;
 import faang.school.notificationservice.messaging.message_builder.MentorshipAcceptedEventMessageBuilder;
-import faang.school.notificationservice.service.NotificationService;
+import faang.school.notificationservice.service.notification.NotificationService;
 import faang.school.notificationservice.service.user.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
