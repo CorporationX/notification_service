@@ -12,7 +12,7 @@ import java.util.ResourceBundle;
 public class GoalCompletedMessageBuilder implements MessageBuilder<GoalCompletedEvent>{
 
     @Override
-    public Class<?> getInstance() {
+    public Class<?> supportsEventType() {
         return GoalCompletedEvent.class;
     }
 
