@@ -24,7 +24,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
-        spring.json.type.mapping: "newFollowerEvent:faang.school.notificationservice.dto.events.NewFollowerEventDto"
+        spring.json.type.mapping: "newFollowerEvent:faang.school.notificationservice.dto.events.NewFollowerEventDto,requestEvent:faang.school.notificationservice.dto.events.RequestEventDto"
         spring.json.use.type.headers: false
 
   mail:
@@ -53,6 +53,7 @@ app:
   topics:
     follower-create-events: ${TOPIC_FOLLOWER:follower-create-events}
     achievement-create-events: ${TOPIC_ACHIEVEMENT:achievement-create-events}
+    request-status-events: ${TOPIC_REQUEST_STATUS:request-status-events-topic}
   locale:
     default: en
 
