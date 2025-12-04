@@ -1,10 +1,11 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.messaging.builder;
 
 import faang.school.notificationservice.dto.RecommendationRequestEvent;
-import java.util.Locale;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
+
+import java.util.Locale;
 
 @Component
 @AllArgsConstructor
