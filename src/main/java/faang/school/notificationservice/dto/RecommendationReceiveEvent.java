@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
-public record RecommendationEvent(
+public record RecommendationReceiveEvent(
         @NotNull(message = "Recommendation ID cannot be null")
         Long recommendationId,
         @NotNull(message = "Author recommendation ID cannot be null")

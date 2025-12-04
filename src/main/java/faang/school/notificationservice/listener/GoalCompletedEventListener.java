@@ -1,11 +1,12 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.event.GoalCompletedEvent;
 import faang.school.notificationservice.exception.DataValidationException;
-import faang.school.notificationservice.service.EmailService;
+import faang.school.notificationservice.messaging.builder.GoalCompletedMessageBuilder;
+import faang.school.notificationservice.service.notification.EmailService;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

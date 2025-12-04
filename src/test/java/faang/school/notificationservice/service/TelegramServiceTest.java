@@ -2,6 +2,7 @@ package faang.school.notificationservice.service;
 
 import faang.school.notificationservice.config.telegrambot.TelegramBot;
 import faang.school.notificationservice.dto.UserDto;
+import faang.school.notificationservice.service.notification.TelegramService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

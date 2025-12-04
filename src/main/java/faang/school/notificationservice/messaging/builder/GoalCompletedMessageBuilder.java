@@ -1,4 +1,4 @@
-package faang.school.notificationservice.messaging;
+package faang.school.notificationservice.messaging.builder;
 
 import faang.school.notificationservice.dto.event.GoalCompletedEvent;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 
 @Component
 @RequiredArgsConstructor
-public class GoalCompletedMessageBuilder implements MessageBuilder<GoalCompletedEvent>{
+public class GoalCompletedMessageBuilder implements MessageBuilder<GoalCompletedEvent> {
 
     @Override
     public Class<?> supportsEventType() {

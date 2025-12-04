@@ -1,12 +1,9 @@
 package faang.school.notificationservice.config.context;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import faang.school.notificationservice.listener.GoalCompletedEventListener;
+import faang.school.notificationservice.listener.RecommendationReceiveListener;
 import faang.school.notificationservice.listener.RecommendationRequestListener;
-import java.util.HashMap;
-import java.util.Map;
-
-import faang.school.notificationservice.messaging.GoalCompletedEventListener;
-import faang.school.notificationservice.messaging.RecommendationReceiveListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -82,20 +79,18 @@ public class RedisConfiguration {
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(
             JedisConnectionFactory jedisConnectionFactory,
-            Map<String, ChannelTopic> topics,
-            Map<String, MessageListenerAdapter> listeners) {
+            ChannelTopic recommendRequestTopic,
+            ChannelTopic recommendationTopic,
+            ChannelTopic goalCompletedTopic,
+            MessageListenerAdapter recommendRequestListener,
+            MessageListenerAdapter recommendationListener,
+            MessageListenerAdapter goalCompletedListener) {
 
-        Map<MessageListenerAdapter, ChannelTopic> listenersAndTopics = new HashMap<>();
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory);
-
-        topics.forEach((topicBeanName, topic) -> {
-            String listenerBeanName = topicBeanName.replace("Listener", "Topic");
-            MessageListenerAdapter listener = listeners.get(listenerBeanName);
-            listenersAndTopics.put(listener, topic);
-        });
-
-        listenersAndTopics.forEach(container::addMessageListener);
+        container.addMessageListener(recommendRequestListener, recommendRequestTopic);
+        container.addMessageListener(recommendationListener, recommendationTopic);
+        container.addMessageListener(goalCompletedListener, goalCompletedTopic);
 
         return container;
     }
