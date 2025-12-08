@@ -1,4 +1,4 @@
-package faang.school.notificationservice.messaging.comment;
+package faang.school.notificationservice.consumer.comment;
 
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
@@ -23,16 +23,15 @@ public class CommentEventListener {
     private final List<NotificationService> notificationServices;
 
     @KafkaListener(
-            topics = "${spring.kafka.topic.comment-events}",
-            groupId = "${spring.kafka.consumer.group-id}",
-            containerFactory = "commentEventKafkaListenerContainerFactory"
+            topics = "${app.kafka.topics.comment-events.name}",
+            groupId = "${spring.kafka.consumer.group-id}"
     )
     public void onCommentEvent(CommentEvent event) {
         log.info("Received comment event: commentId={}, postId={}, postAuthorId={}",
                 event.getCommentId(), event.getPostId(), event.getPostAuthorId());
 
         try {
-            UserDto postAuthor = userServiceClient.getUser(event.getPostAuthorId());
+            UserDto postAuthor = userServiceClient.getUserById(event.getPostAuthorId());
             if (postAuthor == null) {
                 log.warn("Cannot send notification: user with id {} not found", event.getPostAuthorId());
                 return;
@@ -47,7 +46,7 @@ public class CommentEventListener {
             Locale locale = postAuthor.getLocale() != null 
                     ? postAuthor.getLocale() 
                     : Locale.getDefault();
-            String message = messageBuilder.buildMessage(event, locale);
+            String message = messageBuilder.buildMessage(event, postAuthor, locale);
             sendNotification(postAuthor, message);
             log.info("Notification sent successfully to user {} via {}", postAuthor.getId(), postAuthor.getPreference());
         } catch (Exception e) {
@@ -59,7 +58,7 @@ public class CommentEventListener {
     private <T> MessageBuilder<T> findMessageBuilder(T event) {
         return (MessageBuilder<T>) messageBuilders.stream()
                 .filter(builder ->
-                        builder.getInstance().isInstance(event))
+                        builder.getEventType().isInstance(event))
                 .findFirst()
                 .orElse(null);
     }

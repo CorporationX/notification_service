@@ -1,6 +1,7 @@
 package faang.school.notificationservice.messaging.comment;
 
 import faang.school.notificationservice.client.UserServiceClient;
+import faang.school.notificationservice.consumer.comment.CommentEventListener;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.event.CommentEvent;
 import faang.school.notificationservice.messaging.MessageBuilder;
@@ -8,7 +9,6 @@ import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -74,70 +74,70 @@ class CommentEventListenerTest {
 
     @Test
     void testOnCommentEvent_Success() {
-        doReturn(CommentEvent.class).when(commentMessageBuilder).getInstance();
+        when(commentMessageBuilder.getEventType()).thenReturn(CommentEvent.class);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
-        when(userServiceClient.getUser(20L)).thenReturn(userDto);
-        when(commentMessageBuilder.buildMessage(eq(commentEvent), eq(Locale.ENGLISH)))
+        when(userServiceClient.getUserById(20L)).thenReturn(userDto);
+        when(commentMessageBuilder.buildMessage(eq(commentEvent), eq(userDto), eq(Locale.ENGLISH)))
                 .thenReturn("Notification message");
 
         commentEventListener.onCommentEvent(commentEvent);
 
-        verify(userServiceClient, times(1)).getUser(20L);
-        verify(commentMessageBuilder, times(1)).buildMessage(eq(commentEvent), eq(Locale.ENGLISH));
+        verify(userServiceClient, times(1)).getUserById(20L);
+        verify(commentMessageBuilder, times(1)).buildMessage(eq(commentEvent), eq(userDto), eq(Locale.ENGLISH));
         verify(notificationService, times(1)).send(eq(userDto), eq("Notification message"));
     }
 
     @Test
     void testOnCommentEvent_UserNotFound() {
-        when(userServiceClient.getUser(20L)).thenReturn(null);
+        when(userServiceClient.getUserById(20L)).thenReturn(null);
 
         commentEventListener.onCommentEvent(commentEvent);
 
-        verify(userServiceClient, times(1)).getUser(20L);
-        verify(commentMessageBuilder, never()).buildMessage(any(), any());
+        verify(userServiceClient, times(1)).getUserById(20L);
+        verify(commentMessageBuilder, never()).buildMessage(any(), any(), any());
         verify(notificationService, never()).send(any(), anyString());
     }
 
     @Test
     void testOnCommentEvent_MessageBuilderNotFound() {
         messageBuilders.clear();
-        when(userServiceClient.getUser(20L)).thenReturn(userDto);
+        when(userServiceClient.getUserById(20L)).thenReturn(userDto);
 
         commentEventListener.onCommentEvent(commentEvent);
 
-        verify(userServiceClient, times(1)).getUser(20L);
-        verify(commentMessageBuilder, never()).buildMessage(any(), any());
+        verify(userServiceClient, times(1)).getUserById(20L);
+        verify(commentMessageBuilder, never()).buildMessage(any(), any(), any());
         verify(notificationService, never()).send(any(), anyString());
     }
 
     @Test
     void testOnCommentEvent_NotificationServiceNotFound() {
         notificationServices.clear();
-        doReturn(CommentEvent.class).when(commentMessageBuilder).getInstance();
-        when(userServiceClient.getUser(20L)).thenReturn(userDto);
-        when(commentMessageBuilder.buildMessage(eq(commentEvent), eq(Locale.ENGLISH)))
+        when(commentMessageBuilder.getEventType()).thenReturn(CommentEvent.class);
+        when(userServiceClient.getUserById(20L)).thenReturn(userDto);
+        when(commentMessageBuilder.buildMessage(eq(commentEvent), eq(userDto), eq(Locale.ENGLISH)))
                 .thenReturn("Notification message");
 
         commentEventListener.onCommentEvent(commentEvent);
 
-        verify(userServiceClient, times(1)).getUser(20L);
-        verify(commentMessageBuilder, times(1)).buildMessage(eq(commentEvent), eq(Locale.ENGLISH));
+        verify(userServiceClient, times(1)).getUserById(20L);
+        verify(commentMessageBuilder, times(1)).buildMessage(eq(commentEvent), eq(userDto), eq(Locale.ENGLISH));
         verify(notificationService, never()).send(any(), anyString());
     }
 
     @Test
     void testOnCommentEvent_WithNullLocale_UsesDefaultLocale() {
         userDto.setLocale(null);
-        doReturn(CommentEvent.class).when(commentMessageBuilder).getInstance();
+        when(commentMessageBuilder.getEventType()).thenReturn(CommentEvent.class);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
-        when(userServiceClient.getUser(20L)).thenReturn(userDto);
-        when(commentMessageBuilder.buildMessage(eq(commentEvent), any(Locale.class)))
+        when(userServiceClient.getUserById(20L)).thenReturn(userDto);
+        when(commentMessageBuilder.buildMessage(eq(commentEvent), eq(userDto), any(Locale.class)))
                 .thenReturn("Notification message");
 
         commentEventListener.onCommentEvent(commentEvent);
 
-        verify(userServiceClient, times(1)).getUser(20L);
-        verify(commentMessageBuilder, times(1)).buildMessage(eq(commentEvent), any(Locale.class));
+        verify(userServiceClient, times(1)).getUserById(20L);
+        verify(commentMessageBuilder, times(1)).buildMessage(eq(commentEvent), eq(userDto), any(Locale.class));
         verify(notificationService, times(1)).send(eq(userDto), eq("Notification message"));
     }
 
@@ -149,60 +149,60 @@ class CommentEventListenerTest {
         notificationServices.clear();
         notificationServices.add(phoneService);
 
-        doReturn(CommentEvent.class).when(commentMessageBuilder).getInstance();
-        when(userServiceClient.getUser(20L)).thenReturn(userDto);
-        when(commentMessageBuilder.buildMessage(eq(commentEvent), eq(Locale.ENGLISH)))
+        when(commentMessageBuilder.getEventType()).thenReturn(CommentEvent.class);
+        when(userServiceClient.getUserById(20L)).thenReturn(userDto);
+        when(commentMessageBuilder.buildMessage(eq(commentEvent), eq(userDto), eq(Locale.ENGLISH)))
                 .thenReturn("Notification message");
 
         commentEventListener.onCommentEvent(commentEvent);
 
-        verify(userServiceClient, times(1)).getUser(20L);
-        verify(commentMessageBuilder, times(1)).buildMessage(eq(commentEvent), eq(Locale.ENGLISH));
+        verify(userServiceClient, times(1)).getUserById(20L);
+        verify(commentMessageBuilder, times(1)).buildMessage(eq(commentEvent), eq(userDto), eq(Locale.ENGLISH));
         verify(phoneService, times(1)).send(eq(userDto), eq("Notification message"));
         verify(notificationService, never()).send(any(), anyString());
     }
 
     @Test
     void testOnCommentEvent_ExceptionHandling() {
-        when(userServiceClient.getUser(20L)).thenThrow(new RuntimeException("Service unavailable"));
+        when(userServiceClient.getUserById(20L)).thenThrow(new RuntimeException("Service unavailable"));
 
         assertThatCode(() -> commentEventListener.onCommentEvent(commentEvent))
                 .doesNotThrowAnyException();
 
-        verify(userServiceClient, times(1)).getUser(20L);
-        verify(commentMessageBuilder, never()).buildMessage(any(), any());
+        verify(userServiceClient, times(1)).getUserById(20L);
+        verify(commentMessageBuilder, never()).buildMessage(any(), any(), any());
         verify(notificationService, never()).send(any(), anyString());
     }
 
     @Test
     void testOnCommentEvent_ExceptionInMessageBuilder() {
-        doReturn(CommentEvent.class).when(commentMessageBuilder).getInstance();
-        when(userServiceClient.getUser(20L)).thenReturn(userDto);
-        when(commentMessageBuilder.buildMessage(eq(commentEvent), eq(Locale.ENGLISH)))
+        when(commentMessageBuilder.getEventType()).thenReturn(CommentEvent.class);
+        when(userServiceClient.getUserById(20L)).thenReturn(userDto);
+        when(commentMessageBuilder.buildMessage(eq(commentEvent), eq(userDto), eq(Locale.ENGLISH)))
                 .thenThrow(new RuntimeException("Message building failed"));
 
         assertThatCode(() -> commentEventListener.onCommentEvent(commentEvent))
                 .doesNotThrowAnyException();
 
-        verify(userServiceClient, times(1)).getUser(20L);
-        verify(commentMessageBuilder, times(1)).buildMessage(eq(commentEvent), eq(Locale.ENGLISH));
+        verify(userServiceClient, times(1)).getUserById(20L);
+        verify(commentMessageBuilder, times(1)).buildMessage(eq(commentEvent), eq(userDto), eq(Locale.ENGLISH));
         verify(notificationService, never()).send(any(), anyString());
     }
 
     @Test
     void testOnCommentEvent_ExceptionInNotificationService() {
-        doReturn(CommentEvent.class).when(commentMessageBuilder).getInstance();
+        when(commentMessageBuilder.getEventType()).thenReturn(CommentEvent.class);
         when(notificationService.getPreferredContact()).thenReturn(UserDto.PreferredContact.EMAIL);
-        when(userServiceClient.getUser(20L)).thenReturn(userDto);
-        when(commentMessageBuilder.buildMessage(eq(commentEvent), eq(Locale.ENGLISH)))
+        when(userServiceClient.getUserById(20L)).thenReturn(userDto);
+        when(commentMessageBuilder.buildMessage(eq(commentEvent), eq(userDto), eq(Locale.ENGLISH)))
                 .thenReturn("Notification message");
         doThrow(new RuntimeException("Send failed")).when(notificationService).send(any(), anyString());
 
         assertThatCode(() -> commentEventListener.onCommentEvent(commentEvent))
                 .doesNotThrowAnyException();
 
-        verify(userServiceClient, times(1)).getUser(20L);
-        verify(commentMessageBuilder, times(1)).buildMessage(eq(commentEvent), eq(Locale.ENGLISH));
+        verify(userServiceClient, times(1)).getUserById(20L);
+        verify(commentMessageBuilder, times(1)).buildMessage(eq(commentEvent), eq(userDto), eq(Locale.ENGLISH));
         verify(notificationService, times(1)).send(eq(userDto), eq("Notification message"));
     }
 }

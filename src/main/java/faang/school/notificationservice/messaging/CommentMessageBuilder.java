@@ -1,8 +1,9 @@
-package faang.school.notificationservice.messaging.comment;
+package faang.school.notificationservice.messaging;
 
+import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.event.CommentEvent;
-import faang.school.notificationservice.messaging.MessageBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -12,18 +13,20 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class CommentMessageBuilder implements MessageBuilder<CommentEvent> {
 
-    private static final int MAX_COMMENT_TEXT_LENGTH = 100;
     private static final String MESSAGE_KEY = "comment.new";
+
+    @Value("${spring.messages.max-comment-text-length}")
+    private int maxCommentTextLength;
 
     private final MessageSource messageSource;
 
     @Override
-    public Class<?> getInstance() {
+    public Class<CommentEvent> getEventType() {
         return CommentEvent.class;
     }
 
     @Override
-    public String buildMessage(CommentEvent event, Locale locale) {
+    public String buildMessage(CommentEvent event, UserDto author, Locale locale) {
         String truncatedText = truncateCommentText(event.getCommentText());
         return messageSource.getMessage(
                 MESSAGE_KEY,
@@ -36,10 +39,10 @@ public class CommentMessageBuilder implements MessageBuilder<CommentEvent> {
         if (text == null) {
             return "";
         }
-        if (text.length() <= MAX_COMMENT_TEXT_LENGTH) {
+        if (text.length() <= maxCommentTextLength) {
             return text;
         }
-        return String.format("%s...", text.substring(0, MAX_COMMENT_TEXT_LENGTH));
+        return String.format("%s...", text.substring(0, maxCommentTextLength));
     }
 
 }

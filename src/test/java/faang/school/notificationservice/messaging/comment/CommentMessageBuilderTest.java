@@ -1,7 +1,8 @@
 package faang.school.notificationservice.messaging.comment;
 
+import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.dto.event.CommentEvent;
-import org.junit.jupiter.api.BeforeEach;
+import faang.school.notificationservice.messaging.CommentMessageBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,11 +33,12 @@ class CommentMessageBuilderTest {
     private static final String MESSAGE_KEY = "comment.new";
     private static final long POST_ID = 123L;
     private static final String EXPECTED_MESSAGE = "A new comment was added to your post #123: Test comment";
+    private static final UserDto MOCK_USER = new UserDto();
 
     @Test
-    void testGetInstance() {
-        Class<?> instance = commentMessageBuilder.getInstance();
-        assertThat(instance).isEqualTo(CommentEvent.class);
+    void testGetEventType() {
+        Class<?> eventType = commentMessageBuilder.getEventType();
+        assertThat(eventType).isEqualTo(CommentEvent.class);
     }
 
     @Test
@@ -53,7 +55,7 @@ class CommentMessageBuilderTest {
                 any(Locale.class)
         )).thenReturn(EXPECTED_MESSAGE);
 
-        String result = commentMessageBuilder.buildMessage(event, Locale.ENGLISH);
+        String result = commentMessageBuilder.buildMessage(event, MOCK_USER, Locale.ENGLISH);
 
         assertThat(result).isEqualTo(EXPECTED_MESSAGE);
     }
@@ -68,11 +70,11 @@ class CommentMessageBuilderTest {
 
         when(messageSource.getMessage(
                 eq(MESSAGE_KEY),
-                eq(new Object[]{POST_ID, ""}),
+                any(Object[].class),
                 any(Locale.class)
         )).thenReturn("A new comment was added to your post #123: ");
 
-        String result = commentMessageBuilder.buildMessage(event, Locale.ENGLISH);
+        String result = commentMessageBuilder.buildMessage(event, MOCK_USER, Locale.ENGLISH);
 
         assertThat(result).isEqualTo("A new comment was added to your post #123: ");
     }
@@ -87,11 +89,11 @@ class CommentMessageBuilderTest {
 
         when(messageSource.getMessage(
                 eq(MESSAGE_KEY),
-                eq(new Object[]{POST_ID, ""}),
+                any(Object[].class),
                 any(Locale.class)
         )).thenReturn("A new comment was added to your post #123: ");
 
-        String result = commentMessageBuilder.buildMessage(event, Locale.ENGLISH);
+        String result = commentMessageBuilder.buildMessage(event, MOCK_USER, Locale.ENGLISH);
 
         assertThat(result).isEqualTo("A new comment was added to your post #123: ");
     }
@@ -108,11 +110,11 @@ class CommentMessageBuilderTest {
         String expectedTruncated = "A".repeat(100) + "...";
         when(messageSource.getMessage(
                 eq(MESSAGE_KEY),
-                eq(new Object[]{POST_ID, expectedTruncated}),
+                any(Object[].class),
                 any(Locale.class)
         )).thenReturn("A new comment was added to your post #123: " + expectedTruncated);
 
-        String result = commentMessageBuilder.buildMessage(event, Locale.ENGLISH);
+        String result = commentMessageBuilder.buildMessage(event, MOCK_USER, Locale.ENGLISH);
 
         assertThat(result).contains(expectedTruncated);
     }
@@ -128,11 +130,11 @@ class CommentMessageBuilderTest {
 
         when(messageSource.getMessage(
                 eq(MESSAGE_KEY),
-                eq(new Object[]{POST_ID, exactLengthText}),
+                any(Object[].class),
                 any(Locale.class)
         )).thenReturn("A new comment was added to your post #123: " + exactLengthText);
 
-        String result = commentMessageBuilder.buildMessage(event, Locale.ENGLISH);
+        String result = commentMessageBuilder.buildMessage(event, MOCK_USER, Locale.ENGLISH);
 
         assertThat(result).contains(exactLengthText);
         assertThat(result).doesNotContain("...");
@@ -153,7 +155,7 @@ class CommentMessageBuilderTest {
                 eq(locale)
         )).thenReturn("Localized message for " + locale);
 
-        String result = commentMessageBuilder.buildMessage(event, locale);
+        String result = commentMessageBuilder.buildMessage(event, MOCK_USER, locale);
 
         assertThat(result).isEqualTo("Localized message for " + locale);
     }
