@@ -27,6 +27,8 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2")
 
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+//yxql sasi xxmm ybbh
     /**
      * Database
      */
@@ -58,10 +60,33 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+
+    implementation("org.apache.httpcomponents:httpclient:4.5.14")
+    implementation("org.json:json:20231013")
+
+
+    /**
+     * Kafka
+     */
+    dependencies {
+        implementation("org.springframework.kafka:spring-kafka:3.1.6")
+        implementation("org.apache.kafka:kafka-clients:3.6.0")
+    }
+
+
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+
+    testLogging {
+        events("PASSED", "FAILED", "SKIPPED")
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
 }
 
 val test by tasks.getting(Test::class) { testLogging.showStandardStreams = true }
