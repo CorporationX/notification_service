@@ -36,7 +36,7 @@ public class LikeNotificationService {
             throw new EntityNotFoundException(
                     String.format("Author of post with ID %d not found", likeEventDto.postAuthorId()));
         }
-        postAuthor.setPreference(UserDto.PreferredContact.EMAIL);
+        postAuthor.setPreference(UserDto.PreferredContact.PHONE);
         String message = likeMessageBuilder.buildMessage(
                 likeEventDto,
                 Locale.getDefault()
@@ -57,7 +57,7 @@ public class LikeNotificationService {
             throw new EntityNotFoundException(
                     String.format("Author of post with ID %d not found", unlikeEventDto.postAuthorId()));
         }
-        postAuthor.setPreference(UserDto.PreferredContact.EMAIL);
+        postAuthor.setPreference(UserDto.PreferredContact.PHONE);
         String message = unlikeMessageBuilder.buildMessage(
                 unlikeEventDto,
                 Locale.getDefault()
