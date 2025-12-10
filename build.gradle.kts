@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
-
 plugins {
     java
     id("org.springframework.boot") version "3.0.6"
@@ -27,6 +25,8 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2")
+
     implementation("org.springframework.boot:spring-boot-starter-mail")
 //yxql sasi xxmm ybbh
     /**

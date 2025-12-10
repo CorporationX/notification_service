@@ -21,7 +21,7 @@ public class CommentEventConsumer {
     private final CommentMessageBuilder messageBuilder;
 
     @KafkaListener(
-            topics = "${spring.kafka.topic.comments}",
+            topics = "${spring.kafka.topics.comments}",
             containerFactory = "commentEventListenerContainerFactory"
     )
     public void handleCommentEvent(CommentEventDto event, Acknowledgment ack) {
