@@ -113,7 +113,4 @@ class MessageBuilderUtilsTest {
 
     private static class TestEvent {
     }
-
-    private static class OtherEvent {
-    }
 }

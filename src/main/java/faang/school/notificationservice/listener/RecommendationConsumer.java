@@ -3,6 +3,7 @@ package faang.school.notificationservice.listener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.recommendation.RecommendationEventDto;
+import faang.school.notificationservice.exception.JsonProcessingException;
 import faang.school.notificationservice.service.MessageBuilderUtils;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +34,12 @@ public class RecommendationConsumer extends AbstractNotification {
             groupId = "${spring.kafka.consumer.group-id.recommendation}")
     public void recommendationConsumer(ConsumerRecord<String, Object> consumerRecord) {
         log.info("Received {} - message from the topic", consumerRecord);
-        RecommendationEventDto receivedDto = objectMapper.convertValue(consumerRecord.value(),
-                RecommendationEventDto.class);
+        RecommendationEventDto receivedDto;
+        try {
+            receivedDto = objectMapper.convertValue(consumerRecord.value(), RecommendationEventDto.class);
+        } catch (IllegalArgumentException e) {
+            throw new JsonProcessingException("Error to processing convert to receivedDto dto");
+        }
         log.info("Convert Successful {}", receivedDto);
         Locale locale = receivedDto.locale() == null ? Locale.getDefault() : receivedDto.locale();
         String text = messageBuilderUtils.getMessage(receivedDto, locale);

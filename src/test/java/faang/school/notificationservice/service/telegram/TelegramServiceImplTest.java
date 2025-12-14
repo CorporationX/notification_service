@@ -29,7 +29,7 @@ class TelegramServiceImplTest {
     public void send_shouldCallSendMessage() {
         UserDto dto = new UserDto();
         dto.setId(123L);
-        dto.setPreference(UserDto.PreferredContact.TELEGRAM);
+        dto.setContactPreference(UserDto.PreferredContact.TELEGRAM);
         String messageText = "Test";
 
         TelegramServiceImpl spyService = spy(telegramService);

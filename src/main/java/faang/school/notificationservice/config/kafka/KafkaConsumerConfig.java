@@ -2,6 +2,7 @@ package faang.school.notificationservice.config.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,13 +20,16 @@ import java.util.Map;
 public class KafkaConsumerConfig {
     @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
+    @Value(value = "${spring.kafka.consumer.concurrency}")
+    private int concurrency;
+    @Value("${spring.kafka.consumer.trusted-package}")
+    private String trustedPackage;
 
-    @Bean
+    @Bean(name = "consumerFactory")
     public ConsumerFactory<String, Object> consumerFactory() {
         Map<String, Object> configProperties = new HashMap<>();
-        JsonDeserializer<Object> deserializer =
-                new JsonDeserializer<>(Object.class, false);
-        deserializer.addTrustedPackages("*");
+        JsonDeserializer<Object> deserializer = new JsonDeserializer<>(Object.class, false);
+        deserializer.addTrustedPackages(trustedPackage);
         configProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
@@ -34,11 +38,11 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, Object> objectContainerFactory(
-            ConsumerFactory<String, Object> consumerFactory
+            @Qualifier(value = "consumerFactory") ConsumerFactory<String, Object> consumerFactory
     ) {
         ConcurrentKafkaListenerContainerFactory<String, Object> container =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        container.setConcurrency(3);
+        container.setConcurrency(concurrency);
         container.setConsumerFactory(consumerFactory);
         return container;
     }
