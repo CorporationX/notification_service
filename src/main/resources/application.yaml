@@ -20,7 +20,7 @@ spring:
       group-id:
         recommendation: "recommendation"
       concurrency: 3
-      trusted-package: "faang.school.notificationservice.dto.recommendation"
+      trusted-package: "*dto*"
 
   mail:
     host: smtp.gmail.com

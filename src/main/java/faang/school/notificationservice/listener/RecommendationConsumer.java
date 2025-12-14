@@ -20,7 +20,6 @@ public class RecommendationConsumer extends AbstractNotification {
     private final MessageBuilderUtils<RecommendationEventDto> messageBuilderUtils;
     private final ObjectMapper objectMapper;
 
-
     public RecommendationConsumer(MessageBuilderUtils<RecommendationEventDto> messageBuilderUtils,
                                   UserServiceClient userServiceClient, List<NotificationService> notificationService,
                                   ObjectMapper objectMapper) {

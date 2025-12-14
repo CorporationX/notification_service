@@ -1,7 +1,6 @@
 package faang.school.notificationservice.config.redis;
 
 import faang.school.notificationservice.listener.EventStartListener;
-import faang.school.notificationservice.config.serializer.GenericJacksonConfig;
 import faang.school.notificationservice.listener.MentorshipOfferedListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
