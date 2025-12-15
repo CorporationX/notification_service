@@ -3,6 +3,7 @@ package faang.school.notificationservice.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
+import java.util.Locale;
 import java.util.List;
 
 @Data
@@ -15,6 +16,7 @@ public class UserDto {
     private Long chatId;
     private List<Long> followersIds;
     private PreferredContact preference;
+    private Locale locale;
 
     public enum PreferredContact {
         EMAIL, PHONE, TELEGRAM
