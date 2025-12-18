@@ -12,6 +12,16 @@ spring:
       follower: follower_channel
       achievement: achievement_channel
 
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT}
+    consumer:
+      topics:
+        recommendation: "recommendation-topic"
+      group-id:
+        recommendation: "recommendation"
+      concurrency: 3
+      trusted-package: "*dto*"
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -42,6 +52,14 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
   api:
     key: whatever
     secret: whatever
+thread:
+  min-thread: 4
+  max-thread: 10
+  queue-capacity: 100
+  thread-name: "Thread-conf"
+  ttl-thread: 60
+  graceful-shutdown-flag: true
+  await-termination-seconds: 30
 
 project-service:
     host: localhost
