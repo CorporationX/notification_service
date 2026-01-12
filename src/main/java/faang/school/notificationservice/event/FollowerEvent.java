@@ -1,5 +1,7 @@
 package faang.school.notificationservice.event;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDateTime;
 
 public record FollowerEvent(
@@ -9,6 +11,7 @@ public record FollowerEvent(
 ) implements NotificationEvent {
 
     @Override
+    @JsonIgnore
     public long getReceiverId() {
         return followeeId;
     }

@@ -17,7 +17,7 @@ public class FollowerMessageBuilder implements MessageBuilder<FollowerEvent> {
     private final UserServiceClient userClient;
 
     @Override
-    public Class<?> getInstance() {
+    public Class<FollowerEvent> getInstance() {
         return FollowerEvent.class;
     }
 
@@ -25,7 +25,8 @@ public class FollowerMessageBuilder implements MessageBuilder<FollowerEvent> {
     public String buildMessage(FollowerEvent event, Locale locale) {
         UserDto follower = userClient.getUser(event.followerId());
         String followerName = follower.getUsername();
-        String subscriptionTimestamp = event.timestamp().format(DateTimeFormatter.ofPattern("HH:mm"));
+        String subscriptionTimestamp = event.timestamp()
+                .format(DateTimeFormatter.ofPattern("HH:mm"));
 
         return messageSource.getMessage(
                 "follower.new",
