@@ -31,36 +31,11 @@ public class RedisConfiguration {
     @Value("${spring.data.redis.channel.follower}")
     private String followerTopicName;
 
-    @Bean
-    public ObjectMapper redisObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.findAndRegisterModules();
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        return mapper;
-    }
-
-    @Bean
-    public RedisSerializer<Object> redisSerializer() {
-        return new GenericJackson2JsonRedisSerializer(redisObjectMapper());
-    }
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisHost, redisPort);
         return new LettuceConnectionFactory(configuration);
-    }
-
-
-
-    @Bean
-    RedisTemplate<String, String> redisTemplate() {
-        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(redisSerializer());
-        redisTemplate.setHashValueSerializer(redisSerializer());
-        return redisTemplate;
     }
 
 
