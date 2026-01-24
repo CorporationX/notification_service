@@ -17,8 +17,4 @@ public class NotificationServiceApp {
                 .run(args);
     }
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
 }

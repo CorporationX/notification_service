@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
@@ -20,6 +21,8 @@ public class FollowerEventListener implements MessageListener {
     private final ObjectMapper objectMapper;
     private final List<NotificationService> notificationServices;
     private final UserServiceClient userServiceClient;
+    private final List<MessageBuilder> messageBuilders;
+
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
@@ -27,7 +30,11 @@ public class FollowerEventListener implements MessageListener {
             FollowerEvent event = objectMapper.readValue(message.getBody(), FollowerEvent.class);
             UserDto follower = userServiceClient.getUser(event.getFollowerId());
             UserDto followee = userServiceClient.getUser(event.getFolloweeId());
-            String text = "YOU followee from " + follower.getUsername();
+            String text = messageBuilders.stream()
+                            .filter(builder -> builder.getInstance() == FollowerEvent.class)
+                            .findFirst()
+                    .orElseThrow()
+                    .buildMessage(event, Locale.ENGLISH);
             notificationServices.stream()
                     .filter(service -> service.getPreferredContact() == followee.getPreference())
                     .findFirst()
