@@ -3,6 +3,7 @@ package faang.school.notificationservice.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import faang.school.notificationservice.messaging.FollowerEventListener;
+import faang.school.notificationservice.messaging.ProfileViewEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,8 @@ public class RedisConfiguration {
 
     @Value("${spring.data.redis.channel.follower}")
     private String followerTopicName;
+    @Value("${spring.data.redis.channel.profile_view}")
+    private String profileViewTopicName;
 
 
     @Bean
@@ -39,15 +42,27 @@ public class RedisConfiguration {
     }
 
     @Bean
+    MessageListenerAdapter profileViewListener(ProfileViewEventListener profileViewEventListener) {
+        return new MessageListenerAdapter(profileViewEventListener);
+    }
+
+    @Bean
     ChannelTopic followerTopic() {
         return new ChannelTopic(followerTopicName);
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener) {
+    ChannelTopic profileViewTopic() {
+        return new ChannelTopic(profileViewTopicName);
+    }
+
+    @Bean
+    RedisMessageListenerContainer redisContainer(MessageListenerAdapter followerListener,
+                                                 MessageListenerAdapter profileViewListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(followerListener, followerTopic());
+        container.addMessageListener(profileViewListener, profileViewTopic());
         return container;
     }
 }
