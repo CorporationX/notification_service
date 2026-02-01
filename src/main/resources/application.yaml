@@ -38,6 +38,12 @@ vonage: #https://dashboard.nexmo.com/getting-started/sms
     key: whatever
     secret: whatever
 
+mainsms:
+  api:
+    project: corporation_x_notification
+    apiKey: 312b55143c8b0bbbfcb52202e9d88ea6
+    sender: sendertest
+
 project-service:
     host: localhost
     port: 8082
