@@ -17,8 +17,10 @@ spring:
     consumer:
       topics:
         recommendation: "recommendation-topic"
+        recommendation-request: "recommendation-request-topic"
       group-id:
         recommendation: "recommendation"
+        recommendation-request: "recommendation-request"
       concurrency: 3
       trusted-package: "*dto*"
 
